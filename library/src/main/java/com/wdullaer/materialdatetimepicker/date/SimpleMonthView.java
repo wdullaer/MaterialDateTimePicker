@@ -38,6 +38,8 @@ public class SimpleMonthView extends MonthView {
         // If we have a mindate or maxdate, gray out the day number if it's outside the range.
         if (isOutOfRange(year, month, day)) {
             mMonthNumPaint.setColor(mDisabledDayTextColor);
+        } else if (mSelectedDay == day) {
+            mMonthNumPaint.setColor(mSelectedDayTextColor);
         } else if (mHasToday && mToday == day) {
             mMonthNumPaint.setColor(mTodayNumberColor);
         } else {

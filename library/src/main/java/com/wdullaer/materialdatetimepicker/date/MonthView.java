@@ -109,7 +109,7 @@ public abstract class MonthView extends View {
     protected static final int DEFAULT_NUM_ROWS = 6;
     protected static final int MAX_NUM_ROWS = 6;
 
-    private static final int SELECTED_CIRCLE_ALPHA = 60;
+    private static final int SELECTED_CIRCLE_ALPHA = 255;
 
     protected static int DAY_SEPARATOR_WIDTH = 1;
     protected static int MINI_DAY_NUMBER_TEXT_SIZE;
@@ -182,6 +182,8 @@ public abstract class MonthView extends View {
     private boolean mLockAccessibilityDelegate;
 
     protected int mDayTextColor;
+    protected int mSelectedDayTextColor;
+    protected int mMonthDayTextColor;
     protected int mTodayNumberColor;
     protected int mDisabledDayTextColor;
     protected int mMonthTitleColor;
@@ -202,7 +204,9 @@ public abstract class MonthView extends View {
         mMonthTitleTypeface = res.getString(R.string.mdtp_sans_serif);
 
         mDayTextColor = res.getColor(R.color.mdtp_date_picker_text_normal);
-        mTodayNumberColor = res.getColor(R.color.mdtp_blue);
+        mSelectedDayTextColor = res.getColor(R.color.mdtp_white);
+        mMonthDayTextColor = res.getColor(R.color.mdtp_date_picker_month_day);
+        mTodayNumberColor = res.getColor(R.color.mdtp_accent_color);
         mDisabledDayTextColor = res.getColor(R.color.mdtp_date_picker_text_disabled);
         mMonthTitleColor = res.getColor(R.color.mdtp_white);
         mMonthTitleBGColor = res.getColor(R.color.mdtp_circle_background);
@@ -305,7 +309,7 @@ public abstract class MonthView extends View {
         mMonthDayLabelPaint = new Paint();
         mMonthDayLabelPaint.setAntiAlias(true);
         mMonthDayLabelPaint.setTextSize(MONTH_DAY_LABEL_TEXT_SIZE);
-        mMonthDayLabelPaint.setColor(mDayTextColor);
+        mMonthDayLabelPaint.setColor(mMonthDayTextColor);
         mMonthDayLabelPaint.setTypeface(Typeface.create(mDayOfWeekTypeface, Typeface.NORMAL));
         mMonthDayLabelPaint.setStyle(Style.FILL);
         mMonthDayLabelPaint.setTextAlign(Align.CENTER);

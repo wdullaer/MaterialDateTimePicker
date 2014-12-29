@@ -20,7 +20,7 @@
     android:layout_width="@dimen/mdtp_date_picker_component_width"
     android:layout_height="0dip"
     android:layout_weight="1"
-    android:background="@color/mdtp_white"
+    android:background="@color/mdtp_accent_color"
     android:gravity="center"
     android:orientation="vertical" >
 

@@ -15,7 +15,8 @@
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:state_pressed="true" android:color="@color/mdtp_darker_blue"/>
+    <item android:state_pressed="true" android:color="@color/mdtp_accent_color"/>
+    <item android:state_selected="true" android:color="@color/mdtp_white"/>
     <item android:state_pressed="false" android:state_selected="false"
         android:color="@color/mdtp_date_picker_text_normal"/>
 

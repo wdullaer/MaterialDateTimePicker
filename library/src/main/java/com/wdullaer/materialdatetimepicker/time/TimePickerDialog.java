@@ -200,7 +200,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mSelectHours = res.getString(R.string.mdtp_select_hours);
         mMinutePickerDescription = res.getString(R.string.mdtp_minute_picker_description);
         mSelectMinutes = res.getString(R.string.mdtp_select_minutes);
-        mSelectedColor = res.getColor(mThemeDark? R.color.mdtp_red : R.color.mdtp_blue);
+        mSelectedColor = res.getColor(mThemeDark? R.color.mdtp_red : R.color.mdtp_accent_color);
         mUnselectedColor = res.getColor(mThemeDark? R.color.mdtp_white : R.color.mdtp_numbers_text_color);
 
         mHourView = (TextView) view.findViewById(R.id.hours);

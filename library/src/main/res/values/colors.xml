@@ -22,18 +22,19 @@
     <color name="mdtp_ampm_text_color">#8c8c8c</color>
     <color name="mdtp_done_text_color_normal">#000000</color>
     <color name="mdtp_done_text_color_disabled">#cccccc</color>
-    <color name="mdtp_numbers_text_color">#8c8c8c</color>
+    <color name="mdtp_numbers_text_color">#000000</color>
 
     <color name="mdtp_transparent_black">#7f000000</color>
-    <color name="mdtp_blue">#33b5e5</color>
-    <color name="mdtp_blue_focused">#c1e8f7</color>
+    <color name="mdtp_accent_color">#009688</color>
+    <color name="mdtp_accent_color_focused">#b2dfdb</color>
     <color name="mdtp_neutral_pressed">#33999999</color>
-    <color name="mdtp_darker_blue">#0099cc</color>
-    <color name="mdtp_date_picker_text_normal">#ff999999</color>
+    <color name="mdtp_accent_color_dark">#00796b</color>
+    <color name="mdtp_date_picker_text_normal">#ff212121</color>
     <color name="mdtp_date_picker_text_disabled">#ccc</color>
+    <color name="mdtp_date_picker_month_day">#767676</color>
 
-    <color name="mdtp_calendar_header">#999999</color>
-    <color name="mdtp_date_picker_view_animator">#f2f2f2</color>
+    <color name="mdtp_calendar_header">@color/mdtp_accent_color_dark</color>
+    <color name="mdtp_date_picker_view_animator">@android:color/white</color>
     <color name="mdtp_calendar_selected_date_text">#ffd1d2d4</color>
 
     <!-- Colors for red theme -->
