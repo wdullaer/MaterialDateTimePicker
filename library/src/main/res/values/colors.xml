@@ -17,16 +17,17 @@
 <resources>
 
     <color name="mdtp_white">#ffffff</color>
-    <color name="mdtp_circle_background">#f2f2f2</color>
+    <color name="mdtp_circle_background">@color/mdtp_white</color>
+    <color name="mdtp_circle_color">#f5f5f5</color>
     <color name="mdtp_line_background">#cccccc</color>
-    <color name="mdtp_ampm_text_color">#8c8c8c</color>
-    <color name="mdtp_done_text_color_normal">#000000</color>
+    <color name="mdtp_ampm_text_color">@color/mdtp_numbers_text_color</color>
+    <color name="mdtp_done_text_color_normal">#ff212121</color>
     <color name="mdtp_done_text_color_disabled">#cccccc</color>
-    <color name="mdtp_numbers_text_color">#000000</color>
+    <color name="mdtp_numbers_text_color">#ff212121</color>
 
     <color name="mdtp_transparent_black">#7f000000</color>
     <color name="mdtp_accent_color">#009688</color>
-    <color name="mdtp_accent_color_focused">#b2dfdb</color>
+    <color name="mdtp_accent_color_focused">#76ffffff</color>
     <color name="mdtp_neutral_pressed">#33999999</color>
     <color name="mdtp_accent_color_dark">#00796b</color>
     <color name="mdtp_date_picker_text_normal">#ff212121</color>

@@ -186,7 +186,7 @@ public class RadialTextsView extends View {
                 // a slightly higher center. To keep the entire view centered vertically, we'll
                 // have to push it up by half the radius of the AM/PM circles.
                 float amPmCircleRadius = mCircleRadius * mAmPmCircleRadiusMultiplier;
-                mYCenter -= amPmCircleRadius / 2;
+                mYCenter -= amPmCircleRadius *0.75;
             }
 
             mTextSize = mCircleRadius * mTextSizeMultiplier;

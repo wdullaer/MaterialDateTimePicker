@@ -42,6 +42,7 @@ public class AmPmCirclesView extends View {
 
     private final Paint mPaint = new Paint();
     private int mSelectedAlpha;
+    private int mTouchedColor;
     private int mUnselectedColor;
     private int mAmPmTextColor;
     private int mSelectedColor;
@@ -76,6 +77,7 @@ public class AmPmCirclesView extends View {
         Resources res = context.getResources();
         mUnselectedColor = res.getColor(R.color.mdtp_white);
         mSelectedColor = res.getColor(R.color.mdtp_accent_color);
+        mTouchedColor = res.getColor(R.color.mdtp_accent_color_dark);
         mAmPmTextColor = res.getColor(R.color.mdtp_ampm_text_color);
         mSelectedAlpha = SELECTED_ALPHA;
         String typefaceFamily = res.getString(R.string.mdtp_sans_serif);
@@ -160,6 +162,7 @@ public class AmPmCirclesView extends View {
             int circleRadius =
                     (int) (Math.min(layoutXCenter, layoutYCenter) * mCircleRadiusMultiplier);
             mAmPmCircleRadius = (int) (circleRadius * mAmPmCircleRadiusMultiplier);
+            layoutYCenter += mAmPmCircleRadius*0.75;
             int textSize = mAmPmCircleRadius * 3 / 4;
             mPaint.setTextSize(textSize);
 
@@ -177,20 +180,25 @@ public class AmPmCirclesView extends View {
         // or white (for not selected).
         int amColor = mUnselectedColor;
         int amAlpha = 255;
+        int amTextColor = mAmPmTextColor;
         int pmColor = mUnselectedColor;
         int pmAlpha = 255;
+        int pmTextColor = mAmPmTextColor;
+
         if (mAmOrPm == AM) {
             amColor = mSelectedColor;
             amAlpha = mSelectedAlpha;
+            amTextColor = mUnselectedColor;
         } else if (mAmOrPm == PM) {
             pmColor = mSelectedColor;
             pmAlpha = mSelectedAlpha;
+            pmTextColor = mUnselectedColor;
         }
         if (mAmOrPmPressed == AM) {
-            amColor = mSelectedColor;
+            amColor = mTouchedColor;
             amAlpha = mSelectedAlpha;
         } else if (mAmOrPmPressed == PM) {
-            pmColor = mSelectedColor;
+            pmColor = mTouchedColor;
             pmAlpha = mSelectedAlpha;
         }
 
@@ -203,9 +211,10 @@ public class AmPmCirclesView extends View {
         canvas.drawCircle(mPmXCenter, mAmPmYCenter, mAmPmCircleRadius, mPaint);
 
         // Draw the AM/PM texts on top.
-        mPaint.setColor(mAmPmTextColor);
+        mPaint.setColor(amTextColor);
         int textYCenter = mAmPmYCenter - (int) (mPaint.descent() + mPaint.ascent()) / 2;
         canvas.drawText(mAmText, mAmXCenter, textYCenter, mPaint);
+        mPaint.setColor(pmTextColor);
         canvas.drawText(mPmText, mPmXCenter, textYCenter, mPaint);
     }
 }

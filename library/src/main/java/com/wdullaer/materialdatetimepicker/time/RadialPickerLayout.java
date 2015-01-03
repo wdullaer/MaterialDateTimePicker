@@ -36,12 +36,13 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
 
 /**
- * The primary layout to hold the circular picker, and the am/pm buttons. This view well measure
+ * The primary layout to hold the circular picker, and the am/pm buttons. This view will measure
  * itself to end up as a square. It also handles touches to be passed in to views that need to know
  * when they'd been touched.
  */
@@ -112,15 +113,15 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mAmPmCirclesView = new AmPmCirclesView(context);
         addView(mAmPmCirclesView);
 
-        mHourRadialTextsView = new RadialTextsView(context);
-        addView(mHourRadialTextsView);
-        mMinuteRadialTextsView = new RadialTextsView(context);
-        addView(mMinuteRadialTextsView);
-
         mHourRadialSelectorView = new RadialSelectorView(context);
         addView(mHourRadialSelectorView);
         mMinuteRadialSelectorView = new RadialSelectorView(context);
         addView(mMinuteRadialSelectorView);
+
+        mHourRadialTextsView = new RadialTextsView(context);
+        addView(mHourRadialTextsView);
+        mMinuteRadialTextsView = new RadialTextsView(context);
+        addView(mMinuteRadialTextsView);
 
         // Prepare mapping to snap touchable degrees to selectable degrees.
         preparePrefer30sMap();
@@ -128,6 +129,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mLastValueSelected = -1;
 
         mInputEnabled = true;
+
         mGrayBox = new View(context);
         mGrayBox.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -143,6 +145,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     /**
      * Measure the view to end up as a square, based on the minimum of the height and width.
      */
+    /**
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
@@ -154,6 +157,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         super.onMeasure(MeasureSpec.makeMeasureSpec(minDimension, widthMode),
                 MeasureSpec.makeMeasureSpec(minDimension, heightMode));
     }
+    **/
 
     public void setOnValueSelectedListener(OnValueSelectedListener listener) {
         mListener = listener;
@@ -391,7 +395,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      * Returns mapping of any input degrees (0 to 360) to one of 12 visible output degrees (all
      * multiples of 30), where the input will be "snapped" to the closest visible degrees.
      * @param degrees The input degrees
-     * @param forceAboveOrBelow The output may be forced to either the higher or lower step, or may
+     * @param forceHigherOrLower The output may be forced to either the higher or lower step, or may
      * be allowed to snap to whichever is closer. Use 1 to force strictly higher, -1 to force
      * strictly lower, and 0 to snap to the closer one.
      * @return output degrees, will be a multiple of 30
@@ -730,6 +734,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             // we'll allow the touch event to continue before disabling input.
             return false;
         }
+
         mInputEnabled = inputEnabled;
         mGrayBox.setVisibility(inputEnabled? View.INVISIBLE : View.VISIBLE);
         return true;

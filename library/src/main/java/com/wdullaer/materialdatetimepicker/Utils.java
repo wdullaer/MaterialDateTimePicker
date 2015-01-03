@@ -35,8 +35,8 @@ public class Utils {
     public static final int PULSE_ANIMATOR_DURATION = 544;
 
     // Alpha level for time picker selection.
-    public static final int SELECTED_ALPHA = 51;
-    public static final int SELECTED_ALPHA_THEME_DARK = 102;
+    public static final int SELECTED_ALPHA = 255;
+    public static final int SELECTED_ALPHA_THEME_DARK = 255;
     // Alpha level for fully opaque.
     public static final int FULL_ALPHA = 255;
 

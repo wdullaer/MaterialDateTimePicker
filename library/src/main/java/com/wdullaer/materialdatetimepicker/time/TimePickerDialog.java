@@ -200,8 +200,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mSelectHours = res.getString(R.string.mdtp_select_hours);
         mMinutePickerDescription = res.getString(R.string.mdtp_minute_picker_description);
         mSelectMinutes = res.getString(R.string.mdtp_select_minutes);
-        mSelectedColor = res.getColor(mThemeDark? R.color.mdtp_red : R.color.mdtp_accent_color);
-        mUnselectedColor = res.getColor(mThemeDark? R.color.mdtp_white : R.color.mdtp_numbers_text_color);
+        mSelectedColor = res.getColor(mThemeDark? R.color.mdtp_red : R.color.mdtp_white);
+        mUnselectedColor = res.getColor(mThemeDark? R.color.mdtp_white : R.color.mdtp_accent_color_focused);
 
         mHourView = (TextView) view.findViewById(R.id.hours);
         mHourView.setOnKeyListener(keyboardListener);
@@ -315,6 +315,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mTimePicker.setTheme(getActivity().getApplicationContext(), mThemeDark);
         // Prepare some colors to use.
         int white = res.getColor(R.color.mdtp_white);
+        int accent = res.getColor(R.color.mdtp_accent_color);
         int circleBackground = res.getColor(R.color.mdtp_circle_background);
         int line = res.getColor(R.color.mdtp_line_background);
         int timeDisplay = res.getColor(R.color.mdtp_numbers_text_color);
@@ -328,10 +329,10 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         int darkDoneBackground = R.drawable.mdtp_done_background_color_dark;
 
         // Set the colors for each view based on the theme.
-        view.findViewById(R.id.time_display_background).setBackgroundColor(mThemeDark? darkGray : white);
-        view.findViewById(R.id.time_display).setBackgroundColor(mThemeDark? darkGray : white);
-        ((TextView) view.findViewById(R.id.separator)).setTextColor(mThemeDark? white : timeDisplay);
-        ((TextView) view.findViewById(R.id.ampm_label)).setTextColor(mThemeDark? white : timeDisplay);
+        //view.findViewById(R.id.time_display_background).setBackgroundColor(mThemeDark? darkGray : accent);
+        //view.findViewById(R.id.time_display).setBackgroundColor(mThemeDark? darkGray : white);
+        //((TextView) view.findViewById(R.id.separator)).setTextColor(mThemeDark? white : timeDisplay);
+        //((TextView) view.findViewById(R.id.ampm_label)).setTextColor(mThemeDark? white : timeDisplay);
         view.findViewById(R.id.line).setBackgroundColor(mThemeDark? darkLine : line);
         mDoneButton.setTextColor(mThemeDark? darkDoneTextColor : doneTextColor);
         mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
@@ -638,7 +639,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
 
     /**
      * Get out of keyboard mode. If there is nothing in typedTimes, revert to TimePicker's time.
-     * @param changeDisplays If true, update the displays with the relevant time.
+     * @param updateDisplays If true, update the displays with the relevant time.
      */
     private void finishKbMode(boolean updateDisplays) {
         mInKbMode = false;

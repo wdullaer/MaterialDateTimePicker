@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity implements
                         MainActivity.this,
                         now.get(Calendar.HOUR_OF_DAY),
                         now.get(Calendar.MINUTE),
-                        true
+                        false
                 );
                 tpd.show(getFragmentManager(), "Timepickerdialog");
             }

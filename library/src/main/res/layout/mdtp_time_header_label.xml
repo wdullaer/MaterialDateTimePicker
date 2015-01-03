@@ -19,7 +19,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_gravity="center"
-      android:background="@color/mdtp_white" >
+      android:background="@color/mdtp_accent_color" >
         <View
             android:id="@+id/center_view"
             android:layout_width="1dp"
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/mdtp_time_placeholder"
-                android:textColor="@color/mdtp_accent_color"
+                android:textColor="@color/mdtp_white"
                 android:gravity="center_horizontal"
                 android:layout_gravity="center"
                 style="@style/mdtp_time_label" />
@@ -67,6 +67,7 @@
             android:paddingRight="@dimen/mdtp_separator_padding"
             android:layout_alignRight="@+id/center_view"
             android:layout_centerVertical="true"
+            android:textColor="@color/mdtp_accent_color_focused"
             style="@style/mdtp_time_label"
             android:importantForAccessibility="no" />
 
@@ -78,6 +79,7 @@
             android:layout_toRightOf="@+id/separator"
             android:layout_centerVertical="true"
             android:visibility="invisible"
+            android:textColor="@color/mdtp_accent_color_focused"
             style="@style/mdtp_time_label"
             android:importantForAccessibility="no" />
         <FrameLayout
@@ -95,7 +97,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/mdtp_time_placeholder"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:textColor="@color/mdtp_accent_color_focused" />
         </FrameLayout>
         <com.wdullaer.materialdatetimepicker.AccessibleTextView
             android:id="@+id/ampm_hitspace"
@@ -114,6 +117,7 @@
             android:paddingRight="@dimen/mdtp_ampm_left_padding"
             android:layout_toRightOf="@+id/minutes_space"
             android:layout_alignBaseline="@+id/separator"
+            android:textColor="@color/mdtp_accent_color_focused"
             style="@style/mdtp_ampm_label"
             android:importantForAccessibility="no" />
   </RelativeLayout>

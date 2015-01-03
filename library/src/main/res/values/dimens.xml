@@ -20,13 +20,13 @@
     <item name="mdtp_circle_radius_multiplier" format="float" type="string">0.82</item>
     <item name="mdtp_circle_radius_multiplier_24HourMode" format="float" type="string">0.85</item>
     <item name="mdtp_selection_radius_multiplier" format="float" type="string">0.16</item>
-    <item name="mdtp_ampm_circle_radius_multiplier" format="float" type="string">0.19</item>
+    <item name="mdtp_ampm_circle_radius_multiplier" format="float" type="string">0.22</item>
     <item name="mdtp_numbers_radius_multiplier_normal" format="float" type="string">0.81</item>
     <item name="mdtp_numbers_radius_multiplier_inner" format="float" type="string">0.60</item>
     <item name="mdtp_numbers_radius_multiplier_outer" format="float" type="string">0.83</item>
-    <item name="mdtp_text_size_multiplier_normal" format="float" type="string">0.17</item>
-    <item name="mdtp_text_size_multiplier_inner" format="float" type="string">0.14</item>
-    <item name="mdtp_text_size_multiplier_outer" format="float" type="string">0.11</item>
+    <item name="mdtp_text_size_multiplier_normal" format="float" type="string">0.12</item>
+    <item name="mdtp_text_size_multiplier_inner" format="float" type="string">0.11</item>
+    <item name="mdtp_text_size_multiplier_outer" format="float" type="string">0.08</item>
 
 
     <dimen name="mdtp_time_label_size">60sp</dimen>
