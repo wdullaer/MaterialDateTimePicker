@@ -39,8 +39,8 @@
     <color name="mdtp_calendar_selected_date_text">#ffd1d2d4</color>
 
     <!-- Colors for red theme -->
-    <color name="mdtp_red">#ff3333</color>
-    <color name="mdtp_red_focused">#853333</color>
+    <color name="mdtp_red">@color/mdtp_accent_color</color>
+    <color name="mdtp_red_focused">@color/mdtp_accent_color_dark</color>
     <color name="mdtp_light_gray">#404040</color>
     <color name="mdtp_dark_gray">#363636</color>
     <color name="mdtp_line_dark">#808080</color>

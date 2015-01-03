@@ -43,6 +43,7 @@ public class MainActivity extends ActionBarActivity implements
                         now.get(Calendar.MINUTE),
                         false
                 );
+                tpd.setThemeDark(false);
                 tpd.show(getFragmentManager(), "Timepickerdialog");
             }
         });
