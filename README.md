@@ -18,7 +18,7 @@ Setup
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer.materialdatetimepicker:1.0.0'
+  compile 'com.wdullaer:materialdatetimepicker:1.0.0'
 }
 ```
 
@@ -77,7 +77,7 @@ The `TimePickerDialog` has a dark theme that can be set by calling
 ```java
 tdp.setThemeDark(true);
 ```
-It doesn't strictly follow the Material Design spec, but gets the job done for the time being.
+It doesn't strictly follow the Material Design spec, but gets the job done for the time being
 
 Potential Improvements
 ----------------------
