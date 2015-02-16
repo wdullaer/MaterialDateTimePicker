@@ -35,7 +35,7 @@ For a basic implementation, you'll need to
 
 ### Implement an `OnTimeSetListener`/`OnDateSetListener`
 In order to receive the date or time set in the picker, you will need to implement the `OnTimeSetListener` or
-`OnDateSetListener` interfaces. Typically this will be the `Activity` or `Fragment` that creates the Pickers.
+`OnDateSetListener` interfaces. Typically this will be the `Activity` or `Fragment` that creates the Pickers. The callbacks use the same API as the standard Android pickers.
 ```java
 @Override
 public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
@@ -45,7 +45,7 @@ public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
 
 @Override
 public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-  String date = "You picked the following date: "+dayOfMonth+"/"+monthOfYear+"/"+year;
+  String date = "You picked the following date: "+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
   dateTextView.setText(date);
 }
 ```
@@ -77,7 +77,7 @@ The `TimePickerDialog` has a dark theme that can be set by calling
 ```java
 tdp.setThemeDark(true);
 ```
-It doesn't strictly follow the Material Design spec, but gets the job done for the time being.
+It doesn't strictly follow the Material Design spec, but gets the job done for the time being
 
 Potential Improvements
 ----------------------
