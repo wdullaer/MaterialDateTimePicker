@@ -40,6 +40,7 @@
     <dimen name="mdtp_minimum_margin_sides">48dip</dimen>
     <dimen name="mdtp_minimum_margin_top_bottom">24dip</dimen>
     <dimen name="mdtp_picker_dimen">270dip</dimen>
+    <dimen name="mdtp_time_picker_height">300dp</dimen>
 
     <dimen name="mdtp_date_picker_component_width">270dp</dimen>
     <dimen name="mdtp_date_picker_header_height">30dp</dimen>

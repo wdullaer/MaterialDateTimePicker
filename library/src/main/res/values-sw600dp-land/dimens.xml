@@ -23,11 +23,11 @@
     <dimen name="mdtp_date_picker_header_height">45dp</dimen>
     <dimen name="mdtp_time_label_right_padding">16sp</dimen>
     <dimen name="mdtp_time_label_size">64sp</dimen>
-    <dimen name="mdtp_ampm_label_size">21sp</dimen>
-    <dimen name="mdtp_ampm_left_padding">7dip</dimen>
+    <dimen name="mdtp_ampm_label_size">16sp</dimen>
+    <dimen name="mdtp_ampm_left_padding">6dip</dimen>
     <dimen name="mdtp_separator_padding">5dip</dimen>
     <dimen name="mdtp_header_height">96dip</dimen>
     <dimen name="mdtp_footer_height">48dip</dimen>
-    <dimen name="mdtp_left_side_width">315dip</dimen>
+    <dimen name="mdtp_left_side_width">400dip</dimen>
 
 </resources>
