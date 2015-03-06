@@ -1,5 +1,7 @@
 Material DateTime Picker - Select a time/date in style
 ======================================================
+![Maven Central](https://img.shields.io/maven-central/v/com.wdullaer/materialdatetimepicker.svg)
+
 
 Material DateTime Picker tries to offer you the date and time pickers as shown in [the Material Design spec](http://www.google.com/design/spec/components/pickers.html), with an
 easy themable API.
