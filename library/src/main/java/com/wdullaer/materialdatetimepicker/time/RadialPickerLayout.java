@@ -429,7 +429,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     /**
      * For the currently showing view (either hours or minutes), re-calculate the position for the
      * selector, and redraw it at that position. The input degrees will be snapped to a selectable
-     * value.
+     * value. The text representing the currently selected value will be redrawn if required.
      * @param degrees Degrees which should be selected.
      * @param isInnerCircle Whether the selection should be in the inner circle; will be ignored
      * if there is no inner circle.
