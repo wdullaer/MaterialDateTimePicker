@@ -89,7 +89,9 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-        String time = "You picked the following time: "+hourOfDay+"h"+minute;
+        String hourString = hourOfDay < 10 ? "0"+hourOfDay : ""+hourOfDay;
+        String minuteString = minute < 10 ? "0"+minute : ""+minute;
+        String time = "You picked the following time: "+hourString+"h"+minuteString;
         timeTextView.setText(time);
     }
 
