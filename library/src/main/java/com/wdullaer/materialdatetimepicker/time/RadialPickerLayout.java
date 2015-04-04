@@ -36,7 +36,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
@@ -205,8 +204,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         }
         mHourRadialTextsView.initialize(res,
                 hoursTexts, (is24HourMode? innerHoursTexts : null), mHideAmPm, true);
+        mHourRadialTextsView.setSelection(is24HourMode ? initialHoursOfDay : initialHoursOfDay % 12);
         mHourRadialTextsView.invalidate();
         mMinuteRadialTextsView.initialize(res, minutesTexts, null, mHideAmPm, false);
+        mMinuteRadialTextsView.setSelection(initialMinutes);
         mMinuteRadialTextsView.invalidate();
 
         // Initialize the currently-selected hour and minute.
@@ -245,11 +246,15 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             int hourDegrees = (value % 12) * HOUR_VALUE_TO_DEGREES_STEP_SIZE;
             mHourRadialSelectorView.setSelection(hourDegrees, isHourInnerCircle(value), false);
             mHourRadialSelectorView.invalidate();
+            mHourRadialTextsView.setSelection(value);
+            mHourRadialTextsView.invalidate();
         } else if (index == MINUTE_INDEX) {
             setValueForItem(MINUTE_INDEX, value);
             int minuteDegrees = value * MINUTE_VALUE_TO_DEGREES_STEP_SIZE;
             mMinuteRadialSelectorView.setSelection(minuteDegrees, false, false);
             mMinuteRadialSelectorView.invalidate();
+            mMinuteRadialTextsView.setSelection(value);
+            mHourRadialTextsView.invalidate();
         }
     }
 
@@ -424,7 +429,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     /**
      * For the currently showing view (either hours or minutes), re-calculate the position for the
      * selector, and redraw it at that position. The input degrees will be snapped to a selectable
-     * value.
+     * value. The text representing the currently selected value will be redrawn if required.
      * @param degrees Degrees which should be selected.
      * @param isInnerCircle Whether the selection should be in the inner circle; will be ignored
      * if there is no inner circle.
@@ -476,6 +481,16 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         }
 
         int value = degrees / stepSize;
+
+        // Redraw the text if necessary
+        if(getCurrentItemShowing() == HOUR_INDEX) {
+            mHourRadialTextsView.setSelection(value);
+            mHourRadialTextsView.invalidate();
+        } else if(getCurrentItemShowing() == MINUTE_INDEX) {
+            mMinuteRadialTextsView.setSelection(value);
+            mMinuteRadialTextsView.invalidate();
+        }
+
         if (currentShowing == HOUR_INDEX && mIs24HourMode && !isInnerCircle && degrees != 0) {
             value += 12;
         }
@@ -705,6 +720,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                     degrees = getDegreesFromCoords(eventX, eventY, mDoingMove, isInnerCircle);
                     if (degrees != -1) {
                         value = reselectSelector(degrees, isInnerCircle[0], !mDoingMove, false);
+
                         if (getCurrentItemShowing() == HOUR_INDEX && !mIs24HourMode) {
                             int amOrPm = getIsCurrentlyAmOrPm();
                             if (amOrPm == AM && value == 12) {
