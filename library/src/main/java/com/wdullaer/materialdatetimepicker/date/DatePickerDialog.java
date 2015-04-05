@@ -38,6 +38,7 @@ import android.widget.TextView;
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.materialbutton.ButtonFlat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -89,7 +90,6 @@ public class DatePickerDialog extends DialogFragment implements
     private TextView mYearView;
     private DayPickerView mDayPickerView;
     private YearPickerView mYearPickerView;
-    private Button mDoneButton;
 
     private int mCurrentView = UNINITIALIZED;
 
@@ -242,8 +242,8 @@ public class DatePickerDialog extends DialogFragment implements
         animation2.setDuration(ANIMATION_DURATION);
         mAnimator.setOutAnimation(animation2);
 
-        mDoneButton = (Button) view.findViewById(R.id.done);
-        mDoneButton.setOnClickListener(new OnClickListener() {
+        ButtonFlat okButton = (ButtonFlat) view.findViewById(R.id.ok);
+        okButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -252,6 +252,15 @@ public class DatePickerDialog extends DialogFragment implements
                     mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
                             mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
                 }
+                dismiss();
+            }
+        });
+
+        Button cancelButton = (Button) view.findViewById(R.id.cancel);
+        cancelButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tryVibrate();
                 dismiss();
             }
         });

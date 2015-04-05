@@ -17,7 +17,8 @@
 <resources>
 
     <color name="mdtp_white">#ffffff</color>
-    <color name="mdtp_circle_background">@color/mdtp_white</color>
+    <color name="mdtp_background_color">@color/mdtp_white</color>
+    <color name="mdtp_circle_background">@color/mdtp_background_color</color>
     <color name="mdtp_circle_color">#f5f5f5</color>
     <color name="mdtp_line_background">#cccccc</color>
     <color name="mdtp_ampm_text_color">@color/mdtp_numbers_text_color</color>
@@ -37,6 +38,8 @@
     <color name="mdtp_calendar_header">@color/mdtp_accent_color_dark</color>
     <color name="mdtp_date_picker_view_animator">@android:color/white</color>
     <color name="mdtp_calendar_selected_date_text">#ffd1d2d4</color>
+
+    <color name="mdtp_button_color">@color/mdtp_accent_color</color>
 
     <!-- Colors for red theme -->
     <color name="mdtp_red">@color/mdtp_accent_color</color>
