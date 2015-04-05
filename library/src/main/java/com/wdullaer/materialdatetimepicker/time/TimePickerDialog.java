@@ -32,13 +32,13 @@ import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
-import com.wdullaer.materialdatetimepicker.materialbutton.ButtonFlat;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
 import java.text.DateFormatSymbols;
@@ -75,7 +75,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
 
     private HapticFeedbackController mHapticFeedbackController;
 
-    private ButtonFlat mOkButton;
+    private Button mOkButton;
     private TextView mHourView;
     private TextView mHourSpaceView;
     private TextView mMinuteView;
@@ -247,7 +247,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             }
         });
 
-        mOkButton = (ButtonFlat) view.findViewById(R.id.ok);
+        mOkButton = (Button) view.findViewById(R.id.ok);
         mOkButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -265,7 +265,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         });
         mOkButton.setOnKeyListener(keyboardListener);
 
-        ButtonFlat mCancelButton = (ButtonFlat) view.findViewById(R.id.cancel);
+        Button mCancelButton = (Button) view.findViewById(R.id.cancel);
         mCancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

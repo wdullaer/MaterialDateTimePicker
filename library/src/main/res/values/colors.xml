@@ -40,6 +40,7 @@
     <color name="mdtp_calendar_selected_date_text">#ffd1d2d4</color>
 
     <color name="mdtp_button_color">@color/mdtp_accent_color</color>
+    <color name="mdtp_button_selected">#33969696</color>
 
     <!-- Colors for red theme -->
     <color name="mdtp_red">@color/mdtp_accent_color</color>

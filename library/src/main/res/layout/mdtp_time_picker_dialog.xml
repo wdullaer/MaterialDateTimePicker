@@ -19,6 +19,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/mdtp_background_color"
     android:focusable="true" >
     <FrameLayout
         android:id="@+id/time_display_background"
@@ -39,12 +40,6 @@
         android:background="@color/mdtp_circle_background"
         android:focusable="true"
         android:focusableInTouchMode="true" />
-    <!--
-    <View
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/mdtp_line_background" />
-    -->
+
     <include layout="@layout/mdtp_done_button" />
 </LinearLayout>

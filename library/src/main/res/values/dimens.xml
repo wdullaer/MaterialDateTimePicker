@@ -28,7 +28,6 @@
     <item name="mdtp_text_size_multiplier_inner" format="float" type="string">0.11</item>
     <item name="mdtp_text_size_multiplier_outer" format="float" type="string">0.08</item>
 
-
     <dimen name="mdtp_time_label_size">60sp</dimen>
     <dimen name="mdtp_extra_time_label_margin">-30dp</dimen>
     <dimen name="mdtp_ampm_label_size">16sp</dimen>
@@ -60,4 +59,9 @@
     <dimen name="mdtp_day_number_size">12sp</dimen>
     <dimen name="mdtp_year_label_height">64dp</dimen>
     <dimen name="mdtp_year_label_text_size">22dp</dimen>
+
+    <dimen name="mdtp_material_button_height">48dp</dimen>
+    <dimen name="mdtp_material_button_textsize">14sp</dimen>
+    <dimen name="mdtp_material_button_minwidth">64dp</dimen>
+    <dimen name="mdtp_material_button_textpadding_horizontal">8dp</dimen>
 </resources>

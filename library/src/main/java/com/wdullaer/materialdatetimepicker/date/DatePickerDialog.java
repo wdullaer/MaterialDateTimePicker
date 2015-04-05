@@ -38,7 +38,6 @@ import android.widget.TextView;
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
-import com.wdullaer.materialdatetimepicker.materialbutton.ButtonFlat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -242,7 +241,7 @@ public class DatePickerDialog extends DialogFragment implements
         animation2.setDuration(ANIMATION_DURATION);
         mAnimator.setOutAnimation(animation2);
 
-        ButtonFlat okButton = (ButtonFlat) view.findViewById(R.id.ok);
+        Button okButton = (Button) view.findViewById(R.id.ok);
         okButton.setOnClickListener(new OnClickListener() {
 
             @Override
