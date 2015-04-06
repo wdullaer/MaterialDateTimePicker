@@ -482,6 +482,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
         int value = degrees / stepSize;
 
+        if (currentShowing == HOUR_INDEX && mIs24HourMode && !isInnerCircle && degrees != 0) {
+            value += 12;
+        }
+
         // Redraw the text if necessary
         if(getCurrentItemShowing() == HOUR_INDEX) {
             mHourRadialTextsView.setSelection(value);
@@ -490,10 +494,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             mMinuteRadialTextsView.setSelection(value);
             mMinuteRadialTextsView.invalidate();
         }
-
-        if (currentShowing == HOUR_INDEX && mIs24HourMode && !isInnerCircle && degrees != 0) {
-            value += 12;
-        }
+        
         return value;
     }
 
