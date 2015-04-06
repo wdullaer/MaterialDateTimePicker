@@ -15,20 +15,30 @@
   ~ limitations under the License
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/time_picker_dialog"
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/mdtp_background_color" >
+    android:orientation="horizontal"
+    android:background="@color/mdtp_background_color"
+    android:focusable="true" >
+    <com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
+        android:id="@+id/time_picker"
+        android:layout_width="@dimen/mdtp_picker_dimen"
+        android:layout_height="@dimen/mdtp_time_picker_height"
+        android:layout_gravity="center"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@color/mdtp_circle_background" />
     <LinearLayout
-        android:id="@+id/time_picker_dialog"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/mdtp_time_picker_height"
         android:layout_width="wrap_content"
-        android:orientation="horizontal"
-        android:focusable="true" >
+        android:orientation="vertical" >
         <FrameLayout
             android:id="@+id/time_display_background"
             android:layout_width="@dimen/mdtp_left_side_width"
-            android:layout_height="@dimen/mdtp_time_picker_height"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="8dp"
             android:background="@color/mdtp_accent_color" >
             <include
                 layout="@layout/mdtp_time_header_label"
@@ -36,14 +46,6 @@
                 android:layout_height="@dimen/mdtp_header_height"
                 android:layout_gravity="center" />
         </FrameLayout>
-        <com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
-            android:id="@+id/time_picker"
-            android:layout_width="@dimen/mdtp_picker_dimen"
-            android:layout_height="@dimen/mdtp_time_picker_height"
-            android:layout_gravity="center"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:background="@color/mdtp_circle_background" />
+        <include layout="@layout/mdtp_done_button" />
     </LinearLayout>
-    <include layout="@layout/mdtp_done_button" />
 </LinearLayout>
