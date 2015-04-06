@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
@@ -264,6 +265,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             }
         });
         mOkButton.setOnKeyListener(keyboardListener);
+        mOkButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));
 
         Button mCancelButton = (Button) view.findViewById(R.id.cancel);
         mCancelButton.setOnClickListener(new OnClickListener() {
@@ -273,6 +275,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
                 dismiss();
             }
         });
+        mCancelButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));
 
         // Enable or disable the AM/PM view.
         mAmPmHitspace = view.findViewById(R.id.ampm_hitspace);

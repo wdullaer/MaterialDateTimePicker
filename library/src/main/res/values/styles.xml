@@ -49,6 +49,5 @@
         <item name="android:paddingRight">@dimen/mdtp_material_button_textpadding_horizontal</item>
         <item name="android:textColor">@color/mdtp_button_color</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textStyle">bold</item>
     </style>
 </resources>
