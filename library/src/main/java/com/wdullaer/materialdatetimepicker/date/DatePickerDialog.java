@@ -255,7 +255,7 @@ public class DatePickerDialog extends DialogFragment implements
                 dismiss();
             }
         });
-        okButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));
+        okButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
 
         Button cancelButton = (Button) view.findViewById(R.id.cancel);
         cancelButton.setOnClickListener(new OnClickListener() {
@@ -265,7 +265,7 @@ public class DatePickerDialog extends DialogFragment implements
                 dismiss();
             }
         });
-        cancelButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));
+        cancelButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
 
         updateDisplay(false);
         setCurrentView(currentView);

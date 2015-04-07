@@ -47,8 +47,8 @@
     <dimen name="mdtp_date_picker_view_animator_height">270dp</dimen>
     <dimen name="mdtp_done_button_height">42dp</dimen>
 
-    <dimen name="mdtp_month_list_item_header_height">50dp</dimen>
-    <dimen name="mdtp_month_day_label_text_size">10sp</dimen>
+    <dimen name="mdtp_month_list_item_header_height">56dp</dimen>
+    <dimen name="mdtp_month_day_label_text_size">12sp</dimen>
     <dimen name="mdtp_day_number_select_circle_radius">16dp</dimen>
     <dimen name="mdtp_month_select_circle_radius">45dp</dimen>
     <dimen name="mdtp_selected_date_year_size">30dp</dimen>
