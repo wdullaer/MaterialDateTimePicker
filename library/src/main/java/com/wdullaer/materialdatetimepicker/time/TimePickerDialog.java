@@ -130,10 +130,12 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         // Empty constructor required for dialog fragment.
     }
 
+    /**
     public TimePickerDialog(Context context, int theme, OnTimeSetListener callback,
             int hourOfDay, int minute, boolean is24HourMode) {
         // Empty constructor required for dialog fragment.
     }
+     **/
 
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
             int hourOfDay, int minute, boolean is24HourMode) {

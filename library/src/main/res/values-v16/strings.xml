@@ -16,5 +16,5 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- DO NOT TRANSLATE -->
-    <string name="mdtp_day_of_week_label_typeface">sans-serif-light</string>
+    <string name="mdtp_day_of_week_label_typeface" translatable="false">sans-serif-light</string>
 </resources>
