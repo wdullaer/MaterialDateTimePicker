@@ -20,7 +20,7 @@ Setup
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:1.0.1'
+  compile 'com.wdullaer:materialdatetimepicker:1.2.0'
 }
 ```
 
@@ -83,9 +83,7 @@ It doesn't strictly follow the Material Design spec, but gets the job done for t
 
 Potential Improvements
 ----------------------
-* Selected hour/minutes in the `TimePickerDialog` should be white. I haven't found an elegant way to implement this yet.
-* Done button should span the entire dialog in portrait.
-* Done button should look like Material Design dialog buttons.
+* Landscape timepicker can use some improvement
 * Code cleanup: there is a bit too much spit and ductape in the tweaks I've done.
 
 
