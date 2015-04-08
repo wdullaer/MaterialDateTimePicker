@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.text.SimpleDateFormat;
@@ -89,7 +91,6 @@ public class DatePickerDialog extends DialogFragment implements
     private TextView mYearView;
     private DayPickerView mDayPickerView;
     private YearPickerView mYearPickerView;
-    private Button mDoneButton;
 
     private int mCurrentView = UNINITIALIZED;
 
@@ -172,7 +173,7 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_SELECTED_YEAR, mCalendar.get(Calendar.YEAR));
         outState.putInt(KEY_SELECTED_MONTH, mCalendar.get(Calendar.MONTH));
@@ -242,8 +243,8 @@ public class DatePickerDialog extends DialogFragment implements
         animation2.setDuration(ANIMATION_DURATION);
         mAnimator.setOutAnimation(animation2);
 
-        mDoneButton = (Button) view.findViewById(R.id.done);
-        mDoneButton.setOnClickListener(new OnClickListener() {
+        Button okButton = (Button) view.findViewById(R.id.ok);
+        okButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -255,6 +256,17 @@ public class DatePickerDialog extends DialogFragment implements
                 dismiss();
             }
         });
+        okButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
+
+        Button cancelButton = (Button) view.findViewById(R.id.cancel);
+        cancelButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tryVibrate();
+                dismiss();
+            }
+        });
+        cancelButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
 
         updateDisplay(false);
         setCurrentView(currentView);

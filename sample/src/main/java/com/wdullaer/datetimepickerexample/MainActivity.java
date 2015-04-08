@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -20,6 +21,7 @@ public class MainActivity extends ActionBarActivity implements
 {
     private TextView timeTextView;
     private TextView dateTextView;
+    private CheckBox mode24Hours;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class MainActivity extends ActionBarActivity implements
         dateTextView = (TextView)findViewById(R.id.date_textview);
         Button timeButton = (Button)findViewById(R.id.time_button);
         Button dateButton = (Button)findViewById(R.id.date_button);
+        mode24Hours = (CheckBox)findViewById(R.id.mode_24_hours);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -41,7 +44,7 @@ public class MainActivity extends ActionBarActivity implements
                         MainActivity.this,
                         now.get(Calendar.HOUR_OF_DAY),
                         now.get(Calendar.MINUTE),
-                        false
+                        mode24Hours.isChecked()
                 );
                 tpd.setThemeDark(false);
                 tpd.show(getFragmentManager(), "Timepickerdialog");
@@ -89,7 +92,9 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-        String time = "You picked the following time: "+hourOfDay+"h"+minute;
+        String hourString = hourOfDay < 10 ? "0"+hourOfDay : ""+hourOfDay;
+        String minuteString = minute < 10 ? "0"+minute : ""+minute;
+        String time = "You picked the following time: "+hourString+"h"+minuteString;
         timeTextView.setText(time);
     }
 
