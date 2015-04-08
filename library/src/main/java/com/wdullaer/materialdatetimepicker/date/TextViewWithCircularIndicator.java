@@ -29,7 +29,7 @@ import android.widget.TextView;
 import com.wdullaer.materialdatetimepicker.R;
 
 /**
- * A text view which, when pressed or activated, displays a blue circle around the text.
+ * A text view which, when pressed or activated, displays a colored circle around the text.
  */
 public class TextViewWithCircularIndicator extends TextView {
 

@@ -19,6 +19,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/mdtp_background_color"
     android:focusable="true" >
     <FrameLayout
         android:id="@+id/time_display_background"
@@ -39,18 +40,6 @@
         android:background="@color/mdtp_circle_background"
         android:focusable="true"
         android:focusableInTouchMode="true" />
-    <View
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="@color/mdtp_line_background" />
-    <Button
-        android:id="@+id/done_button"
-        android:background="@drawable/mdtp_done_background_color"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:text="@string/mdtp_done_label"
-        android:textSize="@dimen/mdtp_done_label_size"
-        android:textColor="@color/mdtp_done_text_color" />
+
+    <include layout="@layout/mdtp_done_button" />
 </LinearLayout>

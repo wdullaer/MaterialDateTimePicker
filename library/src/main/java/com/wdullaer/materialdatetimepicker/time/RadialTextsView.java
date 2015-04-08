@@ -182,6 +182,7 @@ public class RadialTextsView extends View {
     /**
      * Used by the animation to move the numbers in and out.
      */
+    @SuppressWarnings("unused")
     public void setAnimationRadiusMultiplier(float animationRadiusMultiplier) {
         mAnimationRadiusMultiplier = animationRadiusMultiplier;
         mTextGridValuesDirty = true;

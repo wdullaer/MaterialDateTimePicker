@@ -20,8 +20,10 @@ import android.animation.Keyframe;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.os.Build;
 import android.text.format.Time;
+import android.util.TypedValue;
 import android.view.View;
 
 import java.util.Calendar;
@@ -39,9 +41,6 @@ public class Utils {
     public static final int SELECTED_ALPHA_THEME_DARK = 255;
     // Alpha level for fully opaque.
     public static final int FULL_ALPHA = 255;
-
-
-    static final String SHARED_PREFS_NAME = "com.android.calendar_preferences";
 
     public static boolean isJellybeanOrLater() {
       return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
@@ -136,5 +135,14 @@ public class Utils {
         pulseAnimator.setDuration(PULSE_ANIMATOR_DURATION);
 
         return pulseAnimator;
+    }
+
+    /**
+     * Convert Dp to Pixel
+     */
+    @SuppressWarnings("unused")
+    public static int dpToPx(float dp, Resources resources){
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+        return (int) px;
     }
 }

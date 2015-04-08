@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -32,11 +33,13 @@ import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
@@ -74,7 +77,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
 
     private HapticFeedbackController mHapticFeedbackController;
 
-    private TextView mDoneButton;
+    private Button mOkButton;
     private TextView mHourView;
     private TextView mHourSpaceView;
     private TextView mMinuteView;
@@ -128,10 +131,12 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         // Empty constructor required for dialog fragment.
     }
 
+    /**
     public TimePickerDialog(Context context, int theme, OnTimeSetListener callback,
             int hourOfDay, int minute, boolean is24HourMode) {
         // Empty constructor required for dialog fragment.
     }
+     **/
 
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
             int hourOfDay, int minute, boolean is24HourMode) {
@@ -246,8 +251,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             }
         });
 
-        mDoneButton = (TextView) view.findViewById(R.id.done_button);
-        mDoneButton.setOnClickListener(new OnClickListener() {
+        mOkButton = (Button) view.findViewById(R.id.ok);
+        mOkButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mInKbMode && isTypedTimeFullyLegal()) {
@@ -262,7 +267,18 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
                 dismiss();
             }
         });
-        mDoneButton.setOnKeyListener(keyboardListener);
+        mOkButton.setOnKeyListener(keyboardListener);
+        mOkButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));
+
+        Button mCancelButton = (Button) view.findViewById(R.id.cancel);
+        mCancelButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tryVibrate();
+                dismiss();
+            }
+        });
+        mCancelButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));
 
         // Enable or disable the AM/PM view.
         mAmPmHitspace = view.findViewById(R.id.ampm_hitspace);
@@ -333,10 +349,10 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         //view.findViewById(R.id.time_display).setBackgroundColor(mThemeDark? darkGray : white);
         //((TextView) view.findViewById(R.id.separator)).setTextColor(mThemeDark? white : timeDisplay);
         //((TextView) view.findViewById(R.id.ampm_label)).setTextColor(mThemeDark? white : timeDisplay);
-        view.findViewById(R.id.line).setBackgroundColor(mThemeDark? darkLine : line);
-        mDoneButton.setTextColor(mThemeDark? darkDoneTextColor : doneTextColor);
+        //view.findViewById(R.id.line).setBackgroundColor(mThemeDark? darkLine : line);
+        //mOkButton.setTextColor(mThemeDark? darkDoneTextColor : doneTextColor);
         mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
-        mDoneButton.setBackgroundResource(mThemeDark? darkDoneBackground : doneBackground);
+        //mOkButton.setBackgroundResource(mThemeDark? darkDoneBackground : doneBackground);
         return view;
     }
 
@@ -371,7 +387,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         if (mTimePicker != null) {
             outState.putInt(KEY_HOUR_OF_DAY, mTimePicker.getHours());
             outState.putInt(KEY_MINUTE, mTimePicker.getMinutes());
@@ -564,7 +580,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         if (mTimePicker.trySettingInputEnabled(false) &&
                 (keyCode == -1 || addKeyIfLegal(keyCode))) {
             mInKbMode = true;
-            mDoneButton.setEnabled(false);
+            mOkButton.setEnabled(false);
             updateDisplay(false);
         }
     }
@@ -591,7 +607,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
                 mTypedTimes.add(mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
                 mTypedTimes.add(mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
             }
-            mDoneButton.setEnabled(true);
+            mOkButton.setEnabled(true);
         }
 
         return true;
@@ -632,7 +648,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private int deleteLastTypedKey() {
         int deleted = mTypedTimes.remove(mTypedTimes.size() - 1);
         if (!isTypedTimeFullyLegal()) {
-            mDoneButton.setEnabled(false);
+            mOkButton.setEnabled(false);
         }
         return deleted;
     }
@@ -674,7 +690,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
                 updateAmPmDisplay(hour < 12? AM : PM);
             }
             setCurrentItemShowing(mTimePicker.getCurrentItemShowing(), true, true, true);
-            mDoneButton.setEnabled(true);
+            mOkButton.setEnabled(true);
         } else {
             Boolean[] enteredZeros = {false, false};
             int[] values = getEnteredTime(enteredZeros);
@@ -764,8 +780,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             }
         }
 
-        int[] ret = {hour, minute, amOrPm};
-        return ret;
+        return new int[] {hour, minute, amOrPm};
     }
 
     /**

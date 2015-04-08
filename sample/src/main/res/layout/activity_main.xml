@@ -19,6 +19,12 @@
         android:layout_height="wrap_content"
         android:text="@string/pick_time"/>
 
+    <CheckBox
+        android:id="@+id/mode_24_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mode_24_hours" />
+
     <TextView
         android:id="@+id/date_textview"
         android:layout_width="wrap_content"
