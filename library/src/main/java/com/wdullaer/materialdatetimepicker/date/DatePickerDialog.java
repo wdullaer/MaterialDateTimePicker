@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -172,7 +173,7 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_SELECTED_YEAR, mCalendar.get(Calendar.YEAR));
         outState.putInt(KEY_SELECTED_MONTH, mCalendar.get(Calendar.MONTH));

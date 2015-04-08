@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -386,7 +387,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         if (mTimePicker != null) {
             outState.putInt(KEY_HOUR_OF_DAY, mTimePicker.getHours());
             outState.putInt(KEY_MINUTE, mTimePicker.getMinutes());
@@ -779,8 +780,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             }
         }
 
-        int[] ret = {hour, minute, amOrPm};
-        return ret;
+        return new int[] {hour, minute, amOrPm};
     }
 
     /**

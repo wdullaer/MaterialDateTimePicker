@@ -42,9 +42,6 @@ public class Utils {
     // Alpha level for fully opaque.
     public static final int FULL_ALPHA = 255;
 
-
-    static final String SHARED_PREFS_NAME = "com.android.calendar_preferences";
-
     public static boolean isJellybeanOrLater() {
       return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
     }
@@ -143,6 +140,7 @@ public class Utils {
     /**
      * Convert Dp to Pixel
      */
+    @SuppressWarnings("unused")
     public static int dpToPx(float dp, Resources resources){
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
         return (int) px;
