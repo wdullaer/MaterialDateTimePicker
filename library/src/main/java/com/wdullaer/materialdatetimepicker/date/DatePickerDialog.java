@@ -267,6 +267,7 @@ public class DatePickerDialog extends DialogFragment implements
             }
         });
         cancelButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
+        cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         updateDisplay(false);
         setCurrentView(currentView);

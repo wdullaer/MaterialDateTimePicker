@@ -279,6 +279,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             }
         });
         mCancelButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));
+        mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // Enable or disable the AM/PM view.
         mAmPmHitspace = view.findViewById(R.id.ampm_hitspace);
@@ -504,7 +505,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
      */
     private boolean processKeyUp(int keyCode) {
         if (keyCode == KeyEvent.KEYCODE_ESCAPE || keyCode == KeyEvent.KEYCODE_BACK) {
-            dismiss();
+            if(isCancelable()) dismiss();
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_TAB) {
             if(mInKbMode) {
