@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
-        style="@style/MD_ActionButton.Text"
+        style="@style/mdtp_ActionButton.Text"
         android:text="@android:string/cancel" />
 
     <Button
@@ -37,6 +37,6 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
-        style="@style/MD_ActionButton.Text"
+        style="@style/mdtp_ActionButton.Text"
         android:text="@android:string/ok" />
 </LinearLayout>
