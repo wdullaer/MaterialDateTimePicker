@@ -19,6 +19,7 @@ package com.wdullaer.materialdatetimepicker.date;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -81,6 +82,8 @@ public class DatePickerDialog extends DialogFragment implements
     private final Calendar mCalendar = Calendar.getInstance();
     private OnDateSetListener mCallBack;
     private HashSet<OnDateChangedListener> mListeners = new HashSet<OnDateChangedListener>();
+    private DialogInterface.OnCancelListener mOnCancelListener;
+    private DialogInterface.OnDismissListener mOnDismissListener;
 
     private AccessibleDateAnimator mAnimator;
 
@@ -263,7 +266,7 @@ public class DatePickerDialog extends DialogFragment implements
             @Override
             public void onClick(View v) {
                 tryVibrate();
-                dismiss();
+                getDialog().cancel();
             }
         });
         cancelButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
@@ -294,6 +297,18 @@ public class DatePickerDialog extends DialogFragment implements
     public void onPause() {
         super.onPause();
         mHapticFeedbackController.stop();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        if(mOnCancelListener != null) mOnCancelListener.onCancel(dialog);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if(mOnDismissListener != null) mOnDismissListener.onDismiss(dialog);
     }
 
     private void setCurrentView(final int viewIndex) {
@@ -434,6 +449,14 @@ public class DatePickerDialog extends DialogFragment implements
 
     public void setOnDateSetListener(OnDateSetListener listener) {
         mCallBack = listener;
+    }
+
+    public void setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
+        mOnCancelListener = onCancelListener;
+    }
+
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+        mOnDismissListener = onDismissListener;
     }
 
     // If the newly selected month / year does not contain the currently selected day number,

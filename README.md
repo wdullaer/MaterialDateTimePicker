@@ -20,7 +20,7 @@ Setup
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:1.2.2'
+  compile 'com.wdullaer:materialdatetimepicker:1.3.0'
 }
 ```
 
@@ -80,6 +80,17 @@ The `TimePickerDialog` has a dark theme that can be set by calling
 tdp.setThemeDark(true);
 ```
 It doesn't strictly follow the Material Design spec, but gets the job done for the time being
+
+* `OnDismissListener` and `OnCancelListener`  
+Both pickers can be passed a `DialogInterface.OnDismissLisener` or `DialogInterface.OnCancelListener` which allows you to run code when either of these events occur.
+```java
+tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+    @Override
+    public void onCancel(DialogInterface dialogInterface) {
+      Log.d("TimePicker", "Dialog was cancelled");
+    }
+});
+```
 
 Potential Improvements
 ----------------------

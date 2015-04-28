@@ -20,6 +20,7 @@ import android.animation.ObjectAnimator;
 import android.app.ActionBar.LayoutParams;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -74,6 +75,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private static final int PULSE_ANIMATOR_DELAY = 300;
 
     private OnTimeSetListener mCallback;
+    private DialogInterface.OnCancelListener mOnCancelListener;
+    private DialogInterface.OnDismissListener mOnDismissListener;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -169,6 +172,14 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
 
     public void setOnTimeSetListener(OnTimeSetListener callback) {
         mCallback = callback;
+    }
+
+    public void setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
+        mOnCancelListener = onCancelListener;
+    }
+
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+        mOnDismissListener = onDismissListener;
     }
 
     public void setStartTime(int hourOfDay, int minute) {
@@ -275,7 +286,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             @Override
             public void onClick(View v) {
                 tryVibrate();
-                dismiss();
+                getDialog().cancel();
             }
         });
         mCancelButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));
@@ -367,6 +378,18 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     public void onPause() {
         super.onPause();
         mHapticFeedbackController.stop();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        if(mOnCancelListener != null) mOnCancelListener.onCancel(dialog);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if(mOnDismissListener != null) mOnDismissListener.onDismiss(dialog);
     }
 
     public void tryVibrate() {

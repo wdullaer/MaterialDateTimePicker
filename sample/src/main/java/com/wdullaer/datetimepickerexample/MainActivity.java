@@ -1,7 +1,10 @@
 package com.wdullaer.datetimepickerexample;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +50,12 @@ public class MainActivity extends ActionBarActivity implements
                         mode24Hours.isChecked()
                 );
                 tpd.setThemeDark(false);
+                tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        Log.d("TimePicker", "Dialog was cancelled");
+                    }
+                });
                 tpd.show(getFragmentManager(), "Timepickerdialog");
             }
         });
