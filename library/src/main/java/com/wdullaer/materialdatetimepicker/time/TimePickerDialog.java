@@ -978,13 +978,13 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
      * mLegalKeys represents the keys that can be typed to get to the node.
      * mChildren are the children that can be reached from this node.
      */
-    private class Node {
+    private static class Node {
         private int[] mLegalKeys;
         private ArrayList<Node> mChildren;
 
         public Node(int... legalKeys) {
             mLegalKeys = legalKeys;
-            mChildren = new ArrayList<Node>();
+            mChildren = new ArrayList<>();
         }
 
         public void addChild(Node child) {
