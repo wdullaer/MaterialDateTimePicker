@@ -468,9 +468,14 @@ public abstract class MonthView extends View {
             int calendarDay = (i + mWeekStart) % mNumDays;
             int x = (2 * i + 1) * dayWidthHalf + mEdgePadding;
             mDayLabelCalendar.set(Calendar.DAY_OF_WEEK, calendarDay);
-            canvas.drawText(mDayLabelCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT,
-                    Locale.getDefault()).toUpperCase(Locale.getDefault()).substring(0,1), x, y,
-                    mMonthDayLabelPaint);
+            Locale locale = Locale.getDefault();
+            String localWeekDisplayName = mDayLabelCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, locale);
+            String weekString = localWeekDisplayName.toUpperCase(locale).substring(0, 1);
+            if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE) || locale.equals(Locale.SIMPLIFIED_CHINESE) || locale.equals(Locale.TRADITIONAL_CHINESE)) {
+                int len = localWeekDisplayName.length();
+                weekString = localWeekDisplayName.substring(len -1, len);
+            }
+            canvas.drawText(weekString, x, y, mMonthDayLabelPaint);
         }
     }
 
