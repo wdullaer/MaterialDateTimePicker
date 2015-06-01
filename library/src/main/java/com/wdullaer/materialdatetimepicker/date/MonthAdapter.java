@@ -18,7 +18,6 @@ package com.wdullaer.materialdatetimepicker.date;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.format.Time;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
@@ -49,7 +48,6 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
      */
     public static class CalendarDay {
         private Calendar calendar;
-        private Time time;
         int year;
         int month;
         int day;
@@ -82,14 +80,6 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
             this.year = year;
             this.month = month;
             this.day = day;
-        }
-
-        public synchronized void setJulianDay(int julianDay) {
-            if (time == null) {
-                time = new Time();
-            }
-            time.setJulianDay(julianDay);
-            setTime(time.toMillis(false));
         }
 
         private void setTime(long timeInMillis) {

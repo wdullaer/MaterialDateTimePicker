@@ -21,10 +21,11 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -39,6 +40,8 @@ import android.widget.FrameLayout;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
+
+import java.util.Calendar;
 
 /**
  * The primary layout to hold the circular picker, and the am/pm buttons. This view will measure
@@ -178,7 +181,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
         mHapticFeedbackController = hapticFeedbackController;
         mIs24HourMode = is24HourMode;
-        mHideAmPm = mAccessibilityManager.isTouchExplorationEnabled()? true : mIs24HourMode;
+        mHideAmPm = mAccessibilityManager.isTouchExplorationEnabled() || mIs24HourMode;
 
         // Initialize the circle and AM/PM circles if applicable.
         mCircleView.initialize(context, mHideAmPm);
@@ -762,10 +765,17 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      * in the circle.
      */
     @Override
-    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
-      super.onInitializeAccessibilityNodeInfo(info);
-      info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-      info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+    @SuppressWarnings("deprecation")
+    public void onInitializeAccessibilityNodeInfo(@NonNull AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        if(Build.VERSION.SDK_INT >= 21) {
+            info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD);
+            info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD);
+        }
+        else {
+            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+        }
     }
 
     /**
@@ -776,10 +786,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             // Clear the event's current text so that only the current time will be spoken.
             event.getText().clear();
-            Time time = new Time();
-            time.hour = getHours();
-            time.minute = getMinutes();
-            long millis = time.normalize(true);
+            Calendar time = Calendar.getInstance();
+            time.set(Calendar.HOUR, getHours());
+            time.set(Calendar.MINUTE, getMinutes());
+            long millis = time.getTimeInMillis();
             int flags = DateUtils.FORMAT_SHOW_TIME;
             if (mIs24HourMode) {
                 flags |= DateUtils.FORMAT_24HOUR;

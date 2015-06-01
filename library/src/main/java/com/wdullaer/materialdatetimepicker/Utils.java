@@ -22,7 +22,6 @@ import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.os.Build;
-import android.text.format.Time;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -33,7 +32,7 @@ import java.util.Calendar;
  */
 public class Utils {
 
-    public static final int MONDAY_BEFORE_JULIAN_EPOCH = Time.EPOCH_JULIAN_DAY - 3;
+    //public static final int MONDAY_BEFORE_JULIAN_EPOCH = Time.EPOCH_JULIAN_DAY - 3;
     public static final int PULSE_ANIMATOR_DURATION = 544;
 
     // Alpha level for time picker selection.
@@ -90,9 +89,11 @@ public class Utils {
      * @param week Number of weeks since the epoch
      * @return The julian day for the Monday of the given week since the epoch
      */
+    /**
     public static int getJulianMondayFromWeeksSinceEpoch(int week) {
         return MONDAY_BEFORE_JULIAN_EPOCH + week * 7;
     }
+     */
 
     /**
      * Returns the week since {@link Time#EPOCH_JULIAN_DAY} (Jan 1, 1970)
@@ -107,6 +108,7 @@ public class Utils {
      *          see {@link Time#SUNDAY}
      * @return Weeks since the epoch
      */
+    /**
     public static int getWeeksSinceEpochFromJulianDay(int julianDay, int firstDayOfWeek) {
         int diff = Time.THURSDAY - firstDayOfWeek;
         if (diff < 0) {
@@ -115,6 +117,7 @@ public class Utils {
         int refDay = Time.EPOCH_JULIAN_DAY - diff;
         return (julianDay - refDay) / 7;
     }
+     */
 
     /**
      * Render an animator to pulsate a view in place.

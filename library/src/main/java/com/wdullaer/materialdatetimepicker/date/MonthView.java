@@ -25,12 +25,12 @@ import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.widget.ExploreByTouchHelper;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,23 +66,21 @@ public abstract class MonthView extends View {
      */
     public static final String VIEW_PARAMS_HEIGHT = "height";
     /**
-     * This specifies the position (or weeks since the epoch) of this week,
-     * calculated using {@link Utils#getWeeksSinceEpochFromJulianDay}
+     * This specifies the position (or weeks since the epoch) of this week.
      */
     public static final String VIEW_PARAMS_MONTH = "month";
     /**
-     * This specifies the position (or weeks since the epoch) of this week,
-     * calculated using {@link Utils#getWeeksSinceEpochFromJulianDay}
+     * This specifies the position (or weeks since the epoch) of this week.
      */
     public static final String VIEW_PARAMS_YEAR = "year";
     /**
-     * This sets one of the days in this view as selected {@link Time#SUNDAY}
-     * through {@link Time#SATURDAY}.
+     * This sets one of the days in this view as selected {@link Calendar#SUNDAY}
+     * through {@link Calendar#SATURDAY}.
      */
     public static final String VIEW_PARAMS_SELECTED_DAY = "selected_day";
     /**
-     * Which day the week should start on. {@link Time#SUNDAY} through
-     * {@link Time#SATURDAY}.
+     * Which day the week should start on. {@link Calendar#SUNDAY} through
+     * {@link Calendar#SATURDAY}.
      */
     public static final String VIEW_PARAMS_WEEK_START = "week_start";
     /**
@@ -91,7 +89,7 @@ public abstract class MonthView extends View {
      */
     public static final String VIEW_PARAMS_NUM_DAYS = "num_days";
     /**
-     * Which month is currently in focus, as defined by {@link Time#month}
+     * Which month is currently in focus, as defined by {@link Calendar#MONTH}
      * [0-11].
      */
     public static final String VIEW_PARAMS_FOCUS_MONTH = "focus_month";
@@ -257,7 +255,7 @@ public abstract class MonthView extends View {
     }
 
     @Override
-    public boolean dispatchHoverEvent(MotionEvent event) {
+    public boolean dispatchHoverEvent(@NonNull MotionEvent event) {
         // First right-of-refusal goes the touch exploration helper.
         if (mTouchHelper.dispatchHoverEvent(event)) {
             return true;
@@ -266,7 +264,7 @@ public abstract class MonthView extends View {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
                 final int day = getDayFromLocation(event.getX(), event.getY());
@@ -364,8 +362,9 @@ public abstract class MonthView extends View {
         mYear = params.get(VIEW_PARAMS_YEAR);
 
         // Figure out what day today is
-        final Time today = new Time(Time.getCurrentTimezone());
-        today.setToNow();
+        //final Time today = new Time(Time.getCurrentTimezone());
+        //today.setToNow();
+        final Calendar today = Calendar.getInstance();
         mHasToday = false;
         mToday = -1;
 
@@ -410,10 +409,10 @@ public abstract class MonthView extends View {
         return (dividend + (remainder > 0 ? 1 : 0));
     }
 
-    private boolean sameDay(int day, Time today) {
-        return mYear == today.year &&
-                mMonth == today.month &&
-                day == today.monthDay;
+    private boolean sameDay(int day, Calendar today) {
+        return mYear == today.get(Calendar.YEAR) &&
+                mMonth == today.get(Calendar.MONTH) &&
+                day == today.get(Calendar.DAY_OF_MONTH);
     }
 
     @Override
@@ -451,7 +450,7 @@ public abstract class MonthView extends View {
         mStringBuilder.setLength(0);
         long millis = mCalendar.getTimeInMillis();
         return DateUtils.formatDateRange(getContext(), mFormatter, millis, millis, flags,
-                Time.getCurrentTimezone()).toString();
+                Calendar.getInstance().getTimeZone().toString()).toString();
     }
 
     protected void drawMonthTitle(Canvas canvas) {
@@ -815,6 +814,6 @@ public abstract class MonthView extends View {
      * Handles callbacks when the user clicks on a time object.
      */
     public interface OnDayClickListener {
-        public void onDayClick(MonthView view, CalendarDay day);
+        void onDayClick(MonthView view, CalendarDay day);
     }
 }
