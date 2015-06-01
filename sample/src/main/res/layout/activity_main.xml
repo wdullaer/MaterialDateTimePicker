@@ -24,6 +24,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mode_24_hours" />
+    <CheckBox
+        android:id="@+id/mode_dark_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mode_dark_time" />
 
     <TextView
         android:id="@+id/date_textview"

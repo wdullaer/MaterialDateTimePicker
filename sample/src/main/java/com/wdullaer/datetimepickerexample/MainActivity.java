@@ -1,6 +1,5 @@
 package com.wdullaer.datetimepickerexample;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -25,6 +24,7 @@ public class MainActivity extends ActionBarActivity implements
     private TextView timeTextView;
     private TextView dateTextView;
     private CheckBox mode24Hours;
+    private CheckBox modeDarkTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,7 @@ public class MainActivity extends ActionBarActivity implements
         Button timeButton = (Button)findViewById(R.id.time_button);
         Button dateButton = (Button)findViewById(R.id.date_button);
         mode24Hours = (CheckBox)findViewById(R.id.mode_24_hours);
+        modeDarkTime = (CheckBox)findViewById(R.id.mode_dark_time);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -49,7 +50,7 @@ public class MainActivity extends ActionBarActivity implements
                         now.get(Calendar.MINUTE),
                         mode24Hours.isChecked()
                 );
-                tpd.setThemeDark(false);
+                tpd.setThemeDark(modeDarkTime.isChecked());
                 tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialogInterface) {
