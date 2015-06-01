@@ -29,7 +29,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
         style="@style/mdtp_ActionButton.Text"
-        android:text="@android:string/cancel" />
+        android:text="@string/mdtp_cancel" />
 
     <Button
         android:id="@+id/ok"
@@ -38,5 +38,5 @@
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         style="@style/mdtp_ActionButton.Text"
-        android:text="@android:string/ok" />
+        android:text="@string/mdtp_ok" />
 </LinearLayout>
