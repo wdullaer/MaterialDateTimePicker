@@ -349,6 +349,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         int timeDisplay = res.getColor(R.color.mdtp_numbers_text_color);
         ColorStateList doneTextColor = res.getColorStateList(R.color.mdtp_done_text_color);
         int doneBackground = R.drawable.mdtp_done_background_color;
+        int backgroundColor = res.getColor(R.color.mdtp_background_color);
+        int darkBackgroundColor = res.getColor(R.color.mdtp_light_gray);
 
         int darkGray = res.getColor(R.color.mdtp_dark_gray);
         int lightGray = res.getColor(R.color.mdtp_light_gray);
@@ -364,6 +366,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         //view.findViewById(R.id.line).setBackgroundColor(mThemeDark? darkLine : line);
         //mOkButton.setTextColor(mThemeDark? darkDoneTextColor : doneTextColor);
         mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
+        view.findViewById(R.id.time_picker_dialog).setBackgroundColor(mThemeDark ? darkBackgroundColor : backgroundColor);
         //mOkButton.setBackgroundResource(mThemeDark? darkDoneBackground : doneBackground);
         return view;
     }
