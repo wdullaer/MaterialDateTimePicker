@@ -395,8 +395,8 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     public void setYearRange(int startYear, int endYear) {
-        if (endYear <= startYear) {
-            throw new IllegalArgumentException("Year end must be larger than year start");
+        if (endYear < startYear) {
+            throw new IllegalArgumentException("Year end must be larger than or equal to year start");
         }
         mMinYear = startYear;
         mMaxYear = endYear;
