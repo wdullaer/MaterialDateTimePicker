@@ -53,7 +53,9 @@ import java.util.Locale;
  */
 public class DatePickerDialog extends DialogFragment implements
         OnClickListener, DatePickerController {
-
+        
+    public static int[][] highlightedDays;
+        
     private static final String TAG = "DatePickerDialog";
 
     private static final int UNINITIALIZED = -1;
@@ -149,8 +151,10 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public static DatePickerDialog newInstance(OnDateSetListener callBack, int year,
             int monthOfYear,
-            int dayOfMonth) {
+            int dayOfMonth
+            int[][] daysToHighlight) {
         DatePickerDialog ret = new DatePickerDialog();
+        highlightedDays = daysToHighlight;
         ret.initialize(callBack, year, monthOfYear, dayOfMonth);
         return ret;
     }
