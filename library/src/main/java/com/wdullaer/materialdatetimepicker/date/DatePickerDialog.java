@@ -113,8 +113,8 @@ public class DatePickerDialog extends DialogFragment implements
     private String mYearPickerDescription;
     private String mSelectYear;
     
-    // array ndicating which days of the calendar to highlight
-    public static int[][] daysToHighlight;
+    // array indicating which dates of the calendar to highlight
+    private static int[][] daysToHighlight;
 
     /**
      * The callback used to indicate the user is done filling in the date.
