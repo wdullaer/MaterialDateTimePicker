@@ -184,6 +184,7 @@ public abstract class MonthView extends View {
     protected int mSelectedDayTextColor;
     protected int mMonthDayTextColor;
     protected int mTodayNumberColor;
+    protected int mNotHighlightedDayTextColor;
     protected int mDisabledDayTextColor;
     protected int mMonthTitleColor;
     protected int mMonthTitleBGColor;
