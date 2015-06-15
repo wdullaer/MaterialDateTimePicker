@@ -35,16 +35,33 @@ public class SimpleMonthView extends MonthView {
                     mSelectedCirclePaint);
         }
 
-        // If we have a mindate or maxdate, gray out the day number if it's outside the range.
+                // If we have a mindate or maxdate, gray out the day number if it's outside the range.
         if (isOutOfRange(year, month, day)) {
             mMonthNumPaint.setColor(mDisabledDayTextColor);
-        } else if (mSelectedDay == day) {
-            mMonthNumPaint.setColor(mSelectedDayTextColor);
-        } else if (mHasToday && mToday == day) {
-            mMonthNumPaint.setColor(mTodayNumberColor);
-        } else {
-            mMonthNumPaint.setColor(mDayTextColor);
+        } else if (checkIfDayShouldBeHighlighted(year, month, day)) {
+            if (mSelectedDay == day) {
+                mMonthNumPaint.setColor(mSelectedDayTextColor);
+            } else if (mHasToday && mToday == day) {
+                mMonthNumPaint.setColor(mTodayNumberColor);
+            } else {
+                mMonthNumPaint.setColor(mDayTextColor);
+            }
         }
+        else {
+            mMonthNumPaint.setColor(mNotHighlightedDayTextColor);
+        }
+
         canvas.drawText(String.format("%d", day), x, y, mMonthNumPaint);
+    }
+
+    public boolean checkIfDayShouldBeHighlighted(int year, int month, int day) {
+        if (mController.getDaysToHighlight() == null)
+            return true;
+
+        for (int[] z : mController.getDaysToHighlight())
+            if ((z[2] == year) && (z[1] == month) && (z[0] == day))
+                return true;
+
+        return false;
     }
 }
