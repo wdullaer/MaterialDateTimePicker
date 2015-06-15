@@ -152,7 +152,9 @@ public class DatePickerDialog extends DialogFragment implements
      * @param highlightedDays day/month/year array of days to highlight in calendar
      */
     public static DatePickerDialog newInstance(OnDateSetListener callBack, int year,
-            int monthOfYear, int dayOfMonth, int[][] highlightedDays) {
+            int monthOfYear, 
+            int dayOfMonth, 
+            int[][] highlightedDays) {
         daysToHighlight = highlightedDays;
         DatePickerDialog ret = new DatePickerDialog();
         ret.initialize(callBack, year, monthOfYear, dayOfMonth);
