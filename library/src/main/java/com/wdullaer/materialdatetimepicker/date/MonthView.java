@@ -206,6 +206,7 @@ public abstract class MonthView extends View {
         mSelectedDayTextColor = res.getColor(R.color.mdtp_white);
         mMonthDayTextColor = res.getColor(R.color.mdtp_date_picker_month_day);
         mTodayNumberColor = res.getColor(R.color.mdtp_accent_color);
+        mNotHighlightedDayTextColor = res.getColor(R.color.mdtp_date_picker_text_not_highlighted);
         mDisabledDayTextColor = res.getColor(R.color.mdtp_date_picker_text_disabled);
         mMonthTitleColor = res.getColor(R.color.mdtp_white);
         mMonthTitleBGColor = res.getColor(R.color.mdtp_circle_background);
