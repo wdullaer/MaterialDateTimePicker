@@ -53,9 +53,7 @@ import java.util.Locale;
  */
 public class DatePickerDialog extends DialogFragment implements
         OnClickListener, DatePickerController {
-        
-    public static int[][] highlightedDays;
-        
+
     private static final String TAG = "DatePickerDialog";
 
     private static final int UNINITIALIZED = -1;
@@ -114,6 +112,9 @@ public class DatePickerDialog extends DialogFragment implements
     private String mSelectDay;
     private String mYearPickerDescription;
     private String mSelectYear;
+    
+    // array ndicating which days of the calendar to highlight
+    public static int[][] daysToHighlight;
 
     /**
      * The callback used to indicate the user is done filling in the date.
@@ -148,13 +149,12 @@ public class DatePickerDialog extends DialogFragment implements
      * @param year The initial year of the dialog.
      * @param monthOfYear The initial month of the dialog.
      * @param dayOfMonth The initial day of the dialog.
+     * @param highlightedDays day/month/year array of days to highlight in calendar
      */
     public static DatePickerDialog newInstance(OnDateSetListener callBack, int year,
-            int monthOfYear,
-            int dayOfMonth
-            int[][] daysToHighlight) {
+            int monthOfYear, int dayOfMonth, int[][] highlightedDays) {
+        daysToHighlight = highlightedDays;
         DatePickerDialog ret = new DatePickerDialog();
-        highlightedDays = daysToHighlight;
         ret.initialize(callBack, year, monthOfYear, dayOfMonth);
         return ret;
     }
@@ -529,6 +529,11 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public int getFirstDayOfWeek() {
         return mWeekStart;
+    }
+
+    @Override
+    public int[][] getDaysToHighlight() {
+        return daysToHighlight;
     }
 
     @Override
