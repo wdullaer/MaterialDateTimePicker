@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textSize="@dimen/mdtp_time_picker_header_text_size"
+            android:singleLine="true"
             android:padding="5dp"
             android:textColor="@color/mdtp_white"
             android:background="@color/mdtp_accent_color_dark"/>
