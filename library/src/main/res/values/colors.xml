@@ -32,7 +32,7 @@
     <color name="mdtp_neutral_pressed">#33999999</color>
     <color name="mdtp_accent_color_dark">#00796b</color>
     <color name="mdtp_date_picker_text_normal">#ff212121</color>
-    <color name="mdtp_date_picker_text_not_highlighted">#ccc</color>
+    <color name="mdtp_date_picker_text_not_highlighted">@color/mdtp_date_picker_text_disabled</color>
     <color name="mdtp_date_picker_text_disabled">#ccc</color>
     <color name="mdtp_date_picker_month_day">#767676</color>
 

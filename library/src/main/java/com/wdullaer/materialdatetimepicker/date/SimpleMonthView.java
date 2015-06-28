@@ -35,7 +35,7 @@ public class SimpleMonthView extends MonthView {
                     mSelectedCirclePaint);
         }
 
-                // If we have a mindate or maxdate, gray out the day number if it's outside the range.
+        // If we have a mindate or maxdate, gray out the day number if it's outside the range.
         if (isOutOfRange(year, month, day)) {
             mMonthNumPaint.setColor(mDisabledDayTextColor);
         } else if (checkIfDayShouldBeHighlighted(year, month, day)) {

@@ -161,6 +161,18 @@ public class DatePickerDialog extends DialogFragment implements
         return ret;
     }
 
+    /**
+     * @param callBack How the parent is notified that the date is set.
+     * @param year The initial year of the dialog.
+     * @param monthOfYear The initial month of the dialog.
+     * @param dayOfMonth The initial day of the dialog.
+     */
+    public static DatePickerDialog newInstance(OnDateSetListener callBack, int year,
+                                               int monthOfYear,
+                                               int dayOfMonth) {
+        return DatePickerDialog.newInstance(callBack, year, monthOfYear, dayOfMonth, null);
+    }
+
     public void initialize(OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
         mCallBack = callBack;
         mCalendar.set(Calendar.YEAR, year);
