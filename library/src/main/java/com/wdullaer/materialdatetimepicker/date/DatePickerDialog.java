@@ -422,6 +422,7 @@ public class DatePickerDialog extends DialogFragment implements
         if (endYear < startYear) {
             throw new IllegalArgumentException("Year end must be larger than or equal to year start");
         }
+
         mMinYear = startYear;
         mMaxYear = endYear;
         if (mDayPickerView != null) {
@@ -434,6 +435,7 @@ public class DatePickerDialog extends DialogFragment implements
      * specified date will be disallowed from being selected.
      * @param calendar a Calendar object set to the year, month, day desired as the mindate.
      */
+    @SuppressWarnings("unused")
     public void setMinDate(Calendar calendar) {
         mMinDate = calendar;
 
@@ -455,6 +457,7 @@ public class DatePickerDialog extends DialogFragment implements
      * specified date will be disallowed from being selected.
      * @param calendar a Calendar object set to the year, month, day desired as the maxdate.
      */
+    @SuppressWarnings("unused")
     public void setMaxDate(Calendar calendar) {
         mMaxDate = calendar;
 
@@ -538,12 +541,14 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public int getMinYear() {
-        return mMinYear;
+        // Ensure no years can be selected outside of the given minimum date
+        return mMinDate != null && mMinDate.get(Calendar.YEAR) > mMinYear ? mMinDate.get(Calendar.YEAR) : mMinYear;
     }
 
     @Override
     public int getMaxYear() {
-        return mMaxYear;
+        // Ensure no years can be selected outside of the given maximum date
+        return mMaxDate != null && mMaxDate.get(Calendar.YEAR) < mMaxYear ? mMaxDate.get(Calendar.YEAR) : mMaxYear;
     }
 
     @Override
