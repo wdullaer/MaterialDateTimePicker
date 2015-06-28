@@ -69,6 +69,8 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_YEAR_END = "year_end";
     private static final String KEY_CURRENT_VIEW = "current_view";
     private static final String KEY_LIST_POSITION_OFFSET = "list_position_offset";
+    private static final String KEY_MIN_DATE = "min_date";
+    private static final String KEY_MAX_DATE = "max_date";
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -211,6 +213,8 @@ public class DatePickerDialog extends DialogFragment implements
             outState.putInt(KEY_LIST_POSITION_OFFSET, mYearPickerView.getFirstPositionOffset());
         }
         outState.putInt(KEY_LIST_POSITION, listPosition);
+        outState.putSerializable(KEY_MIN_DATE, mMinDate);
+        outState.putSerializable(KEY_MAX_DATE, mMaxDate);
     }
 
     @Override
@@ -239,6 +243,8 @@ public class DatePickerDialog extends DialogFragment implements
             currentView = savedInstanceState.getInt(KEY_CURRENT_VIEW);
             listPosition = savedInstanceState.getInt(KEY_LIST_POSITION);
             listPositionOffset = savedInstanceState.getInt(KEY_LIST_POSITION_OFFSET);
+            mMinDate = (Calendar)savedInstanceState.getSerializable(KEY_MIN_DATE);
+            mMaxDate = (Calendar)savedInstanceState.getSerializable(KEY_MAX_DATE);
         }
 
         final Activity activity = getActivity();
