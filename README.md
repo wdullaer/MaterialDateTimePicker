@@ -81,6 +81,9 @@ tdp.setThemeDark(true);
 ```
 It doesn't strictly follow the Material Design spec, but gets the job done for the time being
 
+* `TimePickerDialog` `setTitle(String title)`
+Shows a title at the top of the `TimePickerDialog`
+
 * `setSelectableDays(Calendar[] days)`
 You can pass a `Calendar[]` to the `DatePickerDialog`. This values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
 
