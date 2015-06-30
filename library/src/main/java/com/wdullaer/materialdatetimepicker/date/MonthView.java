@@ -184,7 +184,7 @@ public abstract class MonthView extends View {
     protected int mSelectedDayTextColor;
     protected int mMonthDayTextColor;
     protected int mTodayNumberColor;
-    protected int mNotHighlightedDayTextColor;
+    protected int mHighlightedDayTextColor;
     protected int mDisabledDayTextColor;
     protected int mMonthTitleColor;
     protected int mMonthTitleBGColor;
@@ -207,7 +207,7 @@ public abstract class MonthView extends View {
         mSelectedDayTextColor = res.getColor(R.color.mdtp_white);
         mMonthDayTextColor = res.getColor(R.color.mdtp_date_picker_month_day);
         mTodayNumberColor = res.getColor(R.color.mdtp_accent_color);
-        mNotHighlightedDayTextColor = res.getColor(R.color.mdtp_date_picker_text_not_highlighted);
+        mHighlightedDayTextColor = res.getColor(R.color.mdtp_date_picker_text_highlighted);
         mDisabledDayTextColor = res.getColor(R.color.mdtp_date_picker_text_disabled);
         mMonthTitleColor = res.getColor(R.color.mdtp_white);
         mMonthTitleBGColor = res.getColor(R.color.mdtp_circle_background);

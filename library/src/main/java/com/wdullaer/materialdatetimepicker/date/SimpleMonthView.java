@@ -50,7 +50,7 @@ public class SimpleMonthView extends MonthView {
         } else if (mHasToday && mToday == day) {
             mMonthNumPaint.setColor(mTodayNumberColor);
         } else {
-            mMonthNumPaint.setColor(mDayTextColor);
+            mMonthNumPaint.setColor(isHighlighted(year, month, day) ? mHighlightedDayTextColor : mDayTextColor);
         }
 
         canvas.drawText(String.format("%d", day), x, y, mMonthNumPaint);
