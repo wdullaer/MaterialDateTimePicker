@@ -33,7 +33,9 @@ public interface DatePickerController {
 
     MonthAdapter.CalendarDay getSelectedDay();
     
-    int[][] getDaysToHighlight();
+    Calendar[] getHighlightedDays();
+
+    Calendar[] getSelectableDays();
 
     int getFirstDayOfWeek();
 

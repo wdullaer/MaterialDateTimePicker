@@ -594,17 +594,36 @@ public abstract class MonthView extends View {
     }
 
     /**
-     * @return true if the specified year/month/day are within the range set by minDate and maxDate.
+     * @return true if the specified year/month/day are within the selectable days or the range set by minDate and maxDate.
      * If one or either have not been set, they are considered as Integer.MIN_VALUE and
      * Integer.MAX_VALUE.
      */
     protected boolean isOutOfRange(int year, int month, int day) {
+        if (mController.getSelectableDays() != null) {
+            return !isSelectable(year, month, day);
+        }
+
         if (isBeforeMin(year, month, day)) {
             return true;
-        } else if (isAfterMax(year, month, day)) {
+        }
+        else if (isAfterMax(year, month, day)) {
             return true;
         }
 
+        return false;
+    }
+
+    private boolean isSelectable(int year, int month, int day) {
+        Calendar[] selectableDays = mController.getSelectableDays();
+        for (Calendar c : selectableDays) {
+            if(year < c.get(Calendar.YEAR)) break;
+            if(year > c.get(Calendar.YEAR)) continue;
+            if(month < c.get(Calendar.MONTH)) break;
+            if(month > c.get(Calendar.MONTH)) continue;
+            if(day < c.get(Calendar.DAY_OF_MONTH)) break;
+            if(day > c.get(Calendar.DAY_OF_MONTH)) continue;
+            return true;
+        }
         return false;
     }
 
@@ -662,6 +681,27 @@ public abstract class MonthView extends View {
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param year
+     * @param month
+     * @param day
+     * @return true if the given date should be highlighted
+     */
+    protected boolean isHighlighted(int year, int month, int day) {
+        Calendar[] highlightedDays = mController.getHighlightedDays();
+        if(highlightedDays == null) return false;
+        for (Calendar c : highlightedDays) {
+            if(year < c.get(Calendar.YEAR)) break;
+            if(year > c.get(Calendar.YEAR)) continue;
+            if(month < c.get(Calendar.MONTH)) break;
+            if(month > c.get(Calendar.MONTH)) continue;
+            if(day < c.get(Calendar.DAY_OF_MONTH)) break;
+            if(day > c.get(Calendar.DAY_OF_MONTH)) continue;
+            return true;
+        }
+        return false;
     }
 
     /**

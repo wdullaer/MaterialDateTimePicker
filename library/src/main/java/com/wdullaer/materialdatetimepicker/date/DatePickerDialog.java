@@ -43,6 +43,7 @@ import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -71,6 +72,8 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_LIST_POSITION_OFFSET = "list_position_offset";
     private static final String KEY_MIN_DATE = "min_date";
     private static final String KEY_MAX_DATE = "max_date";
+    private static final String KEY_HIGHLIGHTED_DAYS = "highlighted_days";
+    private static final String KEY_SELECTABLE_DAYS = "selectable_days";
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -104,6 +107,8 @@ public class DatePickerDialog extends DialogFragment implements
     private int mMaxYear = DEFAULT_END_YEAR;
     private Calendar mMinDate;
     private Calendar mMaxDate;
+    private Calendar[] highlightedDays;
+    private Calendar[] selectableDays;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -114,9 +119,6 @@ public class DatePickerDialog extends DialogFragment implements
     private String mSelectDay;
     private String mYearPickerDescription;
     private String mSelectYear;
-    
-    // array indicating which dates of the calendar to highlight
-    private static int[][] daysToHighlight;
 
     /**
      * The callback used to indicate the user is done filling in the date.
@@ -151,28 +153,13 @@ public class DatePickerDialog extends DialogFragment implements
      * @param year The initial year of the dialog.
      * @param monthOfYear The initial month of the dialog.
      * @param dayOfMonth The initial day of the dialog.
-     * @param highlightedDays day/month/year array of days to highlight in calendar
      */
     public static DatePickerDialog newInstance(OnDateSetListener callBack, int year,
             int monthOfYear, 
-            int dayOfMonth, 
-            int[][] highlightedDays) {
-        daysToHighlight = highlightedDays;
+            int dayOfMonth) {
         DatePickerDialog ret = new DatePickerDialog();
         ret.initialize(callBack, year, monthOfYear, dayOfMonth);
         return ret;
-    }
-
-    /**
-     * @param callBack How the parent is notified that the date is set.
-     * @param year The initial year of the dialog.
-     * @param monthOfYear The initial month of the dialog.
-     * @param dayOfMonth The initial day of the dialog.
-     */
-    public static DatePickerDialog newInstance(OnDateSetListener callBack, int year,
-                                               int monthOfYear,
-                                               int dayOfMonth) {
-        return DatePickerDialog.newInstance(callBack, year, monthOfYear, dayOfMonth, null);
     }
 
     public void initialize(OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
@@ -215,6 +202,8 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putInt(KEY_LIST_POSITION, listPosition);
         outState.putSerializable(KEY_MIN_DATE, mMinDate);
         outState.putSerializable(KEY_MAX_DATE, mMaxDate);
+        outState.putSerializable(KEY_HIGHLIGHTED_DAYS, highlightedDays);
+        outState.putSerializable(KEY_SELECTABLE_DAYS, selectableDays);
     }
 
     @Override
@@ -245,6 +234,8 @@ public class DatePickerDialog extends DialogFragment implements
             listPositionOffset = savedInstanceState.getInt(KEY_LIST_POSITION_OFFSET);
             mMinDate = (Calendar)savedInstanceState.getSerializable(KEY_MIN_DATE);
             mMaxDate = (Calendar)savedInstanceState.getSerializable(KEY_MAX_DATE);
+            highlightedDays = (Calendar[])savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
+            selectableDays = (Calendar[])savedInstanceState.getSerializable(KEY_SELECTABLE_DAYS);
         }
 
         final Activity activity = getActivity();
@@ -474,6 +465,45 @@ public class DatePickerDialog extends DialogFragment implements
         return mMaxDate;
     }
 
+    /**
+     * Sets an array of dates which should be highlighted when the picker is drawn
+     * @param highlightedDays an Array of Calendar objects containing the dates to be highlighted
+     */
+    @SuppressWarnings("unused")
+    public void setHighlightedDays(Calendar[] highlightedDays) {
+        // Sort the array to optimize searching over it later on
+        Arrays.sort(highlightedDays);
+        this.highlightedDays = highlightedDays;
+    }
+
+    /**
+     * @return The list of dates, as Calendar Objects, which should be highlighted. null is no dates should be highlighted
+     */
+    @Override
+    public Calendar[] getHighlightedDays() {
+        return highlightedDays;
+    }
+
+    /**
+     * Set's a list of days which are the only valid selections.
+     * Setting this value will take precedence over using setMinDate() and setMaxDate()
+     * @param selectableDays an Array of Calendar Objects containing the selectable dates
+     */
+    @SuppressWarnings("unused")
+    public void setSelectableDays(Calendar[] selectableDays) {
+        // Sort the array to optimize searching over it later on
+        Arrays.sort(selectableDays);
+        this.selectableDays = selectableDays;
+    }
+
+    /**
+     * @return an Array of Calendar objects containing the list with selectable items. null if no restriction is set
+     */
+    @Override
+    public Calendar[] getSelectableDays() {
+        return selectableDays;
+    }
+
     public void setOnDateSetListener(OnDateSetListener listener) {
         mCallBack = listener;
     }
@@ -541,12 +571,14 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public int getMinYear() {
+        if(selectableDays != null) return selectableDays[0].get(Calendar.YEAR);
         // Ensure no years can be selected outside of the given minimum date
         return mMinDate != null && mMinDate.get(Calendar.YEAR) > mMinYear ? mMinDate.get(Calendar.YEAR) : mMinYear;
     }
 
     @Override
     public int getMaxYear() {
+        if(selectableDays != null) return selectableDays[selectableDays.length-1].get(Calendar.YEAR);
         // Ensure no years can be selected outside of the given maximum date
         return mMaxDate != null && mMaxDate.get(Calendar.YEAR) < mMaxYear ? mMaxDate.get(Calendar.YEAR) : mMaxYear;
     }
@@ -554,11 +586,6 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public int getFirstDayOfWeek() {
         return mWeekStart;
-    }
-
-    @Override
-    public int[][] getDaysToHighlight() {
-        return daysToHighlight;
     }
 
     @Override
