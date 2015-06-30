@@ -420,7 +420,7 @@ public abstract class MonthView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mRowHeight * mNumRows
-                + getMonthHeaderSize());
+                + getMonthHeaderSize() + 5);
     }
 
     @Override
