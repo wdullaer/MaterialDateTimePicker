@@ -81,6 +81,12 @@ tdp.setThemeDark(true);
 ```
 It doesn't strictly follow the Material Design spec, but gets the job done for the time being
 
+* `setSelectableDays(Calendar[] days)`
+You can pass a `Calendar[]` to the `DatePickerDialog`. This values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
+
+* `setHighlightedDays(Calendar[] days)`
+You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the color of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`
+
 * `OnDismissListener` and `OnCancelListener`  
 Both pickers can be passed a `DialogInterface.OnDismissLisener` or `DialogInterface.OnCancelListener` which allows you to run code when either of these events occur.
 ```java
