@@ -57,6 +57,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private static final String KEY_HOUR_OF_DAY = "hour_of_day";
     private static final String KEY_MINUTE = "minute";
     private static final String KEY_IS_24_HOUR_VIEW = "is_24_hour_view";
+    private static final String KEY_TITLE = "dialog_title";
     private static final String KEY_CURRENT_ITEM_SHOWING = "current_item_showing";
     private static final String KEY_IN_KB_MODE = "in_kb_mode";
     private static final String KEY_TYPED_TIMES = "typed_times";
@@ -98,6 +99,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private int mInitialHourOfDay;
     private int mInitialMinute;
     private boolean mIs24HourMode;
+    private String mTitle;
     private boolean mThemeDark;
 
     // For hardware IME input.
@@ -156,7 +158,19 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mInitialMinute = minute;
         mIs24HourMode = is24HourMode;
         mInKbMode = false;
+        mTitle = "";
         mThemeDark = false;
+    }
+
+    /**
+     * Set a title. NOTE: this will only take effect with the next onCreateView
+     */
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
+    public String getTitle() {
+        return mTitle;
     }
 
     /**
@@ -198,6 +212,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mInitialMinute = savedInstanceState.getInt(KEY_MINUTE);
             mIs24HourMode = savedInstanceState.getBoolean(KEY_IS_24_HOUR_VIEW);
             mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
+            mTitle = savedInstanceState.getString(KEY_TITLE);
             mThemeDark = savedInstanceState.getBoolean(KEY_DARK_THEME);
         }
     }
@@ -339,6 +354,13 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mTypedTimes = new ArrayList<Integer>();
         }
 
+        // Set the title (if any)
+        TextView timePickerHeader = (TextView) view.findViewById(R.id.time_picker_header);
+        if (!mTitle.isEmpty()) {
+            timePickerHeader.setVisibility(TextView.VISIBLE);
+            timePickerHeader.setText(mTitle);
+        }
+
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
         mTimePicker.setTheme(getActivity().getApplicationContext(), mThemeDark);
         // Prepare some colors to use.
@@ -424,6 +446,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             if (mInKbMode) {
                 outState.putIntegerArrayList(KEY_TYPED_TIMES, mTypedTimes);
             }
+            outState.putString(KEY_TITLE, mTitle);
             outState.putBoolean(KEY_DARK_THEME, mThemeDark);
         }
     }

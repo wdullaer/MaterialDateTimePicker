@@ -56,6 +56,7 @@
     <dimen name="mdtp_selected_date_day_size">70dp</dimen>
     <dimen name="mdtp_selected_date_month_size">25dp</dimen>
     <dimen name="mdtp_date_picker_header_text_size">12dp</dimen>
+    <dimen name="mdtp_time_picker_header_text_size">22sp</dimen>
     <dimen name="mdtp_month_label_size">14sp</dimen>
     <dimen name="mdtp_day_number_size">12sp</dimen>
     <dimen name="mdtp_year_label_height">64dp</dimen>
