@@ -79,7 +79,12 @@ The `TimePickerDialog` has a dark theme that can be set by calling
 ```java
 tdp.setThemeDark(true);
 ```
-It doesn't strictly follow the Material Design spec, but gets the job done for the time being
+
+* `DatePickerDialog` dark theme
+The `DatePickerDialog` has a dark theme that can be set by calling
+```java
+tdp.setThemeDark(true);
+```
 
 * `TimePickerDialog` `setTitle(String title)`
 Shows a title at the top of the `TimePickerDialog`
@@ -105,6 +110,7 @@ Potential Improvements
 ----------------------
 * Landscape timepicker can use some improvement
 * Code cleanup: there is a bit too much spit and ductape in the tweaks I've done.
+* Document all options on both pickers
 
 
 License
