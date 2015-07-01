@@ -105,7 +105,7 @@ public class AmPmCirclesView extends View {
     /* package */ void setTheme(Context context, boolean themeDark) {
         Resources res = context.getResources();
         if (themeDark) {
-            mUnselectedColor = res.getColor(R.color.mdtp_dark_gray);
+            mUnselectedColor = res.getColor(R.color.mdtp_circle_background_dark_theme);
             mSelectedColor = res.getColor(R.color.mdtp_red);
             mAmPmTextColor = res.getColor(R.color.mdtp_white);
             mSelectedAlpha = SELECTED_ALPHA_THEME_DARK;

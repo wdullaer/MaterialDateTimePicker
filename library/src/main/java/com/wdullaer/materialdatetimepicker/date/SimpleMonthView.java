@@ -19,11 +19,12 @@ package com.wdullaer.materialdatetimepicker.date;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.util.AttributeSet;
 
 public class SimpleMonthView extends MonthView {
 
-    public SimpleMonthView(Context context) {
-        super(context);
+    public SimpleMonthView(Context context, AttributeSet attr, DatePickerController controller) {
+        super(context, attr, controller);
     }
 
     @Override

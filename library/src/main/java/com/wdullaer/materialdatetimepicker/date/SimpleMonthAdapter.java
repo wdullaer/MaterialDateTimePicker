@@ -29,8 +29,7 @@ public class SimpleMonthAdapter extends MonthAdapter {
 
     @Override
     public MonthView createMonthView(Context context) {
-        final MonthView monthView = new SimpleMonthView(context);
-        monthView.setDatePickerController(mController);
+        final MonthView monthView = new SimpleMonthView(context, null, mController);
         return monthView;
     }
 }

@@ -9,6 +9,7 @@
     <string name="pick_date">Pick Date</string>
     <string name="mode_24_hours">Use 24 hour mode</string>
     <string name="mode_dark_time">Use dark theme</string>
+    <string name="mode_dark_date">Use dark theme</string>
     <string name="action_settings">Settings</string>
 
 </resources>

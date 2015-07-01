@@ -79,7 +79,7 @@ public class CircleView extends View {
     /* package */ void setTheme(Context context, boolean dark) {
         Resources res = context.getResources();
         if (dark) {
-            mCircleColor = res.getColor(R.color.mdtp_dark_gray);
+            mCircleColor = res.getColor(R.color.mdtp_circle_background_dark_theme);
             mDotColor = res.getColor(R.color.mdtp_white);
         } else {
             mCircleColor = res.getColor(R.color.mdtp_circle_color);

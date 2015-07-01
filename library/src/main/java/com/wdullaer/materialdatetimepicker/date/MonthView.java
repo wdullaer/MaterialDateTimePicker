@@ -130,7 +130,6 @@ public abstract class MonthView extends View {
 
     protected Paint mMonthNumPaint;
     protected Paint mMonthTitlePaint;
-    protected Paint mMonthTitleBGPaint;
     protected Paint mSelectedCirclePaint;
     protected Paint mMonthDayLabelPaint;
 
@@ -187,14 +186,14 @@ public abstract class MonthView extends View {
     protected int mHighlightedDayTextColor;
     protected int mDisabledDayTextColor;
     protected int mMonthTitleColor;
-    protected int mMonthTitleBGColor;
 
     public MonthView(Context context) {
-        this(context, null);
+        this(context, null, null);
     }
 
-    public MonthView(Context context, AttributeSet attr) {
+    public MonthView(Context context, AttributeSet attr, DatePickerController controller) {
         super(context, attr);
+        mController = controller;
         Resources res = context.getResources();
 
         mDayLabelCalendar = Calendar.getInstance();
@@ -203,14 +202,22 @@ public abstract class MonthView extends View {
         mDayOfWeekTypeface = res.getString(R.string.mdtp_day_of_week_label_typeface);
         mMonthTitleTypeface = res.getString(R.string.mdtp_sans_serif);
 
-        mDayTextColor = res.getColor(R.color.mdtp_date_picker_text_normal);
+        boolean darkTheme = mController != null && mController.isThemeDark();
+        if(darkTheme) {
+            mDayTextColor = res.getColor(R.color.mdtp_date_picker_text_normal_dark_theme);
+            mMonthDayTextColor = res.getColor(R.color.mdtp_date_picker_month_day_dark_theme);
+            mDisabledDayTextColor = res.getColor(R.color.mdtp_date_picker_text_disabled_dark_theme);
+            mHighlightedDayTextColor = res.getColor(R.color.mdtp_date_picker_text_highlighted_dark_theme);
+        }
+        else {
+            mDayTextColor = res.getColor(R.color.mdtp_date_picker_text_normal);
+            mMonthDayTextColor = res.getColor(R.color.mdtp_date_picker_month_day);
+            mDisabledDayTextColor = res.getColor(R.color.mdtp_date_picker_text_disabled);
+            mHighlightedDayTextColor = res.getColor(R.color.mdtp_date_picker_text_highlighted);
+        }
         mSelectedDayTextColor = res.getColor(R.color.mdtp_white);
-        mMonthDayTextColor = res.getColor(R.color.mdtp_date_picker_month_day);
         mTodayNumberColor = res.getColor(R.color.mdtp_accent_color);
-        mHighlightedDayTextColor = res.getColor(R.color.mdtp_date_picker_text_highlighted);
-        mDisabledDayTextColor = res.getColor(R.color.mdtp_date_picker_text_disabled);
         mMonthTitleColor = res.getColor(R.color.mdtp_white);
-        mMonthTitleBGColor = res.getColor(R.color.mdtp_circle_background);
 
         mStringBuilder = new StringBuilder(50);
         mFormatter = new Formatter(mStringBuilder, Locale.getDefault());
@@ -291,13 +298,6 @@ public abstract class MonthView extends View {
         mMonthTitlePaint.setColor(mDayTextColor);
         mMonthTitlePaint.setTextAlign(Align.CENTER);
         mMonthTitlePaint.setStyle(Style.FILL);
-
-        mMonthTitleBGPaint = new Paint();
-        mMonthTitleBGPaint.setFakeBoldText(true);
-        mMonthTitleBGPaint.setAntiAlias(true);
-        mMonthTitleBGPaint.setColor(mMonthTitleBGColor);
-        mMonthTitleBGPaint.setTextAlign(Align.CENTER);
-        mMonthTitleBGPaint.setStyle(Style.FILL);
 
         mSelectedCirclePaint = new Paint();
         mSelectedCirclePaint.setFakeBoldText(true);

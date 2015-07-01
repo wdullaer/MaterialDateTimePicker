@@ -46,7 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 
 /**
@@ -74,6 +73,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_MAX_DATE = "max_date";
     private static final String KEY_HIGHLIGHTED_DAYS = "highlighted_days";
     private static final String KEY_SELECTABLE_DAYS = "selectable_days";
+    private static final String KEY_THEME_DARK = "theme_dark";
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -86,7 +86,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     private final Calendar mCalendar = Calendar.getInstance();
     private OnDateSetListener mCallBack;
-    private HashSet<OnDateChangedListener> mListeners = new HashSet<OnDateChangedListener>();
+    private HashSet<OnDateChangedListener> mListeners = new HashSet<>();
     private DialogInterface.OnCancelListener mOnCancelListener;
     private DialogInterface.OnDismissListener mOnDismissListener;
 
@@ -109,6 +109,7 @@ public class DatePickerDialog extends DialogFragment implements
     private Calendar mMaxDate;
     private Calendar[] highlightedDays;
     private Calendar[] selectableDays;
+    private boolean mThemeDark;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -140,7 +141,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public interface OnDateChangedListener {
 
-        public void onDateChanged();
+        void onDateChanged();
     }
 
 
@@ -167,6 +168,7 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.YEAR, year);
         mCalendar.set(Calendar.MONTH, monthOfYear);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        mThemeDark = false;
     }
 
     @Override
@@ -204,6 +206,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putSerializable(KEY_MAX_DATE, mMaxDate);
         outState.putSerializable(KEY_HIGHLIGHTED_DAYS, highlightedDays);
         outState.putSerializable(KEY_SELECTABLE_DAYS, selectableDays);
+        outState.putBoolean(KEY_THEME_DARK, mThemeDark);
     }
 
     @Override
@@ -236,6 +239,7 @@ public class DatePickerDialog extends DialogFragment implements
             mMaxDate = (Calendar)savedInstanceState.getSerializable(KEY_MAX_DATE);
             highlightedDays = (Calendar[])savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
             selectableDays = (Calendar[])savedInstanceState.getSerializable(KEY_SELECTABLE_DAYS);
+            mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
         }
 
         final Activity activity = getActivity();
@@ -247,6 +251,9 @@ public class DatePickerDialog extends DialogFragment implements
         mSelectDay = res.getString(R.string.mdtp_select_day);
         mYearPickerDescription = res.getString(R.string.mdtp_year_picker_description);
         mSelectYear = res.getString(R.string.mdtp_select_year);
+
+        int bgColorResource = mThemeDark ? R.color.mdtp_date_picker_view_animator_dark_theme : R.color.mdtp_date_picker_view_animator;
+        view.setBackgroundColor(activity.getResources().getColor(bgColorResource));
 
         mAnimator = (AccessibleDateAnimator) view.findViewById(R.id.animator);
         mAnimator.addView(mDayPickerView);
@@ -398,6 +405,24 @@ public class DatePickerDialog extends DialogFragment implements
         }
     }
 
+    /**
+     * Set whether the dark theme should be used
+     * @param themeDark true if the dark theme should be used, false if the default theme should be used
+     */
+    public void setThemeDark(boolean themeDark) {
+        mThemeDark = themeDark;
+    }
+
+    /**
+     * Returns true when the dark theme should be used
+     * @return true if the dark theme should be used, false if the default theme should be used
+     */
+    @Override
+    public boolean isThemeDark() {
+        return mThemeDark;
+    }
+
+    @SuppressWarnings("unused")
     public void setFirstDayOfWeek(int startOfWeek) {
         if (startOfWeek < Calendar.SUNDAY || startOfWeek > Calendar.SATURDAY) {
             throw new IllegalArgumentException("Value must be between Calendar.SUNDAY and " +
@@ -409,6 +434,7 @@ public class DatePickerDialog extends DialogFragment implements
         }
     }
 
+    @SuppressWarnings("unused")
     public void setYearRange(int startYear, int endYear) {
         if (endYear < startYear) {
             throw new IllegalArgumentException("Year end must be larger than or equal to year start");
@@ -504,14 +530,17 @@ public class DatePickerDialog extends DialogFragment implements
         return selectableDays;
     }
 
+    @SuppressWarnings("unused")
     public void setOnDateSetListener(OnDateSetListener listener) {
         mCallBack = listener;
     }
 
+    @SuppressWarnings("unused")
     public void setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
         mOnCancelListener = onCancelListener;
     }
 
+    @SuppressWarnings("unused")
     public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
         mOnDismissListener = onDismissListener;
     }
@@ -557,10 +586,7 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     private void updatePickers() {
-        Iterator<OnDateChangedListener> iterator = mListeners.iterator();
-        while (iterator.hasNext()) {
-            iterator.next().onDateChanged();
-        }
+        for(OnDateChangedListener listener : mListeners) listener.onDateChanged();
     }
 
 

@@ -32,6 +32,8 @@ public interface DatePickerController {
     void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener);
 
     MonthAdapter.CalendarDay getSelectedDay();
+
+    boolean isThemeDark();
     
     Calendar[] getHighlightedDays();
 
