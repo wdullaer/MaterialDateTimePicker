@@ -13,7 +13,7 @@ import android.provider.Settings;
  */
 public class HapticFeedbackController {
     private static final int VIBRATE_DELAY_MS = 125;
-    private static final int VIBRATE_LENGTH_MS = 5;
+    private static final int VIBRATE_LENGTH_MS = 50;
 
     private static boolean checkGlobalSetting(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
