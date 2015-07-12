@@ -46,7 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Dialog allowing users to select a date.
@@ -81,8 +81,10 @@ public class DatePickerDialog extends DialogFragment implements
     private static final int ANIMATION_DURATION = 300;
     private static final int ANIMATION_DELAY = 500;
 
-    private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
-    private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
+    private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy");
+	private static SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("MMM");
+    private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd");
+	private static SimpleDateFormat DAY_OF_WEEK_FORMAT = new SimpleDateFormat("EEEE");
 
     private final Calendar mCalendar = Calendar.getInstance();
     private OnDateSetListener mCallBack;
@@ -216,6 +218,11 @@ public class DatePickerDialog extends DialogFragment implements
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, null);
+
+	    YEAR_FORMAT.setTimeZone(TimeZone.getDefault());
+	    MONTH_FORMAT.setTimeZone(TimeZone.getDefault());
+	    DAY_FORMAT.setTimeZone(TimeZone.getDefault());
+	    DAY_OF_WEEK_FORMAT.setTimeZone(TimeZone.getDefault());
 
         mDayOfWeekView = (TextView) view.findViewById(R.id.date_picker_header);
         mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
@@ -382,17 +389,15 @@ public class DatePickerDialog extends DialogFragment implements
 
     private void updateDisplay(boolean announce) {
         if (mDayOfWeekView != null) {
-            mDayOfWeekView.setText(mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG,
-                    Locale.getDefault()).toUpperCase(Locale.getDefault()));
+            mDayOfWeekView.setText(DAY_OF_WEEK_FORMAT.format(mCalendar.getTime()));
         }
 
-        mSelectedMonthTextView.setText(mCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT,
-                Locale.getDefault()).toUpperCase(Locale.getDefault()));
+        mSelectedMonthTextView.setText(MONTH_FORMAT.format(mCalendar.getTime()));
         mSelectedDayTextView.setText(DAY_FORMAT.format(mCalendar.getTime()));
         mYearView.setText(YEAR_FORMAT.format(mCalendar.getTime()));
 
         // Accessibility.
-        long millis = mCalendar.getTimeInMillis();
+	    long millis = mCalendar.getTimeInMillis();
         mAnimator.setDateMillis(millis);
         int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_YEAR;
         String monthAndDayText = DateUtils.formatDateTime(getActivity(), millis, flags);
