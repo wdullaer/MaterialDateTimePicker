@@ -549,11 +549,11 @@ public class DatePickerDialog extends DialogFragment implements
     // change the selected day number to the last day of the selected month or year.
     //      e.g. Switching from Mar to Apr when Mar 31 is selected -> Apr 30
     //      e.g. Switching from 2012 to 2013 when Feb 29, 2012 is selected -> Feb 28, 2013
-    private void adjustDayInMonthIfNeeded(int month, int year) {
-        int day = mCalendar.get(Calendar.DAY_OF_MONTH);
-        int daysInMonth = mCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    private void adjustDayInMonthIfNeeded( Calendar calendar ) {
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         if (day > daysInMonth) {
-            mCalendar.set(Calendar.DAY_OF_MONTH, daysInMonth);
+            calendar.set(Calendar.DAY_OF_MONTH, daysInMonth);
         }
     }
 
@@ -569,7 +569,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public void onYearSelected(int year) {
-        adjustDayInMonthIfNeeded(mCalendar.get(Calendar.MONTH), year);
+        adjustDayInMonthIfNeeded( mCalendar );
         mCalendar.set(Calendar.YEAR, year);
         updatePickers();
         setCurrentView(MONTH_AND_DAY_VIEW);
