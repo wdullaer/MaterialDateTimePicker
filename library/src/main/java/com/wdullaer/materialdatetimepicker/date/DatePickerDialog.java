@@ -551,7 +551,7 @@ public class DatePickerDialog extends DialogFragment implements
     //      e.g. Switching from 2012 to 2013 when Feb 29, 2012 is selected -> Feb 28, 2013
     private void adjustDayInMonthIfNeeded(int month, int year) {
         int day = mCalendar.get(Calendar.DAY_OF_MONTH);
-        int daysInMonth = Utils.getDaysInMonth(month, year);
+        int daysInMonth = mCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         if (day > daysInMonth) {
             mCalendar.set(Calendar.DAY_OF_MONTH, daysInMonth);
         }
