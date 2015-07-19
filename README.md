@@ -20,7 +20,7 @@ Setup
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:1.4.1'
+  compile 'com.wdullaer:materialdatetimepicker:1.4.2'
 }
 ```
 
@@ -107,7 +107,7 @@ tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
 ```
 
 * `vibrate(boolean vibrate)`
-Set whether the dialogs should vibrate the device when a selection is made. This defaults to `true`. 
+Set whether the dialogs should vibrate the device when a selection is made. This defaults to `true`.
 
 Potential Improvements
 ----------------------
