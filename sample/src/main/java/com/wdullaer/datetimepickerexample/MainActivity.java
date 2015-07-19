@@ -119,7 +119,7 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        String date = "You picked the following date: "+dayOfMonth+"/"+monthOfYear+"/"+year;
+        String date = "You picked the following date: "+dayOfMonth+"/"+(++monthOfYear)+"/"+year;
         dateTextView.setText(date);
     }
 }
