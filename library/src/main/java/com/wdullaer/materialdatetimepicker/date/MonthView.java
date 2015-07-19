@@ -452,7 +452,7 @@ public abstract class MonthView extends View {
         mStringBuilder.setLength(0);
         long millis = mCalendar.getTimeInMillis();
         return DateUtils.formatDateRange(getContext(), mFormatter, millis, millis, flags,
-                Calendar.getInstance().getTimeZone().toString()).toString();
+                Calendar.getInstance().getTimeZone().getID()).toString();
     }
 
     protected void drawMonthTitle(Canvas canvas) {
