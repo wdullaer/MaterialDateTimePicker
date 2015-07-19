@@ -26,6 +26,8 @@ public class MainActivity extends ActionBarActivity implements
     private CheckBox mode24Hours;
     private CheckBox modeDarkTime;
     private CheckBox modeDarkDate;
+    private CheckBox vibrateTime;
+    private CheckBox vibrateDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,8 @@ public class MainActivity extends ActionBarActivity implements
         mode24Hours = (CheckBox)findViewById(R.id.mode_24_hours);
         modeDarkTime = (CheckBox)findViewById(R.id.mode_dark_time);
         modeDarkDate = (CheckBox)findViewById(R.id.mode_dark_date);
+        vibrateTime = (CheckBox) findViewById(R.id.vibrate_time);
+        vibrateDate = (CheckBox) findViewById(R.id.vibrate_date);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +57,7 @@ public class MainActivity extends ActionBarActivity implements
                         mode24Hours.isChecked()
                 );
                 tpd.setThemeDark(modeDarkTime.isChecked());
+                tpd.vibrate(vibrateTime.isChecked());
                 tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialogInterface) {
@@ -75,6 +80,7 @@ public class MainActivity extends ActionBarActivity implements
                         now.get(Calendar.DAY_OF_MONTH)
                 );
                 dpd.setThemeDark(modeDarkDate.isChecked());
+                dpd.vibrate(vibrateDate.isChecked());
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });

@@ -62,6 +62,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private static final String KEY_IN_KB_MODE = "in_kb_mode";
     private static final String KEY_TYPED_TIMES = "typed_times";
     private static final String KEY_DARK_THEME = "dark_theme";
+    private static final String KEY_VIBRATE = "vibrate";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
@@ -101,6 +102,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private boolean mIs24HourMode;
     private String mTitle;
     private boolean mThemeDark;
+    private boolean mVibrate;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -160,6 +162,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mInKbMode = false;
         mTitle = "";
         mThemeDark = false;
+        mVibrate = true;
     }
 
     /**
@@ -182,6 +185,14 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
 
     public boolean isThemeDark() {
         return mThemeDark;
+    }
+
+    /**
+     * Set whether the device should vibrate when touching fields
+     * @param vibrate true if the device should vibrate when touching a field
+     */
+    public void vibrate(boolean vibrate) {
+        mVibrate = vibrate;
     }
 
     public void setOnTimeSetListener(OnTimeSetListener callback) {
@@ -214,6 +225,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
             mTitle = savedInstanceState.getString(KEY_TITLE);
             mThemeDark = savedInstanceState.getBoolean(KEY_DARK_THEME);
+            mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
         }
     }
 
@@ -251,7 +263,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mTimePicker = (RadialPickerLayout) view.findViewById(R.id.time_picker);
         mTimePicker.setOnValueSelectedListener(this);
         mTimePicker.setOnKeyListener(keyboardListener);
-        mTimePicker.initialize(getActivity(), mHapticFeedbackController, mInitialHourOfDay,
+        mTimePicker.initialize(getActivity(), this, mInitialHourOfDay,
             mInitialMinute, mIs24HourMode);
 
         int currentItemShowing = HOUR_INDEX;
@@ -351,7 +363,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             tryStartingKbMode(-1);
             mHourView.invalidate();
         } else if (mTypedTimes == null) {
-            mTypedTimes = new ArrayList<Integer>();
+            mTypedTimes = new ArrayList<>();
         }
 
         // Set the title (if any)
@@ -418,7 +430,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     }
 
     public void tryVibrate() {
-        mHapticFeedbackController.tryVibrate();
+        if(mVibrate) mHapticFeedbackController.tryVibrate();
     }
 
     private void updateAmPmDisplay(int amOrPm) {
@@ -448,6 +460,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             }
             outState.putString(KEY_TITLE, mTitle);
             outState.putBoolean(KEY_DARK_THEME, mThemeDark);
+            outState.putBoolean(KEY_VIBRATE, mVibrate);
         }
     }
 

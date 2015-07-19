@@ -74,6 +74,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_HIGHLIGHTED_DAYS = "highlighted_days";
     private static final String KEY_SELECTABLE_DAYS = "selectable_days";
     private static final String KEY_THEME_DARK = "theme_dark";
+    private static final String KEY_VIBRATE = "vibrate";
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -110,6 +111,7 @@ public class DatePickerDialog extends DialogFragment implements
     private Calendar[] highlightedDays;
     private Calendar[] selectableDays;
     private boolean mThemeDark;
+    private boolean mVibrate;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -169,6 +171,8 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.MONTH, monthOfYear);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         mThemeDark = false;
+        mVibrate = true;
+        mVibrate = true;
     }
 
     @Override
@@ -207,6 +211,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putSerializable(KEY_HIGHLIGHTED_DAYS, highlightedDays);
         outState.putSerializable(KEY_SELECTABLE_DAYS, selectableDays);
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
+        outState.putBoolean(KEY_VIBRATE, mVibrate);
     }
 
     @Override
@@ -240,6 +245,7 @@ public class DatePickerDialog extends DialogFragment implements
             highlightedDays = (Calendar[])savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
             selectableDays = (Calendar[])savedInstanceState.getSerializable(KEY_SELECTABLE_DAYS);
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
+            mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
         }
 
         final Activity activity = getActivity();
@@ -403,6 +409,14 @@ public class DatePickerDialog extends DialogFragment implements
             String fullDateText = DateUtils.formatDateTime(getActivity(), millis, flags);
             Utils.tryAccessibilityAnnounce(mAnimator, fullDateText);
         }
+    }
+
+    /**
+     * Set whether the device should vibrate when touching fields
+     * @param vibrate true if the device should vibrate when touching a field
+     */
+    public void vibrate(boolean vibrate) {
+        mVibrate = vibrate;
     }
 
     /**
@@ -626,6 +640,6 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public void tryVibrate() {
-        mHapticFeedbackController.tryVibrate();
+        if(mVibrate) mHapticFeedbackController.tryVibrate();
     }
 }

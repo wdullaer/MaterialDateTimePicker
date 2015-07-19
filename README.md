@@ -106,6 +106,9 @@ tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
 });
 ```
 
+* `vibrate(boolean vibrate)`
+Set whether the dialogs should vibrate the device when a selection is made. This defaults to `true`. 
+
 Potential Improvements
 ----------------------
 * Landscape timepicker can use some improvement
