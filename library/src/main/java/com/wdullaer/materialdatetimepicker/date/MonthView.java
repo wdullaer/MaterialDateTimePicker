@@ -381,7 +381,7 @@ public abstract class MonthView extends View {
             mWeekStart = mCalendar.getFirstDayOfWeek();
         }
 
-        mNumCells = Utils.getDaysInMonth(mMonth, mYear);
+        mNumCells = mCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         for (int i = 0; i < mNumCells; i++) {
             final int day = i + 1;
             if (sameDay(day, today)) {
