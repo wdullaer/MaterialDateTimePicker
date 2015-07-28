@@ -2,11 +2,14 @@ package com.wdullaer.materialdatetimepicker;
 
 import android.app.Service;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.provider.Settings;
+
+import java.util.jar.Manifest;
 
 /**
  * A simple utility class to handle haptic feedback.
@@ -41,12 +44,26 @@ public class HapticFeedbackController {
      * Call to setup the controller.
      */
     public void start() {
-        mVibrator = (Vibrator) mContext.getSystemService(Service.VIBRATOR_SERVICE);
+        if (hasVibratePermission(mContext)) {
+            mVibrator = (Vibrator) mContext.getSystemService(Service.VIBRATOR_SERVICE);
+        }
 
         // Setup a listener for changes in haptic feedback settings
         mIsGloballyEnabled = checkGlobalSetting(mContext);
         Uri uri = Settings.System.getUriFor(Settings.System.HAPTIC_FEEDBACK_ENABLED);
         mContext.getContentResolver().registerContentObserver(uri, false, mContentObserver);
+    }
+
+    /**
+     * Method to verify that vibrate permission has been granted.
+     *
+     * Allows users of the library to disabled vibrate support if desired.
+     * @return
+     */
+    private boolean hasVibratePermission(Context context) {
+        PackageManager pm = context.getPackageManager();
+        int hasPerm = pm.checkPermission(android.Manifest.permission.VIBRATE, context.getPackageName());
+        return hasPerm == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
