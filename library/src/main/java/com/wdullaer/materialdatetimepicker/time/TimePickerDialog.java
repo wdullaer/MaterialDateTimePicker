@@ -313,7 +313,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             @Override
             public void onClick(View v) {
                 tryVibrate();
-                getDialog().cancel();
+                if(getDialog() != null) getDialog().cancel();
             }
         });
         mCancelButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));

@@ -294,7 +294,7 @@ public class DatePickerDialog extends DialogFragment implements
             @Override
             public void onClick(View v) {
                 tryVibrate();
-                getDialog().cancel();
+                if(getDialog() != null) getDialog().cancel();
             }
         });
         cancelButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
