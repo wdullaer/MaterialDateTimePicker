@@ -143,11 +143,11 @@ public class Utils {
         TypedValue typedValue = new TypedValue();
         //First, try the android:colorAccent
         if (Build.VERSION.SDK_INT >= 21) {
-            context.getTheme().resolveAttribute(android.R.attr.colorAccent, typedValue, true);
+            context.getTheme().resolveAttribute(android.R.attr.colorPrimary, typedValue, true);
             return typedValue.data;
         }
         //Next, try colorAccent from support lib
-        int colorAccentResId = context.getResources().getIdentifier("colorAccent", "attr", context.getPackageName());
+        int colorAccentResId = context.getResources().getIdentifier("colorPrimary", "attr", context.getPackageName());
         if (colorAccentResId == 0) {
             return -1;
         }
