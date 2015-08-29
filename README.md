@@ -66,7 +66,7 @@ dpd.show(getFragmentManager(), "Datepickerdialog");
 ```
 
 ### Theme the pickers
-You can theme the pickers by overwriting the color resources `mdtp_accent_color` and `mdtp_accent_color_dark` in your project.
+The pickers will be themed automatically based on the current theme where they are created, based on the current `colorAccent`. You can also theme the dialogs via the `setAccentColor(int color)` method. Alternatively, you can theme the pickers by overwriting the color resources `mdtp_accent_color` and `mdtp_accent_color_dark` in your project.
 ```xml
 <color name="mdtp_accent_color">#009688</color>
 <color name="mdtp_accent_color_dark">#00796b</color>

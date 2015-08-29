@@ -235,6 +235,12 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mMinuteRadialSelectorView.setTheme(context, themeDark);
    }
 
+    public void setAccentColor(int accentColor) {
+        mHourRadialSelectorView.setAccentColor(accentColor);
+        mMinuteRadialSelectorView.setAccentColor(accentColor);
+        mAmPmCirclesView.setAccentColor(accentColor);
+    }
+
     public void setTime(int hours, int minutes) {
         setItem(HOUR_INDEX, hours);
         setItem(MINUTE_INDEX, minutes);

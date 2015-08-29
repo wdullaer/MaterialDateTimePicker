@@ -20,12 +20,12 @@ import android.animation.Keyframe;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.TypedValue;
 import android.view.View;
-
-import java.util.Calendar;
 
 /**
  * Utility helper functions for time and date pickers.
@@ -125,5 +125,36 @@ public class Utils {
     public static int dpToPx(float dp, Resources resources){
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
         return (int) px;
+    }
+
+    public static int darkenColor(int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[2] = hsv[2] * 0.8f; // value component
+        return Color.HSVToColor(hsv);
+    }
+
+    /**
+     * Gets the colorAccent from the current context, if possible/available
+     * @param context
+     * @return -1 if accent color invalid, otherwise the accent color of the current context
+     */
+    public static int getAccentColorFromThemeIfAvailable(Context context) {
+        TypedValue typedValue = new TypedValue();
+        //First, try the android:colorAccent
+        if (Build.VERSION.SDK_INT >= 21) {
+            context.getTheme().resolveAttribute(android.R.attr.colorAccent, typedValue, true);
+            return typedValue.data;
+        }
+        //Next, try colorAccent from support lib
+        int colorAccentResId = context.getResources().getIdentifier("colorAccent", "attr", context.getPackageName());
+        if (colorAccentResId == 0) {
+            return -1;
+        }
+
+        if (!context.getTheme().resolveAttribute(colorAccentResId, typedValue, true)) {
+            return -1;
+        }
+        return typedValue.data;
     }
 }

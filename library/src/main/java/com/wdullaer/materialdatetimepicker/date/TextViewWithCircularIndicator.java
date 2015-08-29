@@ -17,8 +17,10 @@
 package com.wdullaer.materialdatetimepicker.date;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
@@ -38,7 +40,7 @@ public class TextViewWithCircularIndicator extends TextView {
     Paint mCirclePaint = new Paint();
 
     private final int mRadius;
-    private final int mCircleColor;
+    private int mCircleColor;
     private final String mItemIsSelectedText;
 
     private boolean mDrawCircle;
@@ -60,6 +62,32 @@ public class TextViewWithCircularIndicator extends TextView {
         mCirclePaint.setTextAlign(Align.CENTER);
         mCirclePaint.setStyle(Style.FILL);
         mCirclePaint.setAlpha(SELECTED_CIRCLE_ALPHA);
+    }
+
+    public void setAccentColor(int color) {
+        mCircleColor = color;
+        mCirclePaint.setColor(mCircleColor);
+        setTextColor(createTextColor(color));
+    }
+
+    /**
+     * Programmatically set the color state list (see mdtp_date_picker_year_selector)
+     * @param accentColor pressed state text color
+     * @return ColorStateList with pressed state
+     */
+    private ColorStateList createTextColor(int accentColor) {
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_pressed}, // pressed
+                new int[]{android.R.attr.state_selected}, // selected
+                new int[]{}
+        };
+        int[] colors = new int[]{
+                accentColor,
+                Color.WHITE,
+                Color.BLACK
+
+        };
+        return new ColorStateList(states, colors);
     }
 
     public void drawIndicator(boolean drawCircle) {

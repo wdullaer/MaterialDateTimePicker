@@ -154,6 +154,10 @@ public class RadialSelectorView extends View {
         mPaint.setColor(color);
     }
 
+    public void setAccentColor(int accentColor) {
+        mPaint.setColor(accentColor);
+    }
+
     /**
      * Set the selection.
      * @param selectionDegrees The degrees to be selected.
