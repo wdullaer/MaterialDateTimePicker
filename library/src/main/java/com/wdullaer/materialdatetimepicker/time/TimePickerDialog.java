@@ -382,6 +382,14 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
 
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
         mTimePicker.setTheme(getActivity().getApplicationContext(), mThemeDark);
+
+        //If an accent color has not been set manually, try and get it from the context
+        if (mAccentColor == -1) {
+            int accentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
+            if (accentColor != -1) {
+                mAccentColor = accentColor;
+            }
+        }
         if (mAccentColor != -1) {
             mOkButton.setTextColor(mAccentColor);
             mCancelButton.setTextColor(mAccentColor);
