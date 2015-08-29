@@ -117,6 +117,10 @@ public class AmPmCirclesView extends View {
         }
     }
 
+    public void setAccentColor(int accentColor) {
+        mSelectedColor = accentColor;
+    }
+
     public void setAmOrPm(int amOrPm) {
         mAmOrPm = amOrPm;
     }
