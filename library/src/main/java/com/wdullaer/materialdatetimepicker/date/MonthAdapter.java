@@ -40,6 +40,8 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
 
     private CalendarDay mSelectedDay;
 
+    private int mAccentColor = -1;
+
     protected static int WEEK_7_OVERHANG_HEIGHT = 7;
     protected static final int MONTHS_IN_YEAR = 12;
 
@@ -113,6 +115,10 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
         setSelectedDay(mController.getSelectedDay());
     }
 
+    public void setAccentColor(int color) {
+        mAccentColor = color;
+    }
+
     /**
      * Updates the selected day and related parameters.
      *
@@ -172,6 +178,9 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
             v.setLayoutParams(params);
             v.setClickable(true);
             v.setOnDayClickListener(this);
+            if (mAccentColor != -1) {
+                v.setAccentColor(mAccentColor);
+            }
         }
         if (drawingParams == null) {
             drawingParams = new HashMap<String, Integer>();

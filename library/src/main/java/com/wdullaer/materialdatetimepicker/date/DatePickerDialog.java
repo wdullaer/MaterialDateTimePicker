@@ -74,6 +74,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_HIGHLIGHTED_DAYS = "highlighted_days";
     private static final String KEY_SELECTABLE_DAYS = "selectable_days";
     private static final String KEY_THEME_DARK = "theme_dark";
+    private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
 
     private static final int DEFAULT_START_YEAR = 1900;
@@ -111,6 +112,7 @@ public class DatePickerDialog extends DialogFragment implements
     private Calendar[] highlightedDays;
     private Calendar[] selectableDays;
     private boolean mThemeDark;
+    private int mAccentColor = -1;
     private boolean mVibrate;
 
     private HapticFeedbackController mHapticFeedbackController;
@@ -171,6 +173,7 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.MONTH, monthOfYear);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         mThemeDark = false;
+        mAccentColor = -1;
         mVibrate = true;
         mVibrate = true;
     }
@@ -211,6 +214,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putSerializable(KEY_HIGHLIGHTED_DAYS, highlightedDays);
         outState.putSerializable(KEY_SELECTABLE_DAYS, selectableDays);
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
+        outState.putInt(KEY_ACCENT, mAccentColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
     }
 
@@ -245,6 +249,7 @@ public class DatePickerDialog extends DialogFragment implements
             highlightedDays = (Calendar[])savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
             selectableDays = (Calendar[])savedInstanceState.getSerializable(KEY_SELECTABLE_DAYS);
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
+            mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
         }
 
@@ -299,6 +304,15 @@ public class DatePickerDialog extends DialogFragment implements
         });
         cancelButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
         cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
+
+        if (mAccentColor != -1) {
+            view.findViewById(R.id.date_picker_header).setBackgroundColor(Utils.darkenColor(mAccentColor));
+            view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
+            okButton.setTextColor(mAccentColor);
+            cancelButton.setTextColor(mAccentColor);
+            mYearPickerView.setAccentColor(mAccentColor);
+            mDayPickerView.setAccentColor(mAccentColor);
+        }
 
         updateDisplay(false);
         setCurrentView(currentView);
@@ -434,6 +448,22 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public boolean isThemeDark() {
         return mThemeDark;
+    }
+
+    /**
+     * Set the accent color of this dialog
+     * @param accentColor the accent color you want
+     */
+    public void setAccentColor(int accentColor) {
+        mAccentColor = accentColor;
+    }
+
+    /**
+     * Get the accent color of this dialog
+     * @return accent color
+     */
+    public int getAccentColor() {
+        return mAccentColor;
     }
 
     @SuppressWarnings("unused")

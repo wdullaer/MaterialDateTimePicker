@@ -21,11 +21,10 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.TypedValue;
 import android.view.View;
-
-import java.util.Calendar;
 
 /**
  * Utility helper functions for time and date pickers.
@@ -125,5 +124,12 @@ public class Utils {
     public static int dpToPx(float dp, Resources resources){
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
         return (int) px;
+    }
+
+    public static int darkenColor(int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[2] = hsv[2] * 0.8f; // value component
+        return Color.HSVToColor(hsv);
     }
 }
