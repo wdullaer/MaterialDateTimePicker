@@ -47,6 +47,7 @@ public class SimpleMonthView extends MonthView {
             mMonthNumPaint.setColor(mDisabledDayTextColor);
         }
         else if (mSelectedDay == day) {
+            mMonthNumPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
             mMonthNumPaint.setColor(mSelectedDayTextColor);
         } else if (mHasToday && mToday == day) {
             mMonthNumPaint.setColor(mTodayNumberColor);
