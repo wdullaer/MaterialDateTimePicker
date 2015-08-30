@@ -19,25 +19,29 @@
     android:layout_width="wrap_content"
     android:orientation="vertical"
     android:background="@color/mdtp_background_color">
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/mdtp_date_picker_view_animator_height"
-        android:gravity="center"
-        android:orientation="horizontal" >
-
+        android:layout_height="match_parent">
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="vertical" >
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/mdtp_date_picker_view_animator_height"
+            android:gravity="center"
+            android:orientation="horizontal" >
 
-            <include layout="@layout/mdtp_date_picker_header_view" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="vertical" >
 
-            <include layout="@layout/mdtp_date_picker_selected_date" />
+                <include layout="@layout/mdtp_date_picker_header_view" />
+
+                <include layout="@layout/mdtp_date_picker_selected_date" />
+            </LinearLayout>
+
+            <include layout="@layout/mdtp_date_picker_view_animator" />
         </LinearLayout>
-
-        <include layout="@layout/mdtp_date_picker_view_animator" />
-    </LinearLayout>
+    </ScrollView>
 
     <include layout="@layout/mdtp_done_button" />
 </LinearLayout>
