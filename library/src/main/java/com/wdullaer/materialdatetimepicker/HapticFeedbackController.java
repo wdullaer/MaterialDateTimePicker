@@ -9,8 +9,6 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.provider.Settings;
 
-import java.util.jar.Manifest;
-
 /**
  * A simple utility class to handle haptic feedback.
  */
@@ -58,7 +56,7 @@ public class HapticFeedbackController {
      * Method to verify that vibrate permission has been granted.
      *
      * Allows users of the library to disabled vibrate support if desired.
-     * @return
+     * @return true if Vibrate permission has been granted
      */
     private boolean hasVibratePermission(Context context) {
         PackageManager pm = context.getPackageManager();
