@@ -5,8 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -95,6 +93,16 @@ public class MainActivity extends AppCompatActivity implements
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        TimePickerDialog tpd = (TimePickerDialog) getFragmentManager().findFragmentByTag("Timepickerdialog");
+        DatePickerDialog dpd = (DatePickerDialog) getFragmentManager().findFragmentByTag("Datepickerdialog");
+
+        if(tpd != null) tpd.setOnTimeSetListener(this);
+        if(dpd != null) dpd.setOnDateSetListener(this);
     }
 
     @Override

@@ -72,6 +72,24 @@ The pickers will be themed automatically based on the current theme where they a
 <color name="mdtp_accent_color_dark">#00796b</color>
 ```
 
+### Handling orientation changes
+By default, when an orientation changes occurs android will destroy and recreate your entire `Activity`. Wherever possible this library will retain its state on an orientation change. The only notable exceptions are the different callbacks and listeners. These interfaces are often implemented on `Activities` or `Fragments`. Naively trying to retain them would cause memory leaks. Apart from requiring that these interfaces are implemented on an `Activity`, there is no safe way to properly retain the callbacks, that I'm aware off.
+
+This means that it is your responsibility to set the listeners in your `Activity`'s `onResume()` callback.
+
+```java
+@Override
+public void onResume() {
+  super.onResume();
+
+  DatePickerDialog dpd = (DatePickerDialog) getFragmentManager().findFragmentByTag("Datepickerdialog");
+  TimePickerDialog tpd = (TimePickerDialog) getFragmentManager().findFragmentByTag("TimepickerDialog");
+
+  if(tpd != null) tpd.setOnTimeSetListener(this);
+  if(dpd != null) dpd.setOnDateSetListener(this);
+}
+```
+
 Additional Options
 ------------------
 * `TimePickerDialog` dark theme  
