@@ -207,7 +207,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         }
         mHourRadialTextsView.initialize(res,
                 hoursTexts, (is24HourMode? innerHoursTexts : null), mHideAmPm, true);
-        mHourRadialTextsView.setSelection(is24HourMode ? initialHoursOfDay : initialHoursOfDay % 12);
+        mHourRadialTextsView.setSelection(is24HourMode ? initialHoursOfDay : hours[initialHoursOfDay % 12]);
         mHourRadialTextsView.invalidate();
         mMinuteRadialTextsView.initialize(res, minutesTexts, null, mHideAmPm, false);
         mMinuteRadialTextsView.setSelection(initialMinutes);
