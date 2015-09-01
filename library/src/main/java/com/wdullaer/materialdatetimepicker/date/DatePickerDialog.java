@@ -313,7 +313,7 @@ public class DatePickerDialog extends DialogFragment implements
             }
         }
         if (mAccentColor != -1) {
-            view.findViewById(R.id.date_picker_header).setBackgroundColor(Utils.darkenColor(mAccentColor));
+            if(mDayOfWeekView != null) mDayOfWeekView.setBackgroundColor(Utils.darkenColor(mAccentColor));
             view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
             okButton.setTextColor(mAccentColor);
             cancelButton.setTextColor(mAccentColor);
