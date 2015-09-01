@@ -13,6 +13,8 @@
     <string name="mode_custom_accent">Use custom accent</string>
     <string name="vibrate_time">Vibrate on touch</string>
     <string name="vibrate_date">Vibrate on touch</string>
+    <string name="dismiss_time">Dismiss on pause (eg: orientation change)</string>
+    <string name="dismiss_date">Dismiss on pause (eg: orientation change)</string>
     <string name="action_settings">Settings</string>
 
 </resources>

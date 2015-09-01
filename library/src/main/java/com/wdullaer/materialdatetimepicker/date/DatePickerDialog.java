@@ -76,6 +76,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_THEME_DARK = "theme_dark";
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
+    private static final String KEY_DISMISS = "dismiss";
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -114,6 +115,7 @@ public class DatePickerDialog extends DialogFragment implements
     private boolean mThemeDark;
     private int mAccentColor = -1;
     private boolean mVibrate;
+    private boolean mDismissOnPause;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -175,7 +177,7 @@ public class DatePickerDialog extends DialogFragment implements
         mThemeDark = false;
         mAccentColor = -1;
         mVibrate = true;
-        mVibrate = true;
+        mDismissOnPause = false;
     }
 
     @Override
@@ -216,6 +218,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
         outState.putInt(KEY_ACCENT, mAccentColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
+        outState.putBoolean(KEY_DISMISS, mDismissOnPause);
     }
 
     @Override
@@ -251,6 +254,7 @@ public class DatePickerDialog extends DialogFragment implements
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
+            mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
         }
 
         final Activity activity = getActivity();
@@ -346,6 +350,7 @@ public class DatePickerDialog extends DialogFragment implements
     public void onPause() {
         super.onPause();
         mHapticFeedbackController.stop();
+        if(mDismissOnPause) dismiss();
     }
 
     @Override
@@ -438,6 +443,14 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public void vibrate(boolean vibrate) {
         mVibrate = vibrate;
+    }
+
+    /**
+     * Set whether the picker should dismiss itself when being paused or whether it should try to survive an orientation change
+     * @param dismissOnPause true if the dialog should dismiss itself when it's pausing
+     */
+    public void dismissOnPause(boolean dismissOnPause) {
+        mDismissOnPause = dismissOnPause;
     }
 
     /**

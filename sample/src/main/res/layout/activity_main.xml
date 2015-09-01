@@ -50,6 +50,13 @@
             android:text="@string/vibrate_time"
             android:checked="true"/>
 
+        <CheckBox
+            android:id="@+id/dismiss_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dismiss_time"
+            android:checked="false"/>
+
         <TextView
             android:id="@+id/date_textview"
             android:layout_width="wrap_content"
@@ -80,6 +87,13 @@
             android:layout_height="wrap_content"
             android:text="@string/vibrate_date"
             android:checked="true"/>
+
+        <CheckBox
+            android:id="@+id/dismiss_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dismiss_date"
+            android:checked="false"/>
 
     </LinearLayout>
 </ScrollView>

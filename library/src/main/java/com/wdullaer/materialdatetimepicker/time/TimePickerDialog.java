@@ -62,6 +62,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private static final String KEY_DARK_THEME = "dark_theme";
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
+    private static final String KEY_DISMISS = "dismiss";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
@@ -104,6 +105,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private boolean mThemeDark;
     private boolean mVibrate;
     private int mAccentColor = -1;
+    private boolean mDismissOnPause;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -165,6 +167,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mThemeDark = false;
         mAccentColor = -1;
         mVibrate = true;
+        mDismissOnPause = false;
     }
 
     /**
@@ -199,6 +202,14 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
      */
     public void vibrate(boolean vibrate) {
         mVibrate = vibrate;
+    }
+
+    /**
+     * Set whether the picker should dismiss itself when it's pausing or whether it should try to survive an orientation change
+     * @param dismissOnPause true if the picker should dismiss itself
+     */
+    public void dismissOnPause(boolean dismissOnPause) {
+        mDismissOnPause = dismissOnPause;
     }
 
     public void setOnTimeSetListener(OnTimeSetListener callback) {
@@ -420,6 +431,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     public void onPause() {
         super.onPause();
         mHapticFeedbackController.stop();
+        if(mDismissOnPause) dismiss();
     }
 
     @Override

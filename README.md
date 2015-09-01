@@ -90,6 +90,11 @@ public void onResume() {
 }
 ```
 
+Alternatively you can chose to dismiss the pickers when your activity is paused.
+```java
+tpd.dismissOnPause(true);
+```
+
 Additional Options
 ------------------
 * `TimePickerDialog` dark theme  
@@ -126,6 +131,9 @@ tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
 
 * `vibrate(boolean vibrate)`
 Set whether the dialogs should vibrate the device when a selection is made. This defaults to `true`.
+
+* `dismissOnPause(boolean dismissOnPause)`
+Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
 
 Potential Improvements
 ----------------------

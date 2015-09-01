@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox modeCustomAccentDate;
     private CheckBox vibrateTime;
     private CheckBox vibrateDate;
+    private CheckBox dismissTime;
+    private CheckBox dismissDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements
         modeCustomAccentDate = (CheckBox) findViewById(R.id.mode_custom_accent_date);
         vibrateTime = (CheckBox) findViewById(R.id.vibrate_time);
         vibrateDate = (CheckBox) findViewById(R.id.vibrate_date);
+        dismissTime = (CheckBox) findViewById(R.id.dismiss_time);
+        dismissDate = (CheckBox) findViewById(R.id.dismiss_date);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements
                 );
                 tpd.setThemeDark(modeDarkTime.isChecked());
                 tpd.vibrate(vibrateTime.isChecked());
+                tpd.dismissOnPause(dismissTime.isChecked());
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
@@ -87,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements
                 );
                 dpd.setThemeDark(modeDarkDate.isChecked());
                 dpd.vibrate(vibrateDate.isChecked());
+                dpd.dismissOnPause(dismissDate.isChecked());
                 if (modeCustomAccentDate.isChecked()) {
                     dpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
