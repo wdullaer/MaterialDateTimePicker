@@ -21,21 +21,17 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-            <include layout="@layout/mdtp_date_picker_header_view" />
+        <include layout="@layout/mdtp_date_picker_header_view" />
 
-            <include layout="@layout/mdtp_date_picker_selected_date" />
+        <include layout="@layout/mdtp_date_picker_selected_date" />
 
-            <include layout="@layout/mdtp_date_picker_view_animator" />
-        </LinearLayout>
-    </ScrollView>
+        <include layout="@layout/mdtp_date_picker_view_animator" />
+    </LinearLayout>
 
     <include layout="@layout/mdtp_done_button" />
 

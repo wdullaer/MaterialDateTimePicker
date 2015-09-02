@@ -21,46 +21,42 @@
     android:orientation="vertical"
     android:background="@color/mdtp_background_color"
     android:focusable="true" >
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/time_display_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/time_display_background"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/mdtp_accent_color" >
+
+        <TextView
+            android:id="@+id/time_picker_header"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/mdtp_accent_color" >
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/mdtp_time_picker_header_text_size"
+            android:singleLine="true"
+            android:padding="8dp"
+            android:textAllCaps="true"
+            android:textColor="@color/mdtp_white"
+            android:background="@color/mdtp_accent_color_dark"/>
 
-            <TextView
-                android:id="@+id/time_picker_header"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:textSize="@dimen/mdtp_time_picker_header_text_size"
-                android:singleLine="true"
-                android:padding="8dp"
-                android:textAllCaps="true"
-                android:textColor="@color/mdtp_white"
-                android:background="@color/mdtp_accent_color_dark"/>
+        <include
+            layout="@layout/mdtp_time_header_label"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/mdtp_header_height"
+            android:layout_gravity="center" />
 
-            <include
-                layout="@layout/mdtp_time_header_label"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/mdtp_header_height"
-                android:layout_gravity="center" />
-
-            <com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
-                android:id="@+id/time_picker"
-                android:layout_height="@dimen/mdtp_time_picker_height"
-                android:layout_width="@dimen/mdtp_picker_dimen"
-                android:layout_gravity="center"
-                android:background="@color/mdtp_circle_background"
-                android:focusable="true"
-                android:focusableInTouchMode="true" />
-        </LinearLayout>
-    </ScrollView>
+        <com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
+            android:id="@+id/time_picker"
+            android:layout_height="@dimen/mdtp_time_picker_height"
+            android:layout_width="@dimen/mdtp_picker_dimen"
+            android:layout_gravity="center"
+            android:background="@color/mdtp_circle_background"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+    </LinearLayout>
 
     <include layout="@layout/mdtp_done_button" />
 </LinearLayout>
