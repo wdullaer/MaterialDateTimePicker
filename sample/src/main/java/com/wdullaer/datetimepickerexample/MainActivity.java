@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox vibrateDate;
     private CheckBox dismissTime;
     private CheckBox dismissDate;
+    private CheckBox customButtonsColorTime;
+    private CheckBox customButtonsColorDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements
         vibrateDate = (CheckBox) findViewById(R.id.vibrate_date);
         dismissTime = (CheckBox) findViewById(R.id.dismiss_time);
         dismissDate = (CheckBox) findViewById(R.id.dismiss_date);
+	    customButtonsColorTime = (CheckBox) findViewById(R.id.custom_buttons_color_time);
+	    customButtonsColorDate = (CheckBox) findViewById(R.id.custom_buttons_color_date);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +70,10 @@ public class MainActivity extends AppCompatActivity implements
                 tpd.setThemeDark(modeDarkTime.isChecked());
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());
+	            if (customButtonsColorTime.isChecked()) {
+		            tpd.setNegativeColor(0xFF0000FF);
+		            tpd.setPositiveColor(0xFFFF00FF);
+	            }
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
@@ -91,8 +99,12 @@ public class MainActivity extends AppCompatActivity implements
                         now.get(Calendar.DAY_OF_MONTH)
                 );
                 dpd.setThemeDark(modeDarkDate.isChecked());
-                dpd.vibrate(vibrateDate.isChecked());
-                dpd.dismissOnPause(dismissDate.isChecked());
+	            dpd.vibrate(vibrateDate.isChecked());
+	            dpd.dismissOnPause(dismissDate.isChecked());
+	            if (customButtonsColorDate.isChecked()) {
+		            dpd.setNegativeColor(0xFF0000FF);
+		            dpd.setPositiveColor(0xFFFF00FF);
+	            }
                 if (modeCustomAccentDate.isChecked()) {
                     dpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }

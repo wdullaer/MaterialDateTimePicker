@@ -57,11 +57,19 @@
             android:text="@string/dismiss_time"
             android:checked="false"/>
 
+        <CheckBox
+            android:id="@+id/custom_buttons_color_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/custom_button_colors"
+            android:checked="false"/>
+
         <TextView
             android:id="@+id/date_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/selected_date"/>
+            android:text="@string/selected_date"
+	        android:layout_marginTop="20dp"/>
 
         <Button
             android:id="@+id/date_button"
@@ -93,6 +101,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dismiss_date"
+            android:checked="false"/>
+
+        <CheckBox
+            android:id="@+id/custom_buttons_color_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/custom_button_colors"
             android:checked="false"/>
 
     </LinearLayout>
