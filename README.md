@@ -1,5 +1,4 @@
-Material DateTime Picker - Select a time/date in style
-======================================================
+# Material DateTime Picker - Select a time/date in style
 ![Maven Central](https://img.shields.io/maven-central/v/com.wdullaer/materialdatetimepicker.svg)
 
 
@@ -15,8 +14,20 @@ Date Picker | Time Picker
 ---- | ----
 ![Date Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/date_picker.png) | ![Time Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/time_picker.png)
 
-Setup
------
+
+## Table of Contents
+1. [Setup](#setup)
+2. [Using Material Date/Time Pickers](#using-material-datetime-pickers)
+  1. [Implement Listeners](#implement-an-ontimesetlistenerondatesetlistener)
+  2. [Create Pickers](#create-a-timepickerdialogdatepickerdialog-using-the-supplied-factory)
+  3. [Theme the Pickers](#theme-the-pickers)
+3. [Additional Options](#additional-options)
+4. [FAQ](#faq)
+5. [Potential Improvements](#potential-improvements)
+6. [License](#license)
+
+
+## Setup
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
@@ -26,8 +37,8 @@ dependencies {
 
 You may also add the library as an Android Library to your project. All the library files live in ```library```.
 
-Using Material Date/Time Pickers
---------------------------------
+
+## Using Material Date/Time Pickers
 The library follows the same API as other pickers in the Android framework.
 For a basic implementation, you'll need to
 
@@ -72,31 +83,15 @@ The pickers will be themed automatically based on the current theme where they a
 <color name="mdtp_accent_color_dark">#00796b</color>
 ```
 
-### Handling orientation changes
-By default, when an orientation changes occurs android will destroy and recreate your entire `Activity`. Wherever possible this library will retain its state on an orientation change. The only notable exceptions are the different callbacks and listeners. These interfaces are often implemented on `Activities` or `Fragments`. Naively trying to retain them would cause memory leaks. Apart from requiring that these interfaces are implemented on an `Activity`, there is no safe way to properly retain the callbacks, that I'm aware off.
+The exact order in which colors are selected is as follows:
 
-This means that it is your responsibility to set the listeners in your `Activity`'s `onResume()` callback.
+1. `setAccentColor(int color)` in java code
+2. `android.R.attr.colorAccent` (if android 5.0+)
+3. `R.attr.colorAccent` (eg. when using AppCompat)
+4. `R.color.mdtp_accent_color` and `R.color.mdtp_accent_color_dark` if none of the others are set in your project
 
-```java
-@Override
-public void onResume() {
-  super.onResume();
 
-  DatePickerDialog dpd = (DatePickerDialog) getFragmentManager().findFragmentByTag("Datepickerdialog");
-  TimePickerDialog tpd = (TimePickerDialog) getFragmentManager().findFragmentByTag("TimepickerDialog");
-
-  if(tpd != null) tpd.setOnTimeSetListener(this);
-  if(dpd != null) dpd.setOnDateSetListener(this);
-}
-```
-
-Alternatively you can chose to dismiss the pickers when your activity is paused.
-```java
-tpd.dismissOnPause(true);
-```
-
-Additional Options
-------------------
+## Additional Options
 * `TimePickerDialog` dark theme  
 The `TimePickerDialog` has a dark theme that can be set by calling
 ```java
@@ -135,15 +130,59 @@ Set whether the dialogs should vibrate the device when a selection is made. This
 * `dismissOnPause(boolean dismissOnPause)`
 Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
 
-Potential Improvements
-----------------------
+
+## FAQ
+
+### Why not use `SupportDialogFragment`?
+Not using the support library versions has been a well considered choice, based on the following considerations:
+
+* Less than 5% of the devices using the android market do not support native `Fragments`, a number which will decrease even further going forward.
+* Even if you use `SupportFragments` in your application, you can still use the normal `FragmentManager`
+
+This means that in the current setup everyone can use the library: people using the support library and people not using the support library.
+
+Finally changing to `SupportDialogFragment` now will break the API for all the people using this library.
+
+If you do really need `SupportDialogFragment`, you should fork the library. It involves changing all of 2 lines of code, so it should be easy enough to keep it up to date with the upstream.
+
+### Why does the `DatePickerDialog` return the selected month -1?
+In the java `Calendar` class months use 0 based indexing: January is month 0, December is month 11. This convention is widely used in the java world, for example the native Android DatePicker.
+
+### Why are my callbacks lost when the device changes orientation?
+The simple solution is to dismiss the pickers when your activity is paused.
+
+```java
+tpd.dismissOnPause(true);
+```
+
+If you do wish to retain the pickers when an orientation change occurs, things become a bit more tricky.
+
+By default, when an orientation changes occurs android will destroy and recreate your entire `Activity`. Wherever possible this library will retain its state on an orientation change. The only notable exceptions are the different callbacks and listeners. These interfaces are often implemented on `Activities` or `Fragments`. Naively trying to retain them would cause memory leaks. Apart from explicitly requiring that the callback interfaces are implemented on an `Activity`, there is no safe way to properly retain the callbacks, that I'm aware off.
+
+This means that it is your responsibility to set the listeners in your `Activity`'s `onResume()` callback.
+
+```java
+@Override
+public void onResume() {
+  super.onResume();
+
+  DatePickerDialog dpd = (DatePickerDialog) getFragmentManager().findFragmentByTag("Datepickerdialog");
+  TimePickerDialog tpd = (TimePickerDialog) getFragmentManager().findFragmentByTag("TimepickerDialog");
+
+  if(tpd != null) tpd.setOnTimeSetListener(this);
+  if(dpd != null) dpd.setOnDateSetListener(this);
+}
+```
+
+
+## Potential Improvements
 * Landscape timepicker can use some improvement
+* Implement the new style of pickers
 * Code cleanup: there is a bit too much spit and ductape in the tweaks I've done.
 * Document all options on both pickers
 
 
-License
--------
+## License
     Copyright (c) 2015 Wouter Dullaert
 
     Licensed under the Apache License, Version 2.0 (the "License");
