@@ -95,22 +95,22 @@ The exact order in which colors are selected is as follows:
 * `TimePickerDialog` dark theme  
 The `TimePickerDialog` has a dark theme that can be set by calling
 ```java
-tdp.setThemeDark(true);
+tpd.setThemeDark(true);
 ```
 
-* `DatePickerDialog` dark theme
+* `DatePickerDialog` dark theme  
 The `DatePickerDialog` has a dark theme that can be set by calling
 ```java
-tdp.setThemeDark(true);
+dpd.setThemeDark(true);
 ```
 
-* `TimePickerDialog` `setTitle(String title)`
+* `TimePickerDialog` `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
 
-* `setSelectableDays(Calendar[] days)`
+* `setSelectableDays(Calendar[] days)`  
 You can pass a `Calendar[]` to the `DatePickerDialog`. This values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
 
-* `setHighlightedDays(Calendar[] days)`
+* `setHighlightedDays(Calendar[] days)`  
 You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the color of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`
 
 * `OnDismissListener` and `OnCancelListener`  
@@ -124,10 +124,10 @@ tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
 });
 ```
 
-* `vibrate(boolean vibrate)`
+* `vibrate(boolean vibrate)`  
 Set whether the dialogs should vibrate the device when a selection is made. This defaults to `true`.
 
-* `dismissOnPause(boolean dismissOnPause)`
+* `dismissOnPause(boolean dismissOnPause)`  
 Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
 
 
