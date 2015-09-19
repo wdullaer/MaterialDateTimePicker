@@ -63,6 +63,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
+	private static final String KEY_POSITIVE_COLOR = "positive_color";
+	private static final String KEY_NEGATIVE_COLOR = "negative_color";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
@@ -104,7 +106,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private String mTitle;
     private boolean mThemeDark;
     private boolean mVibrate;
-    private int mAccentColor = -1;
+    private int mAccentColor = -1, mPositiveColor = -1, mNegativeColor = -1;
     private boolean mDismissOnPause;
 
     // For hardware IME input.
@@ -166,6 +168,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mTitle = "";
         mThemeDark = false;
         mAccentColor = -1;
+        mPositiveColor = -1;
+        mNegativeColor = -1;
         mVibrate = true;
         mDismissOnPause = false;
     }
@@ -195,6 +199,22 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     public boolean isThemeDark() {
         return mThemeDark;
     }
+
+	public void setPositiveColor(int v) {
+		mPositiveColor = v;
+	}
+
+	public void setNegativeColor(int v) {
+		mNegativeColor = v;
+	}
+
+	public int getPositiveColor() {
+		return mPositiveColor;
+	}
+
+	public int getNegativeColor() {
+		return mNegativeColor;
+	}
 
     /**
      * Set whether the device should vibrate when touching fields
@@ -244,6 +264,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mThemeDark = savedInstanceState.getBoolean(KEY_DARK_THEME);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
+	        mPositiveColor = savedInstanceState.getInt(KEY_POSITIVE_COLOR);
+	        mNegativeColor = savedInstanceState.getInt(KEY_NEGATIVE_COLOR);
         }
     }
 
@@ -410,6 +432,14 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
         }
 
+	    if (mPositiveColor != -1) {
+		    mOkButton.setTextColor(mPositiveColor);
+	    }
+
+	    if (mNegativeColor != -1) {
+		    mCancelButton.setTextColor(mNegativeColor);
+	    }
+
         int circleBackground = res.getColor(R.color.mdtp_circle_background);
         int backgroundColor = res.getColor(R.color.mdtp_background_color);
         int darkBackgroundColor = res.getColor(R.color.mdtp_light_gray);
@@ -479,6 +509,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             outState.putBoolean(KEY_DARK_THEME, mThemeDark);
             outState.putInt(KEY_ACCENT, mAccentColor);
             outState.putBoolean(KEY_VIBRATE, mVibrate);
+	        outState.putInt(KEY_POSITIVE_COLOR, mPositiveColor);
+	        outState.putInt(KEY_NEGATIVE_COLOR, mNegativeColor);
         }
     }
 

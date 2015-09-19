@@ -77,6 +77,8 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
+    private static final String KEY_POSITIVE_COLOR = "positive_color";
+    private static final String KEY_NEGATIVE_COLOR = "negative_color";
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -113,7 +115,7 @@ public class DatePickerDialog extends DialogFragment implements
     private Calendar[] highlightedDays;
     private Calendar[] selectableDays;
     private boolean mThemeDark;
-    private int mAccentColor = -1;
+    private int mAccentColor = -1, mPositiveColor = -1, mNegativeColor = -1;
     private boolean mVibrate;
     private boolean mDismissOnPause;
 
@@ -176,6 +178,8 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         mThemeDark = false;
         mAccentColor = -1;
+        mPositiveColor = -1;
+        mNegativeColor = -1;
         mVibrate = true;
         mDismissOnPause = false;
     }
@@ -219,6 +223,8 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putInt(KEY_ACCENT, mAccentColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
+        outState.putInt(KEY_POSITIVE_COLOR, mPositiveColor);
+        outState.putInt(KEY_NEGATIVE_COLOR, mNegativeColor);
     }
 
     @Override
@@ -255,6 +261,8 @@ public class DatePickerDialog extends DialogFragment implements
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
+            mPositiveColor = savedInstanceState.getInt(KEY_POSITIVE_COLOR);
+            mNegativeColor = savedInstanceState.getInt(KEY_NEGATIVE_COLOR);
         }
 
         final Activity activity = getActivity();
@@ -325,6 +333,14 @@ public class DatePickerDialog extends DialogFragment implements
             mDayPickerView.setAccentColor(mAccentColor);
         }
 
+	    if (mPositiveColor != -1) {
+		    okButton.setTextColor(mPositiveColor);
+	    }
+
+	    if (mNegativeColor != -1) {
+		    cancelButton.setTextColor(mNegativeColor);
+	    }
+
         updateDisplay(false);
         setCurrentView(currentView);
 
@@ -349,7 +365,7 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        mHapticFeedbackController.stop();
+	    mHapticFeedbackController.stop();
         if(mDismissOnPause) dismiss();
     }
 
@@ -484,6 +500,22 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public int getAccentColor() {
         return mAccentColor;
+    }
+
+    public void setPositiveColor(int v) {
+        mPositiveColor = v;
+    }
+
+    public void setNegativeColor(int v) {
+        mNegativeColor = v;
+    }
+
+    public int getPositiveColor() {
+        return mPositiveColor;
+    }
+
+    public int getNegativeColor() {
+        return mNegativeColor;
     }
 
     @SuppressWarnings("unused")

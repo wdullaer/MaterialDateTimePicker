@@ -16,5 +16,6 @@
     <string name="dismiss_time">Dismiss on pause (eg: orientation change)</string>
     <string name="dismiss_date">Dismiss on pause (eg: orientation change)</string>
     <string name="action_settings">Settings</string>
+    <string name="custom_button_colors">Use custom button colors</string>
 
 </resources>
