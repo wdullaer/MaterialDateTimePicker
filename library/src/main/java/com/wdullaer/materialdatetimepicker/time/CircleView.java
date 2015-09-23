@@ -49,7 +49,7 @@ public class CircleView extends View {
 
         Resources res = context.getResources();
         mCircleColor = res.getColor(R.color.mdtp_circle_color);
-        mDotColor = res.getColor(R.color.mdtp_numbers_text_color);
+        mDotColor = res.getColor(R.color.mdtp_accent_color);
         mPaint.setAntiAlias(true);
 
         mIsInitialized = false;
@@ -80,11 +80,13 @@ public class CircleView extends View {
         Resources res = context.getResources();
         if (dark) {
             mCircleColor = res.getColor(R.color.mdtp_circle_background_dark_theme);
-            mDotColor = res.getColor(R.color.mdtp_white);
         } else {
             mCircleColor = res.getColor(R.color.mdtp_circle_color);
-            mDotColor = res.getColor(R.color.mdtp_numbers_text_color);
         }
+    }
+
+    void setAccentColor(int accentColor) {
+        mDotColor = accentColor;
     }
 
 
@@ -117,6 +119,6 @@ public class CircleView extends View {
 
         // Draw a small black circle in the center.
         mPaint.setColor(mDotColor);
-        canvas.drawCircle(mXCenter, mYCenter, 4, mPaint);
+        canvas.drawCircle(mXCenter, mYCenter, 8, mPaint);
     }
 }

@@ -239,12 +239,8 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             minutesTexts[i] = String.format("%02d", minutes[i]);
         }
         mHourRadialTextsView.initialize(res,
-                                        hoursTexts, (is24HourMode ?
-                                                     innerHoursTexts :
-                                                     null), mHideAmPm, true);
-        mHourRadialTextsView.setSelection(is24HourMode ?
-                                          initialHoursOfDay :
-                                          initialHoursOfDay % 12);
+                hoursTexts, (is24HourMode? innerHoursTexts : null), mHideAmPm, true);
+        mHourRadialTextsView.setSelection(is24HourMode ? initialHoursOfDay : hours[initialHoursOfDay % 12]);
         mHourRadialTextsView.invalidate();
         mMinuteRadialTextsView.initialize(res, minutesTexts, null, mHideAmPm, false);
         mMinuteRadialTextsView.setSelection(initialMinutes);
@@ -271,6 +267,13 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mHourRadialSelectorView.setTheme(context, themeDark);
         mMinuteRadialSelectorView.setTheme(context, themeDark);
    }
+
+    public void setAccentColor(int accentColor) {
+        mHourRadialSelectorView.setAccentColor(accentColor);
+        mMinuteRadialSelectorView.setAccentColor(accentColor);
+        mAmPmCirclesView.setAccentColor(accentColor);
+        mCircleView.setAccentColor(accentColor);
+    }
 
     public void setTime(int hours, int minutes) {
         setItem(HOUR_INDEX, hours);

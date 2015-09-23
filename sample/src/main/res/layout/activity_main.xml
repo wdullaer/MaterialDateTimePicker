@@ -1,42 +1,41 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:orientation="vertical"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.wdullaer.materialdatetimepicker.MainActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/time_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/selected_time"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:orientation="vertical"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        tools:context="com.wdullaer.materialdatetimepicker.MainActivity">
 
-    <Button
-        android:id="@+id/time_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pick_time"/>
+        <TextView
+            android:id="@+id/time_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/selected_time"/>
 
-    <CheckBox
-        android:id="@+id/mode_24_hours"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_24_hours" />
+        <Button
+            android:id="@+id/time_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pick_time"/>
 
-    <CheckBox
-        android:id="@+id/mode_dark_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_dark_time" />
+        <CheckBox
+            android:id="@+id/mode_24_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_24_hours" />
 
-    <CheckBox
-        android:id="@+id/vibrate_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/vibrate_time"
-        android:checked="true"/>
+        <CheckBox
+            android:id="@+id/mode_dark_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_dark_time" />
 
     <CheckBox
         android:id="@+id/time_limit"
@@ -115,29 +114,63 @@
             android:text="00"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/date_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/selected_date"/>
+        <CheckBox
+            android:id="@+id/mode_custom_accent_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_custom_accent" />
 
-    <Button
-        android:id="@+id/date_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pick_date"/>
+        <CheckBox
+            android:id="@+id/vibrate_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/vibrate_time"
+            android:checked="true"/>
 
-    <CheckBox
-        android:id="@+id/mode_dark_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_dark_date" />
+        <CheckBox
+            android:id="@+id/dismiss_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dismiss_time"
+            android:checked="false"/>
 
-    <CheckBox
-        android:id="@+id/vibrate_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/vibrate_date"
-        android:checked="true"/>
+        <TextView
+            android:id="@+id/date_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/selected_date"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/date_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pick_date"/>
+
+        <CheckBox
+            android:id="@+id/mode_dark_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_dark_date" />
+
+        <CheckBox
+            android:id="@+id/mode_custom_accent_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_custom_accent" />
+
+        <CheckBox
+            android:id="@+id/vibrate_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/vibrate_date"
+            android:checked="true"/>
+
+        <CheckBox
+            android:id="@+id/dismiss_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dismiss_date"
+            android:checked="false"/>
+
+    </LinearLayout>
+</ScrollView>

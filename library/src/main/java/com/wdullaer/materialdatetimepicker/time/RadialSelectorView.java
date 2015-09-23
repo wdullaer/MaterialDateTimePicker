@@ -145,13 +145,17 @@ public class RadialSelectorView extends View {
         Resources res = context.getResources();
         int color;
         if (themeDark) {
-            color = res.getColor(R.color.mdtp_red);
+            color = res.getColor(R.color.mdtp_accent_color);
             mSelectionAlpha = SELECTED_ALPHA_THEME_DARK;
         } else {
             color = res.getColor(R.color.mdtp_accent_color);
             mSelectionAlpha = SELECTED_ALPHA;
         }
         mPaint.setColor(color);
+    }
+
+    public void setAccentColor(int accentColor) {
+        mPaint.setColor(accentColor);
     }
 
     /**
@@ -317,7 +321,7 @@ public class RadialSelectorView extends View {
 
         // Draw the line from the center of the circle.
         mPaint.setAlpha(255);
-        mPaint.setStrokeWidth(1);
+        mPaint.setStrokeWidth(4);
         canvas.drawLine(mXCenter, mYCenter, pointX, pointY, mPaint);
     }
 

@@ -47,15 +47,16 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/mdtp_header_height"
             android:layout_gravity="center" />
+
+        <com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
+            android:id="@+id/time_picker"
+            android:layout_height="@dimen/mdtp_time_picker_height"
+            android:layout_width="@dimen/mdtp_picker_dimen"
+            android:layout_gravity="center"
+            android:background="@color/mdtp_circle_background"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
     </LinearLayout>
-    <com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
-        android:id="@+id/time_picker"
-        android:layout_height="@dimen/mdtp_time_picker_height"
-        android:layout_width="@dimen/mdtp_picker_dimen"
-        android:layout_gravity="center"
-        android:background="@color/mdtp_circle_background"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
 
     <include layout="@layout/mdtp_done_button" />
 </LinearLayout>

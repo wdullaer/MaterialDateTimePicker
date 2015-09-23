@@ -1,12 +1,11 @@
 package com.wdullaer.datetimepickerexample;
 
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.method.KeyListener;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,7 +20,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.Calendar;
 
-public class MainActivity extends ActionBarActivity implements
+public class MainActivity extends AppCompatActivity implements
     TimePickerDialog.OnTimeSetListener,
     DatePickerDialog.OnDateSetListener
 {
@@ -30,8 +29,12 @@ public class MainActivity extends ActionBarActivity implements
     private CheckBox mode24Hours;
     private CheckBox modeDarkTime;
     private CheckBox modeDarkDate;
+    private CheckBox modeCustomAccentTime;
+    private CheckBox modeCustomAccentDate;
     private CheckBox vibrateTime;
     private CheckBox vibrateDate;
+    private CheckBox dismissTime;
+    private CheckBox dismissDate;
 
     private CheckBox timeLimit;
     private LinearLayout timeLimitControlMin;
@@ -56,8 +59,12 @@ public class MainActivity extends ActionBarActivity implements
         mode24Hours = (CheckBox)findViewById(R.id.mode_24_hours);
         modeDarkTime = (CheckBox)findViewById(R.id.mode_dark_time);
         modeDarkDate = (CheckBox)findViewById(R.id.mode_dark_date);
+        modeCustomAccentTime = (CheckBox) findViewById(R.id.mode_custom_accent_time);
+        modeCustomAccentDate = (CheckBox) findViewById(R.id.mode_custom_accent_date);
         vibrateTime = (CheckBox) findViewById(R.id.vibrate_time);
         vibrateDate = (CheckBox) findViewById(R.id.vibrate_date);
+        dismissTime = (CheckBox) findViewById(R.id.dismiss_time);
+        dismissDate = (CheckBox) findViewById(R.id.dismiss_date);
 
         timeLimit = (CheckBox) findViewById(R.id.time_limit);
         timeLimitControlMin = (LinearLayout) findViewById(R.id.time_limit_data_min);
@@ -82,8 +89,12 @@ public class MainActivity extends ActionBarActivity implements
                 );
                 tpd.setThemeDark(modeDarkTime.isChecked());
                 tpd.vibrate(vibrateTime.isChecked());
-                tpd.setOnCancelListener(new DialogInterface.OnCancelListener()
-                {
+
+                tpd.dismissOnPause(dismissTime.isChecked());
+                if (modeCustomAccentTime.isChecked()) {
+                    tpd.setAccentColor(Color.parseColor("#9C27B0"));
+                }
+                tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialogInterface)
                     {
@@ -119,6 +130,10 @@ public class MainActivity extends ActionBarActivity implements
                 );
                 dpd.setThemeDark(modeDarkDate.isChecked());
                 dpd.vibrate(vibrateDate.isChecked());
+                dpd.dismissOnPause(dismissDate.isChecked());
+                if (modeCustomAccentDate.isChecked()) {
+                    dpd.setAccentColor(Color.parseColor("#9C27B0"));
+                }
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
@@ -188,27 +203,14 @@ public class MainActivity extends ActionBarActivity implements
         });
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    public void onResume() {
+        super.onResume();
+        TimePickerDialog tpd = (TimePickerDialog) getFragmentManager().findFragmentByTag("Timepickerdialog");
+        DatePickerDialog dpd = (DatePickerDialog) getFragmentManager().findFragmentByTag("Datepickerdialog");
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        if(tpd != null) tpd.setOnTimeSetListener(this);
+        if(dpd != null) dpd.setOnDateSetListener(this);
     }
 
     @Override

@@ -39,7 +39,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.TypefaceHelper;
-import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter.CalendarDay;
 
 import java.security.InvalidParameterException;
@@ -324,6 +323,11 @@ public abstract class MonthView extends View {
         mMonthNumPaint.setFakeBoldText(false);
     }
 
+    public void setAccentColor(int color) {
+        mTodayNumberColor = color;
+        mSelectedCirclePaint.setColor(color);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         drawMonthTitle(canvas);
@@ -465,15 +469,29 @@ public abstract class MonthView extends View {
         int dayWidthHalf = (mWidth - mEdgePadding * 2) / (mNumDays * 2);
 
         for (int i = 0; i < mNumDays; i++) {
-            int calendarDay = (i + mWeekStart) % mNumDays;
             int x = (2 * i + 1) * dayWidthHalf + mEdgePadding;
+
+            int calendarDay = (i + mWeekStart) % mNumDays;
             mDayLabelCalendar.set(Calendar.DAY_OF_WEEK, calendarDay);
             Locale locale = Locale.getDefault();
             String localWeekDisplayName = mDayLabelCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, locale);
             String weekString = localWeekDisplayName.toUpperCase(locale).substring(0, 1);
+
             if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE) || locale.equals(Locale.SIMPLIFIED_CHINESE) || locale.equals(Locale.TRADITIONAL_CHINESE)) {
                 int len = localWeekDisplayName.length();
                 weekString = localWeekDisplayName.substring(len -1, len);
+            }
+
+            if (locale.getLanguage().equals("he") || locale.getLanguage().equals("iw")) {
+                if(mDayLabelCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
+                    int len = localWeekDisplayName.length();
+                    weekString = localWeekDisplayName.substring(len - 2, len - 1);
+                }
+                else {
+                    // I know this is duplication, but it makes the code easier to grok by
+                    // having all hebrew code in the same block
+                    weekString = localWeekDisplayName.toUpperCase(locale).substring(0, 1);
+                }
             }
             canvas.drawText(weekString, x, y, mMonthDayLabelPaint);
         }
