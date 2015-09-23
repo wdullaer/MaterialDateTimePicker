@@ -38,6 +38,83 @@
         android:text="@string/vibrate_time"
         android:checked="true"/>
 
+    <CheckBox
+        android:id="@+id/time_limit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/time_limit"
+        />
+
+    <LinearLayout
+        android:id="@+id/time_limit_data_min"
+        android:paddingLeft="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        >
+        <CheckBox
+            android:id="@+id/time_limit_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:paddingRight="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Min"/>
+        <EditText
+            android:id="@+id/min_time_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:editable="false"
+            android:text="09"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"/>
+        <EditText
+            android:id="@+id/min_time_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:editable="false"
+            android:text="00"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/time_limit_data_max"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="40dp"
+        android:paddingBottom="20dp"
+        android:visibility="gone">
+        <CheckBox
+            android:id="@+id/time_limit_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:paddingRight="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max"/>
+        <EditText
+            android:id="@+id/max_time_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="18"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"/>
+        <EditText
+            android:id="@+id/max_time_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="00"/>
+    </LinearLayout>
+
     <TextView
         android:id="@+id/date_textview"
         android:layout_width="wrap_content"

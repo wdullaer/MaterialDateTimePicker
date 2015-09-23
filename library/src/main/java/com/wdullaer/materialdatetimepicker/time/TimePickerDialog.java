@@ -19,7 +19,6 @@ package com.wdullaer.materialdatetimepicker.time;
 import android.animation.ObjectAnimator;
 import android.app.ActionBar.LayoutParams;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -64,6 +63,12 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private static final String KEY_DARK_THEME = "dark_theme";
     private static final String KEY_VIBRATE = "vibrate";
 
+    private static final String KEY_MIN_HOUR = "min_hour";
+    private static final String KEY_MIN_MINUTE = "min_minute";
+    private static final String KEY_MAX_HOUR = "max_hour";
+    private static final String KEY_MAX_MINUTE = "max_minute";
+
+
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
     // NOT a real index for the purpose of what's showing.
@@ -72,6 +77,12 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     public static final int ENABLE_PICKER_INDEX = 3;
     public static final int AM = 0;
     public static final int PM = 1;
+
+    //Min time
+    private int mMinHour = -1;
+    private int mMinMinute = -1;
+    private int mMaxHour = -1;
+    private int mMaxMinute = -1;
 
     // Delay before starting the pulse animation, in ms.
     private static final int PULSE_ANIMATOR_DELAY = 300;
@@ -213,6 +224,40 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mInKbMode = false;
     }
 
+    public void setMinTime(int hourOfDay, int minute)
+    {
+        setMinTime(hourOfDay);
+        setMinMinute(minute);
+    }
+
+    public void setMinTime(int hourOfDay)
+    {
+        mMinHour = hourOfDay;
+        mMinMinute = 0;
+    }
+
+    protected void setMinMinute(int minute)
+    {
+        mMinMinute = minute;
+    }
+
+    public void setMaxTime(int hourOfDay, int minute)
+    {
+        setMaxTime(hourOfDay);
+        setMaxMinute(minute);
+    }
+
+    public void setMaxTime(int hourOfDay)
+    {
+        mMaxHour = hourOfDay;
+        mMaxMinute = 0;
+    }
+
+    protected void setMaxMinute(int minute)
+    {
+        mMaxMinute = minute;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -226,6 +271,11 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mTitle = savedInstanceState.getString(KEY_TITLE);
             mThemeDark = savedInstanceState.getBoolean(KEY_DARK_THEME);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
+
+            mMinHour = savedInstanceState.getInt(KEY_MIN_HOUR, -1);
+            mMinMinute = savedInstanceState.getInt(KEY_MIN_MINUTE, -1);
+            mMaxHour = savedInstanceState.getInt(KEY_MAX_HOUR, -1);
+            mMaxMinute = savedInstanceState.getInt(KEY_MAX_MINUTE, -1);
         }
     }
 
@@ -260,11 +310,37 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
 
         mHapticFeedbackController = new HapticFeedbackController(getActivity());
 
+        if(mInitialHourOfDay < mMinHour)
+        {
+            mInitialHourOfDay = mMinHour;
+            mInitialMinute = mMinMinute;
+        }
+        else if (mInitialHourOfDay == mMinHour)
+        {
+            if (mInitialMinute < mMinMinute)
+                mInitialMinute = mMinMinute;
+        }
+        else if(mInitialHourOfDay > mMaxHour  && mMaxHour != -1)
+        {
+            mInitialHourOfDay = mMaxHour;
+            mInitialMinute = mMaxMinute;
+        }
+        else if(mInitialHourOfDay == mMaxHour)
+        {
+            if (mInitialMinute > mMaxMinute  && mMaxMinute != -1)
+                mInitialMinute = mMaxMinute;
+        }
+
         mTimePicker = (RadialPickerLayout) view.findViewById(R.id.time_picker);
         mTimePicker.setOnValueSelectedListener(this);
         mTimePicker.setOnKeyListener(keyboardListener);
         mTimePicker.initialize(getActivity(), this, mInitialHourOfDay,
-            mInitialMinute, mIs24HourMode);
+                               mInitialMinute, mIs24HourMode);
+
+        mTimePicker.setMinHour(mMinHour);
+        mTimePicker.setMinMinute(mMinMinute);
+        mTimePicker.setMaxHour(mMaxHour);
+        mTimePicker.setMaxMinute(mMaxMinute);
 
         int currentItemShowing = HOUR_INDEX;
         if (savedInstanceState != null &&
@@ -284,6 +360,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mMinuteView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                applyLimits();
                 setCurrentItemShowing(MINUTE_INDEX, true, false, true);
                 tryVibrate();
             }
@@ -335,6 +412,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mAmPmHitspace.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(mMinHour >= 12 || (mMaxHour != -1 && mMaxHour < 12))
+                        return;
                     tryVibrate();
                     int amOrPm = mTimePicker.getIsCurrentlyAmOrPm();
                     if (amOrPm == AM) {
@@ -344,11 +423,13 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
                     }
                     updateAmPmDisplay(amOrPm);
                     mTimePicker.setAmOrPm(amOrPm);
+                    applyLimits();
                 }
             });
         }
 
         mAllowAutoAdvance = true;
+
         setHour(mInitialHourOfDay, true);
         setMinute(mInitialMinute);
 
@@ -461,6 +542,11 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             outState.putString(KEY_TITLE, mTitle);
             outState.putBoolean(KEY_DARK_THEME, mThemeDark);
             outState.putBoolean(KEY_VIBRATE, mVibrate);
+
+            outState.putInt(KEY_MIN_HOUR, mMinHour);
+            outState.putInt(KEY_MIN_MINUTE, mMinMinute);
+            outState.putInt(KEY_MAX_HOUR, mMaxHour);
+            outState.putInt(KEY_MAX_MINUTE, mMaxMinute);
         }
     }
 
@@ -480,16 +566,86 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             }
 
             Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+
+            applyLimits();
+
         } else if (pickerIndex == MINUTE_INDEX){
             setMinute(newValue);
             mTimePicker.setContentDescription(mMinutePickerDescription + ": " + newValue);
         } else if (pickerIndex == AMPM_INDEX) {
             updateAmPmDisplay(newValue);
+            applyLimits();
         } else if (pickerIndex == ENABLE_PICKER_INDEX) {
             if (!isTypedTimeFullyLegal()) {
                 mTypedTimes.clear();
             }
             finishKbMode(true);
+        }
+    }
+
+    private void applyLimits()
+    {
+        int newHours = mTimePicker.getHours();
+
+        mTimePicker.setMaxHour(mMaxHour);
+        mTimePicker.setMinHour(mMinHour);
+
+        if(mMaxHour == mMinHour && newHours == mMinHour)
+        {
+            setHour(newHours, true);
+            mTimePicker.setMaxMinute(mMaxMinute);
+            mTimePicker.setMinMinute(mMinMinute);
+
+            if(mTimePicker.getMinutes() >= mMaxMinute && mMaxMinute != -1)
+            {
+                setMinute(mMaxMinute);
+                mTimePicker.setTime(newHours, mMaxMinute);
+            }
+            else if(mTimePicker.getMinutes() <= mMinMinute && mMinMinute != -1)
+            {
+                setMinute(mMinMinute);
+                mTimePicker.setTime(newHours, mMinMinute);
+            }
+            else
+            {
+                mTimePicker.setTime(newHours, mTimePicker.getMinutes());
+            }
+        }
+        else if(newHours >= mMaxHour && mMaxHour != -1)
+        {
+            setHour(mMaxHour, true);
+            mTimePicker.setMaxMinute(mMaxMinute);
+            mTimePicker.setMinMinute(-1);
+            if(mTimePicker.getMinutes() >= mMaxMinute && mMaxMinute != -1)
+            {
+                setMinute(mMaxMinute);
+                mTimePicker.setTime(mMaxHour, mMaxMinute);
+            }
+            else
+            {
+                mTimePicker.setTime(mMaxHour, mTimePicker.getMinutes());
+            }
+
+        }
+        else if (newHours <= mMinHour && mMinHour != -1)
+        {
+            setHour(mMinHour, true);
+            mTimePicker.setMaxMinute(-1);
+            mTimePicker.setMinMinute(mMinMinute);
+            if(mTimePicker.getMinutes() <= mMinMinute && mMinMinute != -1)
+            {
+                setMinute(mMinMinute);
+                mTimePicker.setTime(mMinHour, mMinMinute);
+            }
+            else
+            {
+                mTimePicker.setTime(mMinHour, mTimePicker.getMinutes());
+            }
+        }
+        else
+        {
+            mTimePicker.setMaxMinute(-1);
+            mTimePicker.setMinMinute(-1);
         }
     }
 

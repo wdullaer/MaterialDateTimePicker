@@ -14,4 +14,7 @@
     <string name="vibrate_date">Vibrate on touch</string>
     <string name="action_settings">Settings</string>
 
+    <string name="time_limit">Define allowed time interval</string>
+
+
 </resources>

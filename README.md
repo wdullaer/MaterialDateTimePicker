@@ -89,6 +89,9 @@ tdp.setThemeDark(true);
 * `TimePickerDialog` `setTitle(String title)`
 Shows a title at the top of the `TimePickerDialog`
 
+* `TimePickerDialog` `setMinTime(int hourOfDay[, int minute])` `setMaxTime(int hourOfDay[, int minute])`
+You can define the interval of time values accepted, min and max are included.
+
 * `setSelectableDays(Calendar[] days)`
 You can pass a `Calendar[]` to the `DatePickerDialog`. This values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
 
