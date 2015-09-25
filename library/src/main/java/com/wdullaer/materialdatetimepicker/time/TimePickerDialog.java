@@ -63,6 +63,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
+    private static final String KEY_ENABLE_SECONDS = "enable_seconds";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
@@ -106,6 +107,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private boolean mVibrate;
     private int mAccentColor = -1;
     private boolean mDismissOnPause;
+    private boolean mEnableSeconds;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -168,6 +170,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mAccentColor = -1;
         mVibrate = true;
         mDismissOnPause = false;
+        mEnableSeconds = false;
     }
 
     /**
@@ -194,6 +197,10 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
 
     public boolean isThemeDark() {
         return mThemeDark;
+    }
+
+    public void enableSeconds(boolean enabled) {
+        mEnableSeconds = enabled;
     }
 
     /**
@@ -244,6 +251,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mThemeDark = savedInstanceState.getBoolean(KEY_DARK_THEME);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
+            mEnableSeconds = savedInstanceState.getBoolean(KEY_ENABLE_SECONDS);
         }
     }
 
@@ -479,6 +487,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             outState.putBoolean(KEY_DARK_THEME, mThemeDark);
             outState.putInt(KEY_ACCENT, mAccentColor);
             outState.putBoolean(KEY_VIBRATE, mVibrate);
+            outState.putBoolean(KEY_ENABLE_SECONDS, mEnableSeconds);
         }
     }
 

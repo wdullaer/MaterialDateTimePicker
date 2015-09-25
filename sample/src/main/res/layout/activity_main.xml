@@ -58,6 +58,13 @@
             android:checked="false"/>
 
         <CheckBox
+            android:id="@+id/enable_seconds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_seconds"
+            android:checked="false"/>
+
+        <CheckBox
             android:id="@+id/title_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

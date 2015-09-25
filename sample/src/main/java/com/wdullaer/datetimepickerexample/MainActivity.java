@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox dismissTime;
     private CheckBox dismissDate;
     private CheckBox titleTime;
+    private CheckBox enableSeconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements
         dismissTime = (CheckBox) findViewById(R.id.dismiss_time);
         dismissDate = (CheckBox) findViewById(R.id.dismiss_date);
         titleTime = (CheckBox) findViewById(R.id.title_time);
+        enableSeconds = (CheckBox) findViewById(R.id.enable_seconds);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +83,9 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
                 tpd.show(getFragmentManager(), "Timepickerdialog");
+                if (enableSeconds.isChecked()) {
+                    tpd.enableSeconds(true);
+                }
             }
         });
 
