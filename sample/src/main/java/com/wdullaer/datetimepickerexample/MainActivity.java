@@ -122,11 +122,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-        String hourString = hourOfDay < 10 ? "0"+hourOfDay : ""+hourOfDay;
-        String minuteString = minute < 10 ? "0"+minute : ""+minute;
-        String time = "You picked the following time: "+hourString+"h"+minuteString;
-        timeTextView.setText(time);
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        timeTextView.setText(String.format("You picked the following time: %02dh%02d:%02d", hourOfDay, minute, second));
     }
 
     @Override
