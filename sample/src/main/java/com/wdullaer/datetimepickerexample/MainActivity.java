@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox vibrateDate;
     private CheckBox dismissTime;
     private CheckBox dismissDate;
+    private CheckBox titleTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements
         vibrateDate = (CheckBox) findViewById(R.id.vibrate_date);
         dismissTime = (CheckBox) findViewById(R.id.dismiss_time);
         dismissDate = (CheckBox) findViewById(R.id.dismiss_date);
+        titleTime = (CheckBox) findViewById(R.id.title_time);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements
                 tpd.dismissOnPause(dismissTime.isChecked());
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
+                }
+                if (titleTime.isChecked()) {
+                    tpd.setTitle("TimePicker Title");
                 }
                 tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
