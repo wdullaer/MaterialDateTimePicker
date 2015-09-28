@@ -593,10 +593,16 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             }
 
             Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
-        } else if (pickerIndex == MINUTE_INDEX){
+        } else if (pickerIndex == MINUTE_INDEX) {
             setMinute(newValue);
-            mTimePicker.setContentDescription(mMinutePickerDescription + ": " + newValue);
-        } else if (pickerIndex == SECOND_INDEX){
+            if (mAllowAutoAdvance && autoAdvance) {
+                setCurrentItemShowing(SECOND_INDEX, true, true, false);
+                Utils.tryAccessibilityAnnounce(mTimePicker, String.format("%02d", newValue));
+            } else {
+                mTimePicker.setContentDescription(mMinutePickerDescription + ": " + newValue);
+            }
+
+        } else if (pickerIndex == SECOND_INDEX) {
             setSecond(newValue);
             mTimePicker.setContentDescription(mSecondPickerDescription + ": " + newValue);
         } else if (pickerIndex == AMPM_INDEX) {
