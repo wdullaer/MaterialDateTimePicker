@@ -130,6 +130,9 @@ Set whether the dialogs should vibrate the device when a selection is made. This
 * `dismissOnPause(boolean dismissOnPause)`  
 Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
 
+* `setSecondsEnabled(boolean enabled)`  
+Set whether the time picker supports seconds. Disabled per default.
+
 
 ## FAQ
 
