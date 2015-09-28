@@ -610,28 +610,37 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mCurrentItemShowing = index;
 
         if (animate && (index != lastIndex)) {
-            ObjectAnimator[] anims = new ObjectAnimator[6];
-            if (index == SECOND_INDEX) {
+            ObjectAnimator[] anims = new ObjectAnimator[4];
+            if (index == SECOND_INDEX && lastIndex == MINUTE_INDEX) {
+                anims[0] = mMinuteRadialTextsView.getDisappearAnimator();
+                anims[1] = mMinuteRadialSelectorView.getDisappearAnimator();
+                anims[2] = mSecondRadialTextsView.getReappearAnimator();
+                anims[3] = mSecondRadialSelectorView.getReappearAnimator();
+            } else if (index == SECOND_INDEX && lastIndex == HOUR_INDEX) {
                 anims[0] = mHourRadialTextsView.getDisappearAnimator();
                 anims[1] = mHourRadialSelectorView.getDisappearAnimator();
-                anims[2] = mMinuteRadialTextsView.getDisappearAnimator();
-                anims[3] = mMinuteRadialSelectorView.getDisappearAnimator();
-                anims[4] = mSecondRadialTextsView.getReappearAnimator();
-                anims[5] = mSecondRadialSelectorView.getReappearAnimator();
-            } else if (index == MINUTE_INDEX) {
+                anims[2] = mSecondRadialTextsView.getReappearAnimator();
+                anims[3] = mSecondRadialSelectorView.getReappearAnimator();
+            } else if (index == MINUTE_INDEX && lastIndex == HOUR_INDEX) {
+                anims[0] = mHourRadialTextsView.getDisappearAnimator();
+                anims[1] = mHourRadialSelectorView.getDisappearAnimator();
+                anims[2] = mMinuteRadialTextsView.getReappearAnimator();
+                anims[3] = mMinuteRadialSelectorView.getReappearAnimator();
+            } else if (index == MINUTE_INDEX && lastIndex == SECOND_INDEX) {
                 anims[0] = mSecondRadialTextsView.getDisappearAnimator();
                 anims[1] = mSecondRadialSelectorView.getDisappearAnimator();
-                anims[2] = mHourRadialTextsView.getDisappearAnimator();
-                anims[3] = mHourRadialSelectorView.getDisappearAnimator();
-                anims[4] = mMinuteRadialTextsView.getReappearAnimator();
-                anims[5] = mMinuteRadialSelectorView.getReappearAnimator();
-            } else if (index == HOUR_INDEX) {
-                anims[0] = mHourRadialTextsView.getReappearAnimator();
-                anims[1] = mHourRadialSelectorView.getReappearAnimator();
-                anims[2] = mMinuteRadialTextsView.getDisappearAnimator();
-                anims[3] = mMinuteRadialSelectorView.getDisappearAnimator();
-                anims[4] = mSecondRadialTextsView.getDisappearAnimator();
-                anims[5] = mSecondRadialSelectorView.getDisappearAnimator();
+                anims[2] = mMinuteRadialTextsView.getReappearAnimator();
+                anims[3] = mMinuteRadialSelectorView.getReappearAnimator();
+            } else if (index == HOUR_INDEX && lastIndex == SECOND_INDEX) {
+                anims[0] = mSecondRadialTextsView.getDisappearAnimator();
+                anims[1] = mSecondRadialSelectorView.getDisappearAnimator();
+                anims[2] = mHourRadialTextsView.getReappearAnimator();
+                anims[3] = mHourRadialSelectorView.getReappearAnimator();
+            } else if (index == HOUR_INDEX && lastIndex == MINUTE_INDEX) {
+                anims[0] = mMinuteRadialTextsView.getDisappearAnimator();
+                anims[1] = mMinuteRadialSelectorView.getDisappearAnimator();
+                anims[2] = mHourRadialTextsView.getReappearAnimator();
+                anims[3] = mHourRadialSelectorView.getReappearAnimator();
             }
 
             if (mTransition != null && mTransition.isRunning()) {
