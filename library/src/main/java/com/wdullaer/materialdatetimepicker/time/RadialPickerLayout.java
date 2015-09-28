@@ -267,6 +267,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     public void setTime(int hours, int minutes) {
         setItem(HOUR_INDEX, hours);
         setItem(MINUTE_INDEX, minutes);
+        setItem(SECOND_INDEX, 0);
     }
 
     public void setTime(int hours, int minutes, int seconds) {

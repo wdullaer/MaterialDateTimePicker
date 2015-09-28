@@ -29,7 +29,7 @@
     <item name="mdtp_text_size_multiplier_outer" format="float" type="string">0.08</item>
 
     <dimen name="mdtp_time_label_size">60sp</dimen>
-    <dimen name="mdtp_time_label_small_size">30sp</dimen>
+    <dimen name="mdtp_time_label_subscript_size">30sp</dimen>
     <dimen name="mdtp_time_label_shift">-12dp</dimen>
     <dimen name="mdtp_extra_time_label_margin">-30dp</dimen>
     <dimen name="mdtp_ampm_label_size">16sp</dimen>

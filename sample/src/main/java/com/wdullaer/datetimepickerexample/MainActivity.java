@@ -61,12 +61,23 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 Calendar now = Calendar.getInstance();
-                TimePickerDialog tpd = TimePickerDialog.newInstance(
-                        MainActivity.this,
-                        now.get(Calendar.HOUR_OF_DAY),
-                        now.get(Calendar.MINUTE),
-                        mode24Hours.isChecked()
-                );
+                TimePickerDialog tpd;
+                if (enableSeconds.isChecked()) {
+                    tpd = TimePickerDialog.newInstance(
+                            MainActivity.this,
+                            now.get(Calendar.HOUR_OF_DAY),
+                            now.get(Calendar.MINUTE),
+                            now.get(Calendar.SECOND),
+                            mode24Hours.isChecked()
+                    );
+                } else {
+                    tpd = TimePickerDialog.newInstance(
+                            MainActivity.this,
+                            now.get(Calendar.HOUR_OF_DAY),
+                            now.get(Calendar.MINUTE),
+                            mode24Hours.isChecked()
+                    );
+                }
                 tpd.setThemeDark(modeDarkTime.isChecked());
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());

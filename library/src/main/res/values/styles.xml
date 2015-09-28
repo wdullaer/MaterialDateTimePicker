@@ -22,7 +22,7 @@
     </style>
 
     <style name="mdtp_time_label_small" parent="mdtp_time_label">
-        <item name="android:textSize">@dimen/mdtp_time_label_small_size</item>
+        <item name="android:textSize">@dimen/mdtp_time_label_subscript_size</item>
         <item name="android:layout_marginBottom">@dimen/mdtp_time_label_shift</item>
     </style>
 

@@ -595,7 +595,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
         } else if (pickerIndex == MINUTE_INDEX) {
             setMinute(newValue);
-            if (mAllowAutoAdvance && autoAdvance) {
+            if (mEnableSeconds && mAllowAutoAdvance && autoAdvance) {
                 setCurrentItemShowing(SECOND_INDEX, true, true, false);
                 Utils.tryAccessibilityAnnounce(mTimePicker, String.format("%02d", newValue));
             } else {
@@ -792,7 +792,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
     private boolean addKeyIfLegal(int keyCode) {
         // If we're in 24hour mode, we'll need to check if the input is full. If in AM/PM mode,
         // we'll need to see if AM/PM have been typed.
-        if ((mIs24HourMode && mTypedTimes.size() == 4) ||
+        if ((mIs24HourMode && mTypedTimes.size() == (mEnableSeconds ? 6 : 4)) ||
                 (!mIs24HourMode && isTypedTimeFullyLegal())) {
             return false;
         }
@@ -807,7 +807,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         Utils.tryAccessibilityAnnounce(mTimePicker, String.format("%d", val));
         // Automatically fill in 0's if AM or PM was legally entered.
         if (isTypedTimeFullyLegal()) {
-            if (!mIs24HourMode && mTypedTimes.size() <= 3) {
+            if (!mIs24HourMode && mTypedTimes.size() <= (mEnableSeconds ? 5 : 3)) {
                 mTypedTimes.add(mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
                 mTypedTimes.add(mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
             }
@@ -832,7 +832,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         return true;
     }
 
-    /**
+    /**s
      * Check if the time that has been typed so far is completely legal, as is.
      */
     private boolean isTypedTimeFullyLegal() {
@@ -840,7 +840,9 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             // For 24-hour mode, the time is legal if the hours and minutes are each legal. Note:
             // getEnteredTime() will ONLY call isTypedTimeFullyLegal() when NOT in 24hour mode.
             int[] values = getEnteredTime(null);
-            return (values[0] >= 0 && values[1] >= 0 && values[1] < 60);
+            return mEnableSeconds ?
+                    (values[0] >= 0 && values[1] >= 0 && values[1] < 60 && values[2] >= 0 && values[2] < 60) :
+                    (values[0] >= 0 && values[1] >= 0 && values[1] < 60);
         } else {
             // For AM/PM mode, the time is legal if it contains an AM or PM, as those can only be
             // legally added at specific times based on the tree's algorithm.
@@ -865,9 +867,13 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mInKbMode = false;
         if (!mTypedTimes.isEmpty()) {
             int values[] = getEnteredTime(null);
-            mTimePicker.setTime(values[0], values[1]);
+            if (mEnableSeconds) {
+                mTimePicker.setTime(values[0], values[1], values[2]);
+            } else {
+                mTimePicker.setTime(values[0], values[1]);
+            }
             if (!mIs24HourMode) {
-                mTimePicker.setAmOrPm(values[2]);
+                mTimePicker.setAmOrPm(values[3]);
             }
             mTypedTimes.clear();
         }
@@ -898,17 +904,17 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             setCurrentItemShowing(mTimePicker.getCurrentItemShowing(), true, true, true);
             mOkButton.setEnabled(true);
         } else {
-            Boolean[] enteredZeros = {false, false};
+            Boolean[] enteredZeros = {false, false, false};
             int[] values = getEnteredTime(enteredZeros);
-            String hourFormat = enteredZeros[0]? "%02d" : "%2d";
-            String minuteFormat = (enteredZeros[1])? "%02d" : "%2d";
-            String secondFormat = (enteredZeros[1])? "%02d" : "%2d";
-            String hourStr = (values[0] == -1)? mDoublePlaceholderText :
+            String hourFormat = enteredZeros[0] ? "%02d" : "%2d";
+            String minuteFormat = enteredZeros[1] ? "%02d" : "%2d";
+            String secondFormat = enteredZeros[2] ? "%02d" : "%2d";
+            String hourStr = (values[0] == -1) ? mDoublePlaceholderText :
                 String.format(hourFormat, values[0]).replace(' ', mPlaceholderText);
             String minuteStr = (values[1] == -1)? mDoublePlaceholderText :
                 String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
-            String secondStr = (values[1] == -1)? mDoublePlaceholderText :
-                String.format(secondFormat, values[1]).replace(' ', mPlaceholderText);
+            String secondStr = (values[2] == -1)? mDoublePlaceholderText :
+                String.format(secondFormat, values[2]).replace(' ', mPlaceholderText);
             mHourView.setText(hourStr);
             mHourSpaceView.setText(hourStr);
             mHourView.setTextColor(mUnselectedColor);
@@ -919,7 +925,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mSecondSpaceView.setText(secondStr);
             mSecondView.setTextColor(mUnselectedColor);
             if (!mIs24HourMode) {
-                updateAmPmDisplay(values[2]);
+                updateAmPmDisplay(values[3]);
             }
         }
     }
@@ -975,25 +981,29 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         int minute = -1;
         int hour = -1;
         int second = -1;
+        int shift = mEnableSeconds ? 2 : 0;
         for (int i = startIndex; i <= mTypedTimes.size(); i++) {
             int val = getValFromKeyCode(mTypedTimes.get(mTypedTimes.size() - i));
-            if (i == startIndex) {
-                second = val;
-            } else if (i == startIndex+1) {
-                second += 10*val;
-                if (enteredZeros != null && val == 0) {
-                    enteredZeros[1] = true;
+            if (mEnableSeconds) {
+                if (i == startIndex) {
+                    second = val;
+                } else if (i == startIndex + 1) {
+                    second += 10*val;
+                    if (enteredZeros != null && val == 0) {
+                        enteredZeros[2] = true;
+                    }
                 }
-            } else if (i == startIndex+2) {
+            }
+            if (i == startIndex + shift) {
                 minute = val;
-            } else if (i == startIndex+3) {
+            } else if (i == startIndex + shift + 1) {
                 minute += 10*val;
                 if (enteredZeros != null && val == 0) {
                     enteredZeros[1] = true;
                 }
-            } else if (i == startIndex+4) {
+            } else if (i == startIndex + shift + 2) {
                 hour = val;
-            } else if (i == startIndex+5) {
+            } else if (i == startIndex + shift + 3) {
                 hour += 10*val;
                 if (enteredZeros != null && val == 0) {
                     enteredZeros[0] = true;
@@ -1003,6 +1013,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
 
         return new int[] {hour, minute, second, amOrPm};
     }
+
 
     /**
      * Get the keycode value for AM and PM in the current language.
@@ -1064,6 +1075,15 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             // The first digit must be followed by the second digit.
             minuteFirstDigit.addChild(minuteSecondDigit);
 
+            if (mEnableSeconds) {
+                Node secondsFirstDigit = new Node(k0, k1, k2, k3, k4, k5);
+                Node secondsSecondDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
+                secondsFirstDigit.addChild(secondsSecondDigit);
+
+                // Minutes can be followed by seconds.
+                minuteSecondDigit.addChild(secondsFirstDigit);
+            }
+
             // The first digit may be 0-1.
             Node firstDigit = new Node(k0, k1);
             mLegalTimesTree.addChild(firstDigit);
@@ -1111,6 +1131,12 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             // Set up AM and PM to respond to "a" and "p".
             Node ampm = new Node(getAmOrPmKeyCode(AM), getAmOrPmKeyCode(PM));
 
+            // Seconds will be used a few times as well, if enabled.
+            Node secondsFirstDigit = new Node(k0, k1, k2, k3, k4, k5);
+            Node secondsSecondDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
+            secondsSecondDigit.addChild(ampm);
+            secondsFirstDigit.addChild(secondsSecondDigit);
+
             // The first hour digit may be 1.
             Node firstDigit = new Node(k1);
             mLegalTimesTree.addChild(firstDigit);
@@ -1133,14 +1159,28 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             // the fourth digit may be 0-9.
             Node fourthDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
             thirdDigit.addChild(fourthDigit);
-            // The time must be finished now. E.g. 10:49am, 12:40pm.
+            // The time must be finished now if seconds disabled. E.g. 10:49am, 12:40pm.
             fourthDigit.addChild(ampm);
+
+            // When the first digit is 1, the second digit is 0-2, and the third digit is 0-5,
+            // and fourth digit is 0-9, we may add seconds if enabled.
+            if (mEnableSeconds) {
+                // The time must be finished now. E.g. 10:49:01am, 12:40:59pm.
+                fourthDigit.addChild(secondsFirstDigit);
+            }
 
             // When the first digit is 1, and the second digit is 0-2, the third digit may be 6-9.
             thirdDigit = new Node(k6, k7, k8, k9);
             secondDigit.addChild(thirdDigit);
             // The time must be finished now. E.g. 1:08am, 1:26pm.
             thirdDigit.addChild(ampm);
+
+            // When the first digit is 1, and the second digit is 0-2, and the third digit is 6-9,
+            // we may add seconds is enabled.
+            if (mEnableSeconds) {
+                // The time must be finished now. E.g. 1:08:01am, 1:26:59pm.
+                thirdDigit.addChild(secondsFirstDigit);
+            }
 
             // When the first digit is 1, the second digit may be 3-5.
             secondDigit = new Node(k3, k4, k5);
@@ -1149,8 +1189,15 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             // When the first digit is 1, and the second digit is 3-5, the third digit may be 0-9.
             thirdDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
             secondDigit.addChild(thirdDigit);
-            // The time must be finished now. E.g. 1:39am, 1:50pm.
+            // The time must be finished now if seconds disabled. E.g. 1:39am, 1:50pm.
             thirdDigit.addChild(ampm);
+
+            // When the first digit is 1, and the second digit is 3-5, and the third digit is 0-9,
+            // we may add seconds if enabled.
+            if (mEnableSeconds) {
+                // The time must be finished now. E.g. 1:39:01am, 1:50:59pm.
+                thirdDigit.addChild(secondsFirstDigit);
+            }
 
             // The hour digit may be 2-9.
             firstDigit = new Node(k2, k3, k4, k5, k6, k7, k8, k9);
@@ -1167,6 +1214,13 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             secondDigit.addChild(thirdDigit);
             // The time must be finished now. E.g. 2:57am, 9:30pm.
             thirdDigit.addChild(ampm);
+
+            // When the first digit is 2-9, and the second digit is 0-5, and third digit is 0-9, we
+            // may add seconds if enabled.
+            if (mEnableSeconds) {
+                // The time must be finished now. E.g. 2:57:01am, 9:30:59pm.
+                thirdDigit.addChild(secondsFirstDigit);
+            }
         }
     }
 
