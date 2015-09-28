@@ -21,6 +21,11 @@
         <item name="android:textColor">@color/mdtp_numbers_text_color</item>
     </style>
 
+    <style name="mdtp_time_label_small" parent="mdtp_time_label">
+        <item name="android:textSize">@dimen/mdtp_time_label_small_size</item>
+        <item name="android:layout_marginBottom">@dimen/mdtp_time_label_shift</item>
+    </style>
+
     <style name="mdtp_ampm_label">
         <item name="android:textSize">@dimen/mdtp_ampm_label_size</item>
         <item name="android:textAllCaps">true</item>

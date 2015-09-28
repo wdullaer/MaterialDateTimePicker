@@ -41,6 +41,7 @@
     <dimen name="mdtp_month_day_label_text_size">12sp</dimen>
 
     <dimen name="mdtp_time_label_size">76sp</dimen>
+    <dimen name="mdtp_time_label_small_size">38sp</dimen>
     <dimen name="mdtp_extra_time_label_margin">-50dp</dimen>
     <dimen name="mdtp_ampm_label_size">16sp</dimen>
     <dimen name="mdtp_ampm_left_padding">6dip</dimen>

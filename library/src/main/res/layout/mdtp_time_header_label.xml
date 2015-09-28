@@ -123,22 +123,21 @@
             android:layout_centerVertical="true"
             android:visibility="invisible"
             android:textColor="@color/mdtp_accent_color_focused"
-            style="@style/mdtp_time_label"
+            style="@style/mdtp_time_label_small"
             android:importantForAccessibility="no" />
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_alignRight="@+id/seconds_space"
             android:layout_alignLeft="@+id/seconds_space"
-            android:layout_marginLeft="@dimen/mdtp_extra_time_label_margin"
-            android:layout_marginRight="@dimen/mdtp_extra_time_label_margin"
+            android:layout_marginLeft="-15dp"
+            android:layout_marginRight="-15dp"
             android:layout_centerVertical="true" >
             <com.wdullaer.materialdatetimepicker.AccessibleTextView
                 android:id="@+id/seconds"
-                style="@style/mdtp_time_label"
+                style="@style/mdtp_time_label_small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:gravity="center_horizontal"
                 android:text="@string/mdtp_time_placeholder"
                 android:layout_gravity="center"

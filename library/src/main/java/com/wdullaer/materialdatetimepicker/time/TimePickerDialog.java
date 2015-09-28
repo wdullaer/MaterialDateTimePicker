@@ -19,6 +19,7 @@ package com.wdullaer.materialdatetimepicker.time;
 import android.animation.ObjectAnimator;
 import android.app.ActionBar.LayoutParams;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -288,6 +289,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             Bundle savedInstanceState) {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
+        Context context = getActivity().getApplicationContext();
         View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, null);
         KeyboardListener keyboardListener = new KeyboardListener();
         view.findViewById(R.id.time_picker_dialog).setOnKeyListener(keyboardListener);
@@ -390,14 +392,10 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         if (mIs24HourMode) {
             mAmPmTextView.setVisibility(View.GONE);
 
-            RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
-                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            paramsSeparator.addRule(RelativeLayout.CENTER_IN_PARENT);
-            TextView separatorView = (TextView) view.findViewById(R.id.separator);
-            separatorView.setLayoutParams(paramsSeparator);
         } else {
+
             mAmPmTextView.setVisibility(View.VISIBLE);
-            updateAmPmDisplay(mInitialHourOfDay < 12? AM : PM);
+            updateAmPmDisplay(mInitialHourOfDay < 12 ? AM : PM);
             mAmPmHitspace.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -405,13 +403,59 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
                     int amOrPm = mTimePicker.getIsCurrentlyAmOrPm();
                     if (amOrPm == AM) {
                         amOrPm = PM;
-                    } else if (amOrPm == PM){
+                    } else if (amOrPm == PM) {
                         amOrPm = AM;
                     }
                     updateAmPmDisplay(amOrPm);
                     mTimePicker.setAmOrPm(amOrPm);
                 }
             });
+        }
+
+        // Hide seconds if disabled
+        if (!mEnableSeconds) {
+            mSecondSpaceView.setVisibility(View.GONE);
+            view.findViewById(R.id.separator_seconds).setVisibility(View.GONE);
+        }
+
+        // Center stuff depending on what's visible
+        if (mIs24HourMode && !mEnableSeconds) {
+
+            // center first separator
+            RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
+                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            paramsSeparator.addRule(RelativeLayout.CENTER_IN_PARENT);
+            TextView separatorView = (TextView) view.findViewById(R.id.separator);
+            separatorView.setLayoutParams(paramsSeparator);
+
+        } else {
+            if (mEnableSeconds) {
+
+                // link separator to minutes
+                final View separator = view.findViewById(R.id.separator);
+                RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                paramsSeparator.addRule(RelativeLayout.LEFT_OF, R.id.minutes_space);
+                paramsSeparator.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                separator.setLayoutParams(paramsSeparator);
+
+                if (!mIs24HourMode) {
+
+                    // center minutes
+                    RelativeLayout.LayoutParams paramsMinutes = new RelativeLayout.LayoutParams(
+                            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                    paramsMinutes.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    mMinuteSpaceView.setLayoutParams(paramsMinutes);
+
+                } else {
+
+                    // move minutes to right of center
+                    RelativeLayout.LayoutParams paramsMinutes = new RelativeLayout.LayoutParams(
+                                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                    paramsMinutes.addRule(RelativeLayout.RIGHT_OF, R.id.center_view);
+                    mMinuteSpaceView.setLayoutParams(paramsMinutes);
+                }
+            }
         }
 
         mAllowAutoAdvance = true;
@@ -441,7 +485,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         }
 
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
-        mTimePicker.setTheme(getActivity().getApplicationContext(), mThemeDark);
+        mTimePicker.setTheme(context, mThemeDark);
 
         //If an accent color has not been set manually, try and get it from the context
         if (mAccentColor == -1) {
