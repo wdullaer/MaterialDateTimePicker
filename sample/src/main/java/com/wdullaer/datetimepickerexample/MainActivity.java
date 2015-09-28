@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements
                 });
                 tpd.show(getFragmentManager(), "Timepickerdialog");
                 if (enableSeconds.isChecked()) {
-                    tpd.enableSeconds(true);
+                    tpd.setSecondsEnabled(true);
                 }
             }
         });

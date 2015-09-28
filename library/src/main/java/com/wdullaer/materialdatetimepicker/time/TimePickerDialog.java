@@ -222,7 +222,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         return mThemeDark;
     }
 
-    public void enableSeconds(boolean enabled) {
+    public void setSecondsEnabled(boolean enabled) {
         mEnableSeconds = enabled;
     }
 
