@@ -487,7 +487,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mOkButton.setTextColor(mAccentColor);
             mCancelButton.setTextColor(mAccentColor);
             mTimePicker.setAccentColor(mAccentColor);
-            timePickerHeader.setBackgroundColor(mAccentColor);
+            timePickerHeader.setBackgroundColor(Utils.darkenColor(mAccentColor));
             view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
             view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
         }
