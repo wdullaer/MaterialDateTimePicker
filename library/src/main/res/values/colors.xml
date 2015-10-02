@@ -26,6 +26,9 @@
     <color name="mdtp_done_text_color_disabled">#cccccc</color>
     <color name="mdtp_numbers_text_color">#ff212121</color>
 
+    <color name="mdtp_numbers_disabled_color">#767676</color>
+
+
     <color name="mdtp_transparent_black">#7f000000</color>
     <color name="mdtp_accent_color">#009688</color>
     <color name="mdtp_accent_color_focused">#76ffffff</color>

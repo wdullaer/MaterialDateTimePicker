@@ -64,6 +64,9 @@ public class AmPmCirclesView extends View {
     private int mAmOrPm;
     private int mAmOrPmPressed;
 
+    private boolean mAmDisabled = false;
+    private boolean mPmDisabled = false;
+
     public AmPmCirclesView(Context context) {
         super(context);
         mIsInitialized = false;
@@ -129,6 +132,19 @@ public class AmPmCirclesView extends View {
         mAmOrPmPressed = amOrPmPressed;
     }
 
+    public void toggleAmOrPm(int mAmOrPm, boolean disabled)
+    {
+        switch (mAmOrPm)
+        {
+            case AM:
+                mAmDisabled = disabled;
+                break;
+            case PM:
+                mPmDisabled = disabled;
+                break;
+        }
+    }
+
     /**
      * Calculate whether the coordinates are touching the AM or PM circle.
      */
@@ -142,13 +158,13 @@ public class AmPmCirclesView extends View {
         int distanceToAmCenter =
                 (int) Math.sqrt((xCoord - mAmXCenter)*(xCoord - mAmXCenter) + squaredYDistance);
         if (distanceToAmCenter <= mAmPmCircleRadius) {
-            return AM;
+            return !mAmDisabled ? AM : -1;
         }
 
         int distanceToPmCenter =
                 (int) Math.sqrt((xCoord - mPmXCenter)*(xCoord - mPmXCenter) + squaredYDistance);
         if (distanceToPmCenter <= mAmPmCircleRadius) {
-            return PM;
+            return !mPmDisabled ? PM : -1;
         }
 
         // Neither was close enough.
@@ -209,18 +225,30 @@ public class AmPmCirclesView extends View {
         }
 
         // Draw the two circles.
-        mPaint.setColor(amColor);
-        mPaint.setAlpha(amAlpha);
-        canvas.drawCircle(mAmXCenter, mAmPmYCenter, mAmPmCircleRadius, mPaint);
-        mPaint.setColor(pmColor);
-        mPaint.setAlpha(pmAlpha);
-        canvas.drawCircle(mPmXCenter, mAmPmYCenter, mAmPmCircleRadius, mPaint);
+        if(!mAmDisabled)
+        {
+            mPaint.setColor(amColor);
+            mPaint.setAlpha(amAlpha);
+            canvas.drawCircle(mAmXCenter, mAmPmYCenter, mAmPmCircleRadius, mPaint);
+        }
+        if(!mPmDisabled)
+        {
+            mPaint.setColor(pmColor);
+            mPaint.setAlpha(pmAlpha);
+            canvas.drawCircle(mPmXCenter, mAmPmYCenter, mAmPmCircleRadius, mPaint);
+        }
 
         // Draw the AM/PM texts on top.
-        mPaint.setColor(amTextColor);
         int textYCenter = mAmPmYCenter - (int) (mPaint.descent() + mPaint.ascent()) / 2;
-        canvas.drawText(mAmText, mAmXCenter, textYCenter, mPaint);
-        mPaint.setColor(pmTextColor);
-        canvas.drawText(mPmText, mPmXCenter, textYCenter, mPaint);
+        if(!mAmDisabled)
+        {
+            mPaint.setColor(amTextColor);
+            canvas.drawText(mAmText, mAmXCenter, textYCenter, mPaint);
+        }
+        if(!mPmDisabled)
+        {
+            mPaint.setColor(pmTextColor);
+            canvas.drawText(mPmText, mPmXCenter, textYCenter, mPaint);
+        }
     }
 }

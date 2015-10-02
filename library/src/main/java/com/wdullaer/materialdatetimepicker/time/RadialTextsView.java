@@ -40,11 +40,14 @@ public class RadialTextsView extends View {
 
     private final Paint mPaint = new Paint();
     private final Paint mSelectedPaint = new Paint();
+    private final Paint mDisabledPaint = new Paint();
 
     private boolean mDrawValuesReady;
     private boolean mIsInitialized;
 
     private int selection = -1;
+
+    private AllowedValuesFilter filter;
 
     private Typeface mTypefaceLight;
     private Typeface mTypefaceRegular;
@@ -150,6 +153,12 @@ public class RadialTextsView extends View {
 
         mTextGridValuesDirty = true;
         mIsInitialized = true;
+
+        //min time
+        int disabledTextColor = res.getColor(R.color.mdtp_numbers_disabled_color);
+        mDisabledPaint.setColor(disabledTextColor);
+        mDisabledPaint.setAntiAlias(true);
+        mDisabledPaint.setTextAlign(Align.CENTER);
     }
 
     /* package */ void setTheme(Context context, boolean themeDark) {
@@ -169,6 +178,11 @@ public class RadialTextsView extends View {
      */
     protected void setSelection(int selection) {
         this.selection = selection;
+    }
+
+    protected void setFilter(AllowedValuesFilter filter)
+    {
+        this.filter = filter;
     }
 
     /**
@@ -285,21 +299,59 @@ public class RadialTextsView extends View {
      * Draw the 12 text values at the positions specified by the textGrid parameters.
      */
     private void drawTexts(Canvas canvas, float textSize, Typeface typeface, String[] texts,
-            float[] textGridWidths, float[] textGridHeights) {
+            float[] textGridWidths, float[] textGridHeights)
+    {
         mPaint.setTextSize(textSize);
         mPaint.setTypeface(typeface);
-        canvas.drawText(texts[0], textGridWidths[3], textGridHeights[0], Integer.parseInt(texts[0]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[1], textGridWidths[4], textGridHeights[1], Integer.parseInt(texts[1]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[2], textGridWidths[5], textGridHeights[2], Integer.parseInt(texts[2]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[3], textGridWidths[6], textGridHeights[3], Integer.parseInt(texts[3]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[4], textGridWidths[5], textGridHeights[4], Integer.parseInt(texts[4]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[5], textGridWidths[4], textGridHeights[5], Integer.parseInt(texts[5]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[6], textGridWidths[3], textGridHeights[6], Integer.parseInt(texts[6]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[7], textGridWidths[2], textGridHeights[5], Integer.parseInt(texts[7]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[8], textGridWidths[1], textGridHeights[4], Integer.parseInt(texts[8]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[9], textGridWidths[0], textGridHeights[3], Integer.parseInt(texts[9]) == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[10], textGridWidths[1], textGridHeights[2], Integer.parseInt(texts[10])  == selection ? mSelectedPaint : mPaint);
-        canvas.drawText(texts[11], textGridWidths[2], textGridHeights[1], Integer.parseInt(texts[11])  == selection ? mSelectedPaint : mPaint);
+
+        for (int i = 0; i < 12; i++)
+            canvas.drawText(texts[i], textGridWidths[widthCurveIndex(i)], textGridHeights[heightCurveIndex(i)], paintForValue(Integer.parseInt(texts[i])));
+    }
+
+    /**
+     * function representation of the sequence [0,11] -> {3,4,5,6,5,4,3,2,1,0,1,2}
+     * @param value
+     * @return
+     */
+    private int widthCurveIndex(int value)
+    {
+        if(value <= 3)
+            return value + 3;
+        else if(value <= 6+3)
+            return 9 - value;
+        else
+            return value - 9;
+    }
+
+    /**
+     * function representation of the sequence [0,11] -> {0,1,2,3,4,5,6,5,4,3,2,1}
+     * @param value
+     * @return
+     */
+    private int heightCurveIndex(int value)
+    {
+        if(value <= 6)
+            return value;
+        else
+            return 12 - value;
+    }
+
+    private Paint paintForValue(int value)
+    {
+        if (value == selection)
+            return mSelectedPaint;
+        else if (isAllowed(value))
+            return mPaint;
+        else
+            return mDisabledPaint;
+    }
+
+    private boolean isAllowed(int value)
+    {
+        if(filter == null)
+            return true;
+        else
+            return filter.isAllowed(value);
     }
 
     /**
@@ -374,5 +426,10 @@ public class RadialTextsView extends View {
         public void onAnimationUpdate(ValueAnimator animation) {
             RadialTextsView.this.invalidate();
         }
+    }
+
+    public interface AllowedValuesFilter
+    {
+        boolean isAllowed(int value);
     }
 }
