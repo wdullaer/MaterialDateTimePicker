@@ -244,6 +244,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             mThemeDark = savedInstanceState.getBoolean(KEY_DARK_THEME);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
+            mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
         }
     }
 
@@ -394,21 +395,16 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
         mTimePicker.setTheme(getActivity().getApplicationContext(), mThemeDark);
 
-        //If an accent color has not been set manually, try and get it from the context
+        // If an accent color has not been set manually, get it from the context
         if (mAccentColor == -1) {
-            int accentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
-            if (accentColor != -1) {
-                mAccentColor = accentColor;
-            }
+            mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
-        if (mAccentColor != -1) {
-            mOkButton.setTextColor(mAccentColor);
-            mCancelButton.setTextColor(mAccentColor);
-            mTimePicker.setAccentColor(mAccentColor);
-            timePickerHeader.setBackgroundColor(Utils.darkenColor(mAccentColor));
-            view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
-            view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
-        }
+        mOkButton.setTextColor(mAccentColor);
+        mCancelButton.setTextColor(mAccentColor);
+        mTimePicker.setAccentColor(mAccentColor);
+        timePickerHeader.setBackgroundColor(Utils.darkenColor(mAccentColor));
+        view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
+        view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
 
         int circleBackground = res.getColor(R.color.mdtp_circle_background);
         int backgroundColor = res.getColor(R.color.mdtp_background_color);
@@ -479,6 +475,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
             outState.putBoolean(KEY_DARK_THEME, mThemeDark);
             outState.putInt(KEY_ACCENT, mAccentColor);
             outState.putBoolean(KEY_VIBRATE, mVibrate);
+            outState.putBoolean(KEY_DISMISS, mDismissOnPause);
         }
     }
 
