@@ -273,10 +273,6 @@ public abstract class DayPickerView extends ListView implements OnScrollListener
         invalidateViews();
     }
 
-    public void setAccentColor(int accentColor) {
-        mAdapter.setAccentColor(accentColor);
-    }
-
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         // use a post to prevent re-entering onScrollStateChanged before it

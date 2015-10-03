@@ -34,6 +34,8 @@ public interface DatePickerController {
     MonthAdapter.CalendarDay getSelectedDay();
 
     boolean isThemeDark();
+
+    int getAccentColor();
     
     Calendar[] getHighlightedDays();
 

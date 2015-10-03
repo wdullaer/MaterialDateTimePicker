@@ -215,7 +215,7 @@ public abstract class MonthView extends View {
             mHighlightedDayTextColor = res.getColor(R.color.mdtp_date_picker_text_highlighted);
         }
         mSelectedDayTextColor = res.getColor(R.color.mdtp_white);
-        mTodayNumberColor = res.getColor(R.color.mdtp_accent_color);
+        mTodayNumberColor = mController.getAccentColor();
         mMonthTitleColor = res.getColor(R.color.mdtp_white);
 
         mStringBuilder = new StringBuilder(50);
@@ -321,11 +321,6 @@ public abstract class MonthView extends View {
         mMonthNumPaint.setStyle(Style.FILL);
         mMonthNumPaint.setTextAlign(Align.CENTER);
         mMonthNumPaint.setFakeBoldText(false);
-    }
-
-    public void setAccentColor(int color) {
-        mTodayNumberColor = color;
-        mSelectedCirclePaint.setColor(color);
     }
 
     @Override
