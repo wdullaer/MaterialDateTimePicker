@@ -227,7 +227,7 @@ public class DatePickerDialog extends DialogFragment implements
         Log.d(TAG, "onCreateView: ");
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-        View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, null);
+        View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, container);
 
         mDayOfWeekView = (TextView) view.findViewById(R.id.date_picker_header);
         mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);

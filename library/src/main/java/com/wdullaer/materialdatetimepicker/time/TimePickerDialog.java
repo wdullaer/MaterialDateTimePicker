@@ -265,7 +265,7 @@ public class TimePickerDialog extends DialogFragment implements
             Bundle savedInstanceState) {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-        View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, null);
+        View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, container);
         KeyboardListener keyboardListener = new KeyboardListener();
         view.findViewById(R.id.time_picker_dialog).setOnKeyListener(keyboardListener);
 
