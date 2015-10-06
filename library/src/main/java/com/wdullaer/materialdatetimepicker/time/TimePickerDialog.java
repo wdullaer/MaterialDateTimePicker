@@ -49,7 +49,8 @@ import java.util.Locale;
 /**
  * Dialog to set a time.
  */
-public class TimePickerDialog extends DialogFragment implements OnValueSelectedListener{
+public class TimePickerDialog extends DialogFragment implements
+        OnValueSelectedListener, TimePickerController {
     private static final String TAG = "TimePickerDialog";
 
     private static final String KEY_HOUR_OF_DAY = "hour_of_day";
@@ -192,8 +193,19 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         mAccentColor = color;
     }
 
+    @Override
     public boolean isThemeDark() {
         return mThemeDark;
+    }
+
+    @Override
+    public boolean is24HourMode() {
+        return mIs24HourMode;
+    }
+
+    @Override
+    public int getAccentColor() {
+        return mAccentColor;
     }
 
     /**
@@ -256,6 +268,11 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, null);
         KeyboardListener keyboardListener = new KeyboardListener();
         view.findViewById(R.id.time_picker_dialog).setOnKeyListener(keyboardListener);
+
+        // If an accent color has not been set manually, get it from the context
+        if (mAccentColor == -1) {
+            mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
+        }
 
         Resources res = getResources();
         mHourPickerDescription = res.getString(R.string.mdtp_hour_picker_description);
@@ -393,15 +410,8 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         }
 
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
-        mTimePicker.setTheme(getActivity().getApplicationContext(), mThemeDark);
-
-        // If an accent color has not been set manually, get it from the context
-        if (mAccentColor == -1) {
-            mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
-        }
         mOkButton.setTextColor(mAccentColor);
         mCancelButton.setTextColor(mAccentColor);
-        mTimePicker.setAccentColor(mAccentColor);
         timePickerHeader.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
         view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
@@ -409,7 +419,6 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         int circleBackground = res.getColor(R.color.mdtp_circle_background);
         int backgroundColor = res.getColor(R.color.mdtp_background_color);
         int darkBackgroundColor = res.getColor(R.color.mdtp_light_gray);
-
         int lightGray = res.getColor(R.color.mdtp_light_gray);
 
         mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
@@ -442,6 +451,7 @@ public class TimePickerDialog extends DialogFragment implements OnValueSelectedL
         if(mOnDismissListener != null) mOnDismissListener.onDismiss(dialog);
     }
 
+    @Override
     public void tryVibrate() {
         if(mVibrate) mHapticFeedbackController.tryVibrate();
     }
