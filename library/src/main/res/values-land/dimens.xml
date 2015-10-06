@@ -26,4 +26,6 @@
     <dimen name="mdtp_selected_date_year_size">30dp</dimen>
     <dimen name="mdtp_selected_date_day_size">100dp</dimen>
     <dimen name="mdtp_selected_date_month_size">30dp</dimen>
+
+    <dimen name="mdtp_date_picker_view_animator_height">240dp</dimen>
 </resources>
