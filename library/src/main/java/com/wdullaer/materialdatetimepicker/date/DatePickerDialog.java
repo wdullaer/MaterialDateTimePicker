@@ -77,6 +77,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
+    private static final String KEY_DEFAULT_VIEW = "default_view";
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -112,10 +113,11 @@ public class DatePickerDialog extends DialogFragment implements
     private Calendar mMaxDate;
     private Calendar[] highlightedDays;
     private Calendar[] selectableDays;
-    private boolean mThemeDark;
+    private boolean mThemeDark = false;
     private int mAccentColor = -1;
-    private boolean mVibrate;
-    private boolean mDismissOnPause;
+    private boolean mVibrate = true;
+    private boolean mDismissOnPause = false;
+    private int mDefaultView = MONTH_AND_DAY_VIEW;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -174,10 +176,6 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.YEAR, year);
         mCalendar.set(Calendar.MONTH, monthOfYear);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        mThemeDark = false;
-        mAccentColor = -1;
-        mVibrate = true;
-        mDismissOnPause = false;
     }
 
     @Override
@@ -190,6 +188,7 @@ public class DatePickerDialog extends DialogFragment implements
             mCalendar.set(Calendar.YEAR, savedInstanceState.getInt(KEY_SELECTED_YEAR));
             mCalendar.set(Calendar.MONTH, savedInstanceState.getInt(KEY_SELECTED_MONTH));
             mCalendar.set(Calendar.DAY_OF_MONTH, savedInstanceState.getInt(KEY_SELECTED_DAY));
+            mDefaultView = savedInstanceState.getInt(KEY_DEFAULT_VIEW);
         }
     }
 
@@ -219,6 +218,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putInt(KEY_ACCENT, mAccentColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
+        outState.putInt(KEY_DEFAULT_VIEW, mDefaultView);
     }
 
     @Override
@@ -239,7 +239,7 @@ public class DatePickerDialog extends DialogFragment implements
 
         int listPosition = -1;
         int listPositionOffset = 0;
-        int currentView = MONTH_AND_DAY_VIEW;
+        int currentView = mDefaultView;
         if (savedInstanceState != null) {
             mWeekStart = savedInstanceState.getInt(KEY_WEEK_START);
             mMinYear = savedInstanceState.getInt(KEY_YEAR_START);
@@ -475,8 +475,17 @@ public class DatePickerDialog extends DialogFragment implements
      * Get the accent color of this dialog
      * @return accent color
      */
+    @Override
     public int getAccentColor() {
         return mAccentColor;
+    }
+
+    /**
+     * Set whether the year picker of the month and day picker is shown first
+     * @param yearPicker boolean
+     */
+    public void showYearPickerFirst(boolean yearPicker) {
+        mDefaultView = yearPicker ? YEAR_VIEW : MONTH_AND_DAY_VIEW;
     }
 
     @SuppressWarnings("unused")

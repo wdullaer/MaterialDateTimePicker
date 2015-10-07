@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox dismissTime;
     private CheckBox dismissDate;
     private CheckBox titleTime;
+    private CheckBox showYearFirst;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements
         dismissTime = (CheckBox) findViewById(R.id.dismiss_time);
         dismissDate = (CheckBox) findViewById(R.id.dismiss_date);
         titleTime = (CheckBox) findViewById(R.id.title_time);
+        showYearFirst = (CheckBox) findViewById(R.id.show_year_first);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (modeCustomAccentDate.isChecked()) {
                     dpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
+                dpd.showYearPickerFirst(showYearFirst.isChecked());
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });

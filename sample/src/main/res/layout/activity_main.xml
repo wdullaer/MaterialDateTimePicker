@@ -102,5 +102,12 @@
             android:text="@string/dismiss_date"
             android:checked="false"/>
 
+        <CheckBox
+            android:id="@+id/show_year_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_year_first"
+            android:checked="false"/>
+
     </LinearLayout>
 </ScrollView>
