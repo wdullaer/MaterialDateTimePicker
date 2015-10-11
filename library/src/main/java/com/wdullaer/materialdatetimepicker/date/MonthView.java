@@ -592,7 +592,7 @@ public abstract class MonthView extends View {
      */
     private void onDayClick(int day) {
         // If the min / max date are set, only process the click if it's a valid selection.
-        if (isOutOfRange(mYear, mMonth, day)) {
+        if (mController.isOutOfRange(mYear, mMonth, day)) {
             return;
         }
 
@@ -603,96 +603,6 @@ public abstract class MonthView extends View {
 
         // This is a no-op if accessibility is turned off.
         mTouchHelper.sendEventForVirtualView(day, AccessibilityEvent.TYPE_VIEW_CLICKED);
-    }
-
-    /**
-     * @return true if the specified year/month/day are within the selectable days or the range set by minDate and maxDate.
-     * If one or either have not been set, they are considered as Integer.MIN_VALUE and
-     * Integer.MAX_VALUE.
-     */
-    protected boolean isOutOfRange(int year, int month, int day) {
-        if (mController.getSelectableDays() != null) {
-            return !isSelectable(year, month, day);
-        }
-
-        if (isBeforeMin(year, month, day)) {
-            return true;
-        }
-        else if (isAfterMax(year, month, day)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean isSelectable(int year, int month, int day) {
-        Calendar[] selectableDays = mController.getSelectableDays();
-        for (Calendar c : selectableDays) {
-            if(year < c.get(Calendar.YEAR)) break;
-            if(year > c.get(Calendar.YEAR)) continue;
-            if(month < c.get(Calendar.MONTH)) break;
-            if(month > c.get(Calendar.MONTH)) continue;
-            if(day < c.get(Calendar.DAY_OF_MONTH)) break;
-            if(day > c.get(Calendar.DAY_OF_MONTH)) continue;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isBeforeMin(int year, int month, int day) {
-        if (mController == null) {
-            return false;
-        }
-        Calendar minDate = mController.getMinDate();
-        if (minDate == null) {
-            return false;
-        }
-
-        if (year < minDate.get(Calendar.YEAR)) {
-            return true;
-        } else if (year > minDate.get(Calendar.YEAR)) {
-            return false;
-        }
-
-        if (month < minDate.get(Calendar.MONTH)) {
-            return true;
-        } else if (month > minDate.get(Calendar.MONTH)) {
-            return false;
-        }
-
-        if (day < minDate.get(Calendar.DAY_OF_MONTH)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isAfterMax(int year, int month, int day) {
-        if (mController == null) {
-            return false;
-        }
-        Calendar maxDate = mController.getMaxDate();
-        if (maxDate == null) {
-            return false;
-        }
-
-        if (year > maxDate.get(Calendar.YEAR)) {
-            return true;
-        } else if (year < maxDate.get(Calendar.YEAR)) {
-            return false;
-        }
-
-        if (month > maxDate.get(Calendar.MONTH)) {
-            return true;
-        } else if (month < maxDate.get(Calendar.MONTH)) {
-            return false;
-        }
-
-        if (day > maxDate.get(Calendar.DAY_OF_MONTH)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**

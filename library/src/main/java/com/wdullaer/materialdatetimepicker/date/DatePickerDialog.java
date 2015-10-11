@@ -531,7 +531,6 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * @return The minimal date supported by this DatePicker. Null if it has not been set.
      */
-    @Override
     public Calendar getMinDate() {
         return mMinDate;
     }
@@ -553,7 +552,6 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * @return The maximal date supported by this DatePicker. Null if it has not been set.
      */
-    @Override
     public Calendar getMaxDate() {
         return mMaxDate;
     }
@@ -616,12 +614,13 @@ public class DatePickerDialog extends DialogFragment implements
     // change the selected day number to the last day of the selected month or year.
     //      e.g. Switching from Mar to Apr when Mar 31 is selected -> Apr 30
     //      e.g. Switching from 2012 to 2013 when Feb 29, 2012 is selected -> Feb 28, 2013
-    private void adjustDayInMonthIfNeeded( Calendar calendar ) {
+    private void adjustDayInMonthIfNeeded(Calendar calendar) {
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         if (day > daysInMonth) {
             calendar.set(Calendar.DAY_OF_MONTH, daysInMonth);
         }
+        setToNearestDate(calendar);
     }
 
     @Override
@@ -636,8 +635,8 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public void onYearSelected(int year) {
-        adjustDayInMonthIfNeeded( mCalendar );
         mCalendar.set(Calendar.YEAR, year);
+        adjustDayInMonthIfNeeded(mCalendar);
         updatePickers();
         setCurrentView(MONTH_AND_DAY_VIEW);
         updateDisplay(true);
@@ -674,6 +673,137 @@ public class DatePickerDialog extends DialogFragment implements
         if(selectableDays != null) return selectableDays[selectableDays.length-1].get(Calendar.YEAR);
         // Ensure no years can be selected outside of the given maximum date
         return mMaxDate != null && mMaxDate.get(Calendar.YEAR) < mMaxYear ? mMaxDate.get(Calendar.YEAR) : mMaxYear;
+    }
+
+    /**
+     * @return true if the specified year/month/day are within the selectable days or the range set by minDate and maxDate.
+     * If one or either have not been set, they are considered as Integer.MIN_VALUE and
+     * Integer.MAX_VALUE.
+     */
+    @Override
+    public boolean isOutOfRange(int year, int month, int day) {
+        if (selectableDays != null) {
+            return !isSelectable(year, month, day);
+        }
+
+        if (isBeforeMin(year, month, day)) {
+            return true;
+        }
+        else if (isAfterMax(year, month, day)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isOutOfRange(Calendar calendar) {
+        return isOutOfRange(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+    }
+
+    private boolean isSelectable(int year, int month, int day) {
+        for (Calendar c : selectableDays) {
+            if(year < c.get(Calendar.YEAR)) break;
+            if(year > c.get(Calendar.YEAR)) continue;
+            if(month < c.get(Calendar.MONTH)) break;
+            if(month > c.get(Calendar.MONTH)) continue;
+            if(day < c.get(Calendar.DAY_OF_MONTH)) break;
+            if(day > c.get(Calendar.DAY_OF_MONTH)) continue;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isBeforeMin(int year, int month, int day) {
+        if (mMinDate == null) {
+            return false;
+        }
+
+        if (year < mMinDate.get(Calendar.YEAR)) {
+            return true;
+        } else if (year > mMinDate.get(Calendar.YEAR)) {
+            return false;
+        }
+
+        if (month < mMinDate.get(Calendar.MONTH)) {
+            return true;
+        } else if (month > mMinDate.get(Calendar.MONTH)) {
+            return false;
+        }
+
+        if (day < mMinDate.get(Calendar.DAY_OF_MONTH)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isBeforeMin(Calendar calendar) {
+        return isBeforeMin(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+    }
+
+    private boolean isAfterMax(int year, int month, int day) {
+        if (mMaxDate == null) {
+            return false;
+        }
+
+        if (year > mMaxDate.get(Calendar.YEAR)) {
+            return true;
+        } else if (year < mMaxDate.get(Calendar.YEAR)) {
+            return false;
+        }
+
+        if (month > mMaxDate.get(Calendar.MONTH)) {
+            return true;
+        } else if (month < mMaxDate.get(Calendar.MONTH)) {
+            return false;
+        }
+
+        if (day > mMaxDate.get(Calendar.DAY_OF_MONTH)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isAfterMax(Calendar calendar) {
+        return isAfterMax(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+    }
+
+    private void setToNearestDate(Calendar calendar) {
+        if(selectableDays != null) {
+            int distance = Integer.MAX_VALUE;
+            for (Calendar c : selectableDays) {
+                int newDistance = Math.abs(calendar.compareTo(c));
+                if(newDistance < distance) distance = newDistance;
+                else {
+                    calendar.setTimeInMillis(c.getTimeInMillis());
+                    break;
+                }
+            }
+            return;
+        }
+
+        if(isBeforeMin(calendar)) {
+            calendar.setTimeInMillis(mMinDate.getTimeInMillis());
+            return;
+        }
+
+        if(isAfterMax(calendar)) {
+            calendar.setTimeInMillis(mMaxDate.getTimeInMillis());
+            return;
+        }
     }
 
     @Override

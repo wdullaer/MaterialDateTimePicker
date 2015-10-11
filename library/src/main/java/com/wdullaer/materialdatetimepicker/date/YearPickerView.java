@@ -69,7 +69,7 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
     }
 
     private void init(Context context) {
-        ArrayList<String> years = new ArrayList<String>();
+        ArrayList<String> years = new ArrayList<>();
         for (int year = mController.getMinYear(); year <= mController.getMaxYear(); year++) {
             years.add(String.format("%d", year));
         }

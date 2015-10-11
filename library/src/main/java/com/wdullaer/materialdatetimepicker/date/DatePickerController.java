@@ -47,9 +47,7 @@ public interface DatePickerController {
 
     int getMaxYear();
 
-    Calendar getMinDate();
-
-    Calendar getMaxDate();
+    boolean isOutOfRange(int year, int month, int day);
 
     void tryVibrate();
 }
