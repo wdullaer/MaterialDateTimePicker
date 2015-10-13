@@ -29,6 +29,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.Utils;
 
 /**
  * A text view which, when pressed or activated, displays a colored circle around the text.
@@ -48,7 +49,7 @@ public class TextViewWithCircularIndicator extends TextView {
     public TextViewWithCircularIndicator(Context context, AttributeSet attrs) {
         super(context, attrs);
         Resources res = context.getResources();
-        mCircleColor = res.getColor(R.color.mdtp_accent_color);
+        mCircleColor = Utils.getColor(context, R.color.mdtp_accent_color);
         mRadius = res.getDimensionPixelOffset(R.dimen.mdtp_month_select_circle_radius);
         mItemIsSelectedText = context.getResources().getString(R.string.mdtp_item_is_selected);
 

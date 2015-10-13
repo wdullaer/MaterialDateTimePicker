@@ -19,6 +19,7 @@ package com.wdullaer.materialdatetimepicker.time;
 import android.animation.ObjectAnimator;
 import android.app.ActionBar.LayoutParams;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -232,6 +233,7 @@ public class TimePickerDialog extends DialogFragment implements
         mOnCancelListener = onCancelListener;
     }
 
+    @SuppressWarnings("unused")
     public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
         mOnDismissListener = onDismissListener;
     }
@@ -275,12 +277,13 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         Resources res = getResources();
+        Context context = getDialog().getContext();
         mHourPickerDescription = res.getString(R.string.mdtp_hour_picker_description);
         mSelectHours = res.getString(R.string.mdtp_select_hours);
         mMinutePickerDescription = res.getString(R.string.mdtp_minute_picker_description);
         mSelectMinutes = res.getString(R.string.mdtp_select_minutes);
-        mSelectedColor = res.getColor(R.color.mdtp_white);
-        mUnselectedColor = res.getColor(R.color.mdtp_accent_color_focused);
+        mSelectedColor = Utils.getColor(context, R.color.mdtp_white);
+        mUnselectedColor = Utils.getColor(context, R.color.mdtp_accent_color_focused);
 
         mHourView = (TextView) view.findViewById(R.id.hours);
         mHourView.setOnKeyListener(keyboardListener);
@@ -342,7 +345,7 @@ public class TimePickerDialog extends DialogFragment implements
             }
         });
         mOkButton.setOnKeyListener(keyboardListener);
-        mOkButton.setTypeface(TypefaceHelper.get(getDialog().getContext(), "Roboto-Medium"));
+        mOkButton.setTypeface(TypefaceHelper.get(context, "Roboto-Medium"));
 
         mCancelButton = (Button) view.findViewById(R.id.cancel);
         mCancelButton.setOnClickListener(new OnClickListener() {
@@ -352,7 +355,7 @@ public class TimePickerDialog extends DialogFragment implements
                 if(getDialog() != null) getDialog().cancel();
             }
         });
-        mCancelButton.setTypeface(TypefaceHelper.get(getDialog().getContext(),"Roboto-Medium"));
+        mCancelButton.setTypeface(TypefaceHelper.get(context,"Roboto-Medium"));
         mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // Enable or disable the AM/PM view.
@@ -416,10 +419,10 @@ public class TimePickerDialog extends DialogFragment implements
         view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
         view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
 
-        int circleBackground = res.getColor(R.color.mdtp_circle_background);
-        int backgroundColor = res.getColor(R.color.mdtp_background_color);
-        int darkBackgroundColor = res.getColor(R.color.mdtp_light_gray);
-        int lightGray = res.getColor(R.color.mdtp_light_gray);
+        int circleBackground = Utils.getColor(context, R.color.mdtp_circle_background);
+        int backgroundColor = Utils.getColor(context, R.color.mdtp_background_color);
+        int darkBackgroundColor = Utils.getColor(context, R.color.mdtp_light_gray);
+        int lightGray = Utils.getColor(context, R.color.mdtp_light_gray);
 
         mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
         view.findViewById(R.id.time_picker_dialog).setBackgroundColor(mThemeDark ? darkBackgroundColor : backgroundColor);

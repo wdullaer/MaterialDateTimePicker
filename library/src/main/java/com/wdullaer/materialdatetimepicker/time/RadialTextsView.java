@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.Utils;
 
 /**
  * A view to show a series of numbers in a circular pattern.
@@ -82,16 +83,17 @@ public class RadialTextsView extends View {
         mIsInitialized = false;
     }
 
-    public void initialize(Resources res, String[] texts, String[] innerTexts,
+    public void initialize(Context context, String[] texts, String[] innerTexts,
             TimePickerController controller, boolean disappearsOut) {
         if (mIsInitialized) {
             Log.e(TAG, "This RadialTextsView may only be initialized once.");
             return;
         }
+        Resources res = context.getResources();
 
         // Set up the paint.
         int textColorRes = controller.isThemeDark() ? R.color.mdtp_white : R.color.mdtp_numbers_text_color;
-        mPaint.setColor(res.getColor(textColorRes));
+        mPaint.setColor(Utils.getColor(context, textColorRes));
         String typefaceFamily = res.getString(R.string.mdtp_radial_numbers_typeface);
         mTypefaceLight = Typeface.create(typefaceFamily, Typeface.NORMAL);
         String typefaceFamilyRegular = res.getString(R.string.mdtp_sans_serif);
@@ -100,7 +102,7 @@ public class RadialTextsView extends View {
         mPaint.setTextAlign(Align.CENTER);
 
         // Set up the selected paint
-        int selectedTextColor = res.getColor(R.color.mdtp_white);
+        int selectedTextColor = Utils.getColor(context, R.color.mdtp_white);
         mSelectedPaint.setColor(selectedTextColor);
         mSelectedPaint.setAntiAlias(true);
         mSelectedPaint.setTextAlign(Align.CENTER);

@@ -39,6 +39,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.util.Calendar;
 
@@ -133,7 +134,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mGrayBox = new View(context);
         mGrayBox.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mGrayBox.setBackgroundColor(getResources().getColor(R.color.mdtp_transparent_black));
+        mGrayBox.setBackgroundColor(Utils.getColor(context, R.color.mdtp_transparent_black));
         mGrayBox.setVisibility(View.INVISIBLE);
         addView(mGrayBox);
 
@@ -202,11 +203,11 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             innerHoursTexts[i] = String.format("%d", hours[i]);
             minutesTexts[i] = String.format("%02d", minutes[i]);
         }
-        mHourRadialTextsView.initialize(res,
+        mHourRadialTextsView.initialize(context,
                 hoursTexts, (is24HourMode? innerHoursTexts : null), mController, true);
         mHourRadialTextsView.setSelection(is24HourMode ? initialHoursOfDay : hours[initialHoursOfDay % 12]);
         mHourRadialTextsView.invalidate();
-        mMinuteRadialTextsView.initialize(res, minutesTexts, null, mController, false);
+        mMinuteRadialTextsView.initialize(context, minutesTexts, null, mController, false);
         mMinuteRadialTextsView.setSelection(initialMinutes);
         mMinuteRadialTextsView.invalidate();
 

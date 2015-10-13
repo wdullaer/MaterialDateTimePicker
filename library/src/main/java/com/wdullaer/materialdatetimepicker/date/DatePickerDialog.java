@@ -269,7 +269,7 @@ public class DatePickerDialog extends DialogFragment implements
         mSelectYear = res.getString(R.string.mdtp_select_year);
 
         int bgColorResource = mThemeDark ? R.color.mdtp_date_picker_view_animator_dark_theme : R.color.mdtp_date_picker_view_animator;
-        view.setBackgroundColor(activity.getResources().getColor(bgColorResource));
+        view.setBackgroundColor(Utils.getColor(activity, bgColorResource));
 
         mAnimator = (AccessibleDateAnimator) view.findViewById(R.id.animator);
         mAnimator.addView(mDayPickerView);

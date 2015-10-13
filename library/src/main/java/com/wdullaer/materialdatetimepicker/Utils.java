@@ -136,7 +136,7 @@ public class Utils {
 
     /**
      * Gets the colorAccent from the current context, if possible/available
-     * @param context
+     * @param context The context to use as reference for the color
      * @return the accent color of the current context
      */
     public static int getAccentColorFromThemeIfAvailable(Context context) {
@@ -152,6 +152,20 @@ public class Utils {
             return typedValue.data;
         }
         // Return the value in mdtp_accent_color
-        return context.getResources().getColor(R.color.mdtp_accent_color);
+        return Utils.getColor(context, R.color.mdtp_accent_color);
+    }
+
+    /**
+     * Gets the color from the context using the proper version depending on the API level
+     * @param context The context to use as reference for the color
+     * @param colorResId Resource ID of the color to be fetched
+     * @return int the respective color
+     */
+    @SuppressWarnings("deprecation")
+    public static int getColor(Context context, int colorResId) {
+        if(Build.VERSION.SDK_INT >= 21)
+            return context.getResources().getColor(colorResId, context.getTheme());
+        else
+            return context.getResources().getColor(colorResId);
     }
 }
