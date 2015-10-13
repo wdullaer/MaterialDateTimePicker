@@ -137,24 +137,21 @@ public class Utils {
     /**
      * Gets the colorAccent from the current context, if possible/available
      * @param context
-     * @return -1 if accent color invalid, otherwise the accent color of the current context
+     * @return the accent color of the current context
      */
     public static int getAccentColorFromThemeIfAvailable(Context context) {
         TypedValue typedValue = new TypedValue();
-        //First, try the android:colorAccent
+        // First, try the android:colorAccent
         if (Build.VERSION.SDK_INT >= 21) {
             context.getTheme().resolveAttribute(android.R.attr.colorAccent, typedValue, true);
             return typedValue.data;
         }
-        //Next, try colorAccent from support lib
+        // Next, try colorAccent from support lib
         int colorAccentResId = context.getResources().getIdentifier("colorAccent", "attr", context.getPackageName());
-        if (colorAccentResId == 0) {
-            return -1;
+        if (colorAccentResId != 0 && context.getTheme().resolveAttribute(colorAccentResId, typedValue, true)) {
+            return typedValue.data;
         }
-
-        if (!context.getTheme().resolveAttribute(colorAccentResId, typedValue, true)) {
-            return -1;
-        }
-        return typedValue.data;
+        // Return the value in mdtp_accent_color
+        return context.getResources().getColor(R.color.mdtp_accent_color);
     }
 }

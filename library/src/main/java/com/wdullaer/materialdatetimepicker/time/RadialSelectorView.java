@@ -81,7 +81,7 @@ public class RadialSelectorView extends View {
     /**
      * Initialize this selector with the state of the picker.
      * @param context Current context.
-     * @param is24HourMode Whether the selector is in 24-hour mode, which will tell us
+     * @param controller Structure containing the accentColor and the 24-hour mode, which will tell us
      * whether the circle's center is moved up slightly to make room for the AM/PM circles.
      * @param hasInnerCircle Whether we have both an inner and an outer circle of numbers
      * that may be selected. Should be true for 24-hour mode in the hours circle.
@@ -91,7 +91,7 @@ public class RadialSelectorView extends View {
      * @param isInnerCircle Whether the initial selection is in the inner or outer circle.
      * Will be ignored when hasInnerCircle is false.
      */
-    public void initialize(Context context, boolean is24HourMode, boolean hasInnerCircle,
+    public void initialize(Context context, TimePickerController controller, boolean hasInnerCircle,
             boolean disappearsOut, int selectionDegrees, boolean isInnerCircle) {
         if (mIsInitialized) {
             Log.e(TAG, "This RadialSelectorView may only be initialized once.");
@@ -100,14 +100,15 @@ public class RadialSelectorView extends View {
 
         Resources res = context.getResources();
 
-        int accentColor = res.getColor(R.color.mdtp_accent_color);
+        int accentColor = controller.getAccentColor();
         mPaint.setColor(accentColor);
         mPaint.setAntiAlias(true);
-        mSelectionAlpha = SELECTED_ALPHA;
+
+        mSelectionAlpha = controller.isThemeDark() ? SELECTED_ALPHA_THEME_DARK : SELECTED_ALPHA;
 
         // Calculate values for the circle radius size.
-        mIs24HourMode = is24HourMode;
-        if (is24HourMode) {
+        mIs24HourMode = controller.is24HourMode();
+        if (mIs24HourMode) {
             mCircleRadiusMultiplier = Float.parseFloat(
                     res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {
@@ -139,23 +140,6 @@ public class RadialSelectorView extends View {
 
         setSelection(selectionDegrees, isInnerCircle, false);
         mIsInitialized = true;
-    }
-
-    /* package */ void setTheme(Context context, boolean themeDark) {
-        Resources res = context.getResources();
-        int color;
-        if (themeDark) {
-            color = res.getColor(R.color.mdtp_accent_color);
-            mSelectionAlpha = SELECTED_ALPHA_THEME_DARK;
-        } else {
-            color = res.getColor(R.color.mdtp_accent_color);
-            mSelectionAlpha = SELECTED_ALPHA;
-        }
-        mPaint.setColor(color);
-    }
-
-    public void setAccentColor(int accentColor) {
-        mPaint.setColor(accentColor);
     }
 
     /**

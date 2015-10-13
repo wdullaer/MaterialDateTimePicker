@@ -47,23 +47,24 @@ public class CircleView extends View {
     public CircleView(Context context) {
         super(context);
 
-        Resources res = context.getResources();
-        mCircleColor = res.getColor(R.color.mdtp_circle_color);
-        mDotColor = res.getColor(R.color.mdtp_accent_color);
-        mPaint.setAntiAlias(true);
-
         mIsInitialized = false;
     }
 
-    public void initialize(Context context, boolean is24HourMode) {
+    public void initialize(Context context, TimePickerController controller) {
         if (mIsInitialized) {
             Log.e(TAG, "CircleView may only be initialized once.");
             return;
         }
 
         Resources res = context.getResources();
-        mIs24HourMode = is24HourMode;
-        if (is24HourMode) {
+
+        int colorRes = controller.isThemeDark() ? R.color.mdtp_circle_background_dark_theme : R.color.mdtp_circle_color;
+        mCircleColor = res.getColor(colorRes);
+        mDotColor = controller.getAccentColor();
+        mPaint.setAntiAlias(true);
+
+        mIs24HourMode = controller.is24HourMode();
+        if (mIs24HourMode) {
             mCircleRadiusMultiplier = Float.parseFloat(
                     res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {
@@ -75,20 +76,6 @@ public class CircleView extends View {
 
         mIsInitialized = true;
     }
-
-    /* package */ void setTheme(Context context, boolean dark) {
-        Resources res = context.getResources();
-        if (dark) {
-            mCircleColor = res.getColor(R.color.mdtp_circle_background_dark_theme);
-        } else {
-            mCircleColor = res.getColor(R.color.mdtp_circle_color);
-        }
-    }
-
-    void setAccentColor(int accentColor) {
-        mDotColor = accentColor;
-    }
-
 
     @Override
     public void onDraw(Canvas canvas) {

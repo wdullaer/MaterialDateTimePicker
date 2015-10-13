@@ -34,6 +34,8 @@ public interface DatePickerController {
     MonthAdapter.CalendarDay getSelectedDay();
 
     boolean isThemeDark();
+
+    int getAccentColor();
     
     Calendar[] getHighlightedDays();
 
@@ -45,9 +47,7 @@ public interface DatePickerController {
 
     int getMaxYear();
 
-    Calendar getMinDate();
-
-    Calendar getMaxDate();
+    boolean isOutOfRange(int year, int month, int day);
 
     void tryVibrate();
 }

@@ -22,6 +22,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <dimen name="mdtp_selected_calendar_layout_height">230dp</dimen>
+    <dimen name="mdtp_selected_date_height">190dp</dimen>
     <dimen name="mdtp_selected_date_year_size">30dp</dimen>
     <dimen name="mdtp_selected_date_day_size">100dp</dimen>
     <dimen name="mdtp_selected_date_month_size">30dp</dimen>

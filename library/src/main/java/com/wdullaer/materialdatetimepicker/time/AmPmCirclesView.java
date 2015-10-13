@@ -69,19 +69,28 @@ public class AmPmCirclesView extends View {
         mIsInitialized = false;
     }
 
-    public void initialize(Context context, int amOrPm) {
+    public void initialize(Context context, TimePickerController controller, int amOrPm) {
         if (mIsInitialized) {
             Log.e(TAG, "AmPmCirclesView may only be initialized once.");
             return;
         }
 
         Resources res = context.getResources();
-        mUnselectedColor = res.getColor(R.color.mdtp_white);
-        mSelectedColor = res.getColor(R.color.mdtp_accent_color);
-        mTouchedColor = res.getColor(R.color.mdtp_accent_color_dark);
-        mAmPmTextColor = res.getColor(R.color.mdtp_ampm_text_color);
+
+        if (controller.isThemeDark()) {
+            mUnselectedColor = res.getColor(R.color.mdtp_circle_background_dark_theme);
+            mAmPmTextColor = res.getColor(R.color.mdtp_white);
+            mSelectedAlpha = SELECTED_ALPHA_THEME_DARK;
+        } else {
+            mUnselectedColor = res.getColor(R.color.mdtp_white);
+            mAmPmTextColor = res.getColor(R.color.mdtp_ampm_text_color);
+            mSelectedAlpha = SELECTED_ALPHA;
+        }
+
+        mSelectedColor = controller.getAccentColor();
+        mTouchedColor = Utils.darkenColor(mSelectedColor);
         mAmPmSelectedTextColor = res.getColor(R.color.mdtp_white);
-        mSelectedAlpha = SELECTED_ALPHA;
+
         String typefaceFamily = res.getString(R.string.mdtp_sans_serif);
         Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);
         mPaint.setTypeface(tf);
@@ -100,25 +109,6 @@ public class AmPmCirclesView extends View {
         mAmOrPmPressed = -1;
 
         mIsInitialized = true;
-    }
-
-    /* package */ void setTheme(Context context, boolean themeDark) {
-        Resources res = context.getResources();
-        if (themeDark) {
-            mUnselectedColor = res.getColor(R.color.mdtp_circle_background_dark_theme);
-            mSelectedColor = res.getColor(R.color.mdtp_red);
-            mAmPmTextColor = res.getColor(R.color.mdtp_white);
-            mSelectedAlpha = SELECTED_ALPHA_THEME_DARK;
-        } else {
-            mUnselectedColor = res.getColor(R.color.mdtp_white);
-            mSelectedColor = res.getColor(R.color.mdtp_accent_color);
-            mAmPmTextColor = res.getColor(R.color.mdtp_ampm_text_color);
-            mSelectedAlpha = SELECTED_ALPHA;
-        }
-    }
-
-    public void setAccentColor(int accentColor) {
-        mSelectedColor = accentColor;
     }
 
     public void setAmOrPm(int amOrPm) {

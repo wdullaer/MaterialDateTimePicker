@@ -45,7 +45,6 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
     private int mViewSize;
     private int mChildSize;
     private TextViewWithCircularIndicator mSelectedView;
-    private int mAccentColor;
 
     /**
      * @param context
@@ -70,16 +69,12 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
     }
 
     private void init(Context context) {
-        ArrayList<String> years = new ArrayList<String>();
+        ArrayList<String> years = new ArrayList<>();
         for (int year = mController.getMinYear(); year <= mController.getMaxYear(); year++) {
             years.add(String.format("%d", year));
         }
         mAdapter = new YearAdapter(context, R.layout.mdtp_year_label_text_view, years);
         setAdapter(mAdapter);
-    }
-
-    public void setAccentColor(int accentColor) {
-        mAccentColor = accentColor;
     }
 
     @Override
@@ -115,7 +110,7 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
         public View getView(int position, View convertView, ViewGroup parent) {
             TextViewWithCircularIndicator v = (TextViewWithCircularIndicator)
                     super.getView(position, convertView, parent);
-            v.setAccentColor(mAccentColor);
+            v.setAccentColor(mController.getAccentColor());
             v.requestLayout();
             int year = getYearFromTextView(v);
             boolean selected = mController.getSelectedDay().year == year;

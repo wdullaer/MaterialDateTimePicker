@@ -83,15 +83,15 @@ public class RadialTextsView extends View {
     }
 
     public void initialize(Resources res, String[] texts, String[] innerTexts,
-            boolean is24HourMode, boolean disappearsOut) {
+            TimePickerController controller, boolean disappearsOut) {
         if (mIsInitialized) {
             Log.e(TAG, "This RadialTextsView may only be initialized once.");
             return;
         }
 
         // Set up the paint.
-        int numbersTextColor = res.getColor(R.color.mdtp_numbers_text_color);
-        mPaint.setColor(numbersTextColor);
+        int textColorRes = controller.isThemeDark() ? R.color.mdtp_white : R.color.mdtp_numbers_text_color;
+        mPaint.setColor(res.getColor(textColorRes));
         String typefaceFamily = res.getString(R.string.mdtp_radial_numbers_typeface);
         mTypefaceLight = Typeface.create(typefaceFamily, Typeface.NORMAL);
         String typefaceFamilyRegular = res.getString(R.string.mdtp_sans_serif);
@@ -107,11 +107,11 @@ public class RadialTextsView extends View {
 
         mTexts = texts;
         mInnerTexts = innerTexts;
-        mIs24HourMode = is24HourMode;
+        mIs24HourMode = controller.is24HourMode();
         mHasInnerCircle = (innerTexts != null);
 
         // Calculate the radius for the main circle.
-        if (is24HourMode) {
+        if (mIs24HourMode) {
             mCircleRadiusMultiplier = Float.parseFloat(
                     res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {
@@ -150,17 +150,6 @@ public class RadialTextsView extends View {
 
         mTextGridValuesDirty = true;
         mIsInitialized = true;
-    }
-
-    /* package */ void setTheme(Context context, boolean themeDark) {
-        Resources res = context.getResources();
-        int textColor;
-        if (themeDark) {
-            textColor = res.getColor(R.color.mdtp_white);
-        } else {
-            textColor = res.getColor(R.color.mdtp_numbers_text_color);
-        }
-        mPaint.setColor(textColor);
     }
 
     /**
