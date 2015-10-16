@@ -31,7 +31,7 @@ Date Picker | Time Picker
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:1.5.3'
+  compile 'com.wdullaer:materialdatetimepicker:1.5.4'
 }
 ```
 
@@ -112,6 +112,9 @@ You can pass a `Calendar[]` to the `DatePickerDialog`. This values in this list 
 
 * `setHighlightedDays(Calendar[] days)`  
 You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the color of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`
+
+* `showYearPickerFirst(boolean yearPicker)`  
+Show the year picker first, rather than the month and day picker.
 
 * `OnDismissListener` and `OnCancelListener`  
 Both pickers can be passed a `DialogInterface.OnDismissLisener` or `DialogInterface.OnCancelListener` which allows you to run code when either of these events occur.
