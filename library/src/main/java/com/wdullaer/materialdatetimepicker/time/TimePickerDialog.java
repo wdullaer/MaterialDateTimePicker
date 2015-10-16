@@ -45,6 +45,7 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelect
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -65,6 +66,9 @@ public class TimePickerDialog extends DialogFragment implements
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
+    private static final String KEY_SELECTABLE_TIMES = "selectable_times";
+    private static final String KEY_MIN_TIME = "min_time";
+    private static final String KEY_MAX_TIME = "max_time";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
@@ -108,6 +112,9 @@ public class TimePickerDialog extends DialogFragment implements
     private boolean mVibrate;
     private int mAccentColor = -1;
     private boolean mDismissOnPause;
+    private Timepoint[] mSelectableTimes;
+    private Timepoint mMinTime;
+    private Timepoint mMaxTime;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -225,6 +232,31 @@ public class TimePickerDialog extends DialogFragment implements
         mDismissOnPause = dismissOnPause;
     }
 
+    public void setMinTime(int hour, int minute, int second) {
+        setMinTime(new Timepoint(hour, minute, second));
+    }
+
+    public void setMinTime(Timepoint minTime) {
+        if(mMaxTime != null && minTime.compareTo(mMaxTime) > 0)
+            throw new IllegalArgumentException("Minimum time must be smaller than the maximum time");
+        mMinTime = minTime;
+    }
+
+    public void setMaxTime(int hour, int minute, int second) {
+        setMaxTime(new Timepoint(hour, minute, second));
+    }
+
+    public void setMaxTime(Timepoint maxTime) {
+        if(mMinTime != null && maxTime.compareTo(mMinTime) < 0)
+            throw new IllegalArgumentException("Maximum time must be greater than the minimum time");
+        mMaxTime = maxTime;
+    }
+
+    public void setSelectableTimes(Timepoint[] selectableTimes) {
+        mSelectableTimes = selectableTimes;
+        Arrays.sort(mSelectableTimes);
+    }
+
     public void setOnTimeSetListener(OnTimeSetListener callback) {
         mCallback = callback;
     }
@@ -259,6 +291,9 @@ public class TimePickerDialog extends DialogFragment implements
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
+            mSelectableTimes = (Timepoint[])savedInstanceState.getParcelableArray(KEY_SELECTABLE_TIMES);
+            mMinTime = savedInstanceState.getParcelable(KEY_MIN_TIME);
+            mMaxTime = savedInstanceState.getParcelable(KEY_MAX_TIME);
         }
     }
 
@@ -489,6 +524,9 @@ public class TimePickerDialog extends DialogFragment implements
             outState.putInt(KEY_ACCENT, mAccentColor);
             outState.putBoolean(KEY_VIBRATE, mVibrate);
             outState.putBoolean(KEY_DISMISS, mDismissOnPause);
+            outState.putParcelableArray(KEY_SELECTABLE_TIMES, mSelectableTimes);
+            outState.putParcelable(KEY_MIN_TIME, mMinTime);
+            outState.putParcelable(KEY_MAX_TIME, mMaxTime);
         }
     }
 
@@ -519,6 +557,47 @@ public class TimePickerDialog extends DialogFragment implements
             }
             finishKbMode(true);
         }
+    }
+
+    @Override
+    public boolean isOutOfRange(int hour, int minute, int second) {
+        Timepoint current = new Timepoint(hour, minute, second);
+
+        if(mSelectableTimes != null) return !Arrays.asList(mSelectableTimes).contains(current);
+
+        if(mMinTime != null && mMinTime.compareTo(current) > 0) return true;
+
+        if(mMaxTime != null && mMaxTime.compareTo(current) < 0) return true;
+
+        return false;
+    }
+
+    @Override
+    public boolean isAmDisabled() {
+        Timepoint midday = new Timepoint(12);
+
+        if(mSelectableTimes != null) {
+            for(Timepoint t : mSelectableTimes) if(t.compareTo(midday) < 0) return false;
+            return true;
+        }
+
+        if(mMinTime != null && mMinTime.compareTo(midday) > 0) return true;
+
+        return false;
+    }
+
+    @Override
+    public boolean isPmDisabled() {
+        Timepoint midday = new Timepoint(12);
+
+        if(mSelectableTimes != null) {
+            for(Timepoint t : mSelectableTimes) if(t.compareTo(midday) >= 0) return false;
+            return true;
+        }
+
+        if(mMaxTime != null && mMaxTime.compareTo(midday) < 0) return true;
+
+        return false;
     }
 
     private void setHour(int value, boolean announce) {

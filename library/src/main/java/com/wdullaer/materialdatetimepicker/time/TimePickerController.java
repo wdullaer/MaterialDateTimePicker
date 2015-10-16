@@ -25,4 +25,22 @@ public interface TimePickerController {
      * Request the device to vibrate
      */
     void tryVibrate();
+
+    /**
+     * @param hour int - the selected hour
+     * @param minute int - the selected minute
+     * @param second int - selected second
+     * @return boolean - true if this is not a selectable value
+     */
+    boolean isOutOfRange(int hour, int minute, int second);
+
+    /**
+     * @return boolean - true if AM times are outside the range of valid selections
+     */
+    boolean isAmDisabled();
+
+    /**
+     * @return boolean - true if PM times are outside the range of valid selections
+     */
+    boolean isPmDisabled();
 }
