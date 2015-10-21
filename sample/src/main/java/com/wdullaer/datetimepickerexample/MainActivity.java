@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements
                         Log.d("TimePicker", "Dialog was cancelled");
                     }
                 });
+                tpd.setMinTime(14, 30, 0);
                 tpd.show(getFragmentManager(), "Timepickerdialog");
             }
         });

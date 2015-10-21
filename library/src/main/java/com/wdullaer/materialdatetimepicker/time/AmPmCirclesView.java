@@ -22,6 +22,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.Paint.Align;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
@@ -81,20 +82,20 @@ public class AmPmCirclesView extends View {
         Resources res = context.getResources();
 
         if (controller.isThemeDark()) {
-            mUnselectedColor = Utils.getColor(context, R.color.mdtp_circle_background_dark_theme);
-            mAmPmTextColor = Utils.getColor(context, R.color.mdtp_white);
-            mAmPmDisabledTextColor = Utils.getColor(context, R.color.mdtp_date_picker_text_disabled_dark_theme);
+            mUnselectedColor = ContextCompat.getColor(context, R.color.mdtp_circle_background_dark_theme);
+            mAmPmTextColor = ContextCompat.getColor(context, R.color.mdtp_white);
+            mAmPmDisabledTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled_dark_theme);
             mSelectedAlpha = SELECTED_ALPHA_THEME_DARK;
         } else {
-            mUnselectedColor = Utils.getColor(context, R.color.mdtp_white);
-            mAmPmTextColor = Utils.getColor(context, R.color.mdtp_ampm_text_color);
-            mAmPmDisabledTextColor = Utils.getColor(context, R.color.mdtp_date_picker_text_disabled);
+            mUnselectedColor = ContextCompat.getColor(context, R.color.mdtp_white);
+            mAmPmTextColor = ContextCompat.getColor(context, R.color.mdtp_ampm_text_color);
+            mAmPmDisabledTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled);
             mSelectedAlpha = SELECTED_ALPHA;
         }
 
         mSelectedColor = controller.getAccentColor();
         mTouchedColor = Utils.darkenColor(mSelectedColor);
-        mAmPmSelectedTextColor = Utils.getColor(context, R.color.mdtp_white);
+        mAmPmSelectedTextColor = ContextCompat.getColor(context, R.color.mdtp_white);
 
         String typefaceFamily = res.getString(R.string.mdtp_sans_serif);
         Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);

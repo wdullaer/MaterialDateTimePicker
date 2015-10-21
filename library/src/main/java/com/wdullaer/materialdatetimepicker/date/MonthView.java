@@ -26,6 +26,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.widget.ExploreByTouchHelper;
@@ -39,7 +40,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.TypefaceHelper;
-import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter.CalendarDay;
 
 import java.security.InvalidParameterException;
@@ -204,20 +204,20 @@ public abstract class MonthView extends View {
 
         boolean darkTheme = mController != null && mController.isThemeDark();
         if(darkTheme) {
-            mDayTextColor = Utils.getColor(context, R.color.mdtp_date_picker_text_normal_dark_theme);
-            mMonthDayTextColor = Utils.getColor(context, R.color.mdtp_date_picker_month_day_dark_theme);
-            mDisabledDayTextColor = Utils.getColor(context, R.color.mdtp_date_picker_text_disabled_dark_theme);
-            mHighlightedDayTextColor = Utils.getColor(context, R.color.mdtp_date_picker_text_highlighted_dark_theme);
+            mDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_normal_dark_theme);
+            mMonthDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_month_day_dark_theme);
+            mDisabledDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled_dark_theme);
+            mHighlightedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_highlighted_dark_theme);
         }
         else {
-            mDayTextColor = Utils.getColor(context, R.color.mdtp_date_picker_text_normal);
-            mMonthDayTextColor = Utils.getColor(context, R.color.mdtp_date_picker_month_day);
-            mDisabledDayTextColor = Utils.getColor(context, R.color.mdtp_date_picker_text_disabled);
-            mHighlightedDayTextColor = Utils.getColor(context, R.color.mdtp_date_picker_text_highlighted);
+            mDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_normal);
+            mMonthDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_month_day);
+            mDisabledDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled);
+            mHighlightedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_highlighted);
         }
-        mSelectedDayTextColor = Utils.getColor(context, R.color.mdtp_white);
+        mSelectedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_white);
         mTodayNumberColor = mController.getAccentColor();
-        mMonthTitleColor = Utils.getColor(context, R.color.mdtp_white);
+        mMonthTitleColor = ContextCompat.getColor(context, R.color.mdtp_white);
 
         mStringBuilder = new StringBuilder(50);
         mFormatter = new Formatter(mStringBuilder, Locale.getDefault());

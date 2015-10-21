@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -152,20 +153,6 @@ public class Utils {
             return typedValue.data;
         }
         // Return the value in mdtp_accent_color
-        return Utils.getColor(context, R.color.mdtp_accent_color);
-    }
-
-    /**
-     * Gets the color from the context using the proper version depending on the API level
-     * @param context The context to use as reference for the color
-     * @param colorResId Resource ID of the color to be fetched
-     * @return int the respective color
-     */
-    @SuppressWarnings("deprecation")
-    public static int getColor(Context context, int colorResId) {
-        if(Build.VERSION.SDK_INT >= 21)
-            return context.getResources().getColor(colorResId, context.getTheme());
-        else
-            return context.getResources().getColor(colorResId);
+        return ContextCompat.getColor(context, R.color.mdtp_accent_color);
     }
 }

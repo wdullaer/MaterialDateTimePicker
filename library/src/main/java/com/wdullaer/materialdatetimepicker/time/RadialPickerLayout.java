@@ -25,6 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -39,7 +40,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
 import com.wdullaer.materialdatetimepicker.R;
-import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.util.Calendar;
 
@@ -134,7 +134,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mGrayBox = new View(context);
         mGrayBox.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mGrayBox.setBackgroundColor(Utils.getColor(context, R.color.mdtp_transparent_black));
+        mGrayBox.setBackgroundColor(ContextCompat.getColor(context, R.color.mdtp_transparent_black));
         mGrayBox.setVisibility(View.INVISIBLE);
         addView(mGrayBox);
 
@@ -142,23 +142,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
         mTimeInitialized = false;
     }
-
-    /**
-     * Measure the view to end up as a square, based on the minimum of the height and width.
-     */
-    /**
-    @Override
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int measuredHeight = MeasureSpec.getSize(heightMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int minDimension = Math.min(measuredWidth, measuredHeight);
-
-        super.onMeasure(MeasureSpec.makeMeasureSpec(minDimension, widthMode),
-                MeasureSpec.makeMeasureSpec(minDimension, heightMode));
-    }
-    **/
 
     public void setOnValueSelectedListener(OnValueSelectedListener listener) {
         mListener = listener;
@@ -189,6 +172,21 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             mAmPmCirclesView.invalidate();
         }
 
+        // Create the selection validators
+        RadialTextsView.SelectionValidator minuteValidator = new RadialTextsView.SelectionValidator() {
+            @Override
+            public boolean isValidSelection(int selection) {
+                return !mController.isOutOfRange(mCurrentHoursOfDay, selection, 0);
+            }
+        };
+        RadialTextsView.SelectionValidator hourValidator = new RadialTextsView.SelectionValidator() {
+            @Override
+            public boolean isValidSelection(int selection) {
+                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) selection = (selection+12)%24;
+                return !mController.isOutOfRange(selection, mCurrentMinutes, 0);
+            }
+        };
+
         // Initialize the hours and minutes numbers.
         Resources res = context.getResources();
         int[] hours = {12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
@@ -204,10 +202,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             minutesTexts[i] = String.format("%02d", minutes[i]);
         }
         mHourRadialTextsView.initialize(context,
-                hoursTexts, (is24HourMode? innerHoursTexts : null), mController, true);
+                hoursTexts, (is24HourMode ? innerHoursTexts : null), mController, hourValidator, true);
         mHourRadialTextsView.setSelection(is24HourMode ? initialHoursOfDay : hours[initialHoursOfDay % 12]);
         mHourRadialTextsView.invalidate();
-        mMinuteRadialTextsView.initialize(context, minutesTexts, null, mController, false);
+        mMinuteRadialTextsView.initialize(context, minutesTexts, null, mController, minuteValidator, false);
         mMinuteRadialTextsView.setSelection(initialMinutes);
         mMinuteRadialTextsView.invalidate();
 
