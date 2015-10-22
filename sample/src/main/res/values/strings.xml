@@ -15,6 +15,7 @@
     <string name="vibrate_date">Vibrate on touch</string>
     <string name="dismiss_time">Dismiss on pause (eg: orientation change)</string>
     <string name="dismiss_date">Dismiss on pause (eg: orientation change)</string>
+    <string name="enable_seconds">Enable seconds</string>
     <string name="title_time">Show a title</string>
     <string name="show_year_first">Show the year picker first</string>
     <string name="action_settings">Settings</string>

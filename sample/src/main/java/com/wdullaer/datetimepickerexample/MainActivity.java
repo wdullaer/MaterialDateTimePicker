@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox dismissDate;
     private CheckBox titleTime;
     private CheckBox showYearFirst;
+    private CheckBox enableSeconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,18 +56,30 @@ public class MainActivity extends AppCompatActivity implements
         dismissDate = (CheckBox) findViewById(R.id.dismiss_date);
         titleTime = (CheckBox) findViewById(R.id.title_time);
         showYearFirst = (CheckBox) findViewById(R.id.show_year_first);
+        enableSeconds = (CheckBox) findViewById(R.id.enable_seconds);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar now = Calendar.getInstance();
-                TimePickerDialog tpd = TimePickerDialog.newInstance(
-                        MainActivity.this,
-                        now.get(Calendar.HOUR_OF_DAY),
-                        now.get(Calendar.MINUTE),
-                        mode24Hours.isChecked()
-                );
+                TimePickerDialog tpd;
+                if (enableSeconds.isChecked()) {
+                    tpd = TimePickerDialog.newInstance(
+                            MainActivity.this,
+                            now.get(Calendar.HOUR_OF_DAY),
+                            now.get(Calendar.MINUTE),
+                            now.get(Calendar.SECOND),
+                            mode24Hours.isChecked()
+                    );
+                } else {
+                    tpd = TimePickerDialog.newInstance(
+                            MainActivity.this,
+                            now.get(Calendar.HOUR_OF_DAY),
+                            now.get(Calendar.MINUTE),
+                            mode24Hours.isChecked()
+                    );
+                }
                 tpd.setThemeDark(modeDarkTime.isChecked());
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());
@@ -83,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
                 tpd.show(getFragmentManager(), "Timepickerdialog");
+                if (enableSeconds.isChecked()) {
+                    tpd.setSecondsEnabled(true);
+                }
             }
         });
 
@@ -120,11 +136,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-        String hourString = hourOfDay < 10 ? "0"+hourOfDay : ""+hourOfDay;
-        String minuteString = minute < 10 ? "0"+minute : ""+minute;
-        String time = "You picked the following time: "+hourString+"h"+minuteString;
-        timeTextView.setText(time);
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        timeTextView.setText(String.format("You picked the following time: %02dh%02d:%02d", hourOfDay, minute, second));
     }
 
     @Override
