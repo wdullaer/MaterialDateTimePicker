@@ -17,6 +17,16 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
     private int minute;
     private int second;
 
+    public enum TYPE {
+        HOUR,
+        MINUTE,
+        SECOND
+    }
+
+    public Timepoint(Timepoint time) {
+        this(time.hour, time.minute, time.second);
+    }
+
     public Timepoint(int hour, int minute, int second) {
         this.hour = hour % 24;
         this.minute = minute % 60;
@@ -47,6 +57,22 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
 
     public int getSecond() {
         return second;
+    }
+
+    public boolean isAM() {
+        return hour < 12;
+    }
+
+    public boolean isPM() {
+        return hour >= 12 && hour < 24;
+    }
+
+    public void setAM() {
+        if(hour >= 12) hour = hour % 12;
+    }
+
+    public void setPM() {
+        if(hour < 12) hour = (hour + 12) % 24;
     }
 
     @Override

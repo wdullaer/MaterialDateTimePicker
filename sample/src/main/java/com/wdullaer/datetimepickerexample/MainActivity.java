@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.Timepoint;
 
 import java.util.Calendar;
 
@@ -82,7 +83,8 @@ public class MainActivity extends AppCompatActivity implements
                         Log.d("TimePicker", "Dialog was cancelled");
                     }
                 });
-                tpd.setMinTime(14, 30, 0);
+                Timepoint[] timeArray = {new Timepoint(11,15), new Timepoint(11,30)};
+                tpd.setSelectableTimes(timeArray);
                 tpd.show(getFragmentManager(), "Timepickerdialog");
             }
         });
