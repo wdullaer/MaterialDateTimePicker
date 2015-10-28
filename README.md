@@ -107,8 +107,17 @@ dpd.setThemeDark(true);
 * `TimePickerDialog` `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
 
+* `setMinTime(Timepoint time)`  
+Set the minimum valid time to be selected. Time values earlier in the day will be deactivated
+
+* `setMaxTime(Timepoint time)`  
+Set the maximum valid time to be selected. Time values later in the day will be deactivated
+
+* `setSelectableTimes(Timepoint[] times)`
+You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. It takes precedence over `setMinTime(Timepoint time)` and `setMaxTime(Timepoint time)`
+
 * `setSelectableDays(Calendar[] days)`  
-You can pass a `Calendar[]` to the `DatePickerDialog`. This values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
+You can pass a `Calendar[]` to the `DatePickerDialog`. The values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
 
 * `setHighlightedDays(Calendar[] days)`  
 You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the color of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`

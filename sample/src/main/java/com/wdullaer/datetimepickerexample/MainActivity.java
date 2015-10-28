@@ -83,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements
                         Log.d("TimePicker", "Dialog was cancelled");
                     }
                 });
-                Timepoint[] timeArray = {new Timepoint(11,15), new Timepoint(11,30)};
-                tpd.setSelectableTimes(timeArray);
                 tpd.show(getFragmentManager(), "Timepickerdialog");
             }
         });
