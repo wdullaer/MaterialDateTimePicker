@@ -17,3 +17,8 @@ allprojects {
         jcenter()
     }
 }
+
+wrapper {
+    gradleVersion = '2.8'
+    distributionUrl = 'https://services.gradle.org/distributions/gradle-2.8-all.zip'
+}
