@@ -107,6 +107,9 @@ dpd.setThemeDark(true);
 * `TimePickerDialog` `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
 
+* `DatePickerDialog` `setTitle(String title)`
+Shows a title at the top of the `DatePickerDialog` instead of the day of the week
+
 * `setMinTime(Timepoint time)`  
 Set the minimum valid time to be selected. Time values earlier in the day will be deactivated
 

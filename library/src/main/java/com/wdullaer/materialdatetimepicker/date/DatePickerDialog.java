@@ -79,6 +79,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
     private static final String KEY_DEFAULT_VIEW = "default_view";
+    private static final String KEY_TITLE = "title";
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -110,6 +111,7 @@ public class DatePickerDialog extends DialogFragment implements
     private int mWeekStart = mCalendar.getFirstDayOfWeek();
     private int mMinYear = DEFAULT_START_YEAR;
     private int mMaxYear = DEFAULT_END_YEAR;
+    private String mTitle;
     private Calendar mMinDate;
     private Calendar mMaxDate;
     private Calendar[] highlightedDays;
@@ -221,6 +223,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
         outState.putInt(KEY_DEFAULT_VIEW, mDefaultView);
+        outState.putString(KEY_TITLE, mTitle);
     }
 
     @Override
@@ -257,6 +260,7 @@ public class DatePickerDialog extends DialogFragment implements
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
+            mTitle = savedInstanceState.getString(KEY_TITLE);
         }
 
         final Activity activity = getActivity();
@@ -409,8 +413,11 @@ public class DatePickerDialog extends DialogFragment implements
 
     private void updateDisplay(boolean announce) {
         if (mDayOfWeekView != null) {
-            mDayOfWeekView.setText(mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG,
-                    Locale.getDefault()).toUpperCase(Locale.getDefault()));
+            if(mTitle != null) mDayOfWeekView.setText(mTitle.toUpperCase(Locale.getDefault()));
+            else {
+                mDayOfWeekView.setText(mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG,
+                        Locale.getDefault()).toUpperCase(Locale.getDefault()));
+            }
         }
 
         mSelectedMonthTextView.setText(mCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT,
@@ -594,6 +601,14 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public Calendar[] getSelectableDays() {
         return selectableDays;
+    }
+
+    /**
+     * Set a title to be displayed instead of the weekday
+     * @param title String - The title to be displayed
+     */
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
     @SuppressWarnings("unused")
