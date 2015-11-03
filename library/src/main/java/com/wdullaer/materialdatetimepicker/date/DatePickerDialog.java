@@ -232,7 +232,7 @@ public class DatePickerDialog extends DialogFragment implements
             Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
 
-        View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, container);
+        View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, container, false);
 
         mDayOfWeekView = (TextView) view.findViewById(R.id.date_picker_header);
         mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);

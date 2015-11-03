@@ -294,7 +294,7 @@ public class TimePickerDialog extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, container);
+        View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, container, false);
         KeyboardListener keyboardListener = new KeyboardListener();
         view.findViewById(R.id.time_picker_dialog).setOnKeyListener(keyboardListener);
 
