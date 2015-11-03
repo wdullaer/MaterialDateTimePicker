@@ -304,7 +304,7 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         Resources res = getResources();
-        Context context = getDialog().getContext();
+        Context context = getActivity();
         mHourPickerDescription = res.getString(R.string.mdtp_hour_picker_description);
         mSelectHours = res.getString(R.string.mdtp_select_hours);
         mMinutePickerDescription = res.getString(R.string.mdtp_minute_picker_description);
