@@ -103,16 +103,16 @@ public class TimePickerDialog extends DialogFragment implements
     private String mPmText;
 
     private boolean mAllowAutoAdvance;
-    private Timepoint mInitialTime;
+    private TimePoint mInitialTime;
     private boolean mIs24HourMode;
     private String mTitle;
     private boolean mThemeDark;
     private boolean mVibrate;
     private int mAccentColor = -1;
     private boolean mDismissOnPause;
-    private Timepoint[] mSelectableTimes;
-    private Timepoint mMinTime;
-    private Timepoint mMaxTime;
+    private TimePoint[] mSelectableTimes;
+    private TimePoint mMinTime;
+    private TimePoint mMaxTime;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -166,7 +166,7 @@ public class TimePickerDialog extends DialogFragment implements
             int hourOfDay, int minute, boolean is24HourMode) {
         mCallback = callback;
 
-        mInitialTime = new Timepoint(hourOfDay, minute);
+        mInitialTime = new TimePoint(hourOfDay, minute);
         mIs24HourMode = is24HourMode;
         mInKbMode = false;
         mTitle = "";
@@ -230,26 +230,26 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     public void setMinTime(int hour, int minute, int second) {
-        setMinTime(new Timepoint(hour, minute, second));
+        setMinTime(new TimePoint(hour, minute, second));
     }
 
-    public void setMinTime(Timepoint minTime) {
+    public void setMinTime(TimePoint minTime) {
         if(mMaxTime != null && minTime.compareTo(mMaxTime) > 0)
             throw new IllegalArgumentException("Minimum time must be smaller than the maximum time");
         mMinTime = minTime;
     }
 
     public void setMaxTime(int hour, int minute, int second) {
-        setMaxTime(new Timepoint(hour, minute, second));
+        setMaxTime(new TimePoint(hour, minute, second));
     }
 
-    public void setMaxTime(Timepoint maxTime) {
+    public void setMaxTime(TimePoint maxTime) {
         if(mMinTime != null && maxTime.compareTo(mMinTime) < 0)
             throw new IllegalArgumentException("Maximum time must be greater than the minimum time");
         mMaxTime = maxTime;
     }
 
-    public void setSelectableTimes(Timepoint[] selectableTimes) {
+    public void setSelectableTimes(TimePoint[] selectableTimes) {
         mSelectableTimes = selectableTimes;
         Arrays.sort(mSelectableTimes);
     }
@@ -268,7 +268,7 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     public void setStartTime(int hourOfDay, int minute) {
-        mInitialTime = roundToNearest(new Timepoint(hourOfDay, minute));
+        mInitialTime = roundToNearest(new TimePoint(hourOfDay, minute));
         mInKbMode = false;
     }
 
@@ -285,7 +285,7 @@ public class TimePickerDialog extends DialogFragment implements
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
-            mSelectableTimes = (Timepoint[])savedInstanceState.getParcelableArray(KEY_SELECTABLE_TIMES);
+            mSelectableTimes = (TimePoint[])savedInstanceState.getParcelableArray(KEY_SELECTABLE_TIMES);
             mMinTime = savedInstanceState.getParcelable(KEY_MIN_TIME);
             mMaxTime = savedInstanceState.getParcelable(KEY_MAX_TIME);
         }
@@ -535,7 +535,7 @@ public class TimePickerDialog extends DialogFragment implements
      * Called by the picker for updating the header display.
      */
     @Override
-    public void onValueSelected(Timepoint newValue) {
+    public void onValueSelected(TimePoint newValue) {
         setHour(newValue.getHour(), false);
         mTimePicker.setContentDescription(mHourPickerDescription + ": " + newValue.getHour());
         setMinute(newValue.getMinute());
@@ -559,7 +559,7 @@ public class TimePickerDialog extends DialogFragment implements
         finishKbMode(true);
     }
 
-    public boolean isOutOfRange(Timepoint current) {
+    public boolean isOutOfRange(TimePoint current) {
         if(mSelectableTimes != null) return !Arrays.asList(mSelectableTimes).contains(current);
 
         if(mMinTime != null && mMinTime.compareTo(current) > 0) return true;
@@ -570,12 +570,12 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     @Override
-    public boolean isOutOfRange(Timepoint current, int index) {
+    public boolean isOutOfRange(TimePoint current, int index) {
         if(current == null) return false;
 
         if(index == HOUR_INDEX) {
             if(mSelectableTimes != null) {
-                for(Timepoint t : mSelectableTimes) {
+                for(TimePoint t : mSelectableTimes) {
                     if(t.getHour() == current.getHour()) return false;
                 }
                 return true;
@@ -592,10 +592,10 @@ public class TimePickerDialog extends DialogFragment implements
 
     @Override
     public boolean isAmDisabled() {
-        Timepoint midday = new Timepoint(12);
+        TimePoint midday = new TimePoint(12);
 
         if(mSelectableTimes != null) {
-            for(Timepoint t : mSelectableTimes) if(t.compareTo(midday) < 0) return false;
+            for(TimePoint t : mSelectableTimes) if(t.compareTo(midday) < 0) return false;
             return true;
         }
 
@@ -606,10 +606,10 @@ public class TimePickerDialog extends DialogFragment implements
 
     @Override
     public boolean isPmDisabled() {
-        Timepoint midday = new Timepoint(12);
+        TimePoint midday = new TimePoint(12);
 
         if(mSelectableTimes != null) {
-            for(Timepoint t : mSelectableTimes) if(t.compareTo(midday) >= 0) return false;
+            for(TimePoint t : mSelectableTimes) if(t.compareTo(midday) >= 0) return false;
             return true;
         }
 
@@ -623,18 +623,18 @@ public class TimePickerDialog extends DialogFragment implements
      * @param time Timepoint - The timepoint to round
      * @return Timepoint - The nearest valid Timepoint
      */
-    private Timepoint roundToNearest(Timepoint time) {
-        return roundToNearest(time, Timepoint.TYPE.HOUR);
+    private TimePoint roundToNearest(TimePoint time) {
+        return roundToNearest(time, TimePoint.TYPE.HOUR);
     }
 
     @Override
-    public Timepoint roundToNearest(Timepoint time, Timepoint.TYPE type) {
+    public TimePoint roundToNearest(TimePoint time, TimePoint.TYPE type) {
         if(mSelectableTimes != null) {
             int currentDistance = Integer.MAX_VALUE;
-            Timepoint output = time;
-            for(Timepoint t : mSelectableTimes) {
-                if(type == Timepoint.TYPE.MINUTE && t.getHour() != time.getHour()) continue;
-                if(type == Timepoint.TYPE.SECOND && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
+            TimePoint output = time;
+            for(TimePoint t : mSelectableTimes) {
+                if(type == TimePoint.TYPE.MINUTE && t.getHour() != time.getHour()) continue;
+                if(type == TimePoint.TYPE.SECOND && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
                 int newDistance = Math.abs(t.compareTo(time));
                 if(newDistance < currentDistance) {
                     currentDistance = newDistance;
@@ -883,7 +883,7 @@ public class TimePickerDialog extends DialogFragment implements
         mInKbMode = false;
         if (!mTypedTimes.isEmpty()) {
             int values[] = getEnteredTime(null);
-            mTimePicker.setTime(new Timepoint(values[0], values[1]));
+            mTimePicker.setTime(new TimePoint(values[0], values[1]));
             if (!mIs24HourMode) {
                 mTimePicker.setAmOrPm(values[2]);
             }

@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
  *
  * Created by wdullaer on 13/10/15.
  */
-public class Timepoint implements Parcelable, Comparable<Timepoint> {
+public class TimePoint implements Parcelable, Comparable<TimePoint> {
     private int hour;
     private int minute;
     private int second;
@@ -23,25 +23,25 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
         SECOND
     }
 
-    public Timepoint(Timepoint time) {
+    public TimePoint(TimePoint time) {
         this(time.hour, time.minute, time.second);
     }
 
-    public Timepoint(int hour, int minute, int second) {
+    public TimePoint(int hour, int minute, int second) {
         this.hour = hour % 24;
         this.minute = minute % 60;
         this.second = second % 60;
     }
 
-    public Timepoint(int hour, int minute) {
+    public TimePoint(int hour, int minute) {
         this(hour, minute, 0);
     }
 
-    public Timepoint(int hour) {
+    public TimePoint(int hour) {
         this(hour, 0);
     }
 
-    public Timepoint(Parcel in) {
+    public TimePoint(Parcel in) {
         hour = in.readInt();
         minute = in.readInt();
         second = in.readInt();
@@ -78,7 +78,7 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
     @Override
     public boolean equals(Object o) {
         try {
-            Timepoint other = (Timepoint) o;
+            TimePoint other = (TimePoint) o;
 
             return other.getHour() == hour &&
                     other.getMinute() == minute &&
@@ -90,7 +90,7 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
     }
 
     @Override
-    public int compareTo(@NonNull Timepoint t) {
+    public int compareTo(@NonNull TimePoint t) {
         return (this.hour - t.hour)*3600 + (this.minute - t.minute)*60 + (this.second - t.second);
     }
 
@@ -106,14 +106,14 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
         return 0;
     }
 
-    public static final Parcelable.Creator<Timepoint> CREATOR
-            = new Parcelable.Creator<Timepoint>() {
-        public Timepoint createFromParcel(Parcel in) {
-            return new Timepoint(in);
+    public static final Parcelable.Creator<TimePoint> CREATOR
+            = new Parcelable.Creator<TimePoint>() {
+        public TimePoint createFromParcel(Parcel in) {
+            return new TimePoint(in);
         }
 
-        public Timepoint[] newArray(int size) {
-            return new Timepoint[size];
+        public TimePoint[] newArray(int size) {
+            return new TimePoint[size];
         }
     };
 }
