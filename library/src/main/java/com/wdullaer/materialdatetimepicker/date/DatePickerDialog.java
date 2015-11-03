@@ -324,6 +324,10 @@ public class DatePickerDialog extends DialogFragment implements
         okButton.setTextColor(mAccentColor);
         cancelButton.setTextColor(mAccentColor);
 
+        if(getDialog() == null) {
+            view.findViewById(R.id.done_background).setVisibility(View.GONE);
+        }
+
         updateDisplay(false);
         setCurrentView(currentView);
 

@@ -449,6 +449,10 @@ public class TimePickerDialog extends DialogFragment implements
         view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
         view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
 
+        if(getDialog() == null) {
+            view.findViewById(R.id.done_background).setVisibility(View.GONE);
+        }
+
         int circleBackground = ContextCompat.getColor(context, R.color.mdtp_circle_background);
         int backgroundColor = ContextCompat.getColor(context, R.color.mdtp_background_color);
         int darkBackgroundColor = ContextCompat.getColor(context, R.color.mdtp_light_gray);
