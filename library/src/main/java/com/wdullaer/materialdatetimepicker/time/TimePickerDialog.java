@@ -48,6 +48,7 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelect
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Locale;
 
 /**
@@ -364,10 +365,7 @@ public class TimePickerDialog extends DialogFragment implements
                 } else {
                     tryVibrate();
                 }
-                if (mCallback != null) {
-                    mCallback.onTimeSet(mTimePicker,
-                            mTimePicker.getHours(), mTimePicker.getMinutes());
-                }
+                notifyOnDateListener();
                 dismiss();
             }
         });
@@ -1222,6 +1220,12 @@ public class TimePickerDialog extends DialogFragment implements
                 return processKeyUp(keyCode);
             }
             return false;
+        }
+    }
+
+    public void notifyOnDateListener() {
+        if (mCallback != null) {
+            mCallback.onTimeSet(mTimePicker, mTimePicker.getHours(), mTimePicker.getMinutes());
         }
     }
 }

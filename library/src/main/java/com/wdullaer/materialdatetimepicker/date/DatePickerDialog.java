@@ -295,10 +295,7 @@ public class DatePickerDialog extends DialogFragment implements
             @Override
             public void onClick(View v) {
                 tryVibrate();
-                if (mCallBack != null) {
-                    mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
-                            mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
-                }
+                notifyOnDateListener();
                 dismiss();
             }
         });
@@ -851,5 +848,12 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void tryVibrate() {
         if(mVibrate) mHapticFeedbackController.tryVibrate();
+    }
+
+    public void notifyOnDateListener() {
+        if (mCallBack != null) {
+            mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
+                    mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
+        }
     }
 }
