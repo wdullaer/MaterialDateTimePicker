@@ -69,11 +69,11 @@ public class TimePickerDialog extends DialogFragment implements
     private static final String KEY_SELECTABLE_TIMES = "selectable_times";
     private static final String KEY_MIN_TIME = "min_time";
     private static final String KEY_MAX_TIME = "max_time";
+    private static final String KEY_ENABLE_SECONDS = "enable_seconds";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
-    // NOT a real index for the purpose of what's showing.
-    public static final int AMPM_INDEX = 2;
+    public static final int SECOND_INDEX = 2;
     public static final int AM = 0;
     public static final int PM = 1;
 
@@ -92,6 +92,8 @@ public class TimePickerDialog extends DialogFragment implements
     private TextView mHourSpaceView;
     private TextView mMinuteView;
     private TextView mMinuteSpaceView;
+    private TextView mSecondView;
+    private TextView mSecondSpaceView;
     private TextView mAmPmTextView;
     private View mAmPmHitspace;
     private RadialPickerLayout mTimePicker;
@@ -112,6 +114,7 @@ public class TimePickerDialog extends DialogFragment implements
     private Timepoint[] mSelectableTimes;
     private Timepoint mMinTime;
     private Timepoint mMaxTime;
+    private boolean mEnableSeconds;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -128,6 +131,8 @@ public class TimePickerDialog extends DialogFragment implements
     private String mSelectHours;
     private String mMinutePickerDescription;
     private String mSelectMinutes;
+    private String mSecondPickerDescription;
+    private String mSelectSeconds;
 
     /**
      * The callback interface used to indicate the user is done filling in
@@ -139,33 +144,32 @@ public class TimePickerDialog extends DialogFragment implements
          * @param view The view associated with this listener.
          * @param hourOfDay The hour that was set.
          * @param minute The minute that was set.
+         * @param second The second that was set
          */
-        void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute);
+        void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second);
     }
 
     public TimePickerDialog() {
         // Empty constructor required for dialog fragment.
     }
 
-    /**
-    public TimePickerDialog(Context context, int theme, OnTimeSetListener callback,
-            int hourOfDay, int minute, boolean is24HourMode) {
-        // Empty constructor required for dialog fragment.
-    }
-     **/
-
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
-            int hourOfDay, int minute, boolean is24HourMode) {
+            int hourOfDay, int minute, int second, boolean is24HourMode) {
         TimePickerDialog ret = new TimePickerDialog();
-        ret.initialize(callback, hourOfDay, minute, is24HourMode);
+        ret.initialize(callback, hourOfDay, minute, second, is24HourMode);
         return ret;
     }
 
-    public void initialize(OnTimeSetListener callback,
+    public static TimePickerDialog newInstance(OnTimeSetListener callback,
             int hourOfDay, int minute, boolean is24HourMode) {
+        return TimePickerDialog.newInstance(callback, hourOfDay, minute, 0, is24HourMode);
+    }
+
+    public void initialize(OnTimeSetListener callback,
+            int hourOfDay, int minute, int second, boolean is24HourMode) {
         mCallback = callback;
 
-        mInitialTime = new Timepoint(hourOfDay, minute);
+        mInitialTime = new Timepoint(hourOfDay, minute, second);
         mIs24HourMode = is24HourMode;
         mInKbMode = false;
         mTitle = "";
@@ -173,6 +177,7 @@ public class TimePickerDialog extends DialogFragment implements
         mAccentColor = -1;
         mVibrate = true;
         mDismissOnPause = false;
+        mEnableSeconds = false;
     }
 
     /**
@@ -228,6 +233,14 @@ public class TimePickerDialog extends DialogFragment implements
         mDismissOnPause = dismissOnPause;
     }
 
+    /**
+     * Set whether an additional picker for seconds should be shown
+     * @param enableSeconds true if the seconds picker should be shown
+     */
+    public void enableSeconds(boolean enableSeconds) {
+        mEnableSeconds = enableSeconds;
+    }
+
     public void setMinTime(int hour, int minute, int second) {
         setMinTime(new Timepoint(hour, minute, second));
     }
@@ -266,9 +279,13 @@ public class TimePickerDialog extends DialogFragment implements
         mOnDismissListener = onDismissListener;
     }
 
-    public void setStartTime(int hourOfDay, int minute) {
-        mInitialTime = roundToNearest(new Timepoint(hourOfDay, minute));
+    public void setStartTime(int hourOfDay, int minute, int second) {
+        mInitialTime = roundToNearest(new Timepoint(hourOfDay, minute, second));
         mInKbMode = false;
+    }
+
+    public void setStartTime(int hourOfDay, int minute) {
+        setStartTime(hourOfDay, minute, 0);
     }
 
     @Override
@@ -287,6 +304,7 @@ public class TimePickerDialog extends DialogFragment implements
             mSelectableTimes = (Timepoint[])savedInstanceState.getParcelableArray(KEY_SELECTABLE_TIMES);
             mMinTime = savedInstanceState.getParcelable(KEY_MIN_TIME);
             mMaxTime = savedInstanceState.getParcelable(KEY_MAX_TIME);
+            mEnableSeconds = savedInstanceState.getBoolean(KEY_ENABLE_SECONDS);
         }
     }
 
@@ -310,6 +328,8 @@ public class TimePickerDialog extends DialogFragment implements
         mSelectHours = res.getString(R.string.mdtp_select_hours);
         mMinutePickerDescription = res.getString(R.string.mdtp_minute_picker_description);
         mSelectMinutes = res.getString(R.string.mdtp_select_minutes);
+        mSecondPickerDescription = res.getString(R.string.mdtp_second_picker_description);
+        mSelectSeconds = res.getString(R.string.mdtp_select_seconds);
         mSelectedColor = ContextCompat.getColor(context, R.color.mdtp_white);
         mUnselectedColor = ContextCompat.getColor(context, R.color.mdtp_accent_color_focused);
 
@@ -319,6 +339,9 @@ public class TimePickerDialog extends DialogFragment implements
         mMinuteSpaceView = (TextView) view.findViewById(R.id.minutes_space);
         mMinuteView = (TextView) view.findViewById(R.id.minutes);
         mMinuteView.setOnKeyListener(keyboardListener);
+        mSecondSpaceView = (TextView) view.findViewById(R.id.seconds_space);
+        mSecondView = (TextView) view.findViewById(R.id.seconds);
+        mSecondView.setOnKeyListener(keyboardListener);
         mAmPmTextView = (TextView) view.findViewById(R.id.ampm_label);
         mAmPmTextView.setOnKeyListener(keyboardListener);
         String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
@@ -355,6 +378,13 @@ public class TimePickerDialog extends DialogFragment implements
                 tryVibrate();
             }
         });
+        mSecondView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setCurrentItemShowing(SECOND_INDEX, true, false, true);
+                tryVibrate();
+            }
+        });
 
         mOkButton = (Button) view.findViewById(R.id.ok);
         mOkButton.setOnClickListener(new OnClickListener() {
@@ -367,7 +397,7 @@ public class TimePickerDialog extends DialogFragment implements
                 }
                 if (mCallback != null) {
                     mCallback.onTimeSet(mTimePicker,
-                            mTimePicker.getHours(), mTimePicker.getMinutes());
+                            mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
                 }
                 dismiss();
             }
@@ -380,22 +410,16 @@ public class TimePickerDialog extends DialogFragment implements
             @Override
             public void onClick(View v) {
                 tryVibrate();
-                if(getDialog() != null) getDialog().cancel();
+                if (getDialog() != null) getDialog().cancel();
             }
         });
-        mCancelButton.setTypeface(TypefaceHelper.get(context,"Roboto-Medium"));
+        mCancelButton.setTypeface(TypefaceHelper.get(context, "Roboto-Medium"));
         mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // Enable or disable the AM/PM view.
         mAmPmHitspace = view.findViewById(R.id.ampm_hitspace);
         if (mIs24HourMode) {
             mAmPmTextView.setVisibility(View.GONE);
-
-            RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
-                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            paramsSeparator.addRule(RelativeLayout.CENTER_IN_PARENT);
-            TextView separatorView = (TextView) view.findViewById(R.id.separator);
-            separatorView.setLayoutParams(paramsSeparator);
         } else {
             mAmPmTextView.setVisibility(View.VISIBLE);
             updateAmPmDisplay(mInitialTime.isAM() ? AM : PM);
@@ -403,13 +427,13 @@ public class TimePickerDialog extends DialogFragment implements
                 @Override
                 public void onClick(View v) {
                     // Don't do anything if either AM or PM are disabled
-                    if(isAmDisabled() || isPmDisabled()) return;
+                    if (isAmDisabled() || isPmDisabled()) return;
 
                     tryVibrate();
                     int amOrPm = mTimePicker.getIsCurrentlyAmOrPm();
                     if (amOrPm == AM) {
                         amOrPm = PM;
-                    } else if (amOrPm == PM){
+                    } else if (amOrPm == PM) {
                         amOrPm = AM;
                     }
                     updateAmPmDisplay(amOrPm);
@@ -418,9 +442,48 @@ public class TimePickerDialog extends DialogFragment implements
             });
         }
 
+        // Disable seconds picker
+        if(!mEnableSeconds) {
+            mSecondSpaceView.setVisibility(View.GONE);
+            view.findViewById(R.id.separator_seconds).setVisibility(View.GONE);
+        }
+
+        // Center stuff depending on what's visible
+        if (mIs24HourMode && !mEnableSeconds) {
+            // center first separator
+            RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
+                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            paramsSeparator.addRule(RelativeLayout.CENTER_IN_PARENT);
+            TextView separatorView = (TextView) view.findViewById(R.id.separator);
+            separatorView.setLayoutParams(paramsSeparator);
+        } else if (mEnableSeconds) {
+            // link separator to minutes
+            final View separator = view.findViewById(R.id.separator);
+            RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
+                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            paramsSeparator.addRule(RelativeLayout.LEFT_OF, R.id.minutes_space);
+            paramsSeparator.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+            separator.setLayoutParams(paramsSeparator);
+
+            if (!mIs24HourMode) {
+                // center minutes
+                RelativeLayout.LayoutParams paramsMinutes = new RelativeLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                paramsMinutes.addRule(RelativeLayout.CENTER_IN_PARENT);
+                mMinuteSpaceView.setLayoutParams(paramsMinutes);
+            } else {
+                // move minutes to right of center
+                RelativeLayout.LayoutParams paramsMinutes = new RelativeLayout.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                paramsMinutes.addRule(RelativeLayout.RIGHT_OF, R.id.center_view);
+                mMinuteSpaceView.setLayoutParams(paramsMinutes);
+            }
+        }
+
         mAllowAutoAdvance = true;
         setHour(mInitialTime.getHour(), true);
         setMinute(mInitialTime.getMinute());
+        setSecond(mInitialTime.getSecond());
 
         // Set up for keyboard mode.
         mDoublePlaceholderText = res.getString(R.string.mdtp_time_placeholder);
@@ -522,6 +585,7 @@ public class TimePickerDialog extends DialogFragment implements
             outState.putParcelableArray(KEY_SELECTABLE_TIMES, mSelectableTimes);
             outState.putParcelable(KEY_MIN_TIME, mMinTime);
             outState.putParcelable(KEY_MAX_TIME, mMaxTime);
+            outState.putBoolean(KEY_ENABLE_SECONDS, mEnableSeconds);
         }
     }
 
@@ -534,17 +598,25 @@ public class TimePickerDialog extends DialogFragment implements
         mTimePicker.setContentDescription(mHourPickerDescription + ": " + newValue.getHour());
         setMinute(newValue.getMinute());
         mTimePicker.setContentDescription(mMinutePickerDescription + ": " + newValue.getMinute());
+        setSecond(newValue.getSecond());
+        mTimePicker.setContentDescription(mSecondPickerDescription + ": " + newValue.getSecond());
         if(!mIs24HourMode) updateAmPmDisplay(newValue.isAM() ? AM : PM);
     }
 
     @Override
     public void advancePicker(int index) {
         if(!mAllowAutoAdvance) return;
-        if(index != HOUR_INDEX) return;
-        setCurrentItemShowing(MINUTE_INDEX, true, true, false);
+        if(index == HOUR_INDEX) {
+            setCurrentItemShowing(MINUTE_INDEX, true, true, false);
 
-        String announcement = mSelectHours+". "+mTimePicker.getMinutes();
-        Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            String announcement = mSelectHours + ". " + mTimePicker.getMinutes();
+            Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+        } else if(index == MINUTE_INDEX && mEnableSeconds) {
+            setCurrentItemShowing(SECOND_INDEX, true, true, false);
+
+            String announcement = mSelectMinutes+". " + mTimePicker.getSeconds();
+            Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+        }
     }
 
     @Override
@@ -580,7 +652,25 @@ public class TimePickerDialog extends DialogFragment implements
 
             return false;
         }
-        // TODO: implement proper logic for minutes and seconds
+        else if(index == MINUTE_INDEX) {
+            if(mSelectableTimes != null) {
+                for(Timepoint t : mSelectableTimes) {
+                    if(t.getHour() == current.getHour() && t.getMinute() == current.getMinute()) return false;
+                }
+                return true;
+            }
+            if(mMinTime != null) {
+                Timepoint roundedMin = new Timepoint(mMinTime.getHour(), mMinTime.getMinute());
+                if (roundedMin.compareTo(current) > 0) return true;
+            }
+
+            if(mMaxTime != null) {
+                Timepoint roundedMax = new Timepoint(mMaxTime.getHour(), mMaxTime.getMinute() + 1);
+                if (roundedMax.compareTo(current) >= 0) return true;
+            }
+
+            return false;
+        }
         else return isOutOfRange(current);
     }
 
@@ -676,35 +766,57 @@ public class TimePickerDialog extends DialogFragment implements
         mMinuteSpaceView.setText(text);
     }
 
+    private void setSecond(int value) {
+        if(value == 60) {
+            value = 0;
+        }
+        CharSequence text = String.format(Locale.getDefault(), "%02d", value);
+        Utils.tryAccessibilityAnnounce(mTimePicker, text);
+        mSecondView.setText(text);
+        mSecondSpaceView.setText(text);
+    }
+
     // Show either Hours or Minutes.
     private void setCurrentItemShowing(int index, boolean animateCircle, boolean delayLabelAnimate,
             boolean announce) {
         mTimePicker.setCurrentItemShowing(index, animateCircle);
 
         TextView labelToAnimate;
-        if (index == HOUR_INDEX) {
-            int hours = mTimePicker.getHours();
-            if (!mIs24HourMode) {
-                hours = hours % 12;
-            }
-            mTimePicker.setContentDescription(mHourPickerDescription + ": " + hours);
-            if (announce) {
-                Utils.tryAccessibilityAnnounce(mTimePicker, mSelectHours);
-            }
-            labelToAnimate = mHourView;
-        } else {
-            int minutes = mTimePicker.getMinutes();
-            mTimePicker.setContentDescription(mMinutePickerDescription + ": " + minutes);
-            if (announce) {
-                Utils.tryAccessibilityAnnounce(mTimePicker, mSelectMinutes);
-            }
-            labelToAnimate = mMinuteView;
+        switch(index) {
+            case HOUR_INDEX:
+                int hours = mTimePicker.getHours();
+                if (!mIs24HourMode) {
+                    hours = hours % 12;
+                }
+                mTimePicker.setContentDescription(mHourPickerDescription + ": " + hours);
+                if (announce) {
+                    Utils.tryAccessibilityAnnounce(mTimePicker, mSelectHours);
+                }
+                labelToAnimate = mHourView;
+                break;
+            case MINUTE_INDEX:
+                int minutes = mTimePicker.getMinutes();
+                mTimePicker.setContentDescription(mMinutePickerDescription + ": " + minutes);
+                if (announce) {
+                    Utils.tryAccessibilityAnnounce(mTimePicker, mSelectMinutes);
+                }
+                labelToAnimate = mMinuteView;
+                break;
+            default:
+                int seconds = mTimePicker.getSeconds();
+                mTimePicker.setContentDescription(mSecondPickerDescription + ": " + seconds);
+                if (announce) {
+                    Utils.tryAccessibilityAnnounce(mTimePicker, mSelectSeconds);
+                }
+                labelToAnimate = mSecondView;
         }
 
-        int hourColor = (index == HOUR_INDEX)? mSelectedColor : mUnselectedColor;
-        int minuteColor = (index == MINUTE_INDEX)? mSelectedColor : mUnselectedColor;
+        int hourColor = (index == HOUR_INDEX) ? mSelectedColor : mUnselectedColor;
+        int minuteColor = (index == MINUTE_INDEX) ? mSelectedColor : mUnselectedColor;
+        int secondColor = (index == SECOND_INDEX) ? mSelectedColor : mUnselectedColor;
         mHourView.setTextColor(hourColor);
         mMinuteView.setTextColor(minuteColor);
+        mSecondView.setTextColor(secondColor);
 
         ObjectAnimator pulseAnimator = Utils.getPulseAnimator(labelToAnimate, 0.85f, 1.1f);
         if (delayLabelAnimate) {
@@ -738,7 +850,7 @@ public class TimePickerDialog extends DialogFragment implements
             }
             if (mCallback != null) {
                 mCallback.onTimeSet(mTimePicker,
-                        mTimePicker.getHours(), mTimePicker.getMinutes());
+                        mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
             }
             dismiss();
             return true;
@@ -804,7 +916,7 @@ public class TimePickerDialog extends DialogFragment implements
     private boolean addKeyIfLegal(int keyCode) {
         // If we're in 24hour mode, we'll need to check if the input is full. If in AM/PM mode,
         // we'll need to see if AM/PM have been typed.
-        if ((mIs24HourMode && mTypedTimes.size() == 4) ||
+        if ((mIs24HourMode && mTypedTimes.size() == (mEnableSeconds ? 6 : 4)) ||
                 (!mIs24HourMode && isTypedTimeFullyLegal())) {
             return false;
         }
@@ -819,7 +931,7 @@ public class TimePickerDialog extends DialogFragment implements
         Utils.tryAccessibilityAnnounce(mTimePicker, String.format("%d", val));
         // Automatically fill in 0's if AM or PM was legally entered.
         if (isTypedTimeFullyLegal()) {
-            if (!mIs24HourMode && mTypedTimes.size() <= 3) {
+            if (!mIs24HourMode && mTypedTimes.size() <= (mEnableSeconds ? 5 : 3)) {
                 mTypedTimes.add(mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
                 mTypedTimes.add(mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
             }
@@ -852,7 +964,7 @@ public class TimePickerDialog extends DialogFragment implements
             // For 24-hour mode, the time is legal if the hours and minutes are each legal. Note:
             // getEnteredTime() will ONLY call isTypedTimeFullyLegal() when NOT in 24hour mode.
             int[] values = getEnteredTime(null);
-            return (values[0] >= 0 && values[1] >= 0 && values[1] < 60);
+            return (values[0] >= 0 && values[1] >= 0 && values[1] < 60 && values[2] >= 0 && values[2] < 60);
         } else {
             // For AM/PM mode, the time is legal if it contains an AM or PM, as those can only be
             // legally added at specific times based on the tree's algorithm.
@@ -877,9 +989,9 @@ public class TimePickerDialog extends DialogFragment implements
         mInKbMode = false;
         if (!mTypedTimes.isEmpty()) {
             int values[] = getEnteredTime(null);
-            mTimePicker.setTime(new Timepoint(values[0], values[1]));
+            mTimePicker.setTime(new Timepoint(values[0], values[1], values[2]));
             if (!mIs24HourMode) {
-                mTimePicker.setAmOrPm(values[2]);
+                mTimePicker.setAmOrPm(values[3]);
             }
             mTypedTimes.clear();
         }
@@ -890,8 +1002,8 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     /**
-     * Update the hours, minutes, and AM/PM displays with the typed times. If the typedTimes is
-     * empty, either show an empty display (filled with the placeholder text), or update from the
+     * Update the hours, minutes, seconds and AM/PM displays with the typed times. If the typedTimes
+     * is empty, either show an empty display (filled with the placeholder text), or update from the
      * timepicker's values.
      * @param allowEmptyDisplay if true, then if the typedTimes is empty, use the placeholder text.
      * Otherwise, revert to the timepicker's values.
@@ -900,30 +1012,38 @@ public class TimePickerDialog extends DialogFragment implements
         if (!allowEmptyDisplay && mTypedTimes.isEmpty()) {
             int hour = mTimePicker.getHours();
             int minute = mTimePicker.getMinutes();
+            int second = mTimePicker.getSeconds();
             setHour(hour, true);
             setMinute(minute);
+            setSecond(second);
             if (!mIs24HourMode) {
                 updateAmPmDisplay(hour < 12? AM : PM);
             }
             setCurrentItemShowing(mTimePicker.getCurrentItemShowing(), true, true, true);
             mOkButton.setEnabled(true);
         } else {
-            Boolean[] enteredZeros = {false, false};
+            Boolean[] enteredZeros = {false, false, false};
             int[] values = getEnteredTime(enteredZeros);
-            String hourFormat = enteredZeros[0]? "%02d" : "%2d";
-            String minuteFormat = (enteredZeros[1])? "%02d" : "%2d";
-            String hourStr = (values[0] == -1)? mDoublePlaceholderText :
+            String hourFormat = enteredZeros[0] ? "%02d" : "%2d";
+            String minuteFormat = (enteredZeros[1]) ? "%02d" : "%2d";
+            String secondFormat = (enteredZeros[1]) ? "%02d" : "%2d";
+            String hourStr = (values[0] == -1) ? mDoublePlaceholderText :
                 String.format(hourFormat, values[0]).replace(' ', mPlaceholderText);
-            String minuteStr = (values[1] == -1)? mDoublePlaceholderText :
+            String minuteStr = (values[1] == -1) ? mDoublePlaceholderText :
                 String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
+            String secondStr = (values[2] == -1) ? mDoublePlaceholderText :
+                    String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
             mHourView.setText(hourStr);
             mHourSpaceView.setText(hourStr);
             mHourView.setTextColor(mUnselectedColor);
             mMinuteView.setText(minuteStr);
             mMinuteSpaceView.setText(minuteStr);
             mMinuteView.setTextColor(mUnselectedColor);
+            mSecondView.setText(secondStr);
+            mSecondSpaceView.setText(secondStr);
+            mSecondView.setTextColor(mUnselectedColor);
             if (!mIs24HourMode) {
-                updateAmPmDisplay(values[2]);
+                updateAmPmDisplay(values[3]);
             }
         }
     }
@@ -956,7 +1076,7 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     /**
-     * Get the currently-entered time, as integer values of the hours and minutes typed.
+     * Get the currently-entered time, as integer values of the hours, minutes and seconds typed.
      * @param enteredZeros A size-2 boolean array, which the caller should initialize, and which
      * may then be used for the caller to know whether zeros had been explicitly entered as either
      * hours of minutes. This is helpful for deciding whether to show the dashes, or actual 0's.
@@ -977,18 +1097,30 @@ public class TimePickerDialog extends DialogFragment implements
         }
         int minute = -1;
         int hour = -1;
+        int second = 0;
+        int shift = mEnableSeconds ? 2 : 0;
         for (int i = startIndex; i <= mTypedTimes.size(); i++) {
             int val = getValFromKeyCode(mTypedTimes.get(mTypedTimes.size() - i));
-            if (i == startIndex) {
+            if (mEnableSeconds) {
+                if (i == startIndex) {
+                    second = val;
+                } else if (i == startIndex + 1) {
+                    second += 10*val;
+                    if (enteredZeros != null && val == 0) {
+                        enteredZeros[2] = true;
+                    }
+                }
+            }
+            if (i == startIndex + shift) {
                 minute = val;
-            } else if (i == startIndex+1) {
+            } else if (i == startIndex + shift + 1) {
                 minute += 10*val;
                 if (enteredZeros != null && val == 0) {
                     enteredZeros[1] = true;
                 }
-            } else if (i == startIndex+2) {
+            } else if (i == startIndex + shift + 2) {
                 hour = val;
-            } else if (i == startIndex+3) {
+            } else if (i == startIndex + shift + 3) {
                 hour += 10*val;
                 if (enteredZeros != null && val == 0) {
                     enteredZeros[0] = true;
@@ -996,7 +1128,7 @@ public class TimePickerDialog extends DialogFragment implements
             }
         }
 
-        return new int[] {hour, minute, amOrPm};
+        return new int[] {hour, minute, second, amOrPm};
     }
 
     /**
@@ -1059,6 +1191,15 @@ public class TimePickerDialog extends DialogFragment implements
             // The first digit must be followed by the second digit.
             minuteFirstDigit.addChild(minuteSecondDigit);
 
+            if (mEnableSeconds) {
+                Node secondsFirstDigit = new Node(k0, k1, k2, k3, k4, k5);
+                Node secondsSecondDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
+                secondsFirstDigit.addChild(secondsSecondDigit);
+
+                // Minutes can be followed by seconds.
+                minuteSecondDigit.addChild(secondsFirstDigit);
+            }
+
             // The first digit may be 0-1.
             Node firstDigit = new Node(k0, k1);
             mLegalTimesTree.addChild(firstDigit);
@@ -1106,6 +1247,12 @@ public class TimePickerDialog extends DialogFragment implements
             // Set up AM and PM to respond to "a" and "p".
             Node ampm = new Node(getAmOrPmKeyCode(AM), getAmOrPmKeyCode(PM));
 
+            // Seconds will be used a few times as well, if enabled.
+            Node secondsFirstDigit = new Node(k0, k1, k2, k3, k4, k5);
+            Node secondsSecondDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
+            secondsSecondDigit.addChild(ampm);
+            secondsFirstDigit.addChild(secondsSecondDigit);
+
             // The first hour digit may be 1.
             Node firstDigit = new Node(k1);
             mLegalTimesTree.addChild(firstDigit);
@@ -1128,14 +1275,28 @@ public class TimePickerDialog extends DialogFragment implements
             // the fourth digit may be 0-9.
             Node fourthDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
             thirdDigit.addChild(fourthDigit);
-            // The time must be finished now. E.g. 10:49am, 12:40pm.
+            // The time must be finished now, when seconds are disabled. E.g. 10:49am, 12:40pm.
             fourthDigit.addChild(ampm);
+
+            // When the first digit is 1, the second digit is 0-2, and the third digit is 0-5,
+            // and fourth digit is 0-9, we may add seconds if enabled.
+            if (mEnableSeconds) {
+                // The time must be finished now. E.g. 10:49:01am, 12:40:59pm.
+                fourthDigit.addChild(secondsFirstDigit);
+            }
 
             // When the first digit is 1, and the second digit is 0-2, the third digit may be 6-9.
             thirdDigit = new Node(k6, k7, k8, k9);
             secondDigit.addChild(thirdDigit);
             // The time must be finished now. E.g. 1:08am, 1:26pm.
             thirdDigit.addChild(ampm);
+
+            // When the first digit is 1, and the second digit is 0-2, and the third digit is 6-9,
+            // we may add seconds is enabled.
+            if (mEnableSeconds) {
+                // The time must be finished now. E.g. 1:08:01am, 1:26:59pm.
+                thirdDigit.addChild(secondsFirstDigit);
+            }
 
             // When the first digit is 1, the second digit may be 3-5.
             secondDigit = new Node(k3, k4, k5);
@@ -1144,8 +1305,15 @@ public class TimePickerDialog extends DialogFragment implements
             // When the first digit is 1, and the second digit is 3-5, the third digit may be 0-9.
             thirdDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
             secondDigit.addChild(thirdDigit);
-            // The time must be finished now. E.g. 1:39am, 1:50pm.
+            // The time must be finished now if seconds are disabled. E.g. 1:39am, 1:50pm.
             thirdDigit.addChild(ampm);
+
+            // When the first digit is 1, and the second digit is 3-5, and the third digit is 0-9,
+            // we may add seconds if enabled.
+            if (mEnableSeconds) {
+                // The time must be finished now. E.g. 1:39:01am, 1:50:59pm.
+                thirdDigit.addChild(secondsFirstDigit);
+            }
 
             // The hour digit may be 2-9.
             firstDigit = new Node(k2, k3, k4, k5, k6, k7, k8, k9);
@@ -1162,6 +1330,13 @@ public class TimePickerDialog extends DialogFragment implements
             secondDigit.addChild(thirdDigit);
             // The time must be finished now. E.g. 2:57am, 9:30pm.
             thirdDigit.addChild(ampm);
+
+            // When the first digit is 2-9, and the second digit is 0-5, and third digit is 0-9, we
+            // may add seconds if enabled.
+            if (mEnableSeconds) {
+                // The time must be finished now. E.g. 2:57:01am, 9:30:59pm.
+                thirdDigit.addChild(secondsFirstDigit);
+            }
         }
     }
 

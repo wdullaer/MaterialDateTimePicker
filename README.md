@@ -33,7 +33,7 @@ Date Picker | Time Picker
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:1.5.4'
+  compile 'com.wdullaer:materialdatetimepicker:1.5.1'
 }
 ```
 
@@ -109,26 +109,14 @@ dpd.setThemeDark(true);
 * `TimePickerDialog` `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
 
-* `DatePickerDialog` `setTitle(String title)`
-Shows a title at the top of the `DatePickerDialog` instead of the day of the week
-
-* `setMinTime(Timepoint time)`  
-Set the minimum valid time to be selected. Time values earlier in the day will be deactivated
-
-* `setMaxTime(Timepoint time)`  
-Set the maximum valid time to be selected. Time values later in the day will be deactivated
-
-* `setSelectableTimes(Timepoint[] times)`
-You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. It takes precedence over `setMinTime(Timepoint time)` and `setMaxTime(Timepoint time)`
-
 * `setSelectableDays(Calendar[] days)`  
-You can pass a `Calendar[]` to the `DatePickerDialog`. The values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
+You can pass a `Calendar[]` to the `DatePickerDialog`. This values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
 
 * `setHighlightedDays(Calendar[] days)`  
 You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the color of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`
 
-* `showYearPickerFirst(boolean yearPicker)`  
-Show the year picker first, rather than the month and day picker.
+* `showYearPickerFirst(boolean yearFirst)`
+Show the year picker view first when launching the dialog, rather than the month and day view.
 
 * `OnDismissListener` and `OnCancelListener`  
 Both pickers can be passed a `DialogInterface.OnDismissLisener` or `DialogInterface.OnCancelListener` which allows you to run code when either of these events occur.

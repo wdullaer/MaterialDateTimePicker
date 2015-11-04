@@ -65,6 +65,13 @@
             android:text="@string/title_time"
             android:checked="false"/>
 
+        <CheckBox
+            android:id="@+id/enable_seconds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_seconds"
+            android:checked="false"/>
+
         <!-- DatePicker Options -->
         <TextView
             android:id="@+id/date_textview"
