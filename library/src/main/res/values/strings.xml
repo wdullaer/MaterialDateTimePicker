@@ -32,10 +32,18 @@
          [CHAR LIMIT=50]
     -->
     <string name="mdtp_minute_picker_description">Minutes circular slider</string>
+    <!--
+         Content description for the second selector in the time picker, which displays
+         selectable five-second intervals along the inside edge of a circle, as in an analog clock.
+         [CHAR LIMIT=50]
+    -->
+    <string name="mdtp_second_picker_description">Seconds circular slider</string>
     <!-- Accessibility announcement for hour circular picker [CHAR LIMIT=NONE] -->
     <string name="mdtp_select_hours">Select hours</string>
     <!-- Accessibility announcement for minute circular picker [CHAR LIMIT=NONE] -->
     <string name="mdtp_select_minutes">Select minutes</string>
+    <!-- Accessibility announcement for second circular picker [CHAR LIMIT=NONE] -->
+    <string name="mdtp_select_seconds">Select seconds</string>
 
     <!--
         Content description for the month and day selector in the date picker, which displays

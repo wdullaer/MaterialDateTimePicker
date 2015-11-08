@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox titleTime;
     private CheckBox titleDate;
     private CheckBox showYearFirst;
+    private CheckBox enableSeconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
         titleTime = (CheckBox) findViewById(R.id.title_time);
         titleDate = (CheckBox) findViewById(R.id.title_date);
         showYearFirst = (CheckBox) findViewById(R.id.show_year_first);
+        enableSeconds = (CheckBox) findViewById(R.id.enable_seconds);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements
                 tpd.setThemeDark(modeDarkTime.isChecked());
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());
+                tpd.enableSeconds(enableSeconds.isChecked());
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
@@ -125,10 +128,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         String hourString = hourOfDay < 10 ? "0"+hourOfDay : ""+hourOfDay;
         String minuteString = minute < 10 ? "0"+minute : ""+minute;
-        String time = "You picked the following time: "+hourString+"h"+minuteString;
+        String secondString = second < 10 ? "0"+second : ""+second;
+        String time = "You picked the following time: "+hourString+"h"+minuteString+"m"+secondString+"s";
         timeTextView.setText(time);
     }
 
