@@ -18,6 +18,7 @@ package com.wdullaer.materialdatetimepicker.date;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -230,9 +231,8 @@ public class DatePickerDialog extends DialogFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-        View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, container);
+        View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, container, false);
 
         mDayOfWeekView = (TextView) view.findViewById(R.id.date_picker_header);
         mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
@@ -295,10 +295,7 @@ public class DatePickerDialog extends DialogFragment implements
             @Override
             public void onClick(View v) {
                 tryVibrate();
-                if (mCallBack != null) {
-                    mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
-                            mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
-                }
+                notifyOnDateListener();
                 dismiss();
             }
         });
@@ -324,6 +321,10 @@ public class DatePickerDialog extends DialogFragment implements
         okButton.setTextColor(mAccentColor);
         cancelButton.setTextColor(mAccentColor);
 
+        if(getDialog() == null) {
+            view.findViewById(R.id.done_background).setVisibility(View.GONE);
+        }
+
         updateDisplay(false);
         setCurrentView(currentView);
 
@@ -337,6 +338,13 @@ public class DatePickerDialog extends DialogFragment implements
 
         mHapticFeedbackController = new HapticFeedbackController(activity);
         return view;
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
     }
 
     @Override
@@ -840,5 +848,12 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void tryVibrate() {
         if(mVibrate) mHapticFeedbackController.tryVibrate();
+    }
+
+    public void notifyOnDateListener() {
+        if (mCallBack != null) {
+            mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
+                    mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
+        }
     }
 }

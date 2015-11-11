@@ -18,6 +18,7 @@ package com.wdullaer.materialdatetimepicker.time;
 
 import android.animation.ObjectAnimator;
 import android.app.ActionBar.LayoutParams;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -311,9 +312,8 @@ public class TimePickerDialog extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-        View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, container);
+        View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, container,false);
         KeyboardListener keyboardListener = new KeyboardListener();
         view.findViewById(R.id.time_picker_dialog).setOnKeyListener(keyboardListener);
 
@@ -323,7 +323,7 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         Resources res = getResources();
-        Context context = getDialog().getContext();
+        Context context = getActivity();
         mHourPickerDescription = res.getString(R.string.mdtp_hour_picker_description);
         mSelectHours = res.getString(R.string.mdtp_select_hours);
         mMinutePickerDescription = res.getString(R.string.mdtp_minute_picker_description);
@@ -395,10 +395,7 @@ public class TimePickerDialog extends DialogFragment implements
                 } else {
                     tryVibrate();
                 }
-                if (mCallback != null) {
-                    mCallback.onTimeSet(mTimePicker,
-                            mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
-                }
+                notifyOnDateListener();
                 dismiss();
             }
         });
@@ -512,6 +509,10 @@ public class TimePickerDialog extends DialogFragment implements
         view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
         view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
 
+        if(getDialog() == null) {
+            view.findViewById(R.id.done_background).setVisibility(View.GONE);
+        }
+
         int circleBackground = ContextCompat.getColor(context, R.color.mdtp_circle_background);
         int backgroundColor = ContextCompat.getColor(context, R.color.mdtp_background_color);
         int darkBackgroundColor = ContextCompat.getColor(context, R.color.mdtp_light_gray);
@@ -520,6 +521,13 @@ public class TimePickerDialog extends DialogFragment implements
         mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
         view.findViewById(R.id.time_picker_dialog).setBackgroundColor(mThemeDark ? darkBackgroundColor : backgroundColor);
         return view;
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
     }
 
     @Override
@@ -1386,6 +1394,12 @@ public class TimePickerDialog extends DialogFragment implements
                 return processKeyUp(keyCode);
             }
             return false;
+        }
+    }
+
+    public void notifyOnDateListener() {
+        if (mCallback != null) {
+            mCallback.onTimeSet(mTimePicker, mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
         }
     }
 }
