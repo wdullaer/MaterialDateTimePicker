@@ -305,7 +305,7 @@ public class RadialSelectorView extends View {
 
         // Draw the line from the center of the circle.
         mPaint.setAlpha(255);
-        mPaint.setStrokeWidth(2);
+        mPaint.setStrokeWidth(3);
         canvas.drawLine(mXCenter, mYCenter, pointX, pointY, mPaint);
     }
 
