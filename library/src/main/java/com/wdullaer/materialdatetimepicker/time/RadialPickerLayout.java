@@ -197,6 +197,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             @Override
             public boolean isValidSelection(int selection) {
                 if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) selection = (selection+12)%24;
+                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == AM) selection = selection%12;
                 Timepoint newTime = new Timepoint(selection, mCurrentTime.getMinute(), mCurrentTime.getSecond());
                 return !mController.isOutOfRange(newTime, HOUR_INDEX);
             }
@@ -323,6 +324,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         newSelection = roundToValidTime(newSelection, HOUR_INDEX);
         reselectSelector(newSelection, false, HOUR_INDEX);
         mCurrentTime = newSelection;
+        mListener.onValueSelected(newSelection);
     }
 
     /**
@@ -462,7 +464,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             case HOUR_INDEX:
                 // The selection might have changed, recalculate the degrees and innerCircle values
                 int hour = newSelection.getHour();
-                boolean isInnerCircle = mIs24HourMode && (hour==12 || hour/12 == 0);
+                boolean isInnerCircle = isHourInnerCircle(hour);
                 int degrees = (hour%12)*360/12;
                 if(!mIs24HourMode) hour = hour%12;
                 if(!mIs24HourMode && hour == 0) hour += 12;
@@ -568,7 +570,8 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         switch(currentShowing) {
             case HOUR_INDEX:
                 int hour = value;
-                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM && degrees != 0) hour += 12;
+                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM && degrees != 360) hour += 12;
+                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == AM && degrees == 360) hour = 0;
                 newSelection = new Timepoint(hour, mCurrentTime.getMinute(), mCurrentTime.getSecond());
                 break;
             case MINUTE_INDEX:

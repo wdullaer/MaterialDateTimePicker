@@ -436,7 +436,6 @@ public class TimePickerDialog extends DialogFragment implements
                     } else if (amOrPm == PM) {
                         amOrPm = AM;
                     }
-                    updateAmPmDisplay(amOrPm);
                     mTimePicker.setAmOrPm(amOrPm);
                 }
             });
@@ -648,7 +647,7 @@ public class TimePickerDialog extends DialogFragment implements
             }
             if(mMinTime != null && mMinTime.getHour() > current.getHour()) return true;
 
-            if(mMaxTime != null && mMaxTime.getHour() < current.getHour()) return true;
+            if(mMaxTime != null && mMaxTime.getHour()+1 <= current.getHour()) return true;
 
             return false;
         }
@@ -665,8 +664,8 @@ public class TimePickerDialog extends DialogFragment implements
             }
 
             if(mMaxTime != null) {
-                Timepoint roundedMax = new Timepoint(mMaxTime.getHour(), mMaxTime.getMinute() + 1);
-                if (roundedMax.compareTo(current) >= 0) return true;
+                Timepoint roundedMax = new Timepoint(mMaxTime.getHour(), mMaxTime.getMinute(), 59);
+                if (roundedMax.compareTo(current) < 0) return true;
             }
 
             return false;
