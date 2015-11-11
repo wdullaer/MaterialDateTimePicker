@@ -43,6 +43,7 @@ import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter.CalendarDay;
 
 import java.security.InvalidParameterException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -470,25 +471,7 @@ public abstract class MonthView extends View {
             int calendarDay = (i + mWeekStart) % mNumDays;
             mDayLabelCalendar.set(Calendar.DAY_OF_WEEK, calendarDay);
             Locale locale = Locale.getDefault();
-            String localWeekDisplayName = mDayLabelCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, locale);
-            String weekString = localWeekDisplayName.toUpperCase(locale).substring(0, 1);
-
-            if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE) || locale.equals(Locale.SIMPLIFIED_CHINESE) || locale.equals(Locale.TRADITIONAL_CHINESE)) {
-                int len = localWeekDisplayName.length();
-                weekString = localWeekDisplayName.substring(len -1, len);
-            }
-
-            if (locale.getLanguage().equals("he") || locale.getLanguage().equals("iw")) {
-                if(mDayLabelCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
-                    int len = localWeekDisplayName.length();
-                    weekString = localWeekDisplayName.substring(len - 2, len - 1);
-                }
-                else {
-                    // I know this is duplication, but it makes the code easier to grok by
-                    // having all hebrew code in the same block
-                    weekString = localWeekDisplayName.toUpperCase(locale).substring(0, 1);
-                }
-            }
+            String weekString = new SimpleDateFormat("EEEEE", locale).format(mDayLabelCalendar.getTime());
             canvas.drawText(weekString, x, y, mMonthDayLabelPaint);
         }
     }
