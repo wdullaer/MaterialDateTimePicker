@@ -81,6 +81,11 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_DISMISS = "dismiss";
     private static final String KEY_DEFAULT_VIEW = "default_view";
     private static final String KEY_TITLE = "title";
+    private static final String KEY_OK_RESID = "ok_resid";
+    private static final String KEY_OK_STRING = "ok_string";
+    private static final String KEY_CANCEL_RESID = "cancel_resid";
+    private static final String KEY_CANCEL_STRING = "cancel_string";
+
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -122,6 +127,10 @@ public class DatePickerDialog extends DialogFragment implements
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
     private int mDefaultView = MONTH_AND_DAY_VIEW;
+    private int mOkResid = R.string.mdtp_ok;
+    private String mOkString;
+    private int mCancelResid = R.string.mdtp_cancel;
+    private String mCancelString;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -225,6 +234,10 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
         outState.putInt(KEY_DEFAULT_VIEW, mDefaultView);
         outState.putString(KEY_TITLE, mTitle);
+        outState.putInt(KEY_OK_RESID, mOkResid);
+        outState.putString(KEY_OK_STRING, mOkString);
+        outState.putInt(KEY_CANCEL_RESID, mCancelResid);
+        outState.putString(KEY_CANCEL_STRING, mCancelString);
     }
 
     @Override
@@ -261,6 +274,10 @@ public class DatePickerDialog extends DialogFragment implements
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
             mTitle = savedInstanceState.getString(KEY_TITLE);
+            mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
+            mOkString = savedInstanceState.getString(KEY_OK_STRING);
+            mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
+            mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
         }
 
         final Activity activity = getActivity();
@@ -300,6 +317,8 @@ public class DatePickerDialog extends DialogFragment implements
             }
         });
         okButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
+        if(mOkString != null) okButton.setText(mOkString);
+        else okButton.setText(mOkResid);
 
         Button cancelButton = (Button) view.findViewById(R.id.cancel);
         cancelButton.setOnClickListener(new OnClickListener() {
@@ -310,6 +329,8 @@ public class DatePickerDialog extends DialogFragment implements
             }
         });
         cancelButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
+        if(mCancelString != null) cancelButton.setText(mCancelString);
+        else cancelButton.setText(mCancelResid);
         cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // If an accent color has not been set manually, get it from the context
@@ -617,6 +638,44 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public void setTitle(String title) {
         mTitle = title;
+    }
+
+    /**
+     * Set the label for the Ok button (max 12 characters)
+     * @param okString A literal String to be used as the Ok button label
+     */
+    @SuppressWarnings("unused")
+    public void setOkText(String okString) {
+        mOkString = okString;
+    }
+
+    /**
+     * Set the label for the Ok button (max 12 characters)
+     * @param okResid A resource ID to be used as the Ok button label
+     */
+    @SuppressWarnings("unused")
+    public void setOkText(int okResid) {
+        mOkString = null;
+        mOkResid = okResid;
+    }
+
+    /**
+     * Set the label for the Cancel button (max 12 characters)
+     * @param cancelString A literal String to be used as the Cancel button label
+     */
+    @SuppressWarnings("unused")
+    public void setCancelText(String cancelString) {
+        mCancelString = cancelString;
+    }
+
+    /**
+     * Set the label for the Cancel button (max 12 characters)
+     * @param cancelResid A resource ID to be used as the Cancel button label
+     */
+    @SuppressWarnings("unused")
+    public void setCancelText(int cancelResid) {
+        mCancelString = null;
+        mCancelResid = cancelResid;
     }
 
     @SuppressWarnings("unused")
