@@ -71,6 +71,10 @@ public class TimePickerDialog extends DialogFragment implements
     private static final String KEY_MIN_TIME = "min_time";
     private static final String KEY_MAX_TIME = "max_time";
     private static final String KEY_ENABLE_SECONDS = "enable_seconds";
+    private static final String KEY_OK_RESID = "ok_resid";
+    private static final String KEY_OK_STRING = "ok_string";
+    private static final String KEY_CANCEL_RESID = "cancel_resid";
+    private static final String KEY_CANCEL_STRING = "cancel_string";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
@@ -116,6 +120,10 @@ public class TimePickerDialog extends DialogFragment implements
     private Timepoint mMinTime;
     private Timepoint mMaxTime;
     private boolean mEnableSeconds;
+    private int mOkResid;
+    private String mOkString;
+    private int mCancelResid;
+    private String mCancelString;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -179,6 +187,8 @@ public class TimePickerDialog extends DialogFragment implements
         mVibrate = true;
         mDismissOnPause = false;
         mEnableSeconds = false;
+        mOkResid = R.string.mdtp_ok;
+        mCancelResid = R.string.mdtp_cancel;
     }
 
     /**
@@ -289,6 +299,44 @@ public class TimePickerDialog extends DialogFragment implements
         setStartTime(hourOfDay, minute, 0);
     }
 
+    /**
+     * Set the label for the Ok button (max 12 characters)
+     * @param okString A literal String to be used as the Ok button label
+     */
+    @SuppressWarnings("unused")
+    public void setOkText(String okString) {
+        mOkString = okString;
+    }
+
+    /**
+     * Set the label for the Ok button (max 12 characters)
+     * @param okResid A resource ID to be used as the Ok button label
+     */
+    @SuppressWarnings("unused")
+    public void setOkText(int okResid) {
+        mOkString = null;
+        mOkResid = okResid;
+    }
+
+    /**
+     * Set the label for the Cancel button (max 12 characters)
+     * @param cancelString A literal String to be used as the Cancel button label
+     */
+    @SuppressWarnings("unused")
+    public void setCancelText(String cancelString) {
+        mCancelString = cancelString;
+    }
+
+    /**
+     * Set the label for the Cancel button (max 12 characters)
+     * @param cancelResid A resource ID to be used as the Cancel button label
+     */
+    @SuppressWarnings("unused")
+    public void setCancelText(int cancelResid) {
+        mCancelString = null;
+        mCancelResid = cancelResid;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -306,6 +354,10 @@ public class TimePickerDialog extends DialogFragment implements
             mMinTime = savedInstanceState.getParcelable(KEY_MIN_TIME);
             mMaxTime = savedInstanceState.getParcelable(KEY_MAX_TIME);
             mEnableSeconds = savedInstanceState.getBoolean(KEY_ENABLE_SECONDS);
+            mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
+            mOkString = savedInstanceState.getString(KEY_OK_STRING);
+            mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
+            mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
         }
     }
 
@@ -401,6 +453,8 @@ public class TimePickerDialog extends DialogFragment implements
         });
         mOkButton.setOnKeyListener(keyboardListener);
         mOkButton.setTypeface(TypefaceHelper.get(context, "Roboto-Medium"));
+        if(mOkString != null) mOkButton.setText(mOkString);
+        else mOkButton.setText(mOkResid);
 
         mCancelButton = (Button) view.findViewById(R.id.cancel);
         mCancelButton.setOnClickListener(new OnClickListener() {
@@ -411,6 +465,8 @@ public class TimePickerDialog extends DialogFragment implements
             }
         });
         mCancelButton.setTypeface(TypefaceHelper.get(context, "Roboto-Medium"));
+        if(mCancelString != null) mCancelButton.setText(mCancelString);
+        else mCancelButton.setText(mCancelResid);
         mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // Enable or disable the AM/PM view.
@@ -593,6 +649,10 @@ public class TimePickerDialog extends DialogFragment implements
             outState.putParcelable(KEY_MIN_TIME, mMinTime);
             outState.putParcelable(KEY_MAX_TIME, mMaxTime);
             outState.putBoolean(KEY_ENABLE_SECONDS, mEnableSeconds);
+            outState.putInt(KEY_OK_RESID, mOkResid);
+            outState.putString(KEY_OK_STRING, mOkString);
+            outState.putInt(KEY_CANCEL_RESID, mCancelResid);
+            outState.putString(KEY_CANCEL_STRING, mCancelString);
         }
     }
 
