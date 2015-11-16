@@ -112,6 +112,9 @@ Shows a title at the top of the `TimePickerDialog`
 * `DatePickerDialog` `setTitle(String title)`
 Shows a title at the top of the `DatePickerDialog` instead of the day of the week
 
+* `setOkText()` and `setCancelText()`
+Set a custom text for the dialog Ok and Cancel labels. Can take a resourceId of a String. Works in both the DatePickerDialog and TimePickerDialog
+
 * `setMinTime(Timepoint time)`  
 Set the minimum valid time to be selected. Time values earlier in the day will be deactivated
 
