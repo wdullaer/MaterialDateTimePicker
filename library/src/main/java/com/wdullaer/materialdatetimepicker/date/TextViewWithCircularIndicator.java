@@ -61,18 +61,19 @@ public class TextViewWithCircularIndicator extends TextView {
         mCirclePaint.setAlpha(SELECTED_CIRCLE_ALPHA);
     }
 
-    public void setAccentColor(int color) {
+    public void setAccentColor(int color, boolean darkMode) {
         mCircleColor = color;
         mCirclePaint.setColor(mCircleColor);
-        setTextColor(createTextColor(color));
+        setTextColor(createTextColor(color, darkMode));
     }
 
     /**
      * Programmatically set the color state list (see mdtp_date_picker_year_selector)
      * @param accentColor pressed state text color
+     * @param darkMode current theme mode
      * @return ColorStateList with pressed state
      */
-    private ColorStateList createTextColor(int accentColor) {
+    private ColorStateList createTextColor(int accentColor, boolean darkMode) {
         int[][] states = new int[][]{
                 new int[]{android.R.attr.state_pressed}, // pressed
                 new int[]{android.R.attr.state_selected}, // selected
@@ -81,8 +82,7 @@ public class TextViewWithCircularIndicator extends TextView {
         int[] colors = new int[]{
                 accentColor,
                 Color.WHITE,
-                Color.BLACK
-
+                darkMode ? Color.WHITE : Color.BLACK
         };
         return new ColorStateList(states, colors);
     }

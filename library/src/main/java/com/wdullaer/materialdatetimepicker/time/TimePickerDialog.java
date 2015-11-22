@@ -109,6 +109,7 @@ public class TimePickerDialog extends DialogFragment implements
     private boolean mIs24HourMode;
     private String mTitle;
     private boolean mThemeDark;
+    private boolean mThemeDarkChanged;
     private boolean mVibrate;
     private int mAccentColor = -1;
     private boolean mDismissOnPause;
@@ -175,6 +176,7 @@ public class TimePickerDialog extends DialogFragment implements
         mInKbMode = false;
         mTitle = "";
         mThemeDark = false;
+        mThemeDarkChanged = false;
         mAccentColor = -1;
         mVibrate = true;
         mDismissOnPause = false;
@@ -197,6 +199,7 @@ public class TimePickerDialog extends DialogFragment implements
      */
     public void setThemeDark(boolean dark) {
         mThemeDark = dark;
+        mThemeDarkChanged = true;
     }
 
     public void setAccentColor(int color) {
@@ -306,6 +309,7 @@ public class TimePickerDialog extends DialogFragment implements
             mMinTime = savedInstanceState.getParcelable(KEY_MIN_TIME);
             mMaxTime = savedInstanceState.getParcelable(KEY_MAX_TIME);
             mEnableSeconds = savedInstanceState.getBoolean(KEY_ENABLE_SECONDS);
+            mThemeDarkChanged = true;
         }
     }
 
@@ -320,6 +324,11 @@ public class TimePickerDialog extends DialogFragment implements
         // If an accent color has not been set manually, get it from the context
         if (mAccentColor == -1) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
+        }
+
+        // if theme mode has not been set by java code, check if it is specified in Style.xml
+        if (!mThemeDarkChanged) {
+            mThemeDark = Utils.isDarkTheme(getActivity(), mThemeDark);
         }
 
         Resources res = getResources();

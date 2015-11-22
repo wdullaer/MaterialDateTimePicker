@@ -22,8 +22,10 @@ import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.AttrRes;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
@@ -154,5 +156,31 @@ public class Utils {
         }
         // Return the value in mdtp_accent_color
         return ContextCompat.getColor(context, R.color.mdtp_accent_color);
+    }
+
+    /**
+     * Gets dialog type (Light/Dark) from current theme
+     * @param context The context to use as reference for the boolean
+     * @param current Default value to return if cannot resolve the attribute
+     * @return true if dark mode, false if light.
+     */
+    public static boolean isDarkTheme(Context context, boolean current) {
+        return resolveBoolean(context, R.attr.mdtp_dark_theme, current);
+    }
+
+    /**
+     * Gets the required boolean value from the current context, if possible/available
+     * @param context The context to use as reference for the boolean
+     * @param attr Attribute id to resolve
+     * @param fallback Default value to return if no value is specified in theme
+     * @return the boolean value from current theme
+     */
+    private static boolean resolveBoolean(Context context, @AttrRes int attr, boolean fallback) {
+        TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
+        try {
+            return a.getBoolean(0, fallback);
+        } finally {
+            a.recycle();
+        }
     }
 }
