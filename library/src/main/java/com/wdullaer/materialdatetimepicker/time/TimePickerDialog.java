@@ -1667,4 +1667,8 @@ public class TimePickerDialog extends DialogFragment implements
             mCallback.onTimeSet(mTimePicker, mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
         }
     }
+
+    public Timepoint getSelectedTime() {
+        return mTimePicker.getTime();
+    }
 }
