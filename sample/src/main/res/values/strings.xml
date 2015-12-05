@@ -5,20 +5,25 @@
     <string name="title_activity_main">DateTimePicker Example</string>
     <string name="selected_time">The time you picked will be shown here.</string>
     <string name="selected_date">The date you picked will be shown here.</string>
+    <string name="selected_datetime">The date and time you picked will be shown here.</string>
     <string name="pick_time">Pick Time</string>
     <string name="pick_date">Pick Date</string>
+    <string name="pick_datetime">Pick Date+Time</string>
     <string name="mode_24_hours">Use 24 hour mode</string>
-    <string name="mode_dark_time">Use dark theme</string>
-    <string name="mode_dark_date">Use dark theme</string>
+    <string name="mode_dark">Use dark theme</string>
     <string name="mode_custom_accent">Use custom accent</string>
-    <string name="vibrate_time">Vibrate on touch</string>
-    <string name="vibrate_date">Vibrate on touch</string>
-    <string name="dismiss_time">Dismiss on pause (eg: orientation change)</string>
-    <string name="dismiss_date">Dismiss on pause (eg: orientation change)</string>
-    <string name="title_time">Show a title</string>
-    <string name="title_date">Show a title</string>
+    <string name="vibrate">Vibrate on touch</string>
+    <string name="dismiss">Dismiss on pause (eg: orientation change)</string>
+    <string name="title">Show a title</string>
     <string name="show_year_first">Show the year picker first</string>
     <string name="enable_seconds">Show seconds picker</string>
     <string name="action_settings">Settings</string>
+
+    <string name="tab_title_time">Time</string>
+    <string name="tab_title_date">Date</string>
+    <string name="tab_title_datetime">Date+Time</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

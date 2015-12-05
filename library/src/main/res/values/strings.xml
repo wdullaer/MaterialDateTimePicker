@@ -45,6 +45,9 @@
     <!-- Accessibility announcement for second circular picker [CHAR LIMIT=NONE] -->
     <string name="mdtp_select_seconds">Select seconds</string>
 
+    <string name="mdtp_date">Date</string>
+    <string name="mdtp_time">Time</string>
+
     <!--
         Content description for the month and day selector in the date picker, which displays
         a selectable grid of days laid out by month.

@@ -1,18 +1,32 @@
 package com.wdullaer.materialdatetimepicker.datetime;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v13.app.FragmentTabHost;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.TimePicker;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.TypefaceHelper;
+import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -24,9 +38,10 @@ import java.util.Calendar;
  * Dialog to set a date and a time using a viewpager
  * Created by wdullaer on 16/11/15.
  */
+@TargetApi(17)
 public class DateTimePickerDialog extends DialogFragment
 {
-    interface OnDateTimeListener {
+    public interface OnDateTimeListener {
         /**
          * @param view The view associated with this listener.
          * @param selection a Calendar object containing the select date and time
@@ -45,6 +60,8 @@ public class DateTimePickerDialog extends DialogFragment
     private DialogInterface.OnDismissListener mOnDismissListener;
 
     // Overall options
+    private int mAccentColor = -1;
+    private boolean mThemeDark = false;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
     private int mOkResid = R.string.mdtp_ok;
@@ -52,12 +69,16 @@ public class DateTimePickerDialog extends DialogFragment
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
 
+    private static final String KEY_ACCENT_COLOR = "accent_color";
+    private static final String KEY_THEME_DARK = "theme_dark";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
     private static final String KEY_OK_RESID = "ok_resid";
     private static final String KEY_OK_STRING = "ok_string";
     private static final String KEY_CANCEL_RESID = "cancel_resid";
     private static final String KEY_CANCEL_STRING = "cancel_string";
+    private static final String KEY_DATEPICKER = "datepicker";
+    private static final String KEY_TIMEPICKER = "timepicker";
 
     public DateTimePickerDialog() {}
 
@@ -95,18 +116,20 @@ public class DateTimePickerDialog extends DialogFragment
     }
 
     public DateTimePickerDialog setThemeDark(boolean themeDark) {
+        mThemeDark = themeDark;
         tpd.setThemeDark(themeDark);
         dpd.setThemeDark(themeDark);
         return this;
     }
 
     public DateTimePickerDialog setAccentColor(int accentColor) {
+        mAccentColor = accentColor;
         tpd.setAccentColor(accentColor);
         dpd.setAccentColor(accentColor);
         return this;
     }
 
-    public DateTimePickerDialog Vibrate(boolean vibrate) {
+    public DateTimePickerDialog vibrate(boolean vibrate) {
         mVibrate = vibrate;
         tpd.vibrate(vibrate);
         dpd.vibrate(vibrate);
@@ -211,21 +234,31 @@ public class DateTimePickerDialog extends DialogFragment
         mOnDismissListener = onDismissListener;
     }
 
+    public void setOnDateTimeListener(OnDateTimeListener listener) {
+        mCallback = listener;
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putInt(KEY_ACCENT_COLOR, mAccentColor);
+        outState.putBoolean(KEY_THEME_DARK, mThemeDark);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
         outState.putInt(KEY_OK_RESID, mOkResid);
         outState.putString(KEY_OK_STRING, mOkString);
         outState.putInt(KEY_CANCEL_RESID, mCancelResid);
         outState.putString(KEY_CANCEL_STRING, mCancelString);
+        getChildFragmentManager().putFragment(outState, KEY_DATEPICKER, dpd);
+        getChildFragmentManager().putFragment(outState, KEY_TIMEPICKER, tpd);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
+            mAccentColor = savedInstanceState.getInt(KEY_ACCENT_COLOR);
+            mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
             mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
@@ -241,10 +274,20 @@ public class DateTimePickerDialog extends DialogFragment
 
         View view = inflater.inflate(R.layout.mdtp_date_time_picker_dialog, container, false);
 
-        getFragmentManager().beginTransaction()
-                .add(R.id.date_picker_dialog, dpd, "datepickerdialog")
-                .add(R.id.time_picker_dialog, tpd, "timepickerdialog")
-                .commit();
+        if(savedInstanceState != null) {
+            dpd = (DatePickerDialog) getChildFragmentManager().getFragment(savedInstanceState, KEY_DATEPICKER);
+            tpd = (TimePickerDialog) getChildFragmentManager().getFragment(savedInstanceState, KEY_TIMEPICKER);
+        }
+
+        PickerAdapter adapter = new PickerAdapter(getChildFragmentManager());
+        adapter.setDatePickerDialog(dpd);
+        adapter.setTimePickerDialog(tpd);
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+        viewPager.setAdapter(adapter);
+
+        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+        for(int i=0;i<adapter.getCount();i++) tabLayout.getTabAt(i).setText(adapter.getTitle(i));
 
         Activity activity = getActivity();
         Button okButton = (Button) view.findViewById(R.id.ok);
@@ -273,9 +316,31 @@ public class DateTimePickerDialog extends DialogFragment
         else cancelButton.setText(mCancelResid);
         cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
+        // If an accent color has not been set manually, get it from the context
+        if (mAccentColor == -1) {
+            mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
+        }
+        okButton.setTextColor(mAccentColor);
+        cancelButton.setTextColor(mAccentColor);
+        tabLayout.setSelectedTabIndicatorColor(mAccentColor);
+
+        int bgColorResource = mThemeDark ? R.color.mdtp_date_picker_view_animator_dark_theme : R.color.mdtp_date_picker_view_animator;
+        view.setBackgroundColor(ContextCompat.getColor(getActivity(), bgColorResource));
+        if(mThemeDark) tabLayout.setTabTextColors(
+                ContextCompat.getColor(getActivity(), R.color.mdtp_done_text_color_disabled),
+                ContextCompat.getColor(getActivity(), R.color.mdtp_white)
+        );
+
         mHapticFeedbackController = new HapticFeedbackController(activity);
 
         return view;
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
     }
 
     @Override
@@ -319,6 +384,48 @@ public class DateTimePickerDialog extends DialogFragment
             selection.set(Calendar.MINUTE, selectedTime.getMinute());
             selection.set(Calendar.SECOND, selectedTime.getSecond());
             mCallback.onDateTimeSet(this, selection);
+        }
+    }
+
+    class PickerAdapter extends FragmentPagerAdapter {
+        private static final int NUM_PAGES = 2;
+        Fragment timePickerDialog;
+        Fragment datePickerDialog;
+
+        public PickerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        public void setDatePickerDialog(DatePickerDialog dpd) {
+            datePickerDialog = dpd;
+        }
+
+        public void setTimePickerDialog(TimePickerDialog tpd) {
+            timePickerDialog = tpd;
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch(position) {
+                case 0:
+                    return datePickerDialog;
+                default:
+                    return timePickerDialog;
+            }
+        }
+
+        public int getTitle(int position) {
+            switch(position) {
+                case 0:
+                    return R.string.mdtp_date;
+                default:
+                    return R.string.mdtp_time;
+            }
         }
     }
 }
