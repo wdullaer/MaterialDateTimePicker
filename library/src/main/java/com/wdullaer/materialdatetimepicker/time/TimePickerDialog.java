@@ -63,7 +63,8 @@ public class TimePickerDialog extends DialogFragment implements
     private static final String KEY_CURRENT_ITEM_SHOWING = "current_item_showing";
     private static final String KEY_IN_KB_MODE = "in_kb_mode";
     private static final String KEY_TYPED_TIMES = "typed_times";
-    private static final String KEY_DARK_THEME = "dark_theme";
+    private static final String KEY_THEME_DARK = "theme_dark";
+    private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
@@ -349,7 +350,8 @@ public class TimePickerDialog extends DialogFragment implements
             mIs24HourMode = savedInstanceState.getBoolean(KEY_IS_24_HOUR_VIEW);
             mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
             mTitle = savedInstanceState.getString(KEY_TITLE);
-            mThemeDark = savedInstanceState.getBoolean(KEY_DARK_THEME);
+            mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
+            mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
@@ -361,7 +363,6 @@ public class TimePickerDialog extends DialogFragment implements
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
-            mThemeDarkChanged = true;
         }
     }
 
@@ -650,7 +651,8 @@ public class TimePickerDialog extends DialogFragment implements
                 outState.putIntegerArrayList(KEY_TYPED_TIMES, mTypedTimes);
             }
             outState.putString(KEY_TITLE, mTitle);
-            outState.putBoolean(KEY_DARK_THEME, mThemeDark);
+            outState.putBoolean(KEY_THEME_DARK, mThemeDark);
+            outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
             outState.putInt(KEY_ACCENT, mAccentColor);
             outState.putBoolean(KEY_VIBRATE, mVibrate);
             outState.putBoolean(KEY_DISMISS, mDismissOnPause);

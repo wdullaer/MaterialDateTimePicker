@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">#303f9f</item>
         <item name="colorAccent">#ff4081</item>
         <!-- Customize picker mode here. -->
-        <item name="mdtp_dark_theme">true</item>
+        <item name="mdtp_theme_dark">true</item>
     </style>
 
 </resources>

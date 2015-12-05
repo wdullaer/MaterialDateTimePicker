@@ -76,6 +76,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_HIGHLIGHTED_DAYS = "highlighted_days";
     private static final String KEY_SELECTABLE_DAYS = "selectable_days";
     private static final String KEY_THEME_DARK = "theme_dark";
+    private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
@@ -204,7 +205,6 @@ public class DatePickerDialog extends DialogFragment implements
             mCalendar.set(Calendar.MONTH, savedInstanceState.getInt(KEY_SELECTED_MONTH));
             mCalendar.set(Calendar.DAY_OF_MONTH, savedInstanceState.getInt(KEY_SELECTED_DAY));
             mDefaultView = savedInstanceState.getInt(KEY_DEFAULT_VIEW);
-            mThemeDarkChanged = true;
         }
     }
 
@@ -231,6 +231,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putSerializable(KEY_HIGHLIGHTED_DAYS, highlightedDays);
         outState.putSerializable(KEY_SELECTABLE_DAYS, selectableDays);
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
+        outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
         outState.putInt(KEY_ACCENT, mAccentColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
@@ -272,6 +273,7 @@ public class DatePickerDialog extends DialogFragment implements
             highlightedDays = (Calendar[])savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
             selectableDays = (Calendar[])savedInstanceState.getSerializable(KEY_SELECTABLE_DAYS);
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
+            mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
