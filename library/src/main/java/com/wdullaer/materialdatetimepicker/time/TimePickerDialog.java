@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -256,6 +257,7 @@ public class TimePickerDialog extends DialogFragment implements
         mEnableSeconds = enableSeconds;
     }
 
+    @SuppressWarnings("unused")
     public void setMinTime(int hour, int minute, int second) {
         setMinTime(new Timepoint(hour, minute, second));
     }
@@ -266,6 +268,7 @@ public class TimePickerDialog extends DialogFragment implements
         mMinTime = minTime;
     }
 
+    @SuppressWarnings("unused")
     public void setMaxTime(int hour, int minute, int second) {
         setMaxTime(new Timepoint(hour, minute, second));
     }
@@ -276,6 +279,7 @@ public class TimePickerDialog extends DialogFragment implements
         mMaxTime = maxTime;
     }
 
+    @SuppressWarnings("unused")
     public void setSelectableTimes(Timepoint[] selectableTimes) {
         mSelectableTimes = selectableTimes;
         Arrays.sort(mSelectableTimes);
@@ -299,6 +303,7 @@ public class TimePickerDialog extends DialogFragment implements
         mInKbMode = false;
     }
 
+    @SuppressWarnings("unused")
     public void setStartTime(int hourOfDay, int minute) {
         setStartTime(hourOfDay, minute, 0);
     }
@@ -317,7 +322,7 @@ public class TimePickerDialog extends DialogFragment implements
      * @param okResid A resource ID to be used as the Ok button label
      */
     @SuppressWarnings("unused")
-    public void setOkText(int okResid) {
+    public void setOkText(@AttrRes int okResid) {
         mOkString = null;
         mOkResid = okResid;
     }
@@ -336,7 +341,7 @@ public class TimePickerDialog extends DialogFragment implements
      * @param cancelResid A resource ID to be used as the Cancel button label
      */
     @SuppressWarnings("unused")
-    public void setCancelText(int cancelResid) {
+    public void setCancelText(@AttrRes int cancelResid) {
         mCancelString = null;
         mCancelResid = cancelResid;
     }
@@ -1110,7 +1115,7 @@ public class TimePickerDialog extends DialogFragment implements
             String minuteStr = (values[1] == -1) ? mDoublePlaceholderText :
                 String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
             String secondStr = (values[2] == -1) ? mDoublePlaceholderText :
-                    String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
+                    String.format(secondFormat, values[1]).replace(' ', mPlaceholderText);
             mHourView.setText(hourStr);
             mHourSpaceView.setText(hourStr);
             mHourView.setTextColor(mUnselectedColor);
@@ -1437,10 +1442,8 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         public boolean containsKey(int key) {
-            for (int i = 0; i < mLegalKeys.length; i++) {
-                if (mLegalKeys[i] == key) {
-                    return true;
-                }
+            for (int legalKey : mLegalKeys) {
+                if (legalKey == key) return true;
             }
             return false;
         }

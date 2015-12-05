@@ -23,6 +23,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
@@ -578,6 +579,7 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * @return The minimal date supported by this DatePicker. Null if it has not been set.
      */
+    @SuppressWarnings("unused")
     public Calendar getMinDate() {
         return mMinDate;
     }
@@ -599,6 +601,7 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * @return The maximal date supported by this DatePicker. Null if it has not been set.
      */
+    @SuppressWarnings("unused")
     public Calendar getMaxDate() {
         return mMaxDate;
     }
@@ -664,7 +667,7 @@ public class DatePickerDialog extends DialogFragment implements
      * @param okResid A resource ID to be used as the Ok button label
      */
     @SuppressWarnings("unused")
-    public void setOkText(int okResid) {
+    public void setOkText(@AttrRes int okResid) {
         mOkString = null;
         mOkResid = okResid;
     }
@@ -683,7 +686,7 @@ public class DatePickerDialog extends DialogFragment implements
      * @param cancelResid A resource ID to be used as the Cancel button label
      */
     @SuppressWarnings("unused")
-    public void setCancelText(int cancelResid) {
+    public void setCancelText(@AttrRes int cancelResid) {
         mCancelString = null;
         mCancelResid = cancelResid;
     }
@@ -789,6 +792,7 @@ public class DatePickerDialog extends DialogFragment implements
         return false;
     }
 
+    @SuppressWarnings("unused")
     public boolean isOutOfRange(Calendar calendar) {
         return isOutOfRange(
                 calendar.get(Calendar.YEAR),
