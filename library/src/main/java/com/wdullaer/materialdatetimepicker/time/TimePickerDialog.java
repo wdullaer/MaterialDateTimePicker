@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -63,7 +64,8 @@ public class TimePickerDialog extends DialogFragment implements
     private static final String KEY_CURRENT_ITEM_SHOWING = "current_item_showing";
     private static final String KEY_IN_KB_MODE = "in_kb_mode";
     private static final String KEY_TYPED_TIMES = "typed_times";
-    private static final String KEY_DARK_THEME = "dark_theme";
+    private static final String KEY_THEME_DARK = "theme_dark";
+    private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
@@ -113,6 +115,7 @@ public class TimePickerDialog extends DialogFragment implements
     private boolean mIs24HourMode;
     private String mTitle;
     private boolean mThemeDark;
+    private boolean mThemeDarkChanged;
     private boolean mVibrate;
     private int mAccentColor = -1;
     private boolean mDismissOnPause;
@@ -183,6 +186,7 @@ public class TimePickerDialog extends DialogFragment implements
         mInKbMode = false;
         mTitle = "";
         mThemeDark = false;
+        mThemeDarkChanged = false;
         mAccentColor = -1;
         mVibrate = true;
         mDismissOnPause = false;
@@ -207,6 +211,7 @@ public class TimePickerDialog extends DialogFragment implements
      */
     public void setThemeDark(boolean dark) {
         mThemeDark = dark;
+        mThemeDarkChanged = true;
     }
 
     public void setAccentColor(int color) {
@@ -252,6 +257,7 @@ public class TimePickerDialog extends DialogFragment implements
         mEnableSeconds = enableSeconds;
     }
 
+    @SuppressWarnings("unused")
     public void setMinTime(int hour, int minute, int second) {
         setMinTime(new Timepoint(hour, minute, second));
     }
@@ -262,6 +268,7 @@ public class TimePickerDialog extends DialogFragment implements
         mMinTime = minTime;
     }
 
+    @SuppressWarnings("unused")
     public void setMaxTime(int hour, int minute, int second) {
         setMaxTime(new Timepoint(hour, minute, second));
     }
@@ -272,6 +279,7 @@ public class TimePickerDialog extends DialogFragment implements
         mMaxTime = maxTime;
     }
 
+    @SuppressWarnings("unused")
     public void setSelectableTimes(Timepoint[] selectableTimes) {
         mSelectableTimes = selectableTimes;
         Arrays.sort(mSelectableTimes);
@@ -295,6 +303,7 @@ public class TimePickerDialog extends DialogFragment implements
         mInKbMode = false;
     }
 
+    @SuppressWarnings("unused")
     public void setStartTime(int hourOfDay, int minute) {
         setStartTime(hourOfDay, minute, 0);
     }
@@ -313,7 +322,7 @@ public class TimePickerDialog extends DialogFragment implements
      * @param okResid A resource ID to be used as the Ok button label
      */
     @SuppressWarnings("unused")
-    public void setOkText(int okResid) {
+    public void setOkText(@AttrRes int okResid) {
         mOkString = null;
         mOkResid = okResid;
     }
@@ -332,7 +341,7 @@ public class TimePickerDialog extends DialogFragment implements
      * @param cancelResid A resource ID to be used as the Cancel button label
      */
     @SuppressWarnings("unused")
-    public void setCancelText(int cancelResid) {
+    public void setCancelText(@AttrRes int cancelResid) {
         mCancelString = null;
         mCancelResid = cancelResid;
     }
@@ -346,7 +355,8 @@ public class TimePickerDialog extends DialogFragment implements
             mIs24HourMode = savedInstanceState.getBoolean(KEY_IS_24_HOUR_VIEW);
             mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
             mTitle = savedInstanceState.getString(KEY_TITLE);
-            mThemeDark = savedInstanceState.getBoolean(KEY_DARK_THEME);
+            mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
+            mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
@@ -372,6 +382,11 @@ public class TimePickerDialog extends DialogFragment implements
         // If an accent color has not been set manually, get it from the context
         if (mAccentColor == -1) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
+        }
+
+        // if theme mode has not been set by java code, check if it is specified in Style.xml
+        if (!mThemeDarkChanged) {
+            mThemeDark = Utils.isDarkTheme(getActivity(), mThemeDark);
         }
 
         Resources res = getResources();
@@ -641,7 +656,8 @@ public class TimePickerDialog extends DialogFragment implements
                 outState.putIntegerArrayList(KEY_TYPED_TIMES, mTypedTimes);
             }
             outState.putString(KEY_TITLE, mTitle);
-            outState.putBoolean(KEY_DARK_THEME, mThemeDark);
+            outState.putBoolean(KEY_THEME_DARK, mThemeDark);
+            outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
             outState.putInt(KEY_ACCENT, mAccentColor);
             outState.putBoolean(KEY_VIBRATE, mVibrate);
             outState.putBoolean(KEY_DISMISS, mDismissOnPause);
@@ -1099,7 +1115,7 @@ public class TimePickerDialog extends DialogFragment implements
             String minuteStr = (values[1] == -1) ? mDoublePlaceholderText :
                 String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
             String secondStr = (values[2] == -1) ? mDoublePlaceholderText :
-                    String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
+                    String.format(secondFormat, values[1]).replace(' ', mPlaceholderText);
             mHourView.setText(hourStr);
             mHourSpaceView.setText(hourStr);
             mHourView.setTextColor(mUnselectedColor);
@@ -1426,10 +1442,8 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         public boolean containsKey(int key) {
-            for (int i = 0; i < mLegalKeys.length; i++) {
-                if (mLegalKeys[i] == key) {
-                    return true;
-                }
+            for (int legalKey : mLegalKeys) {
+                if (legalKey == key) return true;
             }
             return false;
         }

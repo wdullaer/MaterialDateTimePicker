@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
@@ -46,6 +47,9 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         dismissDate = (CheckBox) view.findViewById(R.id.dismiss_date);
         titleDate = (CheckBox) view.findViewById(R.id.title_date);
         showYearFirst = (CheckBox) view.findViewById(R.id.show_year_first);
+
+        // check if picker mode is specified in Style.xml
+        modeDarkDate.setChecked(Utils.isDarkTheme(getActivity(), modeDarkDate.isChecked()));
 
         // Show a datepicker when the dateButton is clicked
         dateButton.setOnClickListener(new View.OnClickListener() {

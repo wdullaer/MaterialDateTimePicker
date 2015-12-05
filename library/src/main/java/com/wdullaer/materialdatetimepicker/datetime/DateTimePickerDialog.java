@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -62,6 +63,7 @@ public class DateTimePickerDialog extends DialogFragment
     // Overall options
     private int mAccentColor = -1;
     private boolean mThemeDark = false;
+    private boolean mThemeDarkChanged = false;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
     private int mOkResid = R.string.mdtp_ok;
@@ -71,6 +73,7 @@ public class DateTimePickerDialog extends DialogFragment
 
     private static final String KEY_ACCENT_COLOR = "accent_color";
     private static final String KEY_THEME_DARK = "theme_dark";
+    private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
     private static final String KEY_OK_RESID = "ok_resid";
@@ -117,6 +120,7 @@ public class DateTimePickerDialog extends DialogFragment
 
     public DateTimePickerDialog setThemeDark(boolean themeDark) {
         mThemeDark = themeDark;
+        mThemeDarkChanged = true;
         tpd.setThemeDark(themeDark);
         dpd.setThemeDark(themeDark);
         return this;
@@ -141,7 +145,7 @@ public class DateTimePickerDialog extends DialogFragment
         return this;
     }
 
-    public DateTimePickerDialog setOkText(int okResid) {
+    public DateTimePickerDialog setOkText(@AttrRes int okResid) {
         mOkString = null;
         mOkResid = okResid;
         return this;
@@ -152,7 +156,7 @@ public class DateTimePickerDialog extends DialogFragment
         return this;
     }
 
-    public DateTimePickerDialog setCancelText(int cancelResid) {
+    public DateTimePickerDialog setCancelText(@AttrRes int cancelResid) {
         mCancelString = null;
         mCancelResid = cancelResid;
         return this;
@@ -243,6 +247,7 @@ public class DateTimePickerDialog extends DialogFragment
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_ACCENT_COLOR, mAccentColor);
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
+        outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
         outState.putInt(KEY_OK_RESID, mOkResid);
@@ -259,6 +264,7 @@ public class DateTimePickerDialog extends DialogFragment
         if(savedInstanceState != null) {
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT_COLOR);
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
+            mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
             mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
@@ -324,6 +330,10 @@ public class DateTimePickerDialog extends DialogFragment
         cancelButton.setTextColor(mAccentColor);
         tabLayout.setSelectedTabIndicatorColor(mAccentColor);
 
+        // if theme mode has not been set by java code, check if it is specified in Style.xml
+        if (!mThemeDarkChanged) {
+            mThemeDark = Utils.isDarkTheme(activity, mThemeDark);
+        }
         int bgColorResource = mThemeDark ? R.color.mdtp_date_picker_view_animator_dark_theme : R.color.mdtp_date_picker_view_animator;
         view.setBackgroundColor(ContextCompat.getColor(getActivity(), bgColorResource));
         if(mThemeDark) tabLayout.setTabTextColors(

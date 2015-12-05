@@ -92,6 +92,11 @@ The exact order in which colors are selected is as follows:
 3. `R.attr.colorAccent` (eg. when using AppCompat)
 4. `R.color.mdtp_accent_color` and `R.color.mdtp_accent_color_dark` if none of the others are set in your project
 
+The pickers also have a dark theme. This can be specified globablly using the `mdtp_theme_dark` attribute in your theme or the `setThemeDark(boolean themeDark)` functions. The function calls overwrite the XML setting.
+```xml
+<item name="mdtp_theme_dark">true</item>
+```
+
 
 ## Additional Options
 * `TimePickerDialog` dark theme  

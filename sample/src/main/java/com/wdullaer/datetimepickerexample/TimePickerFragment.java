@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -50,6 +51,9 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         dismissTime = (CheckBox) view.findViewById(R.id.dismiss_time);
         titleTime = (CheckBox) view.findViewById(R.id.title_time);
         enableSeconds = (CheckBox) view.findViewById(R.id.enable_seconds);
+
+        // check if picker mode is specified in Style.xml
+        modeDarkTime.setChecked(Utils.isDarkTheme(getActivity(), modeDarkTime.isChecked()));
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {

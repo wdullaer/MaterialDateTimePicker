@@ -23,6 +23,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
@@ -76,6 +77,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_HIGHLIGHTED_DAYS = "highlighted_days";
     private static final String KEY_SELECTABLE_DAYS = "selectable_days";
     private static final String KEY_THEME_DARK = "theme_dark";
+    private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
@@ -123,6 +125,7 @@ public class DatePickerDialog extends DialogFragment implements
     private Calendar[] highlightedDays;
     private Calendar[] selectableDays;
     private boolean mThemeDark = false;
+    private boolean mThemeDarkChanged = false;
     private int mAccentColor = -1;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
@@ -229,6 +232,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putSerializable(KEY_HIGHLIGHTED_DAYS, highlightedDays);
         outState.putSerializable(KEY_SELECTABLE_DAYS, selectableDays);
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
+        outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
         outState.putInt(KEY_ACCENT, mAccentColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
@@ -270,6 +274,7 @@ public class DatePickerDialog extends DialogFragment implements
             highlightedDays = (Calendar[])savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
             selectableDays = (Calendar[])savedInstanceState.getSerializable(KEY_SELECTABLE_DAYS);
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
+            mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
@@ -283,6 +288,11 @@ public class DatePickerDialog extends DialogFragment implements
         final Activity activity = getActivity();
         mDayPickerView = new SimpleDayPickerView(activity, this);
         mYearPickerView = new YearPickerView(activity, this);
+
+        // if theme mode has not been set by java code, check if it is specified in Style.xml
+        if (!mThemeDarkChanged) {
+            mThemeDark = Utils.isDarkTheme(activity, mThemeDark);
+        }
 
         Resources res = getResources();
         mDayPickerDescription = res.getString(R.string.mdtp_day_picker_description);
@@ -490,6 +500,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public void setThemeDark(boolean themeDark) {
         mThemeDark = themeDark;
+        mThemeDarkChanged = true;
     }
 
     /**
@@ -568,6 +579,7 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * @return The minimal date supported by this DatePicker. Null if it has not been set.
      */
+    @SuppressWarnings("unused")
     public Calendar getMinDate() {
         return mMinDate;
     }
@@ -589,6 +601,7 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * @return The maximal date supported by this DatePicker. Null if it has not been set.
      */
+    @SuppressWarnings("unused")
     public Calendar getMaxDate() {
         return mMaxDate;
     }
@@ -654,7 +667,7 @@ public class DatePickerDialog extends DialogFragment implements
      * @param okResid A resource ID to be used as the Ok button label
      */
     @SuppressWarnings("unused")
-    public void setOkText(int okResid) {
+    public void setOkText(@AttrRes int okResid) {
         mOkString = null;
         mOkResid = okResid;
     }
@@ -673,7 +686,7 @@ public class DatePickerDialog extends DialogFragment implements
      * @param cancelResid A resource ID to be used as the Cancel button label
      */
     @SuppressWarnings("unused")
-    public void setCancelText(int cancelResid) {
+    public void setCancelText(@AttrRes int cancelResid) {
         mCancelString = null;
         mCancelResid = cancelResid;
     }
@@ -779,6 +792,7 @@ public class DatePickerDialog extends DialogFragment implements
         return false;
     }
 
+    @SuppressWarnings("unused")
     public boolean isOutOfRange(Calendar calendar) {
         return isOutOfRange(
                 calendar.get(Calendar.YEAR),

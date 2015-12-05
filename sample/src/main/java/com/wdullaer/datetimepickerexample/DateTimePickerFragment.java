@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.datetime.DateTimePickerDialog;
 
 import java.text.SimpleDateFormat;
@@ -53,6 +54,9 @@ public class DateTimePickerFragment extends Fragment implements DateTimePickerDi
         titleDatetime = (CheckBox) view.findViewById(R.id.title_datetime);
         enableSeconds = (CheckBox) view.findViewById(R.id.enable_seconds);
         showYearFirst = (CheckBox) view.findViewById(R.id.show_year_first);
+
+        // check if picker mode is specified in Style.xml
+        modeDark.setChecked(Utils.isDarkTheme(getActivity(), modeDark.isChecked()));
 
         // Show a timepicker when the timeButton is clicked
         datetimeButton.setOnClickListener(new View.OnClickListener() {
