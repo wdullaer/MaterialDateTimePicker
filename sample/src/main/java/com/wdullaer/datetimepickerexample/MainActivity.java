@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -59,6 +60,10 @@ public class MainActivity extends AppCompatActivity implements
         titleDate = (CheckBox) findViewById(R.id.title_date);
         showYearFirst = (CheckBox) findViewById(R.id.show_year_first);
         enableSeconds = (CheckBox) findViewById(R.id.enable_seconds);
+
+        // check if picker mode is specified in Style.xml
+        modeDarkTime.setChecked(Utils.isDarkTheme(this, modeDarkTime.isChecked()));
+        modeDarkDate.setChecked(Utils.isDarkTheme(this, modeDarkDate.isChecked()));
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {

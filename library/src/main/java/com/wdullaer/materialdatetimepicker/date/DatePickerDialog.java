@@ -123,6 +123,7 @@ public class DatePickerDialog extends DialogFragment implements
     private Calendar[] highlightedDays;
     private Calendar[] selectableDays;
     private boolean mThemeDark = false;
+    private boolean mThemeDarkChanged = false;
     private int mAccentColor = -1;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
@@ -203,6 +204,7 @@ public class DatePickerDialog extends DialogFragment implements
             mCalendar.set(Calendar.MONTH, savedInstanceState.getInt(KEY_SELECTED_MONTH));
             mCalendar.set(Calendar.DAY_OF_MONTH, savedInstanceState.getInt(KEY_SELECTED_DAY));
             mDefaultView = savedInstanceState.getInt(KEY_DEFAULT_VIEW);
+            mThemeDarkChanged = true;
         }
     }
 
@@ -283,6 +285,11 @@ public class DatePickerDialog extends DialogFragment implements
         final Activity activity = getActivity();
         mDayPickerView = new SimpleDayPickerView(activity, this);
         mYearPickerView = new YearPickerView(activity, this);
+
+        // if theme mode has not been set by java code, check if it is specified in Style.xml
+        if (!mThemeDarkChanged) {
+            mThemeDark = Utils.isDarkTheme(activity, mThemeDark);
+        }
 
         Resources res = getResources();
         mDayPickerDescription = res.getString(R.string.mdtp_day_picker_description);
@@ -490,6 +497,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public void setThemeDark(boolean themeDark) {
         mThemeDark = themeDark;
+        mThemeDarkChanged = true;
     }
 
     /**
