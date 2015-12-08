@@ -15,6 +15,7 @@
     <string name="vibrate">Vibrate on touch</string>
     <string name="dismiss">Dismiss on pause (eg: orientation change)</string>
     <string name="title">Show a title</string>
+    <string name="show_version_2">Use marshmallow layout</string>
     <string name="show_year_first">Show the year picker first</string>
     <string name="enable_seconds">Show seconds picker</string>
     <string name="action_settings">Settings</string>

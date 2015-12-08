@@ -22,6 +22,12 @@
             android:text="@string/pick_date"/>
 
         <CheckBox
+            android:id="@+id/show_version_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_version_2"/>
+
+        <CheckBox
             android:id="@+id/mode_dark_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

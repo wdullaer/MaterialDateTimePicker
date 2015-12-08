@@ -43,6 +43,7 @@
             android:includeFontPadding="false"
             android:textColor="@color/mdtp_date_picker_selector"
             android:textSize="@dimen/mdtp_selected_date_month_size"
+            android:textAllCaps="true"
             tools:text="May"/>
 
         <TextView

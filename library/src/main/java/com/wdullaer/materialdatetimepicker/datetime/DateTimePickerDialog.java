@@ -337,7 +337,7 @@ public class DateTimePickerDialog extends DialogFragment
         int bgColorResource = mThemeDark ? R.color.mdtp_date_picker_view_animator_dark_theme : R.color.mdtp_date_picker_view_animator;
         view.setBackgroundColor(ContextCompat.getColor(getActivity(), bgColorResource));
         if(mThemeDark) tabLayout.setTabTextColors(
-                ContextCompat.getColor(getActivity(), R.color.mdtp_done_text_color_disabled),
+                ContextCompat.getColor(getActivity(), R.color.mdtp_accent_color_focused),
                 ContextCompat.getColor(getActivity(), R.color.mdtp_white)
         );
 
