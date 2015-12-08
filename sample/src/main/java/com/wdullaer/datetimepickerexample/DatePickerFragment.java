@@ -26,6 +26,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox dismissDate;
     private CheckBox titleDate;
     private CheckBox showYearFirst;
+    private CheckBox showVersion2;
 
     public DatePickerFragment() {
         // Required empty public constructor
@@ -46,6 +47,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         dismissDate = (CheckBox) view.findViewById(R.id.dismiss_date);
         titleDate = (CheckBox) view.findViewById(R.id.title_date);
         showYearFirst = (CheckBox) view.findViewById(R.id.show_year_first);
+        showVersion2 = (CheckBox) view.findViewById(R.id.show_version_2);
 
         // Show a datepicker when the dateButton is clicked
         dateButton.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +64,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                 dpd.vibrate(vibrateDate.isChecked());
                 dpd.dismissOnPause(dismissDate.isChecked());
                 dpd.showYearPickerFirst(showYearFirst.isChecked());
+                dpd.setVersion(showVersion2.isChecked() ? DatePickerDialog.Version.VERSION_2 : DatePickerDialog.Version.VERSION_1);
                 if (modeCustomAccentDate.isChecked()) {
                     dpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }

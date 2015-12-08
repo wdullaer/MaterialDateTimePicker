@@ -63,6 +63,9 @@
     <dimen name="mdtp_year_label_height">64dp</dimen>
     <dimen name="mdtp_year_label_text_size">22dp</dimen>
 
+    <dimen name="mdtp_datepicker_selection_text_size">30sp</dimen>
+    <dimen name="mdtp_datepicker_year_selection_text_size">16sp</dimen>
+
     <dimen name="mdtp_material_button_height">48dp</dimen>
     <dimen name="mdtp_material_button_textsize">14sp</dimen>
     <dimen name="mdtp_material_button_minwidth">64dp</dimen>
