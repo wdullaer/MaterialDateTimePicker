@@ -30,6 +30,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,6 +111,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("MMM", Locale.getDefault());
     private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
     private static SimpleDateFormat DAY_OF_WEEK_FORMAT = new SimpleDateFormat("EEE", Locale.getDefault());
+    private static SimpleDateFormat VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMdd"), Locale.getDefault());
 
     private final Calendar mCalendar = trimToMidnight(Calendar.getInstance());
     private OnDateSetListener mCallBack;
@@ -491,21 +493,24 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     private void updateDisplay(boolean announce) {
-        if (mDatePickerHeaderView != null) {
-            if(mTitle != null) mDatePickerHeaderView.setText(mTitle.toUpperCase(Locale.getDefault()));
-            else {
-                mDatePickerHeaderView.setText(mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG,
-                        Locale.getDefault()).toUpperCase(Locale.getDefault()));
-            }
-        }
-
-        if (mSelectedDayOfWeekTextView != null) {
-            mSelectedDayOfWeekTextView.setText(DAY_OF_WEEK_FORMAT.format(mCalendar.getTime()));
-        }
-
-        mSelectedMonthTextView.setText(MONTH_FORMAT.format(mCalendar.getTime()));
-        mSelectedDayTextView.setText(DAY_FORMAT.format(mCalendar.getTime()));
         mYearView.setText(YEAR_FORMAT.format(mCalendar.getTime()));
+
+        if (mVersion == Version.VERSION_1) {
+            if (mDatePickerHeaderView != null) {
+                if (mTitle != null)
+                    mDatePickerHeaderView.setText(mTitle.toUpperCase(Locale.getDefault()));
+                else {
+                    mDatePickerHeaderView.setText(mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG,
+                            Locale.getDefault()).toUpperCase(Locale.getDefault()));
+                }
+            }
+            mSelectedMonthTextView.setText(MONTH_FORMAT.format(mCalendar.getTime()));
+            mSelectedDayTextView.setText(DAY_FORMAT.format(mCalendar.getTime()));
+        }
+
+        if (mVersion == Version.VERSION_2) {
+            mSelectedDayTextView.setText(VERSION_2_FORMAT.format(mCalendar.getTime()));
+        }
 
         // Accessibility.
         long millis = mCalendar.getTimeInMillis();
