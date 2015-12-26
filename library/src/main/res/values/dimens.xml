@@ -28,11 +28,11 @@
     <item name="mdtp_text_size_multiplier_inner" format="float" type="string">0.11</item>
     <item name="mdtp_text_size_multiplier_outer" format="float" type="string">0.08</item>
 
-    <dimen name="mdtp_time_label_size">60sp</dimen>
-    <dimen name="mdtp_time_label_subscript_size">30sp</dimen>
+    <dimen name="mdtp_time_label_size">60dp</dimen>
+    <dimen name="mdtp_time_label_subscript_size">30dp</dimen>
     <dimen name="mdtp_time_label_shift">-12dp</dimen>
     <dimen name="mdtp_extra_time_label_margin">-30dp</dimen>
-    <dimen name="mdtp_ampm_label_size">16sp</dimen>
+    <dimen name="mdtp_ampm_label_size">16dp</dimen>
     <dimen name="mdtp_done_label_size">14sp</dimen>
     <dimen name="mdtp_ampm_left_padding">6dip</dimen>
     <dimen name="mdtp_separator_padding">4dip</dimen>
@@ -58,7 +58,7 @@
     <dimen name="mdtp_selected_date_day_size">70dp</dimen>
     <dimen name="mdtp_selected_date_month_size">25dp</dimen>
     <dimen name="mdtp_date_picker_header_text_size">12dp</dimen>
-    <dimen name="mdtp_time_picker_header_text_size">12sp</dimen>
+    <dimen name="mdtp_time_picker_header_text_size">12dp</dimen>
     <dimen name="mdtp_month_label_size">14sp</dimen>
     <dimen name="mdtp_day_number_size">12sp</dimen>
     <dimen name="mdtp_year_label_height">64dp</dimen>
