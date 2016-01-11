@@ -155,6 +155,9 @@ Set whether the dialogs should vibrate the device when a selection is made. This
 * `dismissOnPause(boolean dismissOnPause)`  
 Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
 
+* `DatePickerDialog` `autoDismiss(boolean autoDismiss)`
+If set to `true` will dismiss the picker when the user selects a date. This defaults to `false`.
+
 
 ## FAQ
 

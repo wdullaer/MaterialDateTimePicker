@@ -81,6 +81,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
+    private static final String KEY_AUTO_DISMISS = "auto_dismiss";
     private static final String KEY_DEFAULT_VIEW = "default_view";
     private static final String KEY_TITLE = "title";
     private static final String KEY_OK_RESID = "ok_resid";
@@ -129,6 +130,7 @@ public class DatePickerDialog extends DialogFragment implements
     private int mAccentColor = -1;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
+    private boolean mAutoDismiss = false;
     private int mDefaultView = MONTH_AND_DAY_VIEW;
     private int mOkResid = R.string.mdtp_ok;
     private String mOkString;
@@ -236,6 +238,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putInt(KEY_ACCENT, mAccentColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
+        outState.putBoolean(KEY_AUTO_DISMISS, mAutoDismiss);
         outState.putInt(KEY_DEFAULT_VIEW, mDefaultView);
         outState.putString(KEY_TITLE, mTitle);
         outState.putInt(KEY_OK_RESID, mOkResid);
@@ -278,6 +281,7 @@ public class DatePickerDialog extends DialogFragment implements
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
+            mAutoDismiss = savedInstanceState.getBoolean(KEY_AUTO_DISMISS);
             mTitle = savedInstanceState.getString(KEY_TITLE);
             mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
@@ -492,6 +496,14 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public void dismissOnPause(boolean dismissOnPause) {
         mDismissOnPause = dismissOnPause;
+    }
+
+    /**
+     * Set whether the picker should dismiss itself when a day is selected
+     * @param autoDismiss true if the dialog should dismiss itself when a day is selected
+     */
+    public void autoDismiss(boolean autoDismiss) {
+        mAutoDismiss = autoDismiss;
     }
 
     /**
@@ -745,6 +757,10 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.DAY_OF_MONTH, day);
         updatePickers();
         updateDisplay(true);
+        if (mAutoDismiss) {
+            notifyOnDateListener();
+            dismiss();
+        }
     }
 
     private void updatePickers() {
