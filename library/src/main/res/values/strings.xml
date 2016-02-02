@@ -20,6 +20,7 @@
     <string name="mdtp_done_label">Done</string>
     <string name="mdtp_ok">@android:string/ok</string>
     <string name="mdtp_cancel">@android:string/cancel</string>
+    <string name="mdtp_clear">clear</string>
     <!--
          Content description for the hour selector in the time picker, which displays
          selectable hours of the day along the inside edge of a circle, as in an analog clock.
