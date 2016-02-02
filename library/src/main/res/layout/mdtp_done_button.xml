@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,31 +12,37 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/done_background"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:orientation="horizontal"
-    android:background="@android:color/transparent"
-    android:gravity="end|right"
     android:layout_gravity="center_vertical"
+    android:background="@android:color/transparent"
+    android:orientation="horizontal"
     android:paddingBottom="8dp">
 
     <Button
-        android:id="@+id/cancel"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginRight="8dp"
-        android:layout_marginEnd="8dp"
+        android:id="@+id/clear"
         style="@style/mdtp_ActionButton.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/mdtp_clear" />
+
+    <Button
+        android:id="@+id/cancel"
+        style="@style/mdtp_ActionButton.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:text="@string/mdtp_cancel" />
 
     <Button
         android:id="@+id/ok"
+        style="@style/mdtp_ActionButton.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"
-        style="@style/mdtp_ActionButton.Text"
+        android:layout_gravity="right"
+        android:layout_marginRight="56dp"
         android:text="@string/mdtp_ok" />
-</LinearLayout>
+</FrameLayout>

@@ -92,6 +92,12 @@ public class MainActivity extends AppCompatActivity implements
                         Log.d("TimePicker", "Dialog was cancelled");
                     }
                 });
+                tpd.setOnClearDateListner(new TimePickerDialog.OnClearDateListener() {
+                    @Override
+                    public void onClearDate() {
+                        Log.d("TimePicker", "onClearDate");
+                    }
+                });
                 tpd.show(getFragmentManager(), "Timepickerdialog");
             }
         });
@@ -117,6 +123,13 @@ public class MainActivity extends AppCompatActivity implements
                 if(titleDate.isChecked()) {
                     dpd.setTitle("DatePicker Title");
                 }
+                dpd.setOnClearDateListner(new DatePickerDialog.OnClearDateListener() {
+                    @Override
+                    public void onClearDate() {
+                        Log.d("DatePicker", "onClearDate");
+                    }
+                });
+
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
