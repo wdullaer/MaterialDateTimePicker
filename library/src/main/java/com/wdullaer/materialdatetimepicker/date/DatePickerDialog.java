@@ -88,6 +88,8 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_OK_STRING = "ok_string";
     private static final String KEY_CANCEL_RESID = "cancel_resid";
     private static final String KEY_CANCEL_STRING = "cancel_string";
+    private static final String KEY_TITLE_VISIBLE = "title_visible";
+    private static final String KEY_HEADER_VISIBLE = "header_visible";
 
 
     private static final int DEFAULT_START_YEAR = 1900;
@@ -109,6 +111,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     private TextView mDayOfWeekView;
     private LinearLayout mMonthAndDayView;
+    private LinearLayout mMonthAndDayLayoutView;
     private TextView mSelectedMonthTextView;
     private TextView mSelectedDayTextView;
     private TextView mYearView;
@@ -137,6 +140,7 @@ public class DatePickerDialog extends DialogFragment implements
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
     private boolean mTitleVisible = true;
+    private boolean mHeaderVisible = true;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -246,6 +250,8 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putString(KEY_OK_STRING, mOkString);
         outState.putInt(KEY_CANCEL_RESID, mCancelResid);
         outState.putString(KEY_CANCEL_STRING, mCancelString);
+        outState.putBoolean(KEY_TITLE_VISIBLE, mTitleVisible);
+        outState.putBoolean(KEY_HEADER_VISIBLE, mHeaderVisible);
     }
 
     @Override
@@ -256,6 +262,7 @@ public class DatePickerDialog extends DialogFragment implements
         View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, container, false);
 
         mDayOfWeekView = (TextView) view.findViewById(R.id.date_picker_header);
+        mMonthAndDayLayoutView = (LinearLayout) view.findViewById(R.id.day_picker_selected_date_layout);
         mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
         mMonthAndDayView.setOnClickListener(this);
         mSelectedMonthTextView = (TextView) view.findViewById(R.id.date_picker_month);
@@ -288,6 +295,8 @@ public class DatePickerDialog extends DialogFragment implements
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
+            mTitleVisible = savedInstanceState.getBoolean(KEY_TITLE_VISIBLE);
+            mHeaderVisible = savedInstanceState.getBoolean(KEY_HEADER_VISIBLE);
         }
 
         final Activity activity = getActivity();
@@ -343,7 +352,7 @@ public class DatePickerDialog extends DialogFragment implements
                 if(getDialog() != null) getDialog().cancel();
             }
         });
-        cancelButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
+        cancelButton.setTypeface(TypefaceHelper.get(activity, "Roboto-Medium"));
         if(mCancelString != null) cancelButton.setText(mCancelString);
         else cancelButton.setText(mCancelResid);
         cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
@@ -354,13 +363,20 @@ public class DatePickerDialog extends DialogFragment implements
         }
         if(mDayOfWeekView != null) {
             mDayOfWeekView.setBackgroundColor(Utils.darkenColor(mAccentColor));
-            if (mTitleVisible) {
+            if (mTitleVisible && mHeaderVisible) {
                 mDayOfWeekView.setVisibility(View.VISIBLE);
             } else {
                 mDayOfWeekView.setVisibility(View.GONE);
             }
         }
-        view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
+        if(mMonthAndDayLayoutView != null) {
+            mMonthAndDayLayoutView.setBackgroundColor(mAccentColor);
+            if (mHeaderVisible) {
+                mMonthAndDayLayoutView.setVisibility(View.VISIBLE);
+            } else {
+                mMonthAndDayLayoutView.setVisibility(View.GONE);
+            }
+        }
         okButton.setTextColor(mAccentColor);
         cancelButton.setTextColor(mAccentColor);
 
@@ -956,5 +972,9 @@ public class DatePickerDialog extends DialogFragment implements
 
     public void setTitleVisibility(boolean visibility) {
         mTitleVisible = visibility;
+    }
+
+    public void setHeaderVisibility(boolean visibility) {
+        mHeaderVisible = visibility;
     }
 }
