@@ -136,7 +136,7 @@ public class DatePickerDialog extends DialogFragment implements
     private String mOkString;
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
-    private boolean mDayOfWeekVisible = true;
+    private boolean mTitleVisible = true;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -354,7 +354,7 @@ public class DatePickerDialog extends DialogFragment implements
         }
         if(mDayOfWeekView != null) {
             mDayOfWeekView.setBackgroundColor(Utils.darkenColor(mAccentColor));
-            if (mDayOfWeekVisible) {
+            if (mTitleVisible) {
                 mDayOfWeekView.setVisibility(View.VISIBLE);
             } else {
                 mDayOfWeekView.setVisibility(View.GONE);
@@ -954,7 +954,7 @@ public class DatePickerDialog extends DialogFragment implements
         }
     }
 
-    public void setDayOfWeekVisibility(boolean visibility) {
-        mDayOfWeekVisible = visibility;
+    public void setTitleVisibility(boolean visibility) {
+        mTitleVisible = visibility;
     }
 }
