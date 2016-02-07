@@ -136,6 +136,7 @@ public class DatePickerDialog extends DialogFragment implements
     private String mOkString;
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
+    private boolean mTitleVisible = true;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -351,7 +352,14 @@ public class DatePickerDialog extends DialogFragment implements
         if (mAccentColor == -1) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
-        if(mDayOfWeekView != null) mDayOfWeekView.setBackgroundColor(Utils.darkenColor(mAccentColor));
+        if(mDayOfWeekView != null) {
+            mDayOfWeekView.setBackgroundColor(Utils.darkenColor(mAccentColor));
+            if (mTitleVisible) {
+                mDayOfWeekView.setVisibility(View.VISIBLE);
+            } else {
+                mDayOfWeekView.setVisibility(View.GONE);
+            }
+        }
         view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
         okButton.setTextColor(mAccentColor);
         cancelButton.setTextColor(mAccentColor);
@@ -944,5 +952,9 @@ public class DatePickerDialog extends DialogFragment implements
             mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
                     mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
         }
+    }
+
+    public void setTitleVisibility(boolean visibility) {
+        mTitleVisible = visibility;
     }
 }
