@@ -136,7 +136,7 @@ public class DatePickerDialog extends DialogFragment implements
     private String mOkString;
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
-    private boolean mDayOfWeekVisible;
+    private boolean mDayOfWeekVisible = true;
 
     private HapticFeedbackController mHapticFeedbackController;
 
