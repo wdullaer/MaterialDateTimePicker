@@ -945,4 +945,12 @@ public class DatePickerDialog extends DialogFragment implements
                     mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
         }
     }
+
+    public void setDayOfWeekVisibility(boolean visibility) {
+        if (visibility) {
+            mDayOfWeekView.setVisibility(View.VISIBLE);
+        } else {
+            mDayOfWeekView.setVisibility(View.GONE);
+        }
+    }
 }
