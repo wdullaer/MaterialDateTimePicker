@@ -23,8 +23,8 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -505,6 +505,7 @@ public class DatePickerDialog extends DialogFragment implements
      * Set whether the picker should dismiss itself when a day is selected
      * @param autoDismiss true if the dialog should dismiss itself when a day is selected
      */
+    @SuppressWarnings("unused")
     public void autoDismiss(boolean autoDismiss) {
         mAutoDismiss = autoDismiss;
     }
@@ -682,7 +683,7 @@ public class DatePickerDialog extends DialogFragment implements
      * @param okResid A resource ID to be used as the Ok button label
      */
     @SuppressWarnings("unused")
-    public void setOkText(@AttrRes int okResid) {
+    public void setOkText(@StringRes int okResid) {
         mOkString = null;
         mOkResid = okResid;
     }
@@ -701,7 +702,7 @@ public class DatePickerDialog extends DialogFragment implements
      * @param cancelResid A resource ID to be used as the Cancel button label
      */
     @SuppressWarnings("unused")
-    public void setCancelText(@AttrRes int cancelResid) {
+    public void setCancelText(@StringRes int cancelResid) {
         mCancelString = null;
         mCancelResid = cancelResid;
     }
