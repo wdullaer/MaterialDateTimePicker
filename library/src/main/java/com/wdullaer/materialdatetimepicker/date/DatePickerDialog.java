@@ -252,6 +252,9 @@ public class DatePickerDialog extends DialogFragment implements
             Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
 
+        // All options have been set at this point: round the initial selection if necessary
+        setToNearestDate(mCalendar);
+
         View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, container, false);
 
         mDayOfWeekView = (TextView) view.findViewById(R.id.date_picker_header);
@@ -774,15 +777,37 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     @Override
+    public Calendar getStartDate() {
+        if (selectableDays != null) return selectableDays[0];
+        if (mMinDate != null) return mMinDate;
+        Calendar output = Calendar.getInstance();
+        output.set(Calendar.YEAR, mMinYear);
+        output.set(Calendar.DAY_OF_MONTH, 1);
+        output.set(Calendar.MONTH, Calendar.JANUARY);
+        return output;
+    }
+
+    @Override
+    public Calendar getEndDate() {
+        if (selectableDays != null) return selectableDays[selectableDays.length-1];
+        if (mMaxDate != null) return mMaxDate;
+        Calendar output = Calendar.getInstance();
+        output.set(Calendar.YEAR, mMaxYear);
+        output.set(Calendar.DAY_OF_MONTH, 31);
+        output.set(Calendar.MONTH, Calendar.DECEMBER);
+        return output;
+    }
+
+    @Override
     public int getMinYear() {
-        if(selectableDays != null) return selectableDays[0].get(Calendar.YEAR);
+        if (selectableDays != null) return selectableDays[0].get(Calendar.YEAR);
         // Ensure no years can be selected outside of the given minimum date
         return mMinDate != null && mMinDate.get(Calendar.YEAR) > mMinYear ? mMinDate.get(Calendar.YEAR) : mMinYear;
     }
 
     @Override
     public int getMaxYear() {
-        if(selectableDays != null) return selectableDays[selectableDays.length-1].get(Calendar.YEAR);
+        if (selectableDays != null) return selectableDays[selectableDays.length-1].get(Calendar.YEAR);
         // Ensure no years can be selected outside of the given maximum date
         return mMaxDate != null && mMaxDate.get(Calendar.YEAR) < mMaxYear ? mMaxDate.get(Calendar.YEAR) : mMaxYear;
     }

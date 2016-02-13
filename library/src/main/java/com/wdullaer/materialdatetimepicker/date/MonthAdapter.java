@@ -137,7 +137,12 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
 
     @Override
     public int getCount() {
-        return ((mController.getMaxYear() - mController.getMinYear()) + 1) * MONTHS_IN_YEAR;
+        Calendar endDate = mController.getEndDate();
+        Calendar startDate = mController.getStartDate();
+        int endMonth = endDate.get(Calendar.YEAR) * MONTHS_IN_YEAR + endDate.get(Calendar.MONTH);
+        int startMonth = startDate.get(Calendar.YEAR) * MONTHS_IN_YEAR + startDate.get(Calendar.MONTH);
+        return endMonth - startMonth + 1;
+        //return ((mController.getMaxYear() - mController.getMinYear()) + 1) * MONTHS_IN_YEAR;
     }
 
     @Override
@@ -179,8 +184,8 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
         }
         drawingParams.clear();
 
-        final int month = position % MONTHS_IN_YEAR;
-        final int year = position / MONTHS_IN_YEAR + mController.getMinYear();
+        final int month = (position + mController.getStartDate().get(Calendar.MONTH)) % MONTHS_IN_YEAR;
+        final int year = (position + mController.getStartDate().get(Calendar.MONTH)) / MONTHS_IN_YEAR + mController.getMinYear();
 
         int selectedDay = -1;
         if (isSelectedDayInMonth(year, month)) {
