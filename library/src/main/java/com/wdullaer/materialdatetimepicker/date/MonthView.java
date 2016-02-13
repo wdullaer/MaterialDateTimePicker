@@ -32,7 +32,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.widget.ExploreByTouchHelper;
 import android.text.format.DateFormat;
-import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -448,12 +447,18 @@ public abstract class MonthView extends View {
         return MONTH_HEADER_SIZE;
     }
 
+    @NonNull
     private String getMonthAndYearString() {
-        int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
-                | DateUtils.FORMAT_NO_MONTH_DAY;
+        Locale locale = Locale.getDefault();
+        String pattern = "MMMM yyyy";
+
+        if(Build.VERSION.SDK_INT < 18) pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
+        else pattern = DateFormat.getBestDateTimePattern(locale, pattern);
+
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern, locale);
+        formatter.applyLocalizedPattern(pattern);
         mStringBuilder.setLength(0);
-        long millis = mCalendar.getTimeInMillis();
-        return DateUtils.formatDateRange(getContext(), mFormatter, millis, millis, flags, null).toString();
+        return formatter.format(mCalendar.getTime());
     }
 
     protected void drawMonthTitle(Canvas canvas) {
