@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox titleDate;
     private CheckBox showYearFirst;
     private CheckBox enableSeconds;
+    private CheckBox limitTimes;
+    private CheckBox limitDates;
+    private CheckBox highlightDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements
         titleDate = (CheckBox) findViewById(R.id.title_date);
         showYearFirst = (CheckBox) findViewById(R.id.show_year_first);
         enableSeconds = (CheckBox) findViewById(R.id.enable_seconds);
+        limitTimes = (CheckBox) findViewById(R.id.limit_times);
+        limitDates = (CheckBox) findViewById(R.id.limit_dates);
+        highlightDates = (CheckBox) findViewById(R.id.highlight_dates);
 
         // check if picker mode is specified in Style.xml
         modeDarkTime.setChecked(Utils.isDarkTheme(this, modeDarkTime.isChecked()));
@@ -85,6 +91,9 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 if (titleTime.isChecked()) {
                     tpd.setTitle("TimePicker Title");
+                }
+                if (limitTimes.isChecked()) {
+                    tpd.setTimeInterval(2, 5, 10);
                 }
                 tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
@@ -114,8 +123,26 @@ public class MainActivity extends AppCompatActivity implements
                 if (modeCustomAccentDate.isChecked()) {
                     dpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
-                if(titleDate.isChecked()) {
+                if (titleDate.isChecked()) {
                     dpd.setTitle("DatePicker Title");
+                }
+                if (limitDates.isChecked()) {
+                    Calendar[] dates = new Calendar[13];
+                    for(int i = -6; i <= 6; i++) {
+                        Calendar date = Calendar.getInstance();
+                        date.add(Calendar.MONTH, i);
+                        dates[i+6] = date;
+                    }
+                    dpd.setSelectableDays(dates);
+                }
+                if (highlightDates.isChecked()) {
+                    Calendar[] dates = new Calendar[13];
+                    for(int i = -6; i <= 6; i++) {
+                        Calendar date = Calendar.getInstance();
+                        date.add(Calendar.WEEK_OF_YEAR, i);
+                        dates[i+6] = date;
+                    }
+                    dpd.setHighlightedDays(dates);
                 }
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
