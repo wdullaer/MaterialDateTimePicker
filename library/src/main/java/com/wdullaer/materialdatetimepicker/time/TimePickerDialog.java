@@ -24,8 +24,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.AttrRes;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyCharacterMap;
@@ -49,6 +50,7 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelect
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -285,6 +287,58 @@ public class TimePickerDialog extends DialogFragment implements
         Arrays.sort(mSelectableTimes);
     }
 
+    /**
+     * Set the interval for selectable times in the TimePickerDialog
+     * This is a convenience wrapper around setSelectableTimes
+     * The interval for all three time components can be set independently
+     * @param hourInterval The interval between 2 selectable hours ([1,24])
+     * @param minuteInterval The interval between 2 selectable minutes ([1,60])
+     * @param secondInterval The interval between 2 selectable seconds ([1,60])
+     */
+    public void setTimeInterval(@IntRange(from=1, to=24) int hourInterval,
+                                @IntRange(from=1, to=60) int minuteInterval,
+                                @IntRange(from=1, to=60) int secondInterval) {
+        List<Timepoint> timepoints = new ArrayList<>();
+
+        int hour = 0;
+        while (hour < 24) {
+            int minute = 0;
+            while (minute < 60) {
+                int second = 0;
+                while (second < 60) {
+                    timepoints.add(new Timepoint(hour, minute, second));
+                    second += secondInterval;
+                }
+                minute += minuteInterval;
+            }
+            hour += hourInterval;
+        }
+        setSelectableTimes(timepoints.toArray(new Timepoint[timepoints.size()]));
+    }
+
+    /**
+     * Set the interval for selectable times in the TimePickerDialog
+     * This is a convenience wrapper around setSelectableTimes
+     * The interval for all three time components can be set independently
+     * @param hourInterval The interval between 2 selectable hours ([1,24])
+     * @param minuteInterval The interval between 2 selectable minutes ([1,60])
+     */
+    public void setTimeInterval(@IntRange(from=1, to=24) int hourInterval,
+                                @IntRange(from=1, to=60) int minuteInterval) {
+        setTimeInterval(hourInterval, minuteInterval, 1);
+    }
+
+    /**
+     * Set the interval for selectable times in the TimePickerDialog
+     * This is a convenience wrapper around setSelectableTimes
+     * The interval for all three time components can be set independently
+     * @param hourInterval The interval between 2 selectable hours ([1,24])
+     */
+    @SuppressWarnings("unused")
+    public void setTimeInterval(@IntRange(from=1, to=24) int hourInterval) {
+        setTimeInterval(hourInterval, 1);
+    }
+
     public void setOnTimeSetListener(OnTimeSetListener callback) {
         mCallback = callback;
     }
@@ -322,7 +376,7 @@ public class TimePickerDialog extends DialogFragment implements
      * @param okResid A resource ID to be used as the Ok button label
      */
     @SuppressWarnings("unused")
-    public void setOkText(@AttrRes int okResid) {
+    public void setOkText(@StringRes int okResid) {
         mOkString = null;
         mOkResid = okResid;
     }
@@ -341,7 +395,7 @@ public class TimePickerDialog extends DialogFragment implements
      * @param cancelResid A resource ID to be used as the Cancel button label
      */
     @SuppressWarnings("unused")
-    public void setCancelText(@AttrRes int cancelResid) {
+    public void setCancelText(@StringRes int cancelResid) {
         mCancelString = null;
         mCancelResid = cancelResid;
     }

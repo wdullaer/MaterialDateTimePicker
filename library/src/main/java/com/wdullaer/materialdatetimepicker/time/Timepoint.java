@@ -2,6 +2,7 @@ package com.wdullaer.materialdatetimepicker.time;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 /**
@@ -27,17 +28,20 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
         this(time.hour, time.minute, time.second);
     }
 
-    public Timepoint(int hour, int minute, int second) {
+    public Timepoint(@IntRange(from=0, to=23) int hour,
+                     @IntRange(from=0, to=59) int minute,
+                     @IntRange(from=0, to=59) int second) {
         this.hour = hour % 24;
         this.minute = minute % 60;
         this.second = second % 60;
     }
 
-    public Timepoint(int hour, int minute) {
+    public Timepoint(@IntRange(from=0, to=23) int hour,
+                     @IntRange(from=0, to=59) int minute) {
         this(hour, minute, 0);
     }
 
-    public Timepoint(int hour) {
+    public Timepoint(@IntRange(from=0, to=23) int hour) {
         this(hour, 0);
     }
 
@@ -47,14 +51,17 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
         second = in.readInt();
     }
 
+    @IntRange(from=0, to=23)
     public int getHour() {
         return hour;
     }
 
+    @IntRange(from=0, to=59)
     public int getMinute() {
         return minute;
     }
 
+    @IntRange(from=0, to=59)
     public int getSecond() {
         return second;
     }
