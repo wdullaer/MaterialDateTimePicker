@@ -921,15 +921,17 @@ public class DatePickerDialog extends DialogFragment implements
 
     private void setToNearestDate(Calendar calendar) {
         if(selectableDays != null) {
-            int distance = Integer.MAX_VALUE;
+            long distance = Long.MAX_VALUE;
+            Calendar currentBest = calendar;
             for (Calendar c : selectableDays) {
-                int newDistance = Math.abs(calendar.compareTo(c));
-                if(newDistance < distance) distance = newDistance;
-                else {
-                    calendar.setTimeInMillis(c.getTimeInMillis());
-                    break;
+                long newDistance = Math.abs(calendar.getTimeInMillis() - c.getTimeInMillis());
+                if(newDistance < distance) {
+                    distance = newDistance;
+                    currentBest = c;
                 }
+                else break;
             }
+            calendar.setTimeInMillis(currentBest.getTimeInMillis());
             return;
         }
 
