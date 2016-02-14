@@ -21,10 +21,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <dimen name="mdtp_date_picker_header_height">45dp</dimen>
-    <dimen name="mdtp_time_label_right_padding">16sp</dimen>
-    <dimen name="mdtp_time_label_size">64sp</dimen>
-    <dimen name="mdtp_time_label_subscript_size">32sp</dimen>
-    <dimen name="mdtp_ampm_label_size">16sp</dimen>
+    <dimen name="mdtp_time_label_right_padding">16dp</dimen>
+    <dimen name="mdtp_time_label_size">64dp</dimen>
+    <dimen name="mdtp_time_label_subscript_size">32dp</dimen>
+    <dimen name="mdtp_ampm_label_size">16dp</dimen>
     <dimen name="mdtp_ampm_left_padding">6dip</dimen>
     <dimen name="mdtp_separator_padding">5dip</dimen>
     <dimen name="mdtp_header_height">96dip</dimen>

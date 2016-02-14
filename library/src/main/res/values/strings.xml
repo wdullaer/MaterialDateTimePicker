@@ -15,6 +15,8 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Pattern for the v1 month and year string (localised) -->
+    <string name="mdtp_date_v1_monthyear">MMMM yyyy</string>
 
     <!-- Label for button to confirm chosen date or time [CHAR LIMIT=30] -->
     <string name="mdtp_done_label">Done</string>

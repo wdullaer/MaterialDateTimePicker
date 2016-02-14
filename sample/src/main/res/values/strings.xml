@@ -18,6 +18,9 @@
     <string name="show_version_2">Use marshmallow layout</string>
     <string name="show_year_first">Show the year picker first</string>
     <string name="enable_seconds">Show seconds picker</string>
+    <string name="limit_times">Limit selectable times</string>
+    <string name="limit_dates">Limit selectable dates</string>
+    <string name="highlight_dates">Highlight certain dates</string>
     <string name="action_settings">Settings</string>
 
     <string name="tab_title_time">Time</string>

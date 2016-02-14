@@ -129,6 +129,9 @@ Set the maximum valid time to be selected. Time values later in the day will be 
 * `setSelectableTimes(Timepoint[] times)`
 You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. It takes precedence over `setMinTime(Timepoint time)` and `setMaxTime(Timepoint time)`
 
+* `setTimeInterval(int hourInterval, int minuteInterval, int secondInterval)`
+Set the interval for selectable times in the TimePickerDialog. This is a convenience wrapper around setSelectableTimes
+
 * `setSelectableDays(Calendar[] days)`  
 You can pass a `Calendar[]` to the `DatePickerDialog`. The values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
 
@@ -154,6 +157,9 @@ Set whether the dialogs should vibrate the device when a selection is made. This
 
 * `dismissOnPause(boolean dismissOnPause)`  
 Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
+
+* `DatePickerDialog` `autoDismiss(boolean autoDismiss)`
+If set to `true` will dismiss the picker when the user selects a date. This defaults to `false`.
 
 
 ## FAQ
