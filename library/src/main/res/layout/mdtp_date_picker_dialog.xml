@@ -26,6 +26,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+        <include layout="@layout/mdtp_date_picker_header_view" />
+
         <include layout="@layout/mdtp_date_picker_selected_date" />
 
         <include layout="@layout/mdtp_date_picker_view_animator" />
