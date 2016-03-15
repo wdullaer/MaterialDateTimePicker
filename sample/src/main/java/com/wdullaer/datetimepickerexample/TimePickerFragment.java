@@ -30,6 +30,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     private CheckBox dismissTime;
     private CheckBox titleTime;
     private CheckBox enableSeconds;
+    private CheckBox limitSelectableTimes;
 
     public TimePickerFragment() {
         // Required empty public constructor
@@ -50,6 +51,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         dismissTime = (CheckBox) view.findViewById(R.id.dismiss_time);
         titleTime = (CheckBox) view.findViewById(R.id.title_time);
         enableSeconds = (CheckBox) view.findViewById(R.id.enable_seconds);
+        limitSelectableTimes = (CheckBox) view.findViewById(R.id.limit_times);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +73,9 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                 }
                 if (titleTime.isChecked()) {
                     tpd.setTitle("TimePicker Title");
+                }
+                if (limitSelectableTimes.isChecked()) {
+                    tpd.setTimeInterval(3, 5, 10);
                 }
                 tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override

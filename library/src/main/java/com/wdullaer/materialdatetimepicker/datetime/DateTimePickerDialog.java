@@ -284,6 +284,7 @@ public class DateTimePickerDialog extends DialogFragment
         adapter.setTimePickerDialog(tpd);
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
         viewPager.setAdapter(adapter);
+        viewPager.setPageMargin(0);
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);

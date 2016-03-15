@@ -30,4 +30,5 @@
     <string name="mdtp_deleted_key" msgid="6908431551612331381">"<xliff:g id="KEY">%1$s</xliff:g> ezabatu da"</string>
     <string name="mdtp_cancel"></string>
     <string name="mdtp_date_v1_monthyear">yyyy(\'e\')\'ko\' MMMM</string>
+    <string name="mdtp_date_v2_daymonthyear">MMM dd, EEE</string>
 </resources>

@@ -27,6 +27,8 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox titleDate;
     private CheckBox showYearFirst;
     private CheckBox showVersion2;
+    private CheckBox limitSelectableDays;
+    private CheckBox highlightDays;
 
     public DatePickerFragment() {
         // Required empty public constructor
@@ -48,6 +50,8 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         titleDate = (CheckBox) view.findViewById(R.id.title_date);
         showYearFirst = (CheckBox) view.findViewById(R.id.show_year_first);
         showVersion2 = (CheckBox) view.findViewById(R.id.show_version_2);
+        limitSelectableDays = (CheckBox) view.findViewById(R.id.limit_dates);
+        highlightDays = (CheckBox) view.findViewById(R.id.highlight_dates);
 
         // Show a datepicker when the dateButton is clicked
         dateButton.setOnClickListener(new View.OnClickListener() {
@@ -68,8 +72,26 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                 if (modeCustomAccentDate.isChecked()) {
                     dpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
-                if(titleDate.isChecked()) {
+                if (titleDate.isChecked()) {
                     dpd.setTitle("DatePicker Title");
+                }
+                if (highlightDays.isChecked()) {
+                    Calendar date1 = Calendar.getInstance();
+                    Calendar date2 = Calendar.getInstance();
+                    date2.add(Calendar.WEEK_OF_MONTH, -1);
+                    Calendar date3 = Calendar.getInstance();
+                    date3.add(Calendar.WEEK_OF_MONTH, 1);
+                    Calendar[] days = {date1, date2, date3};
+                    dpd.setHighlightedDays(days);
+                }
+                if (limitSelectableDays.isChecked()) {
+                    Calendar[] days = new Calendar[13];
+                    for (int i = -6; i < 7; i++) {
+                        Calendar day = Calendar.getInstance();
+                        day.add(Calendar.DAY_OF_MONTH, i * 2);
+                        days[i + 6] = day;
+                    }
+                    dpd.setSelectableDays(days);
                 }
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }

@@ -17,6 +17,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Pattern for the v1 month and year string (localised) -->
     <string name="mdtp_date_v1_monthyear">MMMM yyyy</string>
+    <!-- Pattern for the v2 day month and year string (localised) -->
+    <string name="mdtp_date_v2_daymonthyear">EEE, MMM dd</string>
 
     <!-- Label forf date or time [CHAR LIMIT=30] -->
     <string name="mdtp_done_label">Done</string>

@@ -66,5 +66,12 @@
             android:text="@string/enable_seconds"
             android:checked="false"/>
 
+        <CheckBox
+            android:id="@+id/limit_times"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/limit_times"
+            android:checked="false"/>
+
     </LinearLayout>
 </ScrollView>
