@@ -781,11 +781,11 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     public boolean isOutOfRange(Timepoint current) {
-        if(mSelectableTimes != null) return !Arrays.asList(mSelectableTimes).contains(current);
-
         if(mMinTime != null && mMinTime.compareTo(current) > 0) return true;
 
         if(mMaxTime != null && mMaxTime.compareTo(current) < 0) return true;
+
+        if(mSelectableTimes != null) return !Arrays.asList(mSelectableTimes).contains(current);
 
         return false;
     }
@@ -795,25 +795,20 @@ public class TimePickerDialog extends DialogFragment implements
         if(current == null) return false;
 
         if(index == HOUR_INDEX) {
+            if(mMinTime != null && mMinTime.getHour() > current.getHour()) return true;
+
+            if(mMaxTime != null && mMaxTime.getHour()+1 <= current.getHour()) return true;
+
             if(mSelectableTimes != null) {
                 for(Timepoint t : mSelectableTimes) {
                     if(t.getHour() == current.getHour()) return false;
                 }
                 return true;
             }
-            if(mMinTime != null && mMinTime.getHour() > current.getHour()) return true;
-
-            if(mMaxTime != null && mMaxTime.getHour()+1 <= current.getHour()) return true;
 
             return false;
         }
         else if(index == MINUTE_INDEX) {
-            if(mSelectableTimes != null) {
-                for(Timepoint t : mSelectableTimes) {
-                    if(t.getHour() == current.getHour() && t.getMinute() == current.getMinute()) return false;
-                }
-                return true;
-            }
             if(mMinTime != null) {
                 Timepoint roundedMin = new Timepoint(mMinTime.getHour(), mMinTime.getMinute());
                 if (roundedMin.compareTo(current) > 0) return true;
@@ -822,6 +817,13 @@ public class TimePickerDialog extends DialogFragment implements
             if(mMaxTime != null) {
                 Timepoint roundedMax = new Timepoint(mMaxTime.getHour(), mMaxTime.getMinute(), 59);
                 if (roundedMax.compareTo(current) < 0) return true;
+            }
+
+            if(mSelectableTimes != null) {
+                for(Timepoint t : mSelectableTimes) {
+                    if(t.getHour() == current.getHour() && t.getMinute() == current.getMinute()) return false;
+                }
+                return true;
             }
 
             return false;
@@ -833,12 +835,12 @@ public class TimePickerDialog extends DialogFragment implements
     public boolean isAmDisabled() {
         Timepoint midday = new Timepoint(12);
 
+        if(mMinTime != null && mMinTime.compareTo(midday) > 0) return true;
+
         if(mSelectableTimes != null) {
             for(Timepoint t : mSelectableTimes) if(t.compareTo(midday) < 0) return false;
             return true;
         }
-
-        if(mMinTime != null && mMinTime.compareTo(midday) > 0) return true;
 
         return false;
     }
@@ -847,12 +849,12 @@ public class TimePickerDialog extends DialogFragment implements
     public boolean isPmDisabled() {
         Timepoint midday = new Timepoint(12);
 
+        if(mMaxTime != null && mMaxTime.compareTo(midday) < 0) return true;
+
         if(mSelectableTimes != null) {
             for(Timepoint t : mSelectableTimes) if(t.compareTo(midday) >= 0) return false;
             return true;
         }
-
-        if(mMaxTime != null && mMaxTime.compareTo(midday) < 0) return true;
 
         return false;
     }
@@ -868,6 +870,10 @@ public class TimePickerDialog extends DialogFragment implements
 
     @Override
     public Timepoint roundToNearest(Timepoint time, Timepoint.TYPE type) {
+
+        if(mMinTime != null && mMinTime.compareTo(time) > 0) return mMinTime;
+
+        if(mMaxTime != null && mMaxTime.compareTo(time) < 0) return mMaxTime;
         if(mSelectableTimes != null) {
             int currentDistance = Integer.MAX_VALUE;
             Timepoint output = time;
@@ -883,10 +889,6 @@ public class TimePickerDialog extends DialogFragment implements
             }
             return output;
         }
-
-        if(mMinTime != null && mMinTime.compareTo(time) > 0) return mMinTime;
-
-        if(mMaxTime != null && mMaxTime.compareTo(time) < 0) return mMaxTime;
 
         return time;
     }
