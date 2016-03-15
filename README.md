@@ -105,11 +105,14 @@ The `TimePickerDialog` has a dark theme that can be set by calling
 tpd.setThemeDark(true);
 ```
 
-* `DatePickerDialog` dark theme  
+* `DatePickerDialog` dark theme
 The `DatePickerDialog` has a dark theme that can be set by calling
 ```java
 dpd.setThemeDark(true);
 ```
+
+* `setAccentColor(String color)` and `setAccentColor(int color)`
+Set the accentColor to be used by the Dialog. The String version parses the color out using `Color.parseColor()`. The int version requires a ColorInt bytestring. It will explicitly set the color to fully opaque.
 
 * `TimePickerDialog` `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`

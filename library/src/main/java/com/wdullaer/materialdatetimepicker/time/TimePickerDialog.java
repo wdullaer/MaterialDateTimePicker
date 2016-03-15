@@ -23,7 +23,9 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -216,8 +218,24 @@ public class TimePickerDialog extends DialogFragment implements
         mThemeDarkChanged = true;
     }
 
-    public void setAccentColor(int color) {
-        mAccentColor = color;
+    /**
+     * Set the accent color of this dialog
+     * @param color the accent color you want
+     */
+    public void setAccentColor(String color) {
+        try {
+            mAccentColor = Color.parseColor(color);
+        } catch(IllegalArgumentException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Set the accent color of this dialog
+     * @param color the accent color you want
+     */
+    public void setAccentColor(@ColorInt int color) {
+        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));;
     }
 
     @Override

@@ -22,7 +22,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
@@ -530,10 +532,22 @@ public class DatePickerDialog extends DialogFragment implements
 
     /**
      * Set the accent color of this dialog
-     * @param accentColor the accent color you want
+     * @param color the accent color you want
      */
-    public void setAccentColor(int accentColor) {
-        mAccentColor = accentColor;
+    public void setAccentColor(String color) {
+        try {
+            mAccentColor = Color.parseColor(color);
+        } catch(IllegalArgumentException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Set the accent color of this dialog
+     * @param color the accent color you want
+     */
+    public void setAccentColor(@ColorInt int color) {
+        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));;
     }
 
     /**
