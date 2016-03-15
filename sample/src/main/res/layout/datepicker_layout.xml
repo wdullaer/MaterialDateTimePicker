@@ -67,5 +67,19 @@
             android:text="@string/title"
             android:checked="false"/>
 
+        <CheckBox
+            android:id="@+id/limit_dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/limit_dates"
+            android:checked="false"/>
+
+        <CheckBox
+            android:id="@+id/highlight_dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/highlight_dates"
+            android:checked="false"/>
+
     </LinearLayout>
 </ScrollView>

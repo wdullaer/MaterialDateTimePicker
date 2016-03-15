@@ -108,7 +108,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("MMM", Locale.getDefault());
     private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
     private static SimpleDateFormat DAY_OF_WEEK_FORMAT = new SimpleDateFormat("EEE", Locale.getDefault());
-    private static SimpleDateFormat VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMdd"), Locale.getDefault());
+    private static SimpleDateFormat VERSION_2_FORMAT;
 
     private final Calendar mCalendar = Calendar.getInstance();
     private OnDateSetListener mCallBack;
@@ -208,6 +208,12 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.MONTH, monthOfYear);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
+        if (Build.VERSION.SDK_INT < 18) {
+            VERSION_2_FORMAT = new SimpleDateFormat(getActivity().getResources().getString(R.string.mdtp_date_v2_daymonthyear), Locale.getDefault());
+        } else {
+            VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMMdd"), Locale.getDefault());
+        }
+
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
     }
 
@@ -278,7 +284,7 @@ public class DatePickerDialog extends DialogFragment implements
         mMonthAndDayView.setOnClickListener(this);
         mSelectedMonthTextView = (TextView) view.findViewById(R.id.date_picker_month);
         mSelectedDayTextView = (TextView) view.findViewById(R.id.date_picker_day);
-        mSelectedDayOfWeekTextView = (TextView) view.findViewById(R.id.date_picker_dayofweek);
+        //mSelectedDayOfWeekTextView = (TextView) view.findViewById(R.id.date_picker_dayofweek);
         mYearView = (TextView) view.findViewById(R.id.date_picker_year);
         mYearView.setOnClickListener(this);
 
@@ -433,20 +439,30 @@ public class DatePickerDialog extends DialogFragment implements
 
         switch (viewIndex) {
             case MONTH_AND_DAY_VIEW:
-                ObjectAnimator pulseAnimator = Utils.getPulseAnimator(mMonthAndDayView, 0.9f,
-                        1.05f);
-                if (mDelayAnimation) {
-                    pulseAnimator.setStartDelay(ANIMATION_DELAY);
-                    mDelayAnimation = false;
+                if (mVersion == Version.VERSION_1) {
+                    ObjectAnimator pulseAnimator = Utils.getPulseAnimator(mMonthAndDayView, 0.9f,
+                            1.05f);
+                    if (mDelayAnimation) {
+                        pulseAnimator.setStartDelay(ANIMATION_DELAY);
+                        mDelayAnimation = false;
+                    }
+                    mDayPickerView.onDateChanged();
+                    if (mCurrentView != viewIndex) {
+                        mMonthAndDayView.setSelected(true);
+                        mYearView.setSelected(false);
+                        mAnimator.setDisplayedChild(MONTH_AND_DAY_VIEW);
+                        mCurrentView = viewIndex;
+                    }
+                    pulseAnimator.start();
+                } else {
+                    mDayPickerView.onDateChanged();
+                    if (mCurrentView != viewIndex) {
+                        mMonthAndDayView.setSelected(true);
+                        mYearView.setSelected(false);
+                        mAnimator.setDisplayedChild(MONTH_AND_DAY_VIEW);
+                        mCurrentView = viewIndex;
+                    }
                 }
-                mDayPickerView.onDateChanged();
-                if (mCurrentView != viewIndex) {
-                    mMonthAndDayView.setSelected(true);
-                    mYearView.setSelected(false);
-                    mAnimator.setDisplayedChild(MONTH_AND_DAY_VIEW);
-                    mCurrentView = viewIndex;
-                }
-                pulseAnimator.start();
 
                 int flags = DateUtils.FORMAT_SHOW_DATE;
                 String dayString = DateUtils.formatDateTime(getActivity(), millis, flags);
@@ -454,19 +470,29 @@ public class DatePickerDialog extends DialogFragment implements
                 Utils.tryAccessibilityAnnounce(mAnimator, mSelectDay);
                 break;
             case YEAR_VIEW:
-                pulseAnimator = Utils.getPulseAnimator(mYearView, 0.85f, 1.1f);
-                if (mDelayAnimation) {
-                    pulseAnimator.setStartDelay(ANIMATION_DELAY);
-                    mDelayAnimation = false;
+                if (mVersion == Version.VERSION_1) {
+                    ObjectAnimator pulseAnimator = Utils.getPulseAnimator(mYearView, 0.85f, 1.1f);
+                    if (mDelayAnimation) {
+                        pulseAnimator.setStartDelay(ANIMATION_DELAY);
+                        mDelayAnimation = false;
+                    }
+                    mYearPickerView.onDateChanged();
+                    if (mCurrentView != viewIndex) {
+                        mMonthAndDayView.setSelected(false);
+                        mYearView.setSelected(true);
+                        mAnimator.setDisplayedChild(YEAR_VIEW);
+                        mCurrentView = viewIndex;
+                    }
+                    pulseAnimator.start();
+                } else {
+                    mYearPickerView.onDateChanged();
+                    if (mCurrentView != viewIndex) {
+                        mMonthAndDayView.setSelected(false);
+                        mYearView.setSelected(true);
+                        mAnimator.setDisplayedChild(YEAR_VIEW);
+                        mCurrentView = viewIndex;
+                    }
                 }
-                mYearPickerView.onDateChanged();
-                if (mCurrentView != viewIndex) {
-                    mMonthAndDayView.setSelected(false);
-                    mYearView.setSelected(true);
-                    mAnimator.setDisplayedChild(YEAR_VIEW);
-                    mCurrentView = viewIndex;
-                }
-                pulseAnimator.start();
 
                 CharSequence yearString = YEAR_FORMAT.format(millis);
                 mAnimator.setContentDescription(mYearPickerDescription+": "+yearString);
