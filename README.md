@@ -130,10 +130,10 @@ Set the minimum valid time to be selected. Time values earlier in the day will b
 Set the maximum valid time to be selected. Time values later in the day will be deactivated
 
 * `setSelectableTimes(Timepoint[] times)`
-You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. It takes precedence over `setMinTime(Timepoint time)` and `setMaxTime(Timepoint time)`
+You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. `setMinTime(Timepoint time)` and `setMaxTime(Timepoint time)` will further trim this list down.
 
 * `setTimeInterval(int hourInterval, int minuteInterval, int secondInterval)`
-Set the interval for selectable times in the TimePickerDialog. This is a convenience wrapper around setSelectableTimes
+Set the interval for selectable times in the TimePickerDialog. This is a convenience wrapper around `setSelectableTimes`
 
 * `setSelectableDays(Calendar[] days)`  
 You can pass a `Calendar[]` to the `DatePickerDialog`. The values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
