@@ -196,9 +196,9 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         RadialTextsView.SelectionValidator hourValidator = new RadialTextsView.SelectionValidator() {
             @Override
             public boolean isValidSelection(int selection) {
-                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) selection = (selection+12)%24;
-                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == AM) selection = selection%12;
                 Timepoint newTime = new Timepoint(selection, mCurrentTime.getMinute(), mCurrentTime.getSecond());
+                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) newTime.setPM();
+                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == AM) newTime.setAM();
                 return !mController.isOutOfRange(newTime, HOUR_INDEX);
             }
         };
