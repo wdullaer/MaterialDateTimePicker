@@ -20,7 +20,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,6 +41,7 @@ import android.widget.FrameLayout;
 import com.wdullaer.materialdatetimepicker.R;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * The primary layout to hold the circular picker, and the am/pm buttons. This view will measure
@@ -156,9 +156,9 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
     /**
      * Initialize the Layout with starting values.
-     * @param context
-     * @param initialTime
-     * @param is24HourMode
+     * @param context A context needed to inflate resources
+     * @param initialTime The initial selection of the Timepicker
+     * @param is24HourMode Indicates whether we should render in 24hour mode or with AM/PM selectors
      */
     public void initialize(Context context, TimePickerDialog timePickerDialog,
             Timepoint initialTime, boolean is24HourMode) {
@@ -196,15 +196,14 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         RadialTextsView.SelectionValidator hourValidator = new RadialTextsView.SelectionValidator() {
             @Override
             public boolean isValidSelection(int selection) {
-                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) selection = (selection+12)%24;
-                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == AM) selection = selection%12;
                 Timepoint newTime = new Timepoint(selection, mCurrentTime.getMinute(), mCurrentTime.getSecond());
+                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) newTime.setPM();
+                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == AM) newTime.setAM();
                 return !mController.isOutOfRange(newTime, HOUR_INDEX);
             }
         };
 
         // Initialize the hours and minutes numbers.
-        Resources res = context.getResources();
         int[] hours = {12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         int[] hours_24 = {0, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
         int[] minutes = {0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55};
@@ -215,10 +214,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         String[] secondsTexts = new String[12];
         for (int i = 0; i < 12; i++) {
             hoursTexts[i] = is24HourMode?
-                    String.format("%02d", hours_24[i]) : String.format("%d", hours[i]);
-            innerHoursTexts[i] = String.format("%d", hours[i]);
-            minutesTexts[i] = String.format("%02d", minutes[i]);
-            secondsTexts[i] = String.format("%02d", seconds[i]);
+                    String.format(Locale.getDefault(), "%02d", hours_24[i]) : String.format(Locale.getDefault(), "%d", hours[i]);
+            innerHoursTexts[i] = String.format(Locale.getDefault(), "%d", hours[i]);
+            minutesTexts[i] = String.format(Locale.getDefault(), "%02d", minutes[i]);
+            secondsTexts[i] = String.format(Locale.getDefault(), "%02d", seconds[i]);
         }
         mHourRadialTextsView.initialize(context,
                 hoursTexts, (is24HourMode ? innerHoursTexts : null), mController, hourValidator, true);
@@ -313,7 +312,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
     /**
      * Set the internal value as either AM or PM, and update the AM/PM circle displays.
-     * @param amOrPm
+     * @param amOrPm Integer representing AM of PM (use the supplied constants)
      */
     public void setAmOrPm(int amOrPm) {
         mAmPmCirclesView.setAmOrPm(amOrPm);
@@ -804,7 +803,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                                 getCurrentItemShowing()
                     );
                     reselectSelector(value, true, getCurrentItemShowing());
-                    if (value != null && mLastValueSelected != null && !mLastValueSelected.equals(value)) {
+                    if (value != null && (mLastValueSelected == null || !mLastValueSelected.equals(value))) {
                         mController.tryVibrate();
                         mLastValueSelected = value;
                         mListener.onValueSelected(value);
