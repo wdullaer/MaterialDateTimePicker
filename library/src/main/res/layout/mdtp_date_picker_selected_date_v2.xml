@@ -18,11 +18,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/day_picker_selected_date_layout"
-    android:layout_width="@dimen/mdtp_date_picker_component_width"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/mdtp_date_picker_header_width"
+    android:layout_height="@dimen/mdtp_date_picker_header_height"
     android:layout_weight="1"
     android:background="@color/mdtp_accent_color"
-    android:gravity="center"
+    android:gravity="top"
     android:padding="16dp"
     android:orientation="vertical">
 
@@ -52,67 +52,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:duplicateParentState="true"
-            android:gravity="center"
+            android:gravity="left"
             android:includeFontPadding="false"
             android:textColor="@color/mdtp_date_picker_selector"
             android:textSize="@dimen/mdtp_datepicker_selection_text_size"
             tools:text="Fri, May 15"/>
-
-        <!--
-        <TextView
-            android:id="@+id/date_picker_dayofweek"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:duplicateParentState="true"
-            android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:textColor="@color/mdtp_date_picker_selector"
-            android:textSize="@dimen/mdtp_datepicker_selection_text_size"
-            tools:text="Fri"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:duplicateParentState="true"
-            android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:textColor="@color/mdtp_date_picker_selector"
-            android:textSize="@dimen/mdtp_datepicker_selection_text_size"
-            android:text=", "/>
-
-        <TextView
-            android:id="@+id/date_picker_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:duplicateParentState="true"
-            android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:textColor="@color/mdtp_date_picker_selector"
-            android:textSize="@dimen/mdtp_datepicker_selection_text_size"
-            tools:text="May"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:duplicateParentState="true"
-            android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:textColor="@color/mdtp_date_picker_selector"
-            android:textSize="@dimen/mdtp_datepicker_selection_text_size"
-            android:text=" "/>
-
-        <TextView
-            android:id="@+id/date_picker_day"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:duplicateParentState="true"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:textColor="@color/mdtp_date_picker_selector"
-            android:textSize="@dimen/mdtp_datepicker_selection_text_size"
-            tools:text="15"/>
-            -->
     </com.wdullaer.materialdatetimepicker.AccessibleLinearLayout>
 
 </LinearLayout>

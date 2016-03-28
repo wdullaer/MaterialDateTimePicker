@@ -109,7 +109,6 @@ public class DatePickerDialog extends DialogFragment implements
     private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
     private static SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("MMM", Locale.getDefault());
     private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
-    private static SimpleDateFormat DAY_OF_WEEK_FORMAT = new SimpleDateFormat("EEE", Locale.getDefault());
     private static SimpleDateFormat VERSION_2_FORMAT;
 
     private final Calendar mCalendar = Calendar.getInstance();
@@ -124,7 +123,6 @@ public class DatePickerDialog extends DialogFragment implements
     private LinearLayout mMonthAndDayView;
     private TextView mSelectedMonthTextView;
     private TextView mSelectedDayTextView;
-    private TextView mSelectedDayOfWeekTextView;
     private TextView mYearView;
     private DayPickerView mDayPickerView;
     private YearPickerView mYearPickerView;
@@ -210,12 +208,6 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.MONTH, monthOfYear);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        if (Build.VERSION.SDK_INT < 18) {
-            VERSION_2_FORMAT = new SimpleDateFormat(getActivity().getResources().getString(R.string.mdtp_date_v2_daymonthyear), Locale.getDefault());
-        } else {
-            VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMMdd"), Locale.getDefault());
-        }
-
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
     }
 
@@ -231,6 +223,11 @@ public class DatePickerDialog extends DialogFragment implements
             mCalendar.set(Calendar.MONTH, savedInstanceState.getInt(KEY_SELECTED_MONTH));
             mCalendar.set(Calendar.DAY_OF_MONTH, savedInstanceState.getInt(KEY_SELECTED_DAY));
             mDefaultView = savedInstanceState.getInt(KEY_DEFAULT_VIEW);
+        }
+        if (Build.VERSION.SDK_INT < 18) {
+            VERSION_2_FORMAT = new SimpleDateFormat(activity.getResources().getString(R.string.mdtp_date_v2_daymonthyear), Locale.getDefault());
+        } else {
+            VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMMdd"), Locale.getDefault());
         }
     }
 
@@ -276,20 +273,6 @@ public class DatePickerDialog extends DialogFragment implements
             Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
 
-        int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_date_picker_dialog : R.layout.mdtp_date_picker_dialog_v2;
-        View view = inflater.inflate(viewRes, container, false);
-        // All options have been set at this point: round the initial selection if necessary
-        setToNearestDate(mCalendar);
-
-        mDatePickerHeaderView = (TextView) view.findViewById(R.id.date_picker_header);
-        mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
-        mMonthAndDayView.setOnClickListener(this);
-        mSelectedMonthTextView = (TextView) view.findViewById(R.id.date_picker_month);
-        mSelectedDayTextView = (TextView) view.findViewById(R.id.date_picker_day);
-        //mSelectedDayOfWeekTextView = (TextView) view.findViewById(R.id.date_picker_dayofweek);
-        mYearView = (TextView) view.findViewById(R.id.date_picker_year);
-        mYearView.setOnClickListener(this);
-
         int listPosition = -1;
         int listPositionOffset = 0;
         int currentView = mDefaultView;
@@ -317,6 +300,19 @@ public class DatePickerDialog extends DialogFragment implements
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
             mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
         }
+
+        int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_date_picker_dialog : R.layout.mdtp_date_picker_dialog_v2;
+        View view = inflater.inflate(viewRes, container, false);
+        // All options have been set at this point: round the initial selection if necessary
+        setToNearestDate(mCalendar);
+
+        mDatePickerHeaderView = (TextView) view.findViewById(R.id.date_picker_header);
+        mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
+        mMonthAndDayView.setOnClickListener(this);
+        mSelectedMonthTextView = (TextView) view.findViewById(R.id.date_picker_month);
+        mSelectedDayTextView = (TextView) view.findViewById(R.id.date_picker_day);
+        mYearView = (TextView) view.findViewById(R.id.date_picker_year);
+        mYearView.setOnClickListener(this);
 
         final Activity activity = getActivity();
         mDayPickerView = new SimpleDayPickerView(activity, this);
@@ -521,6 +517,10 @@ public class DatePickerDialog extends DialogFragment implements
 
         if (mVersion == Version.VERSION_2) {
             mSelectedDayTextView.setText(VERSION_2_FORMAT.format(mCalendar.getTime()));
+            if (mTitle != null)
+                mDatePickerHeaderView.setText(mTitle.toUpperCase(Locale.getDefault()));
+            else
+                mDatePickerHeaderView.setVisibility(View.GONE);
         }
 
         // Accessibility.
@@ -584,12 +584,9 @@ public class DatePickerDialog extends DialogFragment implements
      * Set the accent color of this dialog
      * @param color the accent color you want
      */
+    @SuppressWarnings("unused")
     public void setAccentColor(String color) {
-        try {
-            mAccentColor = Color.parseColor(color);
-        } catch(IllegalArgumentException e) {
-            throw e;
-        }
+        mAccentColor = Color.parseColor(color);
     }
 
     /**
@@ -597,7 +594,7 @@ public class DatePickerDialog extends DialogFragment implements
      * @param color the accent color you want
      */
     public void setAccentColor(@ColorInt int color) {
-        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));;
+        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 
     /**
@@ -773,7 +770,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     /**
      * Set which layout version the picker should use
-     * @param version
+     * @param version The version to use
      */
     public void setVersion(Version version) {
         mVersion = version;
