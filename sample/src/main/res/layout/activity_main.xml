@@ -19,8 +19,7 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            android:layout_width="match_parent" />
 
     </android.support.design.widget.AppBarLayout>
 
