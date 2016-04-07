@@ -54,4 +54,12 @@ public interface DatePickerController {
     boolean isOutOfRange(int year, int month, int day);
 
     void tryVibrate();
+
+    //EVENTS
+    //---------------------------------------------------------------------
+    boolean isEvent(int year, int month, int day);
+    int getEventColor();
+    boolean isEventClickable();
+    CalendarwBadge getCalendarwBadge();
+    //---------------------------------------------------------------------
 }

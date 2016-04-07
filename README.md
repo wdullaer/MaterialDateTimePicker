@@ -79,18 +79,18 @@ dpd.show(getFragmentManager(), "Datepickerdialog");
 ```
 
 ### Theme the pickers
-The pickers will be themed automatically based on the current theme where they are created, based on the current `colorAccent`. You can also theme the dialogs via the `setAccentColor(int color)` method. Alternatively, you can theme the pickers by overwriting the color resources `mdtp_accent_color` and `mdtp_accent_color_dark` in your project.
+The pickers will be themed automatically based on the current theme where they are created, based on the current `colorAccent`. You can also theme the dialogs via the `setAccentColor(int eventColor)` method. Alternatively, you can theme the pickers by overwriting the eventColor resources `mdtp_accent_color` and `mdtp_accent_color_dark` in your project.
 ```xml
-<color name="mdtp_accent_color">#009688</color>
-<color name="mdtp_accent_color_dark">#00796b</color>
+<eventColor name="mdtp_accent_color">#009688</eventColor>
+<eventColor name="mdtp_accent_color_dark">#00796b</eventColor>
 ```
 
 The exact order in which colors are selected is as follows:
 
-1. `setAccentColor(int color)` in java code
+1. `setAccentColor(int eventColor)` in java code
 2. `android.R.attr.colorAccent` (if android 5.0+)
 3. `R.attr.colorAccent` (eg. when using AppCompat)
-4. `R.color.mdtp_accent_color` and `R.color.mdtp_accent_color_dark` if none of the others are set in your project
+4. `R.eventColor.mdtp_accent_color` and `R.eventColor.mdtp_accent_color_dark` if none of the others are set in your project
 
 The pickers also have a dark theme. This can be specified globablly using the `mdtp_theme_dark` attribute in your theme or the `setThemeDark(boolean themeDark)` functions. The function calls overwrite the XML setting.
 ```xml
@@ -111,8 +111,8 @@ The `DatePickerDialog` has a dark theme that can be set by calling
 dpd.setThemeDark(true);
 ```
 
-* `setAccentColor(String color)` and `setAccentColor(int color)`
-Set the accentColor to be used by the Dialog. The String version parses the color out using `Color.parseColor()`. The int version requires a ColorInt bytestring. It will explicitly set the color to fully opaque.
+* `setAccentColor(String eventColor)` and `setAccentColor(int eventColor)`
+Set the accentColor to be used by the Dialog. The String version parses the eventColor out using `Color.parseColor()`. The int version requires a ColorInt bytestring. It will explicitly set the eventColor to fully opaque.
 
 * `TimePickerDialog` `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
@@ -139,7 +139,7 @@ Set the interval for selectable times in the TimePickerDialog. This is a conveni
 You can pass a `Calendar[]` to the `DatePickerDialog`. The values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
 
 * `setHighlightedDays(Calendar[] days)`  
-You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the color of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`
+You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the eventColor of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`
 
 * `showYearPickerFirst(boolean yearPicker)`  
 Show the year picker first, rather than the month and day picker.
