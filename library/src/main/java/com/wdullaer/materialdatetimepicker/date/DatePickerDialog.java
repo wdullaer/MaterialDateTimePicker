@@ -252,8 +252,6 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
-
         // All options have been set at this point: round the initial selection if necessary
         setToNearestDate(mCalendar);
 
