@@ -22,6 +22,7 @@
     <string name="limit_times">Limit selectable times</string>
     <string name="limit_dates">Limit selectable dates</string>
     <string name="highlight_dates">Highlight certain dates</string>
+    <string name="hour_only_picker">Hour only picker</string>
     <string name="action_settings">Settings</string>
 
 </resources>
