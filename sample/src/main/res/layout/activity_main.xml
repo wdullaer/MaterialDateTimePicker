@@ -79,6 +79,13 @@
             android:text="@string/limit_times"
             android:checked="false"/>
 
+        <CheckBox
+            android:id="@+id/hour_only_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hour_only_picker"
+            android:checked="false"/>
+
         <!-- DatePicker Options -->
         <TextView
             android:id="@+id/date_textview"
