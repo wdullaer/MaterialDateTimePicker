@@ -81,6 +81,7 @@ public class TimePickerDialog extends DialogFragment implements
     private static final String KEY_OK_STRING = "ok_string";
     private static final String KEY_CANCEL_RESID = "cancel_resid";
     private static final String KEY_CANCEL_STRING = "cancel_string";
+    private static final String KEY_ALLOW_AUTO_ADVANCE = "auto_advance";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
@@ -197,6 +198,7 @@ public class TimePickerDialog extends DialogFragment implements
         mEnableSeconds = false;
         mOkResid = R.string.mdtp_ok;
         mCancelResid = R.string.mdtp_cancel;
+        mAllowAutoAdvance = true;
     }
 
     /**
@@ -231,11 +233,22 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     /**
+     * Set the time picker to only show the hour selection.
+     *
+     * @param hourOnly true if the picker should advance to minute/seconds,
+     *              false if it should only show the hour picker. Default: true
+     */
+    public void setHourOnlyPicker(boolean hourOnly)
+    {
+        mAllowAutoAdvance = !hourOnly;
+    }
+
+    /**
      * Set the accent color of this dialog
      * @param color the accent color you want
      */
     public void setAccentColor(@ColorInt int color) {
-        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));;
+        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 
     @Override
@@ -440,6 +453,7 @@ public class TimePickerDialog extends DialogFragment implements
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
+            mAllowAutoAdvance = savedInstanceState.getBoolean(KEY_ALLOW_AUTO_ADVANCE, true);
         }
     }
 
@@ -619,7 +633,6 @@ public class TimePickerDialog extends DialogFragment implements
             }
         }
 
-        mAllowAutoAdvance = true;
         setHour(mInitialTime.getHour(), true);
         setMinute(mInitialTime.getMinute());
         setSecond(mInitialTime.getSecond());
@@ -741,6 +754,7 @@ public class TimePickerDialog extends DialogFragment implements
             outState.putString(KEY_OK_STRING, mOkString);
             outState.putInt(KEY_CANCEL_RESID, mCancelResid);
             outState.putString(KEY_CANCEL_STRING, mCancelString);
+            outState.putBoolean(KEY_ALLOW_AUTO_ADVANCE, mAllowAutoAdvance);
         }
     }
 

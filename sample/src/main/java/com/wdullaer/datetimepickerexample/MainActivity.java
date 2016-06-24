@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox limitTimes;
     private CheckBox limitDates;
     private CheckBox highlightDates;
+    private CheckBox hourOnly;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         limitTimes = (CheckBox) findViewById(R.id.limit_times);
         limitDates = (CheckBox) findViewById(R.id.limit_dates);
         highlightDates = (CheckBox) findViewById(R.id.highlight_dates);
+        hourOnly = (CheckBox) findViewById(R.id.hour_only_picker);
 
         // check if picker mode is specified in Style.xml
         modeDarkTime.setChecked(Utils.isDarkTheme(this, modeDarkTime.isChecked()));
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());
                 tpd.enableSeconds(enableSeconds.isChecked());
+                tpd.setHourOnlyPicker(hourOnly.isChecked());
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
