@@ -26,7 +26,7 @@
     <dimen name="mdtp_selected_date_month_size">30dp</dimen>
 
     <dimen name="mdtp_date_picker_component_width">220dp</dimen>
-    <dimen name="mdtp_date_picker_header_width">140dp</dimen>
+    <dimen name="mdtp_date_picker_header_width">160dp</dimen>
     <dimen name="mdtp_date_picker_header_height">308dp</dimen>
     <dimen name="mdtp_date_picker_view_animator_height">220dp</dimen>
 
