@@ -14,8 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+<resources>
 
     <item name="mdtp_circle_radius_multiplier" format="float" type="string" translatable="false">0.82</item>
     <item name="mdtp_circle_radius_multiplier_24HourMode" format="float" type="string" translatable="false">0.85</item>
@@ -28,7 +27,7 @@
     <item name="mdtp_text_size_multiplier_inner" format="float" type="string" translatable="false">0.11</item>
     <item name="mdtp_text_size_multiplier_outer" format="float" type="string" translatable="false">0.08</item>
 
-    <dimen name="mdtp_time_label_size">60dp</dimen>
+    <dimen name="mdtp_time_label_size">55dp</dimen>
     <dimen name="mdtp_time_label_subscript_size">30dp</dimen>
     <dimen name="mdtp_time_label_shift">-12dp</dimen>
     <dimen name="mdtp_extra_time_label_margin">-30dp</dimen>

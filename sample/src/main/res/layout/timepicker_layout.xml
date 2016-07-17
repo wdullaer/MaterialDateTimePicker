@@ -72,6 +72,13 @@
             android:checked="false"/>
 
         <CheckBox
+            android:id="@+id/enable_minutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_minutes"
+            android:checked="true"/>
+
+        <CheckBox
             android:id="@+id/limit_times"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -31,7 +31,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -60,8 +59,6 @@ import java.util.Locale;
  */
 public class DatePickerDialog extends DialogFragment implements
         OnClickListener, DatePickerController {
-
-    private static final String TAG = "DatePickerDialog";
 
     public enum Version {
         VERSION_1,
@@ -271,7 +268,6 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
 
         int listPosition = -1;
         int listPositionOffset = 0;

@@ -21,7 +21,9 @@ import java.util.Calendar;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TimePickerFragment extends Fragment implements TimePickerDialog.OnTimeSetListener {
+public class TimePickerFragment extends Fragment implements
+        View.OnClickListener,
+        TimePickerDialog.OnTimeSetListener {
 
     private TextView timeTextView;
     private CheckBox mode24Hours;
@@ -31,6 +33,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     private CheckBox dismissTime;
     private CheckBox titleTime;
     private CheckBox enableSeconds;
+    private CheckBox enableMinutes;
     private CheckBox limitSelectableTimes;
     private CheckBox showVersion2;
 
@@ -53,11 +56,15 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         dismissTime = (CheckBox) view.findViewById(R.id.dismiss_time);
         titleTime = (CheckBox) view.findViewById(R.id.title_time);
         enableSeconds = (CheckBox) view.findViewById(R.id.enable_seconds);
+        enableMinutes = (CheckBox) view.findViewById(R.id.enable_minutes);
         limitSelectableTimes = (CheckBox) view.findViewById(R.id.limit_times);
         showVersion2 = (CheckBox) view.findViewById(R.id.show_version_2);
 
         // check if picker mode is specified in Style.xml
         modeDarkTime.setChecked(Utils.isDarkTheme(getActivity(), modeDarkTime.isChecked()));
+
+        enableMinutes.setOnClickListener(this);
+        enableSeconds.setOnClickListener(this);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +81,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());
                 tpd.enableSeconds(enableSeconds.isChecked());
+                tpd.enableMinutes(enableMinutes.isChecked());
                 tpd.setVersion(showVersion2.isChecked() ? TimePickerDialog.Version.VERSION_2 : TimePickerDialog.Version.VERSION_1);
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
@@ -95,6 +103,12 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         });
 
         return view;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (enableSeconds.isChecked() && view.getId() == R.id.enable_seconds) enableMinutes.setChecked(true);
+        if (!enableMinutes.isChecked() && view.getId() == R.id.enable_minutes) enableSeconds.setChecked(false);
     }
 
     @Override
