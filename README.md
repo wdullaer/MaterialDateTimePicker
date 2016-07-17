@@ -164,6 +164,8 @@ Set whether the picker dismisses itself when the parent Activity is paused or wh
 * `DatePickerDialog` `autoDismiss(boolean autoDismiss)`
 If set to `true` will dismiss the picker when the user selects a date. This defaults to `false`.
 
+* `TimepickerDialog` `enableSeconds(boolean enableSconds)` and `enableMinutes(boolean enableMinutes)`
+Allows you to enable or disable a seconds and minutes picker ont he `TimepickerDialog`. Enabling the seconds picker, implies enabling the minutes picker. Disabling the minute picker will disable the seconds picker. The last applied setting will be used. By default `enableSeconds = false` and `enableMinutes = true`.
 
 ## FAQ
 
