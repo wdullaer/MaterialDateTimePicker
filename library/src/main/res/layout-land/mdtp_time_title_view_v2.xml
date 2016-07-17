@@ -14,16 +14,16 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License
   -->
-<TextView
+<com.wdullaer.materialdatetimepicker.VerticalTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/time_picker_header"
     android:visibility="gone"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
+    android:layout_width="@dimen/mdtp_date_picker_title_height"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/mdtp_date_picker_title_padding"
+    android:gravity="bottom|center"
     android:includeFontPadding="false"
     android:textSize="@dimen/mdtp_time_picker_header_text_size"
-    android:singleLine="true"
-    android:padding="8dp"
+    android:maxLines="1"
     android:textColor="@color/mdtp_white"
     android:background="@color/mdtp_accent_color_dark" />

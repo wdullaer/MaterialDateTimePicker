@@ -31,6 +31,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     private CheckBox titleTime;
     private CheckBox enableSeconds;
     private CheckBox limitSelectableTimes;
+    private CheckBox showVersion2;
 
     public TimePickerFragment() {
         // Required empty public constructor
@@ -52,6 +53,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         titleTime = (CheckBox) view.findViewById(R.id.title_time);
         enableSeconds = (CheckBox) view.findViewById(R.id.enable_seconds);
         limitSelectableTimes = (CheckBox) view.findViewById(R.id.limit_times);
+        showVersion2 = (CheckBox) view.findViewById(R.id.show_version_2);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +70,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());
                 tpd.enableSeconds(enableSeconds.isChecked());
+                tpd.setVersion(showVersion2.isChecked() ? TimePickerDialog.Version.VERSION_2 : TimePickerDialog.Version.VERSION_1);
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }

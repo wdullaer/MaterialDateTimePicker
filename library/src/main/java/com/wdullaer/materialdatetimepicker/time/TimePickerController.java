@@ -22,6 +22,11 @@ public interface TimePickerController {
     int getAccentColor();
 
     /**
+     * @return Version - The current version to render
+     */
+    TimePickerDialog.Version getVersion();
+
+    /**
      * Request the device to vibrate
      */
     void tryVibrate();

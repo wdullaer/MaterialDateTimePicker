@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
@@ -63,6 +64,11 @@ public class TimePickerDialog extends DialogFragment implements
         OnValueSelectedListener, TimePickerController {
     private static final String TAG = "TimePickerDialog";
 
+    public enum Version {
+        VERSION_1,
+        VERSION_2
+    }
+
     private static final String KEY_INITIAL_TIME = "initial_time";
     private static final String KEY_IS_24_HOUR_VIEW = "is_24_hour_view";
     private static final String KEY_TITLE = "dialog_title";
@@ -83,6 +89,7 @@ public class TimePickerDialog extends DialogFragment implements
     private static final String KEY_OK_STRING = "ok_string";
     private static final String KEY_CANCEL_RESID = "cancel_resid";
     private static final String KEY_CANCEL_STRING = "cancel_string";
+    private static final String KEY_VERSION = "version";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
@@ -134,6 +141,7 @@ public class TimePickerDialog extends DialogFragment implements
     private String mOkString;
     private int mCancelResid;
     private String mCancelString;
+    private Version mVersion;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -201,6 +209,7 @@ public class TimePickerDialog extends DialogFragment implements
         mEnableMinutes = true;
         mOkResid = R.string.mdtp_ok;
         mCancelResid = R.string.mdtp_cancel;
+        mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
     }
 
     /**
@@ -433,6 +442,19 @@ public class TimePickerDialog extends DialogFragment implements
         mCancelResid = cancelResid;
     }
 
+    /**
+     * Set which layout version the picker should use
+     * @param version The version to use
+     */
+    public void setVersion(Version version) {
+        mVersion = version;
+    }
+
+    @Override
+    public Version getVersion() {
+        return mVersion;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -456,6 +478,7 @@ public class TimePickerDialog extends DialogFragment implements
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
+            mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
         }
     }
 
@@ -463,7 +486,8 @@ public class TimePickerDialog extends DialogFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, container,false);
+        int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_time_picker_dialog : R.layout.mdtp_time_picker_dialog_v2;
+        View view = inflater.inflate(viewRes, container,false);
         KeyboardListener keyboardListener = new KeyboardListener();
         view.findViewById(R.id.time_picker_dialog).setOnKeyListener(keyboardListener);
 
@@ -800,6 +824,7 @@ public class TimePickerDialog extends DialogFragment implements
             outState.putString(KEY_OK_STRING, mOkString);
             outState.putInt(KEY_CANCEL_RESID, mCancelResid);
             outState.putString(KEY_CANCEL_STRING, mCancelString);
+            outState.putSerializable(KEY_VERSION, mVersion);
         }
     }
 
