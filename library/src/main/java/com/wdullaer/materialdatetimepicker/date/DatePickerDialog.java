@@ -29,7 +29,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,8 +57,6 @@ import java.util.Locale;
  */
 public class DatePickerDialog extends DialogFragment implements
         OnClickListener, DatePickerController {
-
-    private static final String TAG = "DatePickerDialog";
 
     private static final int UNINITIALIZED = -1;
     private static final int MONTH_AND_DAY_VIEW = 0;
@@ -252,7 +249,6 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
 
         // All options have been set at this point: round the initial selection if necessary
         setToNearestDate(mCalendar);
