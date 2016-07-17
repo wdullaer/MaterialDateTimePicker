@@ -598,7 +598,7 @@ public class TimePickerDialog extends DialogFragment implements
 
         // Disable seconds picker
         if (!mEnableSeconds) {
-            mSecondSpaceView.setVisibility(View.GONE);
+            mSecondView.setVisibility(View.GONE);
             view.findViewById(R.id.separator_seconds).setVisibility(View.GONE);
         }
 

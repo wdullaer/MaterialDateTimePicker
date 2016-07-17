@@ -18,7 +18,7 @@
     <!-- Pattern for the v1 month and year string (localised) -->
     <string name="mdtp_date_v1_monthyear">MMMM yyyy</string>
 
-    <!-- Label for button to confirm chosen date or time [CHAR LIMIT=30] -->
+    <!-- Label forf date or time [CHAR LIMIT=30] -->
     <string name="mdtp_done_label">Done</string>
     <string name="mdtp_ok">@android:string/ok</string>
     <string name="mdtp_cancel">@android:string/cancel</string>
@@ -69,7 +69,7 @@
     <string name="mdtp_deleted_key"><xliff:g id="key" example="4">%1$s</xliff:g> deleted</string>
 
     <!-- DO NOT TRANSLATE -->
-    <string name="mdtp_time_placeholder" translatable="false">--</string>
+    <string name="mdtp_time_placeholder" translatable="false">00</string>
     <!-- DO NOT TRANSLATE -->
     <string name="mdtp_time_separator" translatable="false">:</string>
 
