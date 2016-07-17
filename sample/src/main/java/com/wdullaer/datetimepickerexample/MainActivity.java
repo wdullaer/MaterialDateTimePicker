@@ -18,6 +18,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements
+    View.OnClickListener,
     TimePickerDialog.OnTimeSetListener,
     DatePickerDialog.OnDateSetListener
 {
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox titleDate;
     private CheckBox showYearFirst;
     private CheckBox enableSeconds;
+    private CheckBox enableMinutes;
     private CheckBox limitTimes;
     private CheckBox limitDates;
     private CheckBox highlightDates;
@@ -63,13 +65,18 @@ public class MainActivity extends AppCompatActivity implements
         titleDate = (CheckBox) findViewById(R.id.title_date);
         showYearFirst = (CheckBox) findViewById(R.id.show_year_first);
         enableSeconds = (CheckBox) findViewById(R.id.enable_seconds);
+        enableMinutes = (CheckBox) findViewById(R.id.enable_minutes);
         limitTimes = (CheckBox) findViewById(R.id.limit_times);
         limitDates = (CheckBox) findViewById(R.id.limit_dates);
         highlightDates = (CheckBox) findViewById(R.id.highlight_dates);
 
-        // check if picker mode is specified in Style.xml
+        // Check if picker mode is specified in Style.xml
         modeDarkTime.setChecked(Utils.isDarkTheme(this, modeDarkTime.isChecked()));
         modeDarkDate.setChecked(Utils.isDarkTheme(this, modeDarkDate.isChecked()));
+
+        // Ensure a consistent state between enableSeconds and enableMinutes
+        enableMinutes.setOnClickListener(this);
+        enableSeconds.setOnClickListener(this);
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());
                 tpd.enableSeconds(enableSeconds.isChecked());
+                tpd.enableMinutes(enableMinutes.isChecked());
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
@@ -147,6 +155,12 @@ public class MainActivity extends AppCompatActivity implements
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (enableSeconds.isChecked() && view.getId() == R.id.enable_seconds) enableMinutes.setChecked(true);
+        if (!enableMinutes.isChecked() && view.getId() == R.id.enable_minutes) enableSeconds.setChecked(false);
     }
 
     @Override
