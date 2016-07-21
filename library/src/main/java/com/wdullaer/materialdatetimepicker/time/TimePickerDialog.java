@@ -172,7 +172,7 @@ public class TimePickerDialog extends DialogFragment implements
          * @param minute The minute that was set.
          * @param second The second that was set
          */
-        void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second);
+        void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second);
     }
 
     public TimePickerDialog() {
@@ -1073,7 +1073,7 @@ public class TimePickerDialog extends DialogFragment implements
                 finishKbMode(false);
             }
             if (mCallback != null) {
-                mCallback.onTimeSet(mTimePicker,
+                mCallback.onTimeSet(this,
                         mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
             }
             dismiss();
@@ -1672,7 +1672,7 @@ public class TimePickerDialog extends DialogFragment implements
 
     public void notifyOnDateListener() {
         if (mCallback != null) {
-            mCallback.onTimeSet(mTimePicker, mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
+            mCallback.onTimeSet(this, mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
         }
     }
 
