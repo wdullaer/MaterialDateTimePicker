@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -374,6 +375,17 @@ public class DatePickerDialog extends DialogFragment implements
 
         mHapticFeedbackController = new HapticFeedbackController(activity);
         return view;
+    }
+
+    @Override
+    public void onConfigurationChanged(final Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ViewGroup viewGroup = (ViewGroup) getView();
+        if (viewGroup != null) {
+            viewGroup.removeAllViewsInLayout();
+            View view = onCreateView(getActivity().getLayoutInflater(), viewGroup, null);
+            viewGroup.addView(view);
+        }
     }
 
     @Override
