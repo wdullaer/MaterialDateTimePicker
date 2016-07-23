@@ -113,8 +113,9 @@ public class TimePickerDialog extends DialogFragment implements
     private TextView mMinuteSpaceView;
     private TextView mSecondView;
     private TextView mSecondSpaceView;
-    private TextView mAmPmTextView;
-    private View mAmPmHitspace;
+    private TextView mAmTextView;
+    private TextView mPmTextView;
+    private View mAmPmLayout;
     private RadialPickerLayout mTimePicker;
 
     private int mSelectedColor;
@@ -520,8 +521,11 @@ public class TimePickerDialog extends DialogFragment implements
         mSecondSpaceView = (TextView) view.findViewById(R.id.seconds_space);
         mSecondView = (TextView) view.findViewById(R.id.seconds);
         mSecondView.setOnKeyListener(keyboardListener);
-        mAmPmTextView = (TextView) view.findViewById(R.id.ampm_label);
-        mAmPmTextView.setOnKeyListener(keyboardListener);
+        mAmTextView = (TextView) view.findViewById(R.id.am_label);
+        mAmTextView.setOnKeyListener(keyboardListener);
+        mPmTextView = (TextView) view.findViewById(R.id.pm_label);
+        mPmTextView.setOnKeyListener(keyboardListener);
+        mAmPmLayout = view.findViewById(R.id.ampm_layout);
         String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
         mAmText = amPmTexts[0];
         mPmText = amPmTexts[1];
@@ -596,13 +600,10 @@ public class TimePickerDialog extends DialogFragment implements
         mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // Enable or disable the AM/PM view.
-        mAmPmHitspace = view.findViewById(R.id.ampm_hitspace);
         if (mIs24HourMode) {
-            mAmPmTextView.setVisibility(View.GONE);
+            mAmPmLayout.setVisibility(View.GONE);
         } else {
-            mAmPmTextView.setVisibility(View.VISIBLE);
-            updateAmPmDisplay(mInitialTime.isAM() ? AM : PM);
-            mAmPmHitspace.setOnClickListener(new OnClickListener() {
+            OnClickListener listener = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // Don't do anything if either AM or PM are disabled
@@ -617,7 +618,17 @@ public class TimePickerDialog extends DialogFragment implements
                     }
                     mTimePicker.setAmOrPm(amOrPm);
                 }
-            });
+            };
+            mAmTextView .setVisibility(View.GONE);
+            mPmTextView.setVisibility(View.VISIBLE);
+            mAmPmLayout.setOnClickListener(listener);
+            if (mVersion == Version.VERSION_2) {
+                mAmTextView.setText(mAmText);
+                mPmTextView.setText(mPmText);
+                mAmTextView.setVisibility(View.VISIBLE);
+            }
+            updateAmPmDisplay(mInitialTime.isAM() ? AM : PM);
+
         }
 
         // Disable seconds picker
@@ -655,7 +666,7 @@ public class TimePickerDialog extends DialogFragment implements
                 );
                 paramsAmPm.addRule(RelativeLayout.RIGHT_OF, R.id.hour_space);
                 paramsAmPm.addRule(RelativeLayout.ALIGN_BASELINE, R.id.hour_space);
-                mAmPmTextView.setLayoutParams(paramsAmPm);
+                mAmPmLayout.setLayoutParams(paramsAmPm);
             }
         } else if (mEnableSeconds) {
             // link separator to minutes
@@ -769,16 +780,28 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     private void updateAmPmDisplay(int amOrPm) {
-        if (amOrPm == AM) {
-            mAmPmTextView.setText(mAmText);
-            Utils.tryAccessibilityAnnounce(mTimePicker, mAmText);
-            mAmPmHitspace.setContentDescription(mAmText);
-        } else if (amOrPm == PM){
-            mAmPmTextView.setText(mPmText);
-            Utils.tryAccessibilityAnnounce(mTimePicker, mPmText);
-            mAmPmHitspace.setContentDescription(mPmText);
+        if (mVersion == Version.VERSION_2) {
+            if (amOrPm == AM) {
+                mAmTextView.setTextColor(mSelectedColor);
+                mPmTextView.setTextColor(mUnselectedColor);
+                Utils.tryAccessibilityAnnounce(mTimePicker, mAmText);
+            } else {
+                mAmTextView.setTextColor(mUnselectedColor);
+                mPmTextView.setTextColor(mSelectedColor);
+                Utils.tryAccessibilityAnnounce(mTimePicker, mPmText);
+            }
         } else {
-            mAmPmTextView.setText(mDoublePlaceholderText);
+            if (amOrPm == AM) {
+                mPmTextView.setText(mAmText);
+                Utils.tryAccessibilityAnnounce(mTimePicker, mAmText);
+                mPmTextView.setContentDescription(mAmText);
+            } else if (amOrPm == PM){
+                mPmTextView.setText(mPmText);
+                Utils.tryAccessibilityAnnounce(mTimePicker, mPmText);
+                mPmTextView.setContentDescription(mPmText);
+            } else {
+                mPmTextView.setText(mDoublePlaceholderText);
+            }
         }
     }
 
