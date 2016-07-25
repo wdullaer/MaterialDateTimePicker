@@ -504,7 +504,7 @@ public class TimePickerDialog extends DialogFragment implements
         mPmText = amPmTexts[1];
 
         mHapticFeedbackController = new HapticFeedbackController(getActivity());
-        
+
         if(mTimePicker != null) {
             mInitialTime = new Timepoint(mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
         }
