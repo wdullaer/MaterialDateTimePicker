@@ -33,6 +33,7 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.widget.ExploreByTouchHelper;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -239,6 +240,9 @@ public abstract class MonthView extends View {
         ViewCompat.setImportantForAccessibility(this, ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES);
         mLockAccessibilityDelegate = true;
 
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+
         // Sets up any standard paints that will be used
         initView();
     }
@@ -284,6 +288,56 @@ public abstract class MonthView extends View {
                 break;
         }
         return true;
+    }
+
+    /**
+     * Key listener for D-pad navigation between days, particularly used for Android TV
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        int day = mSelectedDay;
+        int month = mMonth;
+        int year = mYear;
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            day -= 7;
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+            day += 7;
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            day -= 1;
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            day += 1;
+        }
+        if (day != mSelectedDay) {
+            Calendar monthCalendar = Calendar.getInstance();
+            monthCalendar.set(year, month, 1);
+            int numDaysInCurrentMonth = monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            if (day < 1) {
+                month -= 1;
+            } else if (day > numDaysInCurrentMonth) {
+                month += 1;
+            }
+            if (month != mMonth) {
+                if (month < 1) {
+                    year -= 1;
+                    month += 12;
+                } else if (month > 12) {
+                    year += 1;
+                    month -= 12;
+                }
+                monthCalendar.set(year, month, 1);
+                int numDaysInNextMonth = monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                if (day < 1) {
+                    day += numDaysInNextMonth;
+                } else if (day > numDaysInCurrentMonth) {
+                    day -= numDaysInCurrentMonth;
+                }
+            }
+            if (mOnDayClickListener != null) {
+                mOnDayClickListener.onDayClick(this, new CalendarDay(year, month, day));
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
