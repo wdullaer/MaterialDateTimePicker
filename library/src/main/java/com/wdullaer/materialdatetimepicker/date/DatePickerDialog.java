@@ -983,4 +983,24 @@ public class DatePickerDialog extends DialogFragment implements
                     mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
         }
     }
+
+    @Override
+    public void focusYear() {
+        setCurrentView(YEAR_VIEW);
+    }
+
+    @Override
+    public void focusMonthDays() {
+        setCurrentView(MONTH_AND_DAY_VIEW);
+    }
+
+    @Override
+    public void focusDialogButtons() {
+        if (getView() != null) {
+            Button okButton = (Button) getView().findViewById(R.id.ok);
+            if (okButton != null) {
+                okButton.requestFocus();
+            }
+        }
+    }
 }

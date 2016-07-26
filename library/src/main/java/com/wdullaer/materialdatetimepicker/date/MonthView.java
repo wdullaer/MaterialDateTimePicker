@@ -298,13 +298,26 @@ public abstract class MonthView extends View {
         int day = mSelectedDay;
         int month = mMonth;
         int year = mYear;
+        int dayDrawOffset = findDayOffset();
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
             day -= 7;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
             day += 7;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            int firstLeftSideDay = dayDrawOffset == 0 ? 1 : 7 - dayDrawOffset + 1; // +1 to correct that days start at 1, not 0
+            if ((day % 7) == firstLeftSideDay) {
+                // move focus left off month days, i.e. to year picker
+                mController.focusYear();
+                return true;
+            }
             day -= 1;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            int firstRightSideDay = 6 - dayDrawOffset + 1; // +1 to correct that days start at 1, not 0
+            if ((day % 7) == firstRightSideDay) {
+                // move focus right off month days, i.e. to ok button
+                mController.focusDialogButtons();
+                return true;
+            }
             day += 1;
         }
         if (day != mSelectedDay) {
