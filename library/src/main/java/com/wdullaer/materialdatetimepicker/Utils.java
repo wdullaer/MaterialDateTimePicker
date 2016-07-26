@@ -188,7 +188,7 @@ public class Utils {
 
     /**
      * Indicates if app is running on Android TV device
-     * @param context The context to use as reference for the test, should be ApplicationContext
+     * @param context The context to use as reference for the test
      * @return true if device is Android TV, false if other device type
      */
     public static boolean isTv(Context context) {

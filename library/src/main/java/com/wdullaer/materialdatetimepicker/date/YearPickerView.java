@@ -69,8 +69,6 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
         setDividerHeight(0);
         onDateChanged();
         if (Utils.isTv(getContext())) {
-            //setFocusable(false);
-            //setFocusableInTouchMode(false);
             setItemsCanFocus(true);
         }
     }
