@@ -30,6 +30,9 @@ import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Utility helper functions for time and date pickers.
  */
@@ -182,5 +185,21 @@ public class Utils {
         } finally {
             a.recycle();
         }
+    }
+
+    /**
+     * Trim date to midnight, leave date unchanged and set time to 00:00:00.000
+     * @param date Date to rounding
+     * @return rounded date
+     */
+    public static Calendar trimToMidnight(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+
+        return calendar;
     }
 }

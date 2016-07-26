@@ -935,7 +935,7 @@ public class DatePickerDialog extends DialogFragment implements
             long distance = Long.MAX_VALUE;
             Calendar currentBest = calendar;
             for (Calendar c : selectableDays) {
-                long newDistance = Math.abs(calendar.getTimeInMillis() - c.getTimeInMillis());
+                long newDistance = Math.abs(Utils.trimToMidnight(calendar.getTime()).getTimeInMillis() - Utils.trimToMidnight(c.getTime()).getTimeInMillis());
                 if(newDistance < distance) {
                     distance = newDistance;
                     currentBest = c;
