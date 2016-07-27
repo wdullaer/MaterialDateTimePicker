@@ -707,90 +707,140 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (mInputEnabled && Utils.isTv(getContext())) {
             int currentlyShowingValue = getCurrentItemShowing();
+            Timepoint timepoint = null;
+            int itemToSet = -1;
+            boolean flipAmPm = false;
             if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                 if (currentlyShowingValue == HOUR_INDEX) {
-                    Timepoint timepoint = new Timepoint(
+                    flipAmPm = !mIs24HourMode && mCurrentTime.getHour() == 11;
+                    timepoint = new Timepoint(
                             (mCurrentTime.getHour() + 1) % (mIs24HourMode ? 24 : 12),
                             mCurrentTime.getMinute(),
                             mCurrentTime.getSecond()
                     );
-                    setItem(HOUR_INDEX, timepoint);
-                    mListener.onValueSelected(timepoint);
-                    return true;
+                    itemToSet = HOUR_INDEX;
                 } else if (currentlyShowingValue == MINUTE_INDEX) {
-                    Timepoint timepoint = new Timepoint(
-                            mCurrentTime.getHour(),
+                    int hour = mCurrentTime.getHour();
+                    if (mCurrentTime.getMinute() == 59) {
+                        flipAmPm = !mIs24HourMode && mCurrentTime.getHour() == 11;
+                        hour = (mCurrentTime.getHour() + 1) % (mIs24HourMode ? 24 : 12);
+                    }
+                    timepoint = new Timepoint(
+                            hour,
                             (mCurrentTime.getMinute() + 1) % 60,
                             mCurrentTime.getSecond()
                     );
-                    setItem(MINUTE_INDEX, timepoint);
-                    mListener.onValueSelected(timepoint);
-                    return true;
+                    itemToSet = MINUTE_INDEX;
                 } else if (currentlyShowingValue == SECOND_INDEX) {
-                    Timepoint timepoint = new Timepoint(
-                            mCurrentTime.getHour(),
-                            mCurrentTime.getMinute(),
+                    int hour = mCurrentTime.getHour();
+                    int minute = mCurrentTime.getMinute();
+                    if (mCurrentTime.getSecond() == 59) {
+                        if (mCurrentTime.getMinute() == 59) {
+                            flipAmPm = !mIs24HourMode && mCurrentTime.getHour() == 11;
+                            hour = (mCurrentTime.getHour() + 1) % (mIs24HourMode ? 24 : 12);
+                        }
+                        minute = (mCurrentTime.getMinute() + 1) % 60;
+                    }
+                    timepoint = new Timepoint(
+                            hour,
+                            minute,
                             (mCurrentTime.getSecond() + 1) % 60
                     );
-                    setItem(SECOND_INDEX, timepoint);
-                    mListener.onValueSelected(timepoint);
-                    return true;
+                    itemToSet = SECOND_INDEX;
                 } else if (currentlyShowingValue == AM_PM_INDEX) {
-                    setAmOrPm(getIsCurrentlyAmOrPm() == AM ? PM : AM);
+                    timepoint = new Timepoint(mCurrentTime);
+                    flipAmPm = true;
                 }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                 if (currentlyShowingValue == HOUR_INDEX) {
                     int hour;
-                    if (mCurrentTime.getHour() == 0) {
+                    if ((mCurrentTime.getHour() % 12) == 0) {
                         hour = (mIs24HourMode ? 24 : 12) - 1;
+                        flipAmPm = true;
                     } else {
                         hour = (mCurrentTime.getHour() - 1) % (mIs24HourMode ? 24 : 12);
                     }
-                    Timepoint timepoint = new Timepoint(
+                    timepoint = new Timepoint(
                             hour,
                             mCurrentTime.getMinute(),
                             mCurrentTime.getSecond()
                     );
-                    setItem(HOUR_INDEX, timepoint);
-                    mListener.onValueSelected(timepoint);
-                    return true;
+                    itemToSet = HOUR_INDEX;
                 } else if (currentlyShowingValue == MINUTE_INDEX) {
+                    int hour = mCurrentTime.getHour();
                     int minute;
-                    if (mCurrentTime.getMinute() == 0) {
+                    if ((mCurrentTime.getMinute() % 60) == 0) {
                         minute = 59;
+                        if ((mCurrentTime.getHour() % 12) == 0) {
+                            hour = (mIs24HourMode ? 24 : 12) - 1;
+                            flipAmPm = true;
+                        } else {
+                            hour = (mCurrentTime.getHour() - 1) % (mIs24HourMode ? 24 : 12);
+                        }
                     } else {
                         minute = (mCurrentTime.getMinute() - 1) % 60;
                     }
-                    Timepoint timepoint = new Timepoint(
-                            mCurrentTime.getHour(),
+                    timepoint = new Timepoint(
+                            hour,
                             minute,
                             mCurrentTime.getSecond()
                     );
-                    setItem(MINUTE_INDEX, timepoint);
-                    mListener.onValueSelected(timepoint);
-                    return true;
+                    itemToSet = MINUTE_INDEX;
                 } else if (currentlyShowingValue == SECOND_INDEX) {
+                    int hour = mCurrentTime.getHour();
+                    int minute = mCurrentTime.getMinute();
                     int second;
                     if (mCurrentTime.getSecond() == 0) {
                         second = 59;
+                        if ((mCurrentTime.getMinute() % 60) == 0) {
+                            minute = 59;
+                            if ((mCurrentTime.getHour() % 12) == 0) {
+                                hour = (mIs24HourMode ? 24 : 12) - 1;
+                                flipAmPm = true;
+                            } else {
+                                hour = (mCurrentTime.getHour() - 1) % (mIs24HourMode ? 24 : 12);
+                            }
+                        } else {
+                            minute = (mCurrentTime.getMinute() - 1) % 60;
+                        }
                     } else {
                         second = (mCurrentTime.getSecond() - 1) % 60;
                     }
-                    Timepoint timepoint = new Timepoint(
-                            mCurrentTime.getHour(),
-                            mCurrentTime.getMinute(),
+                    timepoint = new Timepoint(
+                            hour,
+                            minute,
                             second
                     );
-                    setItem(SECOND_INDEX, timepoint);
-                    mListener.onValueSelected(timepoint);
-                    return true;
+                    itemToSet = SECOND_INDEX;
                 } else if (currentlyShowingValue == AM_PM_INDEX) {
-                    setAmOrPm(getIsCurrentlyAmOrPm() == AM ? PM : AM);
+                    timepoint = new Timepoint(mCurrentTime);
+                    flipAmPm = true;
                 }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                 mListener.retreatPicker(getCurrentItemShowing(), true);
+                return true;
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 mListener.advancePicker(getCurrentItemShowing(), true);
+                return true;
+            }
+            if (timepoint != null && itemToSet != -1) {
+                if (flipAmPm) {
+                    if (mCurrentTime.isAM()) {
+                        timepoint.setPM();
+                    } else {
+                        timepoint.setAM();
+                    }
+                } else {
+                    if (mCurrentTime.isAM()) {
+                        timepoint.setAM();
+                    } else {
+                        timepoint.setPM();
+                    }
+                }
+                setAmOrPm(timepoint.isAM() ? AM : PM);
+                setItem(itemToSet, timepoint);
+                mListener.onValueSelected(timepoint);
+                return true;
             }
         }
         return false;
