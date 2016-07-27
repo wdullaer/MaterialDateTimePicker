@@ -86,6 +86,7 @@ public class TimePickerDialog extends DialogFragment implements
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
     public static final int SECOND_INDEX = 2;
+    public static final int AM_PM_INDEX = 3;
     public static final int AM = 0;
     public static final int PM = 1;
 
@@ -855,10 +856,22 @@ public class TimePickerDialog extends DialogFragment implements
 
                 String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
                 Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
-            } else {
-                setButtonsFocusable(true);
+            } else if (Utils.isTv(getActivity().getApplicationContext())) {
+                if (!mIs24HourMode) {
+                    // TODO : check this
+                    setCurrentItemShowing(AM_PM_INDEX, true, false, false);
+                } else {
+                    setButtonsFocusable(true);
+                }
             }
         } else if (index == SECOND_INDEX) {
+            if (!mIs24HourMode) {
+                // TODO : check this
+                setCurrentItemShowing(AM_PM_INDEX, true, false, false);
+            } else if (Utils.isTv(getActivity().getApplicationContext())) {
+                setButtonsFocusable(true);
+            }
+        } else if (index == AM_PM_INDEX) {
             setButtonsFocusable(true);
         }
     }
@@ -866,11 +879,35 @@ public class TimePickerDialog extends DialogFragment implements
     @Override
     public void retreatPicker(int index, boolean force) {
         if(!force && !mAllowAutoAdvance) return;
-        if(index == SECOND_INDEX && mEnableMinutes) {
-            setCurrentItemShowing(MINUTE_INDEX, true, true, false);
+        if (index == AM_PM_INDEX) {
+            if (mEnableSeconds) {
+                setCurrentItemShowing(SECOND_INDEX, true, true, false);
 
-            String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
-            Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            } else if (mEnableMinutes) {
+                setCurrentItemShowing(MINUTE_INDEX, true, true, false);
+
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            } else {
+                setCurrentItemShowing(HOUR_INDEX, true, true, false);
+
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            }
+        } else if(index == SECOND_INDEX) {
+            if (mEnableMinutes) {
+                setCurrentItemShowing(MINUTE_INDEX, true, true, false);
+
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            } else {
+                setCurrentItemShowing(HOUR_INDEX, true, true, false);
+
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            }
         } else if(index == MINUTE_INDEX) {
             setCurrentItemShowing(HOUR_INDEX, true, true, false);
 
@@ -1064,6 +1101,9 @@ public class TimePickerDialog extends DialogFragment implements
                 }
                 labelToAnimate = mMinuteView;
                 break;
+            case AM_PM_INDEX:
+                labelToAnimate = mAmPmTextView;
+                break;
             default:
                 int seconds = mTimePicker.getSeconds();
                 mTimePicker.setContentDescription(mSecondPickerDescription + ": " + seconds);
@@ -1076,9 +1116,11 @@ public class TimePickerDialog extends DialogFragment implements
         int hourColor = (index == HOUR_INDEX) ? mSelectedColor : mUnselectedColor;
         int minuteColor = (index == MINUTE_INDEX) ? mSelectedColor : mUnselectedColor;
         int secondColor = (index == SECOND_INDEX) ? mSelectedColor : mUnselectedColor;
+        int amPmColor = (index == AM_PM_INDEX) ? mSelectedColor : mUnselectedColor;
         mHourView.setTextColor(hourColor);
         mMinuteView.setTextColor(minuteColor);
         mSecondView.setTextColor(secondColor);
+        mAmPmTextView.setTextColor(amPmColor);
 
         ObjectAnimator pulseAnimator = Utils.getPulseAnimator(labelToAnimate, 0.85f, 1.1f);
         if (delayLabelAnimate) {
