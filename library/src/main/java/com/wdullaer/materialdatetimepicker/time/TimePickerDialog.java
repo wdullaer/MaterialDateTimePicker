@@ -840,11 +840,15 @@ public class TimePickerDialog extends DialogFragment implements
     @Override
     public void advancePicker(int index, boolean force) {
         if(!force && !mAllowAutoAdvance) return;
-        if(index == HOUR_INDEX && mEnableMinutes) {
-            setCurrentItemShowing(MINUTE_INDEX, true, true, false);
+        if(index == HOUR_INDEX) {
+            if (mEnableMinutes) {
+                setCurrentItemShowing(MINUTE_INDEX, true, true, false);
 
-            String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
-            Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            } else {
+                setButtonsFocusable(true);
+            }
         } else if(index == MINUTE_INDEX ) {
             if (mEnableSeconds) {
                 setCurrentItemShowing(SECOND_INDEX, true, true, false);
