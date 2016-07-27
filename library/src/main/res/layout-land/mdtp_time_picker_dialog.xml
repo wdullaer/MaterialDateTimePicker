@@ -20,7 +20,7 @@
     android:layout_width="wrap_content"
     android:orientation="horizontal"
     android:background="@color/mdtp_background_color"
-    android:focusable="true" >
+    android:focusable="false" >
     <com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
         android:id="@+id/time_picker"
         android:layout_width="@dimen/mdtp_picker_dimen"

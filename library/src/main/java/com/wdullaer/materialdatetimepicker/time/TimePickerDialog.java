@@ -704,6 +704,13 @@ public class TimePickerDialog extends DialogFragment implements
 
         mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
         view.findViewById(R.id.time_picker_dialog).setBackgroundColor(mThemeDark ? darkBackgroundColor : backgroundColor);
+
+        /*
+        if (Utils.isTv(getContext())) {
+            mTimePicker.requestFocus();
+        }
+        */
+
         return view;
     }
 
@@ -801,17 +808,33 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     @Override
-    public void advancePicker(int index) {
-        if(!mAllowAutoAdvance) return;
+    public void advancePicker(int index, boolean force) {
+        if(!force && !mAllowAutoAdvance) return;
         if(index == HOUR_INDEX && mEnableMinutes) {
             setCurrentItemShowing(MINUTE_INDEX, true, true, false);
 
-            String announcement = mSelectHours + ". " + mTimePicker.getMinutes();
+            String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
             Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
         } else if(index == MINUTE_INDEX && mEnableSeconds) {
             setCurrentItemShowing(SECOND_INDEX, true, true, false);
 
-            String announcement = mSelectMinutes+". " + mTimePicker.getSeconds();
+            String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+            Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+        }
+    }
+
+    @Override
+    public void retreatPicker(int index, boolean force) {
+        if(!force && !mAllowAutoAdvance) return;
+        if(index == SECOND_INDEX && mEnableMinutes) {
+            setCurrentItemShowing(MINUTE_INDEX, true, true, false);
+
+            String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+            Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+        } else if(index == MINUTE_INDEX) {
+            setCurrentItemShowing(HOUR_INDEX, true, true, false);
+
+            String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
             Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
         }
     }

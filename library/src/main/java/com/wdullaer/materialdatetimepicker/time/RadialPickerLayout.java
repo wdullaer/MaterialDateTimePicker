@@ -28,6 +28,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -39,6 +40,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -99,7 +101,8 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     public interface OnValueSelectedListener {
         void onValueSelected(Timepoint newTime);
         void enablePicker();
-        void advancePicker(int index);
+        void advancePicker(int index, boolean force);
+        void retreatPicker(int index, boolean force);
     }
 
     public RadialPickerLayout(Context context, AttributeSet attrs) {
@@ -694,6 +697,95 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mInputEnabled && Utils.isTv(getContext())) {
+            int currentlyShowingValue = getCurrentItemShowing();
+            if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                if (currentlyShowingValue == HOUR_INDEX) {
+                    Timepoint timepoint = new Timepoint(
+                            (mCurrentTime.getHour() + 1) % (mIs24HourMode ? 24 : 12),
+                            mCurrentTime.getMinute(),
+                            mCurrentTime.getSecond()
+                    );
+                    setItem(HOUR_INDEX, timepoint);
+                    mListener.onValueSelected(timepoint);
+                    return true;
+                } else if (currentlyShowingValue == MINUTE_INDEX) {
+                    Timepoint timepoint = new Timepoint(
+                            mCurrentTime.getHour(),
+                            (mCurrentTime.getMinute() + 1) % 60,
+                            mCurrentTime.getSecond()
+                    );
+                    setItem(MINUTE_INDEX, timepoint);
+                    mListener.onValueSelected(timepoint);
+                    return true;
+                } else if (currentlyShowingValue == SECOND_INDEX) {
+                    Timepoint timepoint = new Timepoint(
+                            mCurrentTime.getHour(),
+                            mCurrentTime.getMinute(),
+                            (mCurrentTime.getSecond() + 1) % 60
+                    );
+                    setItem(SECOND_INDEX, timepoint);
+                    mListener.onValueSelected(timepoint);
+                    return true;
+                }
+            } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                if (currentlyShowingValue == HOUR_INDEX) {
+                    int hour;
+                    if (mCurrentTime.getHour() == 0) {
+                        hour = (mIs24HourMode ? 24 : 12) - 1;
+                    } else {
+                        hour = (mCurrentTime.getHour() - 1) % (mIs24HourMode ? 24 : 12);
+                    }
+                    Timepoint timepoint = new Timepoint(
+                            hour,
+                            mCurrentTime.getMinute(),
+                            mCurrentTime.getSecond()
+                    );
+                    setItem(HOUR_INDEX, timepoint);
+                    mListener.onValueSelected(timepoint);
+                    return true;
+                } else if (currentlyShowingValue == MINUTE_INDEX) {
+                    int minute;
+                    if (mCurrentTime.getMinute() == 0) {
+                        minute = 59;
+                    } else {
+                        minute = (mCurrentTime.getMinute() - 1) % 60;
+                    }
+                    Timepoint timepoint = new Timepoint(
+                            mCurrentTime.getHour(),
+                            minute,
+                            mCurrentTime.getSecond()
+                    );
+                    setItem(MINUTE_INDEX, timepoint);
+                    mListener.onValueSelected(timepoint);
+                    return true;
+                } else if (currentlyShowingValue == SECOND_INDEX) {
+                    int second;
+                    if (mCurrentTime.getSecond() == 0) {
+                        second = 59;
+                    } else {
+                        second = (mCurrentTime.getSecond() - 1) % 60;
+                    }
+                    Timepoint timepoint = new Timepoint(
+                            mCurrentTime.getHour(),
+                            mCurrentTime.getMinute(),
+                            second
+                    );
+                    setItem(SECOND_INDEX, timepoint);
+                    mListener.onValueSelected(timepoint);
+                    return true;
+                }
+            } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                mListener.retreatPicker(getCurrentItemShowing(), true);
+            } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                mListener.advancePicker(getCurrentItemShowing(), true);
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         final float eventX = event.getX();
         final float eventY = event.getY();
@@ -853,7 +945,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                         reselectSelector(value, false, getCurrentItemShowing());
                         mCurrentTime = value;
                         mListener.onValueSelected(value);
-                        mListener.advancePicker(getCurrentItemShowing());
+                        mListener.advancePicker(getCurrentItemShowing(), false);
                     }
                 }
                 mDoingMove = false;
