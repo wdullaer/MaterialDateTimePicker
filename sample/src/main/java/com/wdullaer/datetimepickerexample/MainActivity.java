@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox enableMinutes;
     private CheckBox limitTimes;
     private CheckBox limitDates;
+    private CheckBox disableDates;
     private CheckBox highlightDates;
 
     @Override
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements
         enableMinutes = (CheckBox) findViewById(R.id.enable_minutes);
         limitTimes = (CheckBox) findViewById(R.id.limit_times);
         limitDates = (CheckBox) findViewById(R.id.limit_dates);
+        disableDates = (CheckBox) findViewById(R.id.disable_dates);
         highlightDates = (CheckBox) findViewById(R.id.highlight_dates);
 
         // Check if picker mode is specified in Style.xml
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 if (limitDates.isChecked()) {
                     Calendar[] dates = new Calendar[13];
-                    for(int i = -6; i <= 6; i++) {
+                    for (int i = -6; i <= 6; i++) {
                         Calendar date = Calendar.getInstance();
                         date.add(Calendar.MONTH, i);
                         dates[i+6] = date;
@@ -145,12 +147,21 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 if (highlightDates.isChecked()) {
                     Calendar[] dates = new Calendar[13];
-                    for(int i = -6; i <= 6; i++) {
+                    for (int i = -6; i <= 6; i++) {
                         Calendar date = Calendar.getInstance();
                         date.add(Calendar.WEEK_OF_YEAR, i);
                         dates[i+6] = date;
                     }
                     dpd.setHighlightedDays(dates);
+                }
+                if (disableDates.isChecked()) {
+                    Calendar[] dates = new Calendar[3];
+                    for (int i = -1; i <= 1; i++) {
+                        Calendar date = Calendar.getInstance();
+                        date.add(Calendar.DAY_OF_MONTH, i);
+                        dates[i+1] = date;
+                    }
+                    dpd.setDisabledDays(dates);
                 }
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }

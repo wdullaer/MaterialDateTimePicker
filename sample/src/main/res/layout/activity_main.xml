@@ -147,6 +147,13 @@
             android:checked="false"/>
 
         <CheckBox
+            android:id="@+id/disable_dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/disable_dates"
+            android:checked="false"/>
+
+        <CheckBox
             android:id="@+id/highlight_dates"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

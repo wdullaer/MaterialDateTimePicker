@@ -39,8 +39,6 @@ public interface DatePickerController {
     
     Calendar[] getHighlightedDays();
 
-    Calendar[] getSelectableDays();
-
     int getFirstDayOfWeek();
 
     int getMinYear();
