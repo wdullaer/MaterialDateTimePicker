@@ -740,6 +740,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                             (mCurrentTime.getMinute() + 1) % 60,
                             mCurrentTime.getSecond()
                     );
+                    if (mController.isOutOfRange(timepoint, HOUR_INDEX)
+                            || mController.isOutOfRange(timepoint, MINUTE_INDEX)) {
+                        return false;
+                    }
                     itemToSet = MINUTE_INDEX;
                 } else if (currentlyShowingValue == SECOND_INDEX) {
                     int hour = mCurrentTime.getHour();
@@ -756,6 +760,11 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                             minute,
                             (mCurrentTime.getSecond() + 1) % 60
                     );
+                    if (mController.isOutOfRange(timepoint, HOUR_INDEX)
+                            || mController.isOutOfRange(timepoint, MINUTE_INDEX)
+                            || mController.isOutOfRange(timepoint, SECOND_INDEX)) {
+                        return false;
+                    }
                     itemToSet = SECOND_INDEX;
                 } else if (currentlyShowingValue == AM_PM_INDEX) {
                     timepoint = new Timepoint(mCurrentTime);
@@ -803,6 +812,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                             minute,
                             mCurrentTime.getSecond()
                     );
+                    if (mController.isOutOfRange(timepoint, HOUR_INDEX)
+                            || mController.isOutOfRange(timepoint, MINUTE_INDEX)) {
+                        return false;
+                    }
                     itemToSet = MINUTE_INDEX;
                 } else if (currentlyShowingValue == SECOND_INDEX) {
                     int hour = mCurrentTime.getHour();
@@ -829,6 +842,11 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                             minute,
                             second
                     );
+                    if (mController.isOutOfRange(timepoint, HOUR_INDEX)
+                            || mController.isOutOfRange(timepoint, MINUTE_INDEX)
+                            || mController.isOutOfRange(timepoint, SECOND_INDEX)) {
+                        return false;
+                    }
                     itemToSet = SECOND_INDEX;
                 } else if (currentlyShowingValue == AM_PM_INDEX) {
                     timepoint = new Timepoint(mCurrentTime);
