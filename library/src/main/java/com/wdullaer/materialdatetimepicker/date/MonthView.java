@@ -299,60 +299,98 @@ public abstract class MonthView extends View {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Utils.isTv(getContext())) {
-            int day = mSelectedDay;
-            int month = mMonth;
-            int year = mYear;
+            Calendar currentDate = Calendar.getInstance();
+            currentDate.set(mYear, mMonth, mSelectedDay);
+            Calendar newDate = Calendar.getInstance();
+            newDate.set(mYear, mMonth, mSelectedDay);
             int dayDrawOffset = findDayOffset();
             if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                day -= 7;
+                newDate.add(Calendar.DAY_OF_MONTH, -7);
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-                day += 7;
+                newDate.add(Calendar.DAY_OF_MONTH, 7);
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                 int firstLeftSideDay = dayDrawOffset == 0 ? 1 : 7 - dayDrawOffset + 1; // +1 to correct that days start at 1, not 0
-                if ((day % 7) == (firstLeftSideDay % 7)) {
+                if ((mSelectedDay % 7) == (firstLeftSideDay % 7)) {
                     // move focus left off month days, i.e. to year picker
                     mController.focusYear();
                     return true;
                 }
-                day -= 1;
+                newDate.add(Calendar.DAY_OF_MONTH, -1);
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 int firstRightSideDay = 6 - dayDrawOffset + 1; // +1 to correct that days start at 1, not 0
-                if ((day % 7) == (firstRightSideDay % 7)) {
+                if ((mSelectedDay % 7) == (firstRightSideDay % 7)) {
                     // move focus right off month days, i.e. to ok button
                     mController.focusDialogButtons();
                     return true;
                 }
-                day += 1;
+                newDate.add(Calendar.DAY_OF_MONTH, 1);
             }
-            if (day != mSelectedDay) {
-                Calendar monthCalendar = Calendar.getInstance();
-                monthCalendar.set(year, month, 1);
-                int numDaysInCurrentMonth = monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-                if (day < 1) {
-                    month -= 1;
-                } else if (day > numDaysInCurrentMonth) {
-                    month += 1;
-                }
-                if (month != mMonth) {
-                    if (month < 1) {
-                        year -= 1;
-                        month += 12;
-                    } else if (month > 12) {
-                        year += 1;
-                        month -= 12;
-                    }
-                    monthCalendar.set(year, month, 1);
-                    int numDaysInNextMonth = monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-                    if (day < 1) {
-                        day += numDaysInNextMonth;
-                    } else if (day > numDaysInCurrentMonth) {
-                        day -= numDaysInCurrentMonth;
-                    }
-                }
+            if (newDate.get(Calendar.DAY_OF_MONTH) != mSelectedDay) {
                 if (mOnDayClickListener != null) {
-                    mOnDayClickListener.onDayClick(this, new CalendarDay(year, month, day));
+                    boolean isDateAllowed = !mController.isOutOfRange(
+                            newDate.get(Calendar.YEAR),
+                            newDate.get(Calendar.MONTH),
+                            newDate.get(Calendar.DAY_OF_MONTH));
+                    if (isDateAllowed) {
+                        mOnDayClickListener.onDayClick(this, new CalendarDay(
+                                newDate.get(Calendar.YEAR),
+                                newDate.get(Calendar.MONTH),
+                                newDate.get(Calendar.DAY_OF_MONTH)));
+                        return true;
+                    }
+                    int MAX_MONTHS_TO_SEARCH = 12;
+                    if (newDate.before(currentDate)) {
+                        // first (this) month
+                        int year = currentDate.get(Calendar.YEAR);
+                        int month = currentDate.get(Calendar.MONTH);
+                        newDate.set(year, month, 1);
+                        for (int i = (mSelectedDay - 1) ; i >= 1 ; i--) {
+                            if (!mController.isOutOfRange(year, month, i)) {
+                                mOnDayClickListener.onDayClick(this, new CalendarDay(year, month, i));
+                                return true;
+                            }
+                        }
+                        // try previous months up to search limit
+                        for (int j = 0 ; j < MAX_MONTHS_TO_SEARCH ; j++) {
+                            newDate.add(Calendar.MONTH, -1);
+                            year = newDate.get(Calendar.YEAR);
+                            month = newDate.get(Calendar.MONTH);
+                            for (int i = newDate.getActualMaximum(Calendar.DAY_OF_MONTH) ; i >= 1 ; i--) {
+                                if (!mController.isOutOfRange(year, month, i)) {
+                                    mOnDayClickListener.onDayClick(this, new CalendarDay(year, month, i));
+                                    return true;
+                                }
+                            }
+                        }
+                        // give up
+                    } else if (newDate.after(currentDate)) {
+                        // first (this) month
+                        int year = currentDate.get(Calendar.YEAR);
+                        int month = currentDate.get(Calendar.MONTH);
+                        newDate.set(year, month, 1);
+                        int numDaysInMonth = newDate.getActualMaximum(Calendar.DAY_OF_MONTH);
+                        for (int i = (mSelectedDay + 1) ; i <= numDaysInMonth ; i++) {
+                            if (!mController.isOutOfRange(year, month, i)) {
+                                mOnDayClickListener.onDayClick(this, new CalendarDay(year, month, i));
+                                return true;
+                            }
+                        }
+                        // try next months up to search limit
+                        for (int j = 0 ; j < MAX_MONTHS_TO_SEARCH ; j++) {
+                            newDate.add(Calendar.MONTH, 1);
+                            year = newDate.get(Calendar.YEAR);
+                            month = newDate.get(Calendar.MONTH);
+                            numDaysInMonth = newDate.getActualMaximum(Calendar.DAY_OF_MONTH);
+                            for (int i = 1 ; i <= numDaysInMonth ; i++) {
+                                if (!mController.isOutOfRange(year, month, i)) {
+                                    mOnDayClickListener.onDayClick(this, new CalendarDay(year, month, i));
+                                    return true;
+                                }
+                            }
+                        }
+                        // give up
+                    }
                 }
-                return true;
             }
         }
         return false;
