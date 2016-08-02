@@ -760,6 +760,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 } else if (currentlyShowingValue == AM_PM_INDEX) {
                     timepoint = new Timepoint(mCurrentTime);
                     flipAmPm = true;
+                    itemToSet = AM_PM_INDEX;
                 }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                 if (currentlyShowingValue == HOUR_INDEX) {
@@ -832,6 +833,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 } else if (currentlyShowingValue == AM_PM_INDEX) {
                     timepoint = new Timepoint(mCurrentTime);
                     flipAmPm = true;
+                    itemToSet = AM_PM_INDEX;
                 }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                 mListener.retreatPicker(getCurrentItemShowing(), true);
