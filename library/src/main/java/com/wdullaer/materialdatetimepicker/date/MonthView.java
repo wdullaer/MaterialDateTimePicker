@@ -310,19 +310,72 @@ public abstract class MonthView extends View {
                 newDate.add(Calendar.DAY_OF_MONTH, 7);
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                 int firstLeftSideDay = dayDrawOffset == 0 ? 1 : 7 - dayDrawOffset + 1; // +1 to correct that days start at 1, not 0
-                if ((mSelectedDay % 7) == (firstLeftSideDay % 7)) {
+                int dayColumn = (mSelectedDay % 7) - firstLeftSideDay;
+                int MAX_ITERATIONS = 10;
+                int count = 0;
+                while (dayColumn < 0) {
+                    dayColumn += 7;
+                    if (++count > MAX_ITERATIONS) {
+                        break;
+                    }
+                }
+                if (dayColumn == 0) {
                     // move focus left off month days, i.e. to year picker
                     mController.focusYear();
                     return true;
                 }
+                boolean dayIsLeftMostSelectable = true;
+                for (int i = 1 ; i <= dayColumn ; i++) {
+                    if (mSelectedDay - i < 1) {
+                        break;
+                    }
+                    if (!mController.isOutOfRange(mYear, mMonth, mSelectedDay - i)) {
+                        dayIsLeftMostSelectable = false;
+                        break;
+                    }
+                }
+                if (dayIsLeftMostSelectable) {
+                    // move focus left off month days, i.e. to year picker
+                    mController.focusYear();
+                    return true;
+                }
+                // else
                 newDate.add(Calendar.DAY_OF_MONTH, -1);
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                int firstRightSideDay = 6 - dayDrawOffset + 1; // +1 to correct that days start at 1, not 0
-                if ((mSelectedDay % 7) == (firstRightSideDay % 7)) {
+                int firstLeftSideDay = dayDrawOffset == 0 ? 1 : 7 - dayDrawOffset + 1; // +1 to correct that days start at 1, not 0
+                int dayColumn = (mSelectedDay % 7) - firstLeftSideDay;
+                int MAX_ITERATIONS = 10;
+                int count = 0;
+                while (dayColumn < 0) {
+                    dayColumn += 7;
+                    if (++count > MAX_ITERATIONS) {
+                        break;
+                    }
+                }
+                if (dayColumn == 6) {
                     // move focus right off month days, i.e. to ok button
                     mController.focusDialogButtons();
                     return true;
                 }
+                boolean dayIsRightMostSelectable = true;
+                Calendar monthCalendar = Calendar.getInstance();
+                monthCalendar.set(mYear, mMonth, 1);
+                int numDaysInMonth = monthCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                for (int i = 1 ; i <= (6 - dayColumn) ; i++) {
+                    if (mSelectedDay + i > numDaysInMonth) {
+                        break;
+                    }
+                    if (!mController.isOutOfRange(mYear, mMonth, mSelectedDay + i)) {
+                        dayIsRightMostSelectable = false;
+                        break;
+                    }
+                }
+                if (dayIsRightMostSelectable) {
+                    // move focus right off month days, i.e. to ok button
+                    mController.focusDialogButtons();
+                    return true;
+                }
+                // else
                 newDate.add(Calendar.DAY_OF_MONTH, 1);
             }
             if (newDate.get(Calendar.DAY_OF_MONTH) != mSelectedDay) {
