@@ -299,6 +299,12 @@ public abstract class MonthView extends View {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Utils.isTv(getContext())) {
+            if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER
+                    || keyCode == KeyEvent.KEYCODE_ENTER) {
+                // move focus to ok button
+                mController.focusDialogButtons();
+                return true;
+            }
             Calendar currentDate = Calendar.getInstance();
             currentDate.set(mYear, mMonth, mSelectedDay);
             Calendar newDate = Calendar.getInstance();
