@@ -43,7 +43,7 @@
             <include
                 layout="@layout/mdtp_time_header_label"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/mdtp_header_height"
+                android:layout_height="match_parent"
                 android:layout_gravity="center" />
         </FrameLayout>
         <include layout="@layout/mdtp_done_button" />

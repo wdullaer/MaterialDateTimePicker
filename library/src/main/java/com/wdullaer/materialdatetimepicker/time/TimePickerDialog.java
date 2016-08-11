@@ -51,6 +51,8 @@ import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -650,7 +652,97 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         // Center stuff depending on what's visible
-        if (mIs24HourMode && !mEnableSeconds && mEnableMinutes) {
+        boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        Log.d("TimepickerDialog", ""+isLandscape);
+        // Landscape layout is radically different
+        if (isLandscape) {
+            if (!mEnableMinutes && !mEnableSeconds) {
+                // Just the hour
+                // Center the hour
+                RelativeLayout.LayoutParams paramsHour = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                paramsHour.addRule(RelativeLayout.CENTER_IN_PARENT);
+                paramsHour.addRule(RelativeLayout.CENTER_VERTICAL);
+                mHourSpaceView.setLayoutParams(paramsHour);
+                if (mIs24HourMode) {
+                    // Hour + Am/Pm indicator
+                    // Put the am / pm indicator next to the hour
+                    RelativeLayout.LayoutParams paramsAmPm = new RelativeLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    paramsAmPm.addRule(RelativeLayout.RIGHT_OF, R.id.hour_space);
+                    mAmPmLayout.setLayoutParams(paramsAmPm);
+                }
+            } else if (!mEnableSeconds && mIs24HourMode) {
+                // Hour + Minutes
+                // Center the separator
+                RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                paramsSeparator.addRule(RelativeLayout.CENTER_IN_PARENT);
+                TextView separatorView = (TextView) view.findViewById(R.id.separator);
+                separatorView.setLayoutParams(paramsSeparator);
+            } else if (!mEnableSeconds) {
+                // Hour + Minutes + Am/Pm indicator
+                // Put separator above the center
+                RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                paramsSeparator.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                paramsSeparator.addRule(RelativeLayout.ABOVE, R.id.center_view);
+                TextView separatorView = (TextView) view.findViewById(R.id.separator);
+                separatorView.setLayoutParams(paramsSeparator);
+                // Put the am/pm indicator below the center
+                RelativeLayout.LayoutParams paramsAmPm = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                paramsAmPm.addRule(RelativeLayout.CENTER_IN_PARENT);
+                paramsAmPm.addRule(RelativeLayout.BELOW, R.id.center_view);
+                mAmPmLayout.setLayoutParams(paramsAmPm);
+            } else if (mIs24HourMode) {
+                // Hour + Minutes + Seconds
+                // Put the separator above the center
+                RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                paramsSeparator.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                paramsSeparator.addRule(RelativeLayout.ABOVE, R.id.center_view);
+                TextView separatorView = (TextView) view.findViewById(R.id.separator);
+                separatorView.setLayoutParams(paramsSeparator);
+                // Put the seconds below the center
+                RelativeLayout.LayoutParams paramsSeconds = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                paramsSeconds.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                paramsSeconds.addRule(RelativeLayout.BELOW, R.id.center_view);
+                mSecondSpaceView.setLayoutParams(paramsSeconds);
+            } else {
+                // Hour + Minutes + Seconds + Am/Pm Indicator
+                // Put the seconds on the center
+                RelativeLayout.LayoutParams paramsSeconds = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                paramsSeconds.addRule(RelativeLayout.CENTER_IN_PARENT);
+                mSecondSpaceView.setLayoutParams(paramsSeconds);
+                // Put the separator above the seconds
+                RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                paramsSeparator.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                paramsSeparator.addRule(RelativeLayout.ABOVE, R.id.seconds_space);
+                TextView separatorView = (TextView) view.findViewById(R.id.separator);
+                separatorView.setLayoutParams(paramsSeparator);
+                // Put the Am/Pm indicator below the seconds
+                RelativeLayout.LayoutParams paramsAmPm = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                paramsAmPm.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                paramsAmPm.addRule(RelativeLayout.BELOW, R.id.seconds_space);
+                mAmPmLayout.setLayoutParams(paramsAmPm);
+            }
+        }
+        else if (mIs24HourMode && !mEnableSeconds && mEnableMinutes) {
             // center first separator
             RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
                     LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
