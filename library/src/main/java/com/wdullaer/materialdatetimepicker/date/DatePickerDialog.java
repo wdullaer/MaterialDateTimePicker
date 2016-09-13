@@ -134,6 +134,7 @@ public class DatePickerDialog extends DialogFragment implements
     private boolean mDismissOnPause = false;
     private boolean mAutoDismiss = false;
     private int mDefaultView = MONTH_AND_DAY_VIEW;
+    private boolean mShowYearOnly = false;
     private int mOkResid = R.string.mdtp_ok;
     private String mOkString;
     private int mCancelResid = R.string.mdtp_cancel;
@@ -266,6 +267,11 @@ public class DatePickerDialog extends DialogFragment implements
         mSelectedDayTextView = (TextView) view.findViewById(R.id.date_picker_day);
         mYearView = (TextView) view.findViewById(R.id.date_picker_year);
         mYearView.setOnClickListener(this);
+
+        if (mShowYearOnly) {
+            ((LinearLayout)mMonthAndDayView.getParent()).removeView(mMonthAndDayView);
+            ((LinearLayout)mDayOfWeekView.getParent()).removeView(mDayOfWeekView);
+        }
 
         int listPosition = -1;
         int listPositionOffset = 0;
@@ -576,6 +582,13 @@ public class DatePickerDialog extends DialogFragment implements
         mDefaultView = yearPicker ? YEAR_VIEW : MONTH_AND_DAY_VIEW;
     }
 
+    public void showYearOnly(boolean yearOnly) {
+        mShowYearOnly = yearOnly;
+        if (yearOnly) {
+            showYearPickerFirst(true);
+        }
+    }
+
     @SuppressWarnings("unused")
     public void setFirstDayOfWeek(int startOfWeek) {
         if (startOfWeek < Calendar.SUNDAY || startOfWeek > Calendar.SATURDAY) {
@@ -794,9 +807,11 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void onYearSelected(int year) {
         mCalendar.set(Calendar.YEAR, year);
-        adjustDayInMonthIfNeeded(mCalendar);
-        updatePickers();
-        setCurrentView(MONTH_AND_DAY_VIEW);
+        if (!mShowYearOnly) {
+            adjustDayInMonthIfNeeded(mCalendar);
+            updatePickers();
+            setCurrentView(MONTH_AND_DAY_VIEW);
+        }
         updateDisplay(true);
     }
 

@@ -133,6 +133,13 @@
             android:checked="false"/>
 
         <CheckBox
+            android:id="@+id/show_year_only"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_year_only"
+            android:checked="false" />
+
+        <CheckBox
             android:id="@+id/title_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

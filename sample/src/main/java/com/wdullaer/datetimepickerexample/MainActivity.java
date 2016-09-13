@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements
     private CheckBox titleTime;
     private CheckBox titleDate;
     private CheckBox showYearFirst;
+    private CheckBox showYearOnly;
     private CheckBox enableSeconds;
     private CheckBox enableMinutes;
     private CheckBox limitTimes;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
         titleTime = (CheckBox) findViewById(R.id.title_time);
         titleDate = (CheckBox) findViewById(R.id.title_date);
         showYearFirst = (CheckBox) findViewById(R.id.show_year_first);
+        showYearOnly = (CheckBox) findViewById(R.id.show_year_only);
         enableSeconds = (CheckBox) findViewById(R.id.enable_seconds);
         enableMinutes = (CheckBox) findViewById(R.id.enable_minutes);
         limitTimes = (CheckBox) findViewById(R.id.limit_times);
@@ -130,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements
                 dpd.vibrate(vibrateDate.isChecked());
                 dpd.dismissOnPause(dismissDate.isChecked());
                 dpd.showYearPickerFirst(showYearFirst.isChecked());
+                dpd.showYearOnly(showYearOnly.isChecked());
                 if (modeCustomAccentDate.isChecked()) {
                     dpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }
