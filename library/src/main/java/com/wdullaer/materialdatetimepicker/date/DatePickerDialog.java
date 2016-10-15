@@ -301,7 +301,7 @@ public class DatePickerDialog extends DialogFragment implements
 
         if (mShowYearOnly) {
             ((LinearLayout)mMonthAndDayView.getParent()).removeView(mMonthAndDayView);
-            ((LinearLayout)mDayOfWeekView.getParent()).removeView(mDayOfWeekView);
+            if(mDayOfWeekView != null) ((LinearLayout)mDayOfWeekView.getParent()).removeView(mDayOfWeekView);
         }
 
         final Activity activity = getActivity();
