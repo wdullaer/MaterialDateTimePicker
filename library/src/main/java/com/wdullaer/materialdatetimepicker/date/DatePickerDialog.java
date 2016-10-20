@@ -80,6 +80,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_THEME_DARK = "theme_dark";
     private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_ACCENT = "accent";
+    private static final String KEY_BUTTON_TEXT_COLOR = "button_text_color";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
     private static final String KEY_AUTO_DISMISS = "auto_dismiss";
@@ -130,6 +131,7 @@ public class DatePickerDialog extends DialogFragment implements
     private boolean mThemeDark = false;
     private boolean mThemeDarkChanged = false;
     private int mAccentColor = -1;
+    private int mButtonTextColor = -1;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
     private boolean mAutoDismiss = false;
@@ -239,6 +241,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
         outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
         outState.putInt(KEY_ACCENT, mAccentColor);
+        outState.putInt(KEY_BUTTON_TEXT_COLOR, mButtonTextColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
         outState.putBoolean(KEY_AUTO_DISMISS, mAutoDismiss);
@@ -285,6 +288,7 @@ public class DatePickerDialog extends DialogFragment implements
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
             mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
+            mButtonTextColor = savedInstanceState.getInt(KEY_BUTTON_TEXT_COLOR);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
             mAutoDismiss = savedInstanceState.getBoolean(KEY_AUTO_DISMISS);
@@ -357,10 +361,18 @@ public class DatePickerDialog extends DialogFragment implements
         if (mAccentColor == -1) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
+
+        if (mButtonTextColor == -1) {
+            if (mAccentColor != -1) {
+                mButtonTextColor = mAccentColor;
+            } else {
+                mButtonTextColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
+            }
+        }
         if(mDayOfWeekView != null) mDayOfWeekView.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
-        okButton.setTextColor(mAccentColor);
-        cancelButton.setTextColor(mAccentColor);
+        okButton.setTextColor(mButtonTextColor);
+        cancelButton.setTextColor(mButtonTextColor);
 
         if(getDialog() == null) {
             view.findViewById(R.id.done_background).setVisibility(View.GONE);
@@ -566,6 +578,33 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public int getAccentColor() {
         return mAccentColor;
+    }
+
+    /**
+     * Set the button text color of this dialog
+     * @param color the text color you want
+     */
+    @SuppressWarnings("unused")
+    public void setButtonTextColor(String color) {
+        mButtonTextColor = Color.parseColor(color);
+    }
+
+    /**
+     * Set the button text color of this dialog
+     * @param color the text color you want
+     */
+    @SuppressWarnings("unused")
+    public void setButtonTextColor(@ColorInt int color) {
+        mButtonTextColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
+     * Get the button text color of this dialog
+     * @return button text color
+     */
+    @SuppressWarnings("unused")
+    public int getButtonTextColor() {
+        return mButtonTextColor;
     }
 
     /**
