@@ -187,6 +187,23 @@ If you do really need `SupportDialogFragment`, you should fork the library. It i
 ### Why does the `DatePickerDialog` return the selected month -1?
 In the java `Calendar` class months use 0 based indexing: January is month 0, December is month 11. This convention is widely used in the java world, for example the native Android DatePicker.
 
+### How do I use my custom logic to enable/disable dates?
+`DatePickerDialog` exposes some utility methods to enable / disable dates for common scenario's. If your needs are not covered by these, you can override the `isOutOfRange()` method by extending the `DatePickerDialog` class.
+
+```java
+class MyDatePickerDialog extends DatePickerDialog {
+  @override
+  public boolean isOutOfRange(int year, int month, int day) {
+    // disable days that are odd
+    return day % 2 == 1;
+  }
+}
+```
+
+> You need to override `isOutOfRange()` with this signature, not the one with the Calendar signature.
+
+When you override `isOutOfRange()` the built-in methods for setting the enabled / disabled dates will no longer work. It will need to be completely handled by your implementation.
+
 ### Why are my callbacks lost when the device changes orientation?
 The simple solution is to dismiss the pickers when your activity is paused.
 
