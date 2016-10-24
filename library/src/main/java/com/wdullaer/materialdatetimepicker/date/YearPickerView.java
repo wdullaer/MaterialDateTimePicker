@@ -19,6 +19,7 @@ package com.wdullaer.materialdatetimepicker.date;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.StateListDrawable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
@@ -29,6 +30,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
 
 import java.util.ArrayList;
@@ -66,6 +68,9 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
         setSelector(new StateListDrawable());
         setDividerHeight(0);
         onDateChanged();
+        if (Utils.isTv(getContext())) {
+            setItemsCanFocus(true);
+        }
     }
 
     private void init(Context context) {
@@ -107,7 +112,7 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             TextViewWithCircularIndicator v = (TextViewWithCircularIndicator)
                     super.getView(position, convertView, parent);
             v.setAccentColor(mController.getAccentColor(), mController.isThemeDark());
@@ -117,6 +122,55 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
             v.drawIndicator(selected);
             if (selected) {
                 mSelectedView = v;
+            }
+            if (Utils.isTv(getContext())) {
+                v.setFocusable(true);
+                v.setFocusableInTouchMode(true);
+                if (selected) {
+                    mSelectedView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSelectedView.requestFocus();
+                        }
+                    });
+                }
+                v.setOnFocusChangeListener(new OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            TextViewWithCircularIndicator focusedView = (TextViewWithCircularIndicator) v;
+                            if (focusedView != mSelectedView) {
+                                if (mSelectedView != null) {
+                                    mSelectedView.drawIndicator(false);
+                                    mSelectedView.requestLayout();
+                                }
+                                focusedView.drawIndicator(true);
+                                focusedView.requestLayout();
+                                mSelectedView = focusedView;
+                            }
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+                v.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        performItemClick(v, position, 0);
+                    }
+                });
+                v.setOnKeyListener(new OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                            mController.focusMonthDays();
+                            return true;
+                        } else if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                            mController.focusDialogButtons();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
             return v;
         }

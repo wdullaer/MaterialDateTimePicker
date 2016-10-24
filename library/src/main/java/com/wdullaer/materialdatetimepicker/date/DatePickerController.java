@@ -52,4 +52,10 @@ public interface DatePickerController {
     boolean isOutOfRange(int year, int month, int day);
 
     void tryVibrate();
+
+    void focusYear();
+
+    void focusMonthDays();
+
+    void focusDialogButtons();
 }

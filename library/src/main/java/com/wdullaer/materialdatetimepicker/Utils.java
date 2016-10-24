@@ -20,7 +20,9 @@ import android.animation.Keyframe;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
+import android.app.UiModeManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -182,5 +184,15 @@ public class Utils {
         } finally {
             a.recycle();
         }
+    }
+
+    /**
+     * Indicates if app is running on Android TV device
+     * @param context The context to use as reference for the test
+     * @return true if device is Android TV, false if other device type
+     */
+    public static boolean isTv(Context context) {
+        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
+        return uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
     }
 }

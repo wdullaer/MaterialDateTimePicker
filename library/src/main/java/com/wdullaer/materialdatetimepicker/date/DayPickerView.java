@@ -158,6 +158,9 @@ public abstract class DayPickerView extends ListView implements OnScrollListener
         setFadingEdgeLength(0);
         // Make the scrolling behavior nicer
         setFriction(ViewConfiguration.getScrollFriction() * mFriction);
+        // Turn off focus so that MonthView can get key events, for Android TV
+        setFocusable(false);
+        setFocusableInTouchMode(false);
     }
 
     /**

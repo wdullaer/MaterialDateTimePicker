@@ -87,6 +87,7 @@ public class TimePickerDialog extends DialogFragment implements
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
     public static final int SECOND_INDEX = 2;
+    public static final int AM_PM_INDEX = 3;
     public static final int AM = 0;
     public static final int PM = 1;
 
@@ -577,6 +578,36 @@ public class TimePickerDialog extends DialogFragment implements
         else mCancelButton.setText(mCancelResid);
         mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
+        if (Utils.isTv(mTimePicker.getContext())) {
+            mTimePicker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        setButtonsFocusable(false);
+                        setCurrentItemShowing(mTimePicker.getCurrentItemShowing(), false, false, false);
+                    }
+                }
+            });
+            mCancelButton.setOnKeyListener(new OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                        mTimePicker.requestFocus();
+                    }
+                    return false;
+                }
+            });
+            mOkButton.setOnKeyListener(new OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                        mTimePicker.requestFocus();
+                    }
+                    return false;
+                }
+            });
+        }
+
         // Enable or disable the AM/PM view.
         mAmPmHitspace = view.findViewById(R.id.ampm_hitspace);
         if (mIs24HourMode) {
@@ -710,6 +741,13 @@ public class TimePickerDialog extends DialogFragment implements
 
         mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
         view.findViewById(R.id.time_picker_dialog).setBackgroundColor(mThemeDark ? darkBackgroundColor : backgroundColor);
+
+        /*
+        if (Utils.isTv(getContext())) {
+            mTimePicker.requestFocus();
+        }
+        */
+
         return view;
     }
 
@@ -818,17 +856,79 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     @Override
-    public void advancePicker(int index) {
-        if(!mAllowAutoAdvance) return;
-        if(index == HOUR_INDEX && mEnableMinutes) {
-            setCurrentItemShowing(MINUTE_INDEX, true, true, false);
+    public void advancePicker(int index, boolean force) {
+        if(!force && !mAllowAutoAdvance) return;
+        if(index == HOUR_INDEX) {
+            if (mEnableMinutes) {
+                setCurrentItemShowing(MINUTE_INDEX, true, true, false);
 
-            String announcement = mSelectHours + ". " + mTimePicker.getMinutes();
-            Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
-        } else if(index == MINUTE_INDEX && mEnableSeconds) {
-            setCurrentItemShowing(SECOND_INDEX, true, true, false);
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            } else {
+                setButtonsFocusable(true);
+            }
+        } else if(index == MINUTE_INDEX ) {
+            if (mEnableSeconds) {
+                setCurrentItemShowing(SECOND_INDEX, true, true, false);
 
-            String announcement = mSelectMinutes+". " + mTimePicker.getSeconds();
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            } else if (Utils.isTv(getActivity().getApplicationContext())) {
+                if (!mIs24HourMode) {
+                    // TODO : check this
+                    setCurrentItemShowing(AM_PM_INDEX, true, false, false);
+                } else {
+                    setButtonsFocusable(true);
+                }
+            }
+        } else if (index == SECOND_INDEX) {
+            if (!mIs24HourMode) {
+                // TODO : check this
+                setCurrentItemShowing(AM_PM_INDEX, true, false, false);
+            } else if (Utils.isTv(getActivity().getApplicationContext())) {
+                setButtonsFocusable(true);
+            }
+        } else if (index == AM_PM_INDEX) {
+            setButtonsFocusable(true);
+        }
+    }
+
+    @Override
+    public void retreatPicker(int index, boolean force) {
+        if(!force && !mAllowAutoAdvance) return;
+        if (index == AM_PM_INDEX) {
+            if (mEnableSeconds) {
+                setCurrentItemShowing(SECOND_INDEX, true, true, false);
+
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            } else if (mEnableMinutes) {
+                setCurrentItemShowing(MINUTE_INDEX, true, true, false);
+
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            } else {
+                setCurrentItemShowing(HOUR_INDEX, true, true, false);
+
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            }
+        } else if(index == SECOND_INDEX) {
+            if (mEnableMinutes) {
+                setCurrentItemShowing(MINUTE_INDEX, true, true, false);
+
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            } else {
+                setCurrentItemShowing(HOUR_INDEX, true, true, false);
+
+                String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
+                Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
+            }
+        } else if(index == MINUTE_INDEX) {
+            setCurrentItemShowing(HOUR_INDEX, true, true, false);
+
+            String announcement = mSelectHours + ":" + mTimePicker.getMinutes() + "." + mTimePicker.getSeconds();
             Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
         }
     }
@@ -1018,6 +1118,9 @@ public class TimePickerDialog extends DialogFragment implements
                 }
                 labelToAnimate = mMinuteView;
                 break;
+            case AM_PM_INDEX:
+                labelToAnimate = mAmPmTextView;
+                break;
             default:
                 int seconds = mTimePicker.getSeconds();
                 mTimePicker.setContentDescription(mSecondPickerDescription + ": " + seconds);
@@ -1030,9 +1133,11 @@ public class TimePickerDialog extends DialogFragment implements
         int hourColor = (index == HOUR_INDEX) ? mSelectedColor : mUnselectedColor;
         int minuteColor = (index == MINUTE_INDEX) ? mSelectedColor : mUnselectedColor;
         int secondColor = (index == SECOND_INDEX) ? mSelectedColor : mUnselectedColor;
+        int amPmColor = (index == AM_PM_INDEX) ? mSelectedColor : mUnselectedColor;
         mHourView.setTextColor(hourColor);
         mMinuteView.setTextColor(minuteColor);
         mSecondView.setTextColor(secondColor);
+        mAmPmTextView.setTextColor(amPmColor);
 
         ObjectAnimator pulseAnimator = Utils.getPulseAnimator(labelToAnimate, 0.85f, 1.1f);
         if (delayLabelAnimate) {
@@ -1666,5 +1771,18 @@ public class TimePickerDialog extends DialogFragment implements
         if (mCallback != null) {
             mCallback.onTimeSet(mTimePicker, mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
         }
+    }
+
+    private void setButtonsFocusable(boolean focusable) {
+        mOkButton.setFocusable(focusable);
+        mOkButton.setFocusableInTouchMode(focusable);
+        mCancelButton.setFocusable(focusable);
+        mCancelButton.setFocusableInTouchMode(focusable);
+        mOkButton.post(new Runnable() {
+            @Override
+            public void run() {
+                mOkButton.requestFocus();
+            }
+        });
     }
 }
