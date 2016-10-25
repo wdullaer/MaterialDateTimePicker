@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements
     TimePickerDialog.OnTimeSetListener,
     DatePickerDialog.OnDateSetListener
 {
+    private static final String TAG = "MainActivity";
     private TextView timeTextView;
     private TextView dateTextView;
     private CheckBox mode24Hours;
@@ -186,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        Log.d(TAG, "onTimeSet: "+view.getTag());
         String hourString = hourOfDay < 10 ? "0"+hourOfDay : ""+hourOfDay;
         String minuteString = minute < 10 ? "0"+minute : ""+minute;
         String secondString = second < 10 ? "0"+second : ""+second;

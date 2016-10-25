@@ -512,6 +512,7 @@ public class TimePickerDialog extends DialogFragment implements
         mInitialTime = roundToNearest(mInitialTime);
 
         mTimePicker = (RadialPickerLayout) view.findViewById(R.id.time_picker);
+        mTimePicker.setTag(getTag());
         mTimePicker.setOnValueSelectedListener(this);
         mTimePicker.setOnKeyListener(keyboardListener);
         mTimePicker.initialize(getActivity(), this, mInitialTime, mIs24HourMode);
