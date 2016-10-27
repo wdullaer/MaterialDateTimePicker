@@ -42,7 +42,7 @@ import java.util.Locale;
 /**
  * This displays a list of months in a calendar format with selectable days.
  */
-public abstract class DayPickerView extends ListView implements OnScrollListener,
+public abstract class DayPickerView extends ListView implements DayPickerViewInterface, OnScrollListener,
     OnDateChangedListener {
 
     private static final String TAG = "MonthFragment";

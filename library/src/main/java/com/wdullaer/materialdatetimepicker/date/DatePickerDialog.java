@@ -24,11 +24,13 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,10 +50,12 @@ import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Locale;
+
 
 /**
  * Dialog allowing users to select a date.
@@ -113,7 +117,7 @@ public class DatePickerDialog extends DialogFragment implements
     private TextView mSelectedMonthTextView;
     private TextView mSelectedDayTextView;
     private TextView mYearView;
-    private DayPickerView mDayPickerView;
+    //private DayPickerView mDayPickerView;
     private YearPickerView mYearPickerView;
 
     private int mCurrentView = UNINITIALIZED;
@@ -149,6 +153,14 @@ public class DatePickerDialog extends DialogFragment implements
     private String mYearPickerDescription;
     private String mSelectYear;
 
+    private static final String KEY_SCROLL_DIRECTION = "scroll_direction";
+    private static final String KEY_EVENTS = "events";
+
+    private Events mEvents;
+    private DayPickerViewInterface mDayPickerView;
+    private int mScrollDirection = -1;
+    private CalendarwBadge mCalendarwBadge;
+
     /**
      * The callback used to indicate the user is done filling in the date.
      */
@@ -172,12 +184,13 @@ public class DatePickerDialog extends DialogFragment implements
         void onDateChanged();
     }
 
-
     public DatePickerDialog() {
         // Empty constructor required for dialog fragment.
     }
 
     /**
+     * Initializer for dialog without displaying events.
+     *
      * @param callBack How the parent is notified that the date is set.
      * @param year The initial year of the dialog.
      * @param monthOfYear The initial month of the dialog.
@@ -196,6 +209,43 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.YEAR, year);
         mCalendar.set(Calendar.MONTH, monthOfYear);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+    }
+
+    /**
+     * Initializer for dialog with option to display events.
+     *
+     * @param events Contain details of events to be / not displayed on picker dialog.
+     */
+    public static DatePickerDialog newInstance(OnDateSetListener callBack, int year,
+                                               int monthOfYear,
+                                               int dayOfMonth, Events events) {
+        DatePickerDialog ret = new DatePickerDialog();
+        ret.initialize(callBack, year, monthOfYear, dayOfMonth);
+        ret.initialize(events, -1);
+        return ret;
+    }
+
+    /**
+     * Only available for Android API >=7.
+     * Initializer for dialog with option to display events
+     * and scroll orientation.
+     *
+     * @param events Contain details of events to be / not displayed on picker dialog.
+     * @param scrollDirection scrollDirection Determine picker dialog scroll direction,
+     *                         use LinearLayoutManager.VERTICAL or LinearLayoutManager.HORIZONTAL,
+     *                         by default, it is LinearLayoutManager.VERTICAL.
+     */
+    public static DatePickerDialog newInstance(OnDateSetListener callBack, int year, int monthOfYear,
+                                               int dayOfMonth,Events events, int scrollDirection) {
+        DatePickerDialog ret = new DatePickerDialog();
+        ret.initialize(callBack, year, monthOfYear, dayOfMonth);
+        ret.initialize(events, scrollDirection);
+        return ret;
+    }
+
+    public void initialize(Events events, int scrollDirection){
+        this.mEvents = events;
+        this.mScrollDirection = scrollDirection;
     }
 
     @Override
@@ -248,6 +298,8 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putString(KEY_OK_STRING, mOkString);
         outState.putInt(KEY_CANCEL_RESID, mCancelResid);
         outState.putString(KEY_CANCEL_STRING, mCancelString);
+        outState.putInt(KEY_SCROLL_DIRECTION, mScrollDirection);
+        outState.putParcelable(KEY_EVENTS, mEvents);
     }
 
     @Override
@@ -293,10 +345,14 @@ public class DatePickerDialog extends DialogFragment implements
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
+            mScrollDirection = savedInstanceState.getInt(KEY_SCROLL_DIRECTION);
+            mEvents = savedInstanceState.getParcelable(KEY_EVENTS);
         }
 
         final Activity activity = getActivity();
-        mDayPickerView = new SimpleDayPickerView(activity, this);
+        if(Build.VERSION.SDK_INT >= 7)
+            mDayPickerView = new DayPickerRecyclerView(activity, this, mScrollDirection);
+        else mDayPickerView = new SimpleDayPickerView(activity, this);
         mYearPickerView = new YearPickerView(activity, this);
 
         // if theme mode has not been set by java code, check if it is specified in Style.xml
@@ -314,8 +370,11 @@ public class DatePickerDialog extends DialogFragment implements
         view.setBackgroundColor(ContextCompat.getColor(activity, bgColorResource));
 
         mAnimator = (AccessibleDateAnimator) view.findViewById(R.id.animator);
-        mAnimator.addView(mDayPickerView);
+        if(Build.VERSION.SDK_INT >= 7)
+            mAnimator.addView((DayPickerRecyclerView)mDayPickerView);
+        else mAnimator.addView((DayPickerView)mDayPickerView);
         mAnimator.addView(mYearPickerView);
+
         mAnimator.setDateMillis(mCalendar.getTimeInMillis());
         // TODO: Replace with animation decided upon by the design team.
         Animation animation = new AlphaAnimation(0.0f, 1.0f);
@@ -1060,5 +1119,49 @@ public class DatePickerDialog extends DialogFragment implements
             mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
                     mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
         }
+    }
+
+    /**
+     * Check if the specified date (input parameters - year, month, day) is
+     * a date for an event.
+     */
+    @Override
+    public boolean isEvent(int year, int month, int day) {
+        boolean hol = false;
+
+        if (mEvents!=null){
+            ArrayList<CalendarwBadge> calList = mEvents.getCalList();
+            for(CalendarwBadge calendar:calList){
+                if(calendar.getYear()==year){
+                    if(calendar.getMonth()== month){
+                        if(calendar.getDay()== day) {
+                            hol = true;
+                            mCalendarwBadge = calendar;
+                        }
+                    }
+                }
+            }
+        }
+
+        return hol;
+    }
+
+    @Override
+    public CalendarwBadge getCalendarwBadge() {
+        return mCalendarwBadge;
+    }
+
+    @Override
+    public int getEventColor() {
+        if (mEvents!=null)
+            return mEvents.getEventColor();
+        else return -1;
+    }
+
+    @Override
+    public boolean isEventClickable() {
+        if (mEvents!=null)
+            return mEvents.isClickable();
+        else return false;
     }
 }

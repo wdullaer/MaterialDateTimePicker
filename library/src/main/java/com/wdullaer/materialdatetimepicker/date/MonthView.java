@@ -117,6 +117,8 @@ public abstract class MonthView extends View {
     protected static int MONTH_DAY_LABEL_TEXT_SIZE;
     protected static int MONTH_HEADER_SIZE;
     protected static int DAY_SELECTED_CIRCLE_SIZE;
+    protected static int BADGE_CIRCLE_SIZE;
+    protected static int BADGE_NUMBER_TEXT_SIZE;
 
     // used for scaling to the device density
     protected static float mScale = 0;
@@ -133,6 +135,8 @@ public abstract class MonthView extends View {
     protected Paint mMonthTitlePaint;
     protected Paint mSelectedCirclePaint;
     protected Paint mMonthDayLabelPaint;
+    protected Paint mBadgePaint;
+    protected Paint mBadgeNumPaint;
 
     private final Formatter mFormatter;
     private final StringBuilder mStringBuilder;
@@ -229,6 +233,9 @@ public abstract class MonthView extends View {
         MONTH_HEADER_SIZE = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height);
         DAY_SELECTED_CIRCLE_SIZE = res
                 .getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius);
+        BADGE_CIRCLE_SIZE = res
+                .getDimensionPixelSize(R.dimen.mdtp_badge_circle_radius);
+        BADGE_NUMBER_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_badge_num_size);
 
         mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
                 - getMonthHeaderSize()) / MAX_NUM_ROWS;
@@ -312,7 +319,7 @@ public abstract class MonthView extends View {
         mMonthDayLabelPaint.setAntiAlias(true);
         mMonthDayLabelPaint.setTextSize(MONTH_DAY_LABEL_TEXT_SIZE);
         mMonthDayLabelPaint.setColor(mMonthDayTextColor);
-        mMonthDayLabelPaint.setTypeface(TypefaceHelper.get(getContext(),"Roboto-Medium"));
+        mMonthDayLabelPaint.setTypeface(TypefaceHelper.get(getContext(), "Roboto-Medium"));
         mMonthDayLabelPaint.setStyle(Style.FILL);
         mMonthDayLabelPaint.setTextAlign(Align.CENTER);
         mMonthDayLabelPaint.setFakeBoldText(true);
@@ -323,6 +330,21 @@ public abstract class MonthView extends View {
         mMonthNumPaint.setStyle(Style.FILL);
         mMonthNumPaint.setTextAlign(Align.CENTER);
         mMonthNumPaint.setFakeBoldText(false);
+
+        mBadgePaint = new Paint();
+        mBadgePaint.setAntiAlias(true);
+        mBadgePaint.setColor(mTodayNumberColor);
+        mBadgePaint.setTextAlign(Align.CENTER);
+        mBadgePaint.setStyle(Style.FILL);
+        mBadgePaint.setAlpha(SELECTED_CIRCLE_ALPHA);
+
+        mBadgeNumPaint = new Paint();
+        mBadgeNumPaint.setAntiAlias(true);
+        mBadgeNumPaint.setTextSize(BADGE_NUMBER_TEXT_SIZE);
+        mBadgeNumPaint.setColor(mSelectedDayTextColor);
+        mBadgeNumPaint.setStyle(Style.FILL);
+        mBadgeNumPaint.setTextAlign(Align.CENTER);
+        mBadgeNumPaint.setFakeBoldText(false);
     }
 
     @Override
@@ -585,6 +607,9 @@ public abstract class MonthView extends View {
             return;
         }
 
+        if(!mController.isEventClickable()&&mController.isEvent(mYear, mMonth, day)){
+            return;
+        }
 
         if (mOnDayClickListener != null) {
             mOnDayClickListener.onDayClick(this, new CalendarDay(mYear, mMonth, day));
@@ -819,5 +844,40 @@ public abstract class MonthView extends View {
      */
     public interface OnDayClickListener {
         void onDayClick(MonthView view, CalendarDay day);
+    }
+
+    /**
+     * Draw events & badges based on settings.
+     */
+    protected void drawEvent(Canvas canvas, int x, int y){
+        int eventColor = mController.getEventColor();
+        mMonthNumPaint.setColor(eventColor==-1?mTodayNumberColor:eventColor);
+
+        CalendarwBadge calendar = mController.getCalendarwBadge();
+        if(calendar.getBadgeArrayList()!=null){
+            for(Badge badge:calendar.getBadgeArrayList()){
+                // default - TOP_LEFT
+                int xp = x - MINI_DAY_NUMBER_TEXT_SIZE;
+                int yp = y - (MINI_DAY_NUMBER_TEXT_SIZE / 3) - MINI_DAY_NUMBER_TEXT_SIZE;
+                switch (badge.getLocation()){
+                    case Badge.BOTTOM_RIGHT:
+                        xp = x + MINI_DAY_NUMBER_TEXT_SIZE;
+                        yp = y - (MINI_DAY_NUMBER_TEXT_SIZE / 3) + MINI_DAY_NUMBER_TEXT_SIZE;
+                        break;
+                    case Badge.BOTTOM_LEFT:
+                        xp = x - MINI_DAY_NUMBER_TEXT_SIZE;
+                        yp = y - (MINI_DAY_NUMBER_TEXT_SIZE / 3) + MINI_DAY_NUMBER_TEXT_SIZE;
+                        break;
+                    case Badge.TOP_RIGHT:
+                        xp = x + MINI_DAY_NUMBER_TEXT_SIZE;
+                        yp = y - (MINI_DAY_NUMBER_TEXT_SIZE / 3) - MINI_DAY_NUMBER_TEXT_SIZE;
+                        break;
+                }
+
+                int badgeColor = badge.getColor(); if(badgeColor!=-1)mBadgePaint.setColor(badgeColor);
+                canvas.drawCircle(xp, yp, BADGE_CIRCLE_SIZE, mBadgePaint);
+                canvas.drawText(String.format("%d", badge.getDisplayInt()), xp, yp + (MINI_DAY_NUMBER_TEXT_SIZE / 4), mBadgeNumPaint);
+            }
+        }
     }
 }

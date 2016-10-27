@@ -21,6 +21,8 @@ import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import java.util.ArrayList;
+
 public class SimpleMonthView extends MonthView {
 
     public SimpleMonthView(Context context, AttributeSet attr, DatePickerController controller) {
@@ -51,6 +53,9 @@ public class SimpleMonthView extends MonthView {
             mMonthNumPaint.setColor(mSelectedDayTextColor);
         } else if (mHasToday && mToday == day) {
             mMonthNumPaint.setColor(mTodayNumberColor);
+            if (mController.isEvent(year, month, day)){drawEvent(canvas,x,y);}
+        } else if (mController.isEvent(year, month, day)){
+            drawEvent(canvas,x,y);
         } else {
             mMonthNumPaint.setColor(isHighlighted(year, month, day) ? mHighlightedDayTextColor : mDayTextColor);
         }
