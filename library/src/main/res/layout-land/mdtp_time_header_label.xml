@@ -20,7 +20,8 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="@color/mdtp_accent_color"
-    android:clipChildren="false" >
+    android:clipChildren="false"
+    android:padding="16dp">
     <View
         android:id="@+id/center_view"
         android:layout_width="1dp"
@@ -124,18 +125,28 @@
         android:layout_centerInParent="true"
         android:visibility="invisible"
         android:textColor="@color/mdtp_accent_color_focused"
+        android:layout_alignBottom="@id/center_view"
         style="@style/mdtp_time_label_small"
         android:importantForAccessibility="no" />
 
-    <com.wdullaer.materialdatetimepicker.AccessibleTextView
-        android:id="@+id/seconds"
-        style="@style/mdtp_time_label_small"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/mdtp_time_placeholder"
-        android:layout_centerInParent="true"
-        android:textColor="@color/mdtp_accent_color_focused" />
+        android:layout_alignRight="@id/seconds_space"
+        android:layout_alignLeft="@id/seconds_space"
+        android:layout_alignBottom="@id/center_view"
+        android:layout_marginLeft="@dimen/mdtp_extra_time_label_margin"
+        android:layout_marginRight="@dimen/mdtp_extra_time_label_margin" >
+        <com.wdullaer.materialdatetimepicker.AccessibleTextView
+            android:id="@+id/seconds"
+            style="@style/mdtp_time_label_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/mdtp_time_placeholder"
+            android:layout_gravity="center"
+            android:textColor="@color/mdtp_accent_color_focused" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/ampm_layout"

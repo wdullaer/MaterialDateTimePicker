@@ -653,17 +653,16 @@ public class TimePickerDialog extends DialogFragment implements
 
         // Center stuff depending on what's visible
         boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        Log.d("TimepickerDialog", ""+isLandscape);
         // Landscape layout is radically different
         if (isLandscape) {
             if (!mEnableMinutes && !mEnableSeconds) {
                 // Just the hour
-                // Center the hour
+                // Put the hour above the center
                 RelativeLayout.LayoutParams paramsHour = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
                 );
-                paramsHour.addRule(RelativeLayout.CENTER_IN_PARENT);
-                paramsHour.addRule(RelativeLayout.CENTER_VERTICAL);
+                paramsHour.addRule(RelativeLayout.ABOVE, R.id.center_view);
+                paramsHour.addRule(RelativeLayout.CENTER_HORIZONTAL);
                 mHourSpaceView.setLayoutParams(paramsHour);
                 if (mIs24HourMode) {
                     // Hour + Am/Pm indicator
@@ -676,11 +675,12 @@ public class TimePickerDialog extends DialogFragment implements
                 }
             } else if (!mEnableSeconds && mIs24HourMode) {
                 // Hour + Minutes
-                // Center the separator
+                // Put the separator above the center
                 RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
                 );
-                paramsSeparator.addRule(RelativeLayout.CENTER_IN_PARENT);
+                paramsSeparator.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                paramsSeparator.addRule(RelativeLayout.ABOVE, R.id.center_view);
                 TextView separatorView = (TextView) view.findViewById(R.id.separator);
                 separatorView.setLayoutParams(paramsSeparator);
             } else if (!mEnableSeconds) {
@@ -693,7 +693,7 @@ public class TimePickerDialog extends DialogFragment implements
                 paramsSeparator.addRule(RelativeLayout.ABOVE, R.id.center_view);
                 TextView separatorView = (TextView) view.findViewById(R.id.separator);
                 separatorView.setLayoutParams(paramsSeparator);
-                // Put the am/pm indicator below the center
+                // Put the am/pm indicator below the separator
                 RelativeLayout.LayoutParams paramsAmPm = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
                 );
@@ -707,15 +707,14 @@ public class TimePickerDialog extends DialogFragment implements
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
                 );
                 paramsSeparator.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                paramsSeparator.addRule(RelativeLayout.ABOVE, R.id.center_view);
+                paramsSeparator.addRule(RelativeLayout.ABOVE, R.id.seconds_space);
                 TextView separatorView = (TextView) view.findViewById(R.id.separator);
                 separatorView.setLayoutParams(paramsSeparator);
-                // Put the seconds below the center
+                // Center the seconds
                 RelativeLayout.LayoutParams paramsSeconds = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
                 );
-                paramsSeconds.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                paramsSeconds.addRule(RelativeLayout.BELOW, R.id.center_view);
+                paramsSeconds.addRule(RelativeLayout.CENTER_IN_PARENT);
                 mSecondSpaceView.setLayoutParams(paramsSeconds);
             } else {
                 // Hour + Minutes + Seconds + Am/Pm Indicator
