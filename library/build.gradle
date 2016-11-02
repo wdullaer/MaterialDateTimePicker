@@ -24,3 +24,6 @@ dependencies {
 }
 
 apply from: 'gradle-mvn-push.gradle'
+repositories {
+    maven { url "https://jitpack.io" }
+}
