@@ -108,6 +108,7 @@ public class TimePickerDialog extends DialogFragment implements
     private TextView mSecondView;
     private TextView mSecondSpaceView;
     private TextView mAmPmTextView;
+    private TextView mTimePickerHeader;
     private View mAmPmHitspace;
     private RadialPickerLayout mTimePicker;
 
@@ -204,10 +205,18 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     /**
-     * Set a title. NOTE: this will only take effect with the next onCreateView
+     * Set a title.
      */
     public void setTitle(String title) {
-        mTitle = title;
+        mTitle = title == null ? "" : title;
+        if (mTimePickerHeader != null) {
+            if (!mTitle.isEmpty()) {
+                mTimePickerHeader.setVisibility(TextView.VISIBLE);
+                mTimePickerHeader.setText(mTitle.toUpperCase(Locale.getDefault()));
+            } else {
+                mTimePickerHeader.setText(mTitle);
+            }
+        }
     }
 
     public String getTitle() {
@@ -686,16 +695,13 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         // Set the title (if any)
-        TextView timePickerHeader = (TextView) view.findViewById(R.id.time_picker_header);
-        if (!mTitle.isEmpty()) {
-            timePickerHeader.setVisibility(TextView.VISIBLE);
-            timePickerHeader.setText(mTitle.toUpperCase(Locale.getDefault()));
-        }
+        mTimePickerHeader = (TextView) view.findViewById(R.id.time_picker_header);
+        setTitle(mTitle);
 
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
         mOkButton.setTextColor(mAccentColor);
         mCancelButton.setTextColor(mAccentColor);
-        timePickerHeader.setBackgroundColor(Utils.darkenColor(mAccentColor));
+        mTimePickerHeader.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
         view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
 
