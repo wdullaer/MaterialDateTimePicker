@@ -71,6 +71,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_YEAR_START = "year_start";
     private static final String KEY_YEAR_END = "year_end";
     private static final String KEY_CURRENT_VIEW = "current_view";
+    private static final String KEY_SHOW_YEAR_ONLY = "show_year_only";
     private static final String KEY_LIST_POSITION_OFFSET = "list_position_offset";
     private static final String KEY_MIN_DATE = "min_date";
     private static final String KEY_MAX_DATE = "max_date";
@@ -134,6 +135,7 @@ public class DatePickerDialog extends DialogFragment implements
     private boolean mDismissOnPause = false;
     private boolean mAutoDismiss = false;
     private int mDefaultView = MONTH_AND_DAY_VIEW;
+    private boolean mShowYearOnly = false;
     private int mOkResid = R.string.mdtp_ok;
     private String mOkString;
     private int mCancelResid = R.string.mdtp_cancel;
@@ -223,6 +225,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putInt(KEY_YEAR_START, mMinYear);
         outState.putInt(KEY_YEAR_END, mMaxYear);
         outState.putInt(KEY_CURRENT_VIEW, mCurrentView);
+        outState.putBoolean(KEY_SHOW_YEAR_ONLY, mShowYearOnly);
         int listPosition = -1;
         if (mCurrentView == MONTH_AND_DAY_VIEW) {
             listPosition = mDayPickerView.getMostVisiblePosition();
@@ -275,6 +278,7 @@ public class DatePickerDialog extends DialogFragment implements
             mMinYear = savedInstanceState.getInt(KEY_YEAR_START);
             mMaxYear = savedInstanceState.getInt(KEY_YEAR_END);
             currentView = savedInstanceState.getInt(KEY_CURRENT_VIEW);
+            mShowYearOnly = savedInstanceState.getBoolean(KEY_SHOW_YEAR_ONLY);
             listPosition = savedInstanceState.getInt(KEY_LIST_POSITION);
             listPositionOffset = savedInstanceState.getInt(KEY_LIST_POSITION_OFFSET);
             mMinDate = (Calendar)savedInstanceState.getSerializable(KEY_MIN_DATE);
@@ -293,6 +297,11 @@ public class DatePickerDialog extends DialogFragment implements
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
+        }
+
+        if (mShowYearOnly) {
+            ((LinearLayout)mMonthAndDayView.getParent()).removeView(mMonthAndDayView);
+            if(mDayOfWeekView != null) ((LinearLayout)mDayOfWeekView.getParent()).removeView(mDayOfWeekView);
         }
 
         final Activity activity = getActivity();
@@ -576,6 +585,13 @@ public class DatePickerDialog extends DialogFragment implements
         mDefaultView = yearPicker ? YEAR_VIEW : MONTH_AND_DAY_VIEW;
     }
 
+    public void showYearOnly(boolean yearOnly) {
+        mShowYearOnly = yearOnly;
+        if (yearOnly) {
+            showYearPickerFirst(true);
+        }
+    }
+
     @SuppressWarnings("unused")
     public void setFirstDayOfWeek(int startOfWeek) {
         if (startOfWeek < Calendar.SUNDAY || startOfWeek > Calendar.SATURDAY) {
@@ -794,9 +810,11 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void onYearSelected(int year) {
         mCalendar.set(Calendar.YEAR, year);
-        adjustDayInMonthIfNeeded(mCalendar);
-        updatePickers();
-        setCurrentView(MONTH_AND_DAY_VIEW);
+        if (!mShowYearOnly) {
+            adjustDayInMonthIfNeeded(mCalendar);
+            updatePickers();
+            setCurrentView(MONTH_AND_DAY_VIEW);
+        }
         updateDisplay(true);
     }
 

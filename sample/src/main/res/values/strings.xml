@@ -18,6 +18,7 @@
     <string name="title_time">Show a title</string>
     <string name="title_date">Show a title</string>
     <string name="show_year_first">Show the year picker first</string>
+    <string name="show_year_only">Only show the year picker</string>
     <string name="enable_seconds">Show seconds picker</string>
     <string name="enable_minutes">Show minutes picker</string>
     <string name="limit_times">Limit selectable times</string>
