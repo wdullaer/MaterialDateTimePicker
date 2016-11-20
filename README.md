@@ -13,11 +13,13 @@ Support for Android 4.0 and up.
 Feel free to fork or issue pull requests on github. Issues can be reported on the github issue tracker.
 
 **Version 2 Layout**
+
 Date Picker | Time Picker
 --- | ---
 ![Date Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/date_picker_v2.png) | ![Time Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/time_picker_v2.png)
 
 **Version 1 Layout**
+
 Date Picker | Time Picker
 ---- | ----
 ![Date Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/date_picker.png) | ![Time Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/time_picker.png)
