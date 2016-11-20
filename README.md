@@ -12,6 +12,12 @@ Support for Android 4.0 and up.
 
 Feel free to fork or issue pull requests on github. Issues can be reported on the github issue tracker.
 
+**Version 2 Layout**
+Date Picker | Time Picker
+--- | ---
+![Date Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/date_picker_v2.png) | ![Time Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/time_picker_v2.png)
+
+**Version 1 Layout**
 Date Picker | Time Picker
 ---- | ----
 ![Date Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/date_picker.png) | ![Time Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/time_picker.png)
@@ -79,6 +85,16 @@ dpd.show(getFragmentManager(), "Datepickerdialog");
 ```
 
 ### Theme the pickers
+The library contains 2 layout versions for each picker.
+
+* Version 1: this is the original layout. It is based on the layout google used in the kitkat and early material design era
+* Version 2: this layout is based on the guidelines google posted when launching android marshmallow. This is the default and still the most current design.
+
+You can set the layout version using the factory
+```java
+dpd.setVersion(DatePickerDialog.Version.VERSION_2);
+```
+
 The pickers will be themed automatically based on the current theme where they are created, based on the current `colorAccent`. You can also theme the dialogs via the `setAccentColor(int color)` method. Alternatively, you can theme the pickers by overwriting the color resources `mdtp_accent_color` and `mdtp_accent_color_dark` in your project.
 ```xml
 <color name="mdtp_accent_color">#009688</color>
