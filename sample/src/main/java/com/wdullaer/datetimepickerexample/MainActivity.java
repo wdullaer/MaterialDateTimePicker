@@ -33,13 +33,11 @@ public class MainActivity extends AppCompatActivity
         private static final int NUM_PAGES = 3;
         Fragment timePickerFragment;
         Fragment datePickerFragment;
-        Fragment dateTimePickerFragment;
 
         public PickerAdapter(FragmentManager fm) {
             super(fm);
             timePickerFragment = new TimePickerFragment();
             datePickerFragment = new DatePickerFragment();
-            dateTimePickerFragment = new DateTimePickerFragment();
         }
 
         @Override
@@ -53,9 +51,8 @@ public class MainActivity extends AppCompatActivity
                 case 0:
                     return timePickerFragment;
                 case 1:
-                    return datePickerFragment;
                 default:
-                    return dateTimePickerFragment;
+                    return datePickerFragment;
             }
         }
 
@@ -64,9 +61,8 @@ public class MainActivity extends AppCompatActivity
                 case 0:
                     return R.string.tab_title_time;
                 case 1:
-                    return R.string.tab_title_date;
                 default:
-                    return R.string.tab_title_datetime;
+                    return R.string.tab_title_date;
             }
         }
     }
