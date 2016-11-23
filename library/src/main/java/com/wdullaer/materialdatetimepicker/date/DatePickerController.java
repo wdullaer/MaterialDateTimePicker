@@ -52,4 +52,6 @@ public interface DatePickerController {
     boolean isOutOfRange(int year, int month, int day);
 
     void tryVibrate();
+
+    String dayAbbreviationForDay(int day);
 }

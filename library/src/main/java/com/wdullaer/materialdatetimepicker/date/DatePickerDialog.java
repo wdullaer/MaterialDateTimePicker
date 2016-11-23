@@ -52,6 +52,7 @@ import com.wdullaer.materialdatetimepicker.Utils;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
@@ -161,6 +162,9 @@ public class DatePickerDialog extends DialogFragment implements
     private String mSelectDay;
     private String mYearPickerDescription;
     private String mSelectYear;
+
+    //Day abbreviations
+    private HashMap <Integer,String> dayAbbreviations =  new HashMap<Integer,String>();
 
     /**
      * The callback used to indicate the user is done filling in the date.
@@ -840,6 +844,14 @@ public class DatePickerDialog extends DialogFragment implements
         setToNearestDate(calendar);
     }
 
+    /**
+     * Set the custom abbreviations for the days
+     * @param abbreviations HashMap<Integer,String>
+     */
+    public void setDayAbbreviations(HashMap<Integer,String> abbreviations) {
+        this.dayAbbreviations=abbreviations;
+    }
+
     @Override
     public void onClick(View v) {
         tryVibrate();
@@ -1119,5 +1131,14 @@ public class DatePickerDialog extends DialogFragment implements
             mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
                     mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
         }
+    }
+
+    @Override
+    public String dayAbbreviationForDay(int day) {
+        Integer key=new Integer(day);
+        if (dayAbbreviations.containsKey(key)){
+            return dayAbbreviations.get(key);
+        }
+        return null;
     }
 }
