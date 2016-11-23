@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     class PickerAdapter extends FragmentPagerAdapter {
-        private static final int NUM_PAGES = 3;
+        private static final int NUM_PAGES = 2;
         Fragment timePickerFragment;
         Fragment datePickerFragment;
 
