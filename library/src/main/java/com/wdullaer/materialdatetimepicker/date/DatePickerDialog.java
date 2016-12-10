@@ -89,6 +89,8 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_THEME_DARK = "theme_dark";
     private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_ACCENT = "accent";
+    private static final String KEY_CANCEL_BUTTON_TEXT_COLOR = "cancel_button_text_color";
+    private static final String KEY_OK_BUTTON_TEXT_COLOR = "ok_button_text_color";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
     private static final String KEY_AUTO_DISMISS = "auto_dismiss";
@@ -142,6 +144,8 @@ public class DatePickerDialog extends DialogFragment implements
     private boolean mThemeDark = false;
     private boolean mThemeDarkChanged = false;
     private int mAccentColor = -1;
+    private int mCancelButtonTextColor = -1;
+    private int mOkButtonTextColor = -1;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
     private boolean mAutoDismiss = false;
@@ -259,6 +263,8 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
         outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
         outState.putInt(KEY_ACCENT, mAccentColor);
+        outState.putInt(KEY_CANCEL_BUTTON_TEXT_COLOR, mCancelButtonTextColor);
+        outState.putInt(KEY_OK_BUTTON_TEXT_COLOR, mOkButtonTextColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
         outState.putBoolean(KEY_AUTO_DISMISS, mAutoDismiss);
@@ -292,6 +298,8 @@ public class DatePickerDialog extends DialogFragment implements
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
             mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
+            mCancelButtonTextColor = savedInstanceState.getInt(KEY_CANCEL_BUTTON_TEXT_COLOR);
+            mOkButtonTextColor = savedInstanceState.getInt(KEY_OK_BUTTON_TEXT_COLOR);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
             mAutoDismiss = savedInstanceState.getBoolean(KEY_AUTO_DISMISS);
@@ -378,10 +386,19 @@ public class DatePickerDialog extends DialogFragment implements
         if (mAccentColor == -1) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
+
+        if (mCancelButtonTextColor == -1) {
+            mCancelButtonTextColor = mAccentColor;
+        }
+
+        if (mOkButtonTextColor == -1) {
+            mOkButtonTextColor = mAccentColor;
+        }
+
         if(mDatePickerHeaderView != null) mDatePickerHeaderView.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
-        okButton.setTextColor(mAccentColor);
-        cancelButton.setTextColor(mAccentColor);
+        okButton.setTextColor(mOkButtonTextColor);
+        cancelButton.setTextColor(mCancelButtonTextColor);
 
         if(getDialog() == null) {
             view.findViewById(R.id.done_background).setVisibility(View.GONE);
@@ -611,12 +628,62 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     /**
+     * Set the cancel button text color of this dialog
+     * @return color the color you want
+     */
+    public void setCancelButtonTextColor(String color) {
+        try {
+            mCancelButtonTextColor = Color.parseColor(color);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Set the cancel button text color of this dialog
+     * @param color
+     */
+    public void setCancelButtonTextColor(@ColorInt int color) {
+        mCancelButtonTextColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
+     * Set the ok button text color of this dialog
+     * @return color the color you want
+     */
+    public void setOkButtonTextColor(String color) {
+        try {
+            mOkButtonTextColor = Color.parseColor(color);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Set the ok button text color of this dialog
+     * @param color
+     */
+    public void setOkButtonTextColor(@ColorInt int color) {
+        mOkButtonTextColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
      * Get the accent color of this dialog
      * @return accent color
      */
     @Override
     public int getAccentColor() {
         return mAccentColor;
+    }
+
+    @Override
+    public int getCancelButtonTextColor() {
+        return mCancelButtonTextColor;
+    }
+
+    @Override
+    public int getOkButtonTextColor() {
+        return mOkButtonTextColor;
     }
 
     /**
