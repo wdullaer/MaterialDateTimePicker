@@ -22,6 +22,16 @@ public interface TimePickerController {
     int getAccentColor();
 
     /**
+     * @return int - the cancel button text color currently in use
+     */
+    int getCancelButtonTextColor();
+
+    /**
+     * @return int - the ok button text color currently in use
+     */
+    int getOkButtonTextColor();
+
+    /**
      * @return Version - The current version to render
      */
     TimePickerDialog.Version getVersion();

@@ -51,8 +51,6 @@ import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
-import org.w3c.dom.Text;
-
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,6 +78,8 @@ public class TimePickerDialog extends DialogFragment implements
     private static final String KEY_THEME_DARK = "theme_dark";
     private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_ACCENT = "accent";
+    private static final String KEY_CANCEL_BUTTON_TEXT_COLOR = "cancel_button_text_color";
+    private static final String KEY_OK_BUTTON_TEXT_COLOR = "ok_button_text_color";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
     private static final String KEY_SELECTABLE_TIMES = "selectable_times";
@@ -134,6 +134,8 @@ public class TimePickerDialog extends DialogFragment implements
     private boolean mThemeDarkChanged;
     private boolean mVibrate;
     private int mAccentColor = -1;
+    private int mCancelButtonTextColor = -1;
+    private int mOkButtonTextColor = -1;
     private boolean mDismissOnPause;
     private Timepoint[] mSelectableTimes;
     private Timepoint mMinTime;
@@ -206,6 +208,8 @@ public class TimePickerDialog extends DialogFragment implements
         mThemeDark = false;
         mThemeDarkChanged = false;
         mAccentColor = -1;
+        mCancelButtonTextColor = -1;
+        mOkButtonTextColor = -1;
         mVibrate = true;
         mDismissOnPause = false;
         mEnableSeconds = false;
@@ -251,7 +255,47 @@ public class TimePickerDialog extends DialogFragment implements
      * @param color the accent color you want
      */
     public void setAccentColor(@ColorInt int color) {
-        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));;
+        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
+     * Set the cancel button text color of this dialog
+     * @return color the color you want
+     */
+    public void setCancelButtonTextColor(String color) {
+        try {
+            mCancelButtonTextColor = Color.parseColor(color);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Set the cancel button text color of this dialog
+     * @param color
+     */
+    public void setCancelButtonTextColor(@ColorInt int color) {
+        mCancelButtonTextColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
+     * Set the ok button text color of this dialog
+     * @return color the color you want
+     */
+    public void setOkButtonTextColor(String color) {
+        try {
+            mOkButtonTextColor = Color.parseColor(color);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Set the ok button text color of this dialog
+     * @param color
+     */
+    public void setOkButtonTextColor(@ColorInt int color) {
+        mOkButtonTextColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 
     @Override
@@ -267,6 +311,16 @@ public class TimePickerDialog extends DialogFragment implements
     @Override
     public int getAccentColor() {
         return mAccentColor;
+    }
+
+    @Override
+    public int getCancelButtonTextColor() {
+        return mCancelButtonTextColor;
+    }
+
+    @Override
+    public int getOkButtonTextColor() {
+        return mOkButtonTextColor;
     }
 
     /**
@@ -470,6 +524,8 @@ public class TimePickerDialog extends DialogFragment implements
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
             mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
+            mCancelButtonTextColor = savedInstanceState.getInt(KEY_CANCEL_BUTTON_TEXT_COLOR);
+            mOkButtonTextColor = savedInstanceState.getInt(KEY_OK_BUTTON_TEXT_COLOR);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
             mSelectableTimes = (Timepoint[])savedInstanceState.getParcelableArray(KEY_SELECTABLE_TIMES);
@@ -497,6 +553,14 @@ public class TimePickerDialog extends DialogFragment implements
         // If an accent color has not been set manually, get it from the context
         if (mAccentColor == -1) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
+        }
+
+        if (mCancelButtonTextColor == -1) {
+            mCancelButtonTextColor = mAccentColor;
+        }
+
+        if (mOkButtonTextColor == -1) {
+            mOkButtonTextColor = mAccentColor;
         }
 
         // if theme mode has not been set by java code, check if it is specified in Style.xml
@@ -819,8 +883,8 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
-        mOkButton.setTextColor(mAccentColor);
-        mCancelButton.setTextColor(mAccentColor);
+        mOkButton.setTextColor(mOkButtonTextColor);
+        mCancelButton.setTextColor(mCancelButtonTextColor);
         timePickerHeader.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
         view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
@@ -927,6 +991,8 @@ public class TimePickerDialog extends DialogFragment implements
             outState.putBoolean(KEY_THEME_DARK, mThemeDark);
             outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
             outState.putInt(KEY_ACCENT, mAccentColor);
+            outState.putInt(KEY_CANCEL_BUTTON_TEXT_COLOR, mCancelButtonTextColor);
+            outState.putInt(KEY_OK_BUTTON_TEXT_COLOR, mOkButtonTextColor);
             outState.putBoolean(KEY_VIBRATE, mVibrate);
             outState.putBoolean(KEY_DISMISS, mDismissOnPause);
             outState.putParcelableArray(KEY_SELECTABLE_TIMES, mSelectableTimes);
