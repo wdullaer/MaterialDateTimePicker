@@ -51,8 +51,6 @@ import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
-import org.w3c.dom.Text;
-
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -145,6 +143,7 @@ public class TimePickerDialog extends DialogFragment implements
     private int mCancelResid;
     private String mCancelString;
     private Version mVersion;
+    private int mSelectedItem = HOUR_INDEX;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -546,12 +545,11 @@ public class TimePickerDialog extends DialogFragment implements
         mTimePicker.setOnKeyListener(keyboardListener);
         mTimePicker.initialize(getActivity(), this, mInitialTime, mIs24HourMode);
 
-        int currentItemShowing = HOUR_INDEX;
         if (savedInstanceState != null &&
                 savedInstanceState.containsKey(KEY_CURRENT_ITEM_SHOWING)) {
-            currentItemShowing = savedInstanceState.getInt(KEY_CURRENT_ITEM_SHOWING);
+            mSelectedItem = savedInstanceState.getInt(KEY_CURRENT_ITEM_SHOWING);
         }
-        setCurrentItemShowing(currentItemShowing, false, true, true);
+        setCurrentItemShowing(mSelectedItem, false, true, true);
         mTimePicker.invalidate();
 
         mHourView.setOnClickListener(new OnClickListener() {
@@ -1178,6 +1176,18 @@ public class TimePickerDialog extends DialogFragment implements
             pulseAnimator.setStartDelay(PULSE_ANIMATOR_DELAY);
         }
         pulseAnimator.start();
+    }
+
+    public void selectHours() {
+        mSelectedItem = HOUR_INDEX;
+    }
+
+    public void selectMinutes() {
+        mSelectedItem = MINUTE_INDEX;
+    }
+
+    public void selectSeconds() {
+        mSelectedItem = SECOND_INDEX;
     }
 
     /**
