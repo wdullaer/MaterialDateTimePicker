@@ -132,6 +132,9 @@ dpd.setThemeDark(true);
 * `setAccentColor(String color)` and `setAccentColor(int color)`
 Set the accentColor to be used by the Dialog. The String version parses the color out using `Color.parseColor()`. The int version requires a ColorInt bytestring. It will explicitly set the color to fully opaque.
 
+* `setOkColor()` and `setCancelColor()`
+Set the text color for the OK or Cancel button. Behaves similar to `setAccentColor()`
+
 * `TimePickerDialog` `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
 
