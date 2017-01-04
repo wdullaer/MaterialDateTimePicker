@@ -15,7 +15,7 @@
      limitations under the License.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
+<resources
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="mdtp_done_label" msgid="7007948707597430919">"Gereed"</string>
     <string name="mdtp_hour_picker_description" msgid="7586639618712934060">"Ronde schuifregelaar voor uren"</string>
@@ -28,4 +28,6 @@
     <string name="mdtp_select_year" msgid="2603330600102539372">"Jaar selecteren"</string>
     <string name="mdtp_item_is_selected" msgid="2674929164900463786">"<xliff:g id="ITEM">%1$s</xliff:g> geselecteerd"</string>
     <string name="mdtp_deleted_key" msgid="6908431551612331381">"<xliff:g id="KEY">%1$s</xliff:g> verwijderd"</string>
+    <string name="mdtp_date_v1_monthyear">MMMM yyyy</string>
+    <string name="mdtp_date_v2_daymonthyear">EEE dd MMM</string>
 </resources>

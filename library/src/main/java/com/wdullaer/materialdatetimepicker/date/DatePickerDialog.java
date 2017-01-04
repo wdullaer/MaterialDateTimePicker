@@ -21,12 +21,17 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.text.format.DateFormat;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,6 +63,11 @@ public class DatePickerDialog extends DialogFragment implements
 
     private static final String TAG = "DatePickerDialog";
 
+    public enum Version {
+        VERSION_1,
+        VERSION_2
+    }
+
     private static final int UNINITIALIZED = -1;
     private static final int MONTH_AND_DAY_VIEW = 0;
     private static final int YEAR_VIEW = 1;
@@ -75,12 +85,21 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_MAX_DATE = "max_date";
     private static final String KEY_HIGHLIGHTED_DAYS = "highlighted_days";
     private static final String KEY_SELECTABLE_DAYS = "selectable_days";
+    private static final String KEY_DISABLED_DAYS = "disabled_days";
     private static final String KEY_THEME_DARK = "theme_dark";
+    private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_ACCENT = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
+    private static final String KEY_AUTO_DISMISS = "auto_dismiss";
     private static final String KEY_DEFAULT_VIEW = "default_view";
     private static final String KEY_TITLE = "title";
+    private static final String KEY_OK_RESID = "ok_resid";
+    private static final String KEY_OK_STRING = "ok_string";
+    private static final String KEY_CANCEL_RESID = "cancel_resid";
+    private static final String KEY_CANCEL_STRING = "cancel_string";
+    private static final String KEY_VERSION = "version";
+
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
@@ -89,9 +108,11 @@ public class DatePickerDialog extends DialogFragment implements
     private static final int ANIMATION_DELAY = 500;
 
     private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
+    private static SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("MMM", Locale.getDefault());
     private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
+    private static SimpleDateFormat VERSION_2_FORMAT;
 
-    private final Calendar mCalendar = Calendar.getInstance();
+    private final Calendar mCalendar = trimToMidnight(Calendar.getInstance());
     private OnDateSetListener mCallBack;
     private HashSet<OnDateChangedListener> mListeners = new HashSet<>();
     private DialogInterface.OnCancelListener mOnCancelListener;
@@ -99,7 +120,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     private AccessibleDateAnimator mAnimator;
 
-    private TextView mDayOfWeekView;
+    private TextView mDatePickerHeaderView;
     private LinearLayout mMonthAndDayView;
     private TextView mSelectedMonthTextView;
     private TextView mSelectedDayTextView;
@@ -117,11 +138,19 @@ public class DatePickerDialog extends DialogFragment implements
     private Calendar mMaxDate;
     private Calendar[] highlightedDays;
     private Calendar[] selectableDays;
+    private Calendar[] disabledDays;
     private boolean mThemeDark = false;
+    private boolean mThemeDarkChanged = false;
     private int mAccentColor = -1;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
+    private boolean mAutoDismiss = false;
     private int mDefaultView = MONTH_AND_DAY_VIEW;
+    private int mOkResid = R.string.mdtp_ok;
+    private String mOkString;
+    private int mCancelResid = R.string.mdtp_cancel;
+    private String mCancelString;
+    private Version mVersion;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -180,6 +209,8 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.YEAR, year);
         mCalendar.set(Calendar.MONTH, monthOfYear);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
     }
 
     @Override
@@ -194,6 +225,11 @@ public class DatePickerDialog extends DialogFragment implements
             mCalendar.set(Calendar.MONTH, savedInstanceState.getInt(KEY_SELECTED_MONTH));
             mCalendar.set(Calendar.DAY_OF_MONTH, savedInstanceState.getInt(KEY_SELECTED_DAY));
             mDefaultView = savedInstanceState.getInt(KEY_DEFAULT_VIEW);
+        }
+        if (Build.VERSION.SDK_INT < 18) {
+            VERSION_2_FORMAT = new SimpleDateFormat(activity.getResources().getString(R.string.mdtp_date_v2_daymonthyear), Locale.getDefault());
+        } else {
+            VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMMdd"), Locale.getDefault());
         }
     }
 
@@ -219,29 +255,25 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putSerializable(KEY_MAX_DATE, mMaxDate);
         outState.putSerializable(KEY_HIGHLIGHTED_DAYS, highlightedDays);
         outState.putSerializable(KEY_SELECTABLE_DAYS, selectableDays);
+        outState.putSerializable(KEY_DISABLED_DAYS, disabledDays);
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
+        outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
         outState.putInt(KEY_ACCENT, mAccentColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
+        outState.putBoolean(KEY_AUTO_DISMISS, mAutoDismiss);
         outState.putInt(KEY_DEFAULT_VIEW, mDefaultView);
         outState.putString(KEY_TITLE, mTitle);
+        outState.putInt(KEY_OK_RESID, mOkResid);
+        outState.putString(KEY_OK_STRING, mOkString);
+        outState.putInt(KEY_CANCEL_RESID, mCancelResid);
+        outState.putString(KEY_CANCEL_STRING, mCancelString);
+        outState.putSerializable(KEY_VERSION, mVersion);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
-
-        View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, container, false);
-
-        mDayOfWeekView = (TextView) view.findViewById(R.id.date_picker_header);
-        mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
-        mMonthAndDayView.setOnClickListener(this);
-        mSelectedMonthTextView = (TextView) view.findViewById(R.id.date_picker_month);
-        mSelectedDayTextView = (TextView) view.findViewById(R.id.date_picker_day);
-        mYearView = (TextView) view.findViewById(R.id.date_picker_year);
-        mYearView.setOnClickListener(this);
-
         int listPosition = -1;
         int listPositionOffset = 0;
         int currentView = mDefaultView;
@@ -256,16 +288,42 @@ public class DatePickerDialog extends DialogFragment implements
             mMaxDate = (Calendar)savedInstanceState.getSerializable(KEY_MAX_DATE);
             highlightedDays = (Calendar[])savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
             selectableDays = (Calendar[])savedInstanceState.getSerializable(KEY_SELECTABLE_DAYS);
+            disabledDays = (Calendar[]) savedInstanceState.getSerializable(KEY_DISABLED_DAYS);
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
+            mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
+            mAutoDismiss = savedInstanceState.getBoolean(KEY_AUTO_DISMISS);
             mTitle = savedInstanceState.getString(KEY_TITLE);
+            mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
+            mOkString = savedInstanceState.getString(KEY_OK_STRING);
+            mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
+            mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
+            mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
         }
+
+        int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_date_picker_dialog : R.layout.mdtp_date_picker_dialog_v2;
+        View view = inflater.inflate(viewRes, container, false);
+        // All options have been set at this point: round the initial selection if necessary
+        setToNearestDate(mCalendar);
+
+        mDatePickerHeaderView = (TextView) view.findViewById(R.id.date_picker_header);
+        mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
+        mMonthAndDayView.setOnClickListener(this);
+        mSelectedMonthTextView = (TextView) view.findViewById(R.id.date_picker_month);
+        mSelectedDayTextView = (TextView) view.findViewById(R.id.date_picker_day);
+        mYearView = (TextView) view.findViewById(R.id.date_picker_year);
+        mYearView.setOnClickListener(this);
 
         final Activity activity = getActivity();
         mDayPickerView = new SimpleDayPickerView(activity, this);
         mYearPickerView = new YearPickerView(activity, this);
+
+        // if theme mode has not been set by java code, check if it is specified in Style.xml
+        if (!mThemeDarkChanged) {
+            mThemeDark = Utils.isDarkTheme(activity, mThemeDark);
+        }
 
         Resources res = getResources();
         mDayPickerDescription = res.getString(R.string.mdtp_day_picker_description);
@@ -299,7 +357,9 @@ public class DatePickerDialog extends DialogFragment implements
                 dismiss();
             }
         });
-        okButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
+        okButton.setTypeface(TypefaceHelper.get(activity, "Roboto-Medium"));
+        if(mOkString != null) okButton.setText(mOkString);
+        else okButton.setText(mOkResid);
 
         Button cancelButton = (Button) view.findViewById(R.id.cancel);
         cancelButton.setOnClickListener(new OnClickListener() {
@@ -310,13 +370,15 @@ public class DatePickerDialog extends DialogFragment implements
             }
         });
         cancelButton.setTypeface(TypefaceHelper.get(activity,"Roboto-Medium"));
+        if(mCancelString != null) cancelButton.setText(mCancelString);
+        else cancelButton.setText(mCancelResid);
         cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // If an accent color has not been set manually, get it from the context
         if (mAccentColor == -1) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
-        if(mDayOfWeekView != null) mDayOfWeekView.setBackgroundColor(Utils.darkenColor(mAccentColor));
+        if(mDatePickerHeaderView != null) mDatePickerHeaderView.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
         okButton.setTextColor(mAccentColor);
         cancelButton.setTextColor(mAccentColor);
@@ -338,6 +400,17 @@ public class DatePickerDialog extends DialogFragment implements
 
         mHapticFeedbackController = new HapticFeedbackController(activity);
         return view;
+    }
+
+    @Override
+    public void onConfigurationChanged(final Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ViewGroup viewGroup = (ViewGroup) getView();
+        if (viewGroup != null) {
+            viewGroup.removeAllViewsInLayout();
+            View view = onCreateView(getActivity().getLayoutInflater(), viewGroup, null);
+            viewGroup.addView(view);
+        }
     }
 
     @Override
@@ -377,20 +450,30 @@ public class DatePickerDialog extends DialogFragment implements
 
         switch (viewIndex) {
             case MONTH_AND_DAY_VIEW:
-                ObjectAnimator pulseAnimator = Utils.getPulseAnimator(mMonthAndDayView, 0.9f,
-                        1.05f);
-                if (mDelayAnimation) {
-                    pulseAnimator.setStartDelay(ANIMATION_DELAY);
-                    mDelayAnimation = false;
+                if (mVersion == Version.VERSION_1) {
+                    ObjectAnimator pulseAnimator = Utils.getPulseAnimator(mMonthAndDayView, 0.9f,
+                            1.05f);
+                    if (mDelayAnimation) {
+                        pulseAnimator.setStartDelay(ANIMATION_DELAY);
+                        mDelayAnimation = false;
+                    }
+                    mDayPickerView.onDateChanged();
+                    if (mCurrentView != viewIndex) {
+                        mMonthAndDayView.setSelected(true);
+                        mYearView.setSelected(false);
+                        mAnimator.setDisplayedChild(MONTH_AND_DAY_VIEW);
+                        mCurrentView = viewIndex;
+                    }
+                    pulseAnimator.start();
+                } else {
+                    mDayPickerView.onDateChanged();
+                    if (mCurrentView != viewIndex) {
+                        mMonthAndDayView.setSelected(true);
+                        mYearView.setSelected(false);
+                        mAnimator.setDisplayedChild(MONTH_AND_DAY_VIEW);
+                        mCurrentView = viewIndex;
+                    }
                 }
-                mDayPickerView.onDateChanged();
-                if (mCurrentView != viewIndex) {
-                    mMonthAndDayView.setSelected(true);
-                    mYearView.setSelected(false);
-                    mAnimator.setDisplayedChild(MONTH_AND_DAY_VIEW);
-                    mCurrentView = viewIndex;
-                }
-                pulseAnimator.start();
 
                 int flags = DateUtils.FORMAT_SHOW_DATE;
                 String dayString = DateUtils.formatDateTime(getActivity(), millis, flags);
@@ -398,19 +481,29 @@ public class DatePickerDialog extends DialogFragment implements
                 Utils.tryAccessibilityAnnounce(mAnimator, mSelectDay);
                 break;
             case YEAR_VIEW:
-                pulseAnimator = Utils.getPulseAnimator(mYearView, 0.85f, 1.1f);
-                if (mDelayAnimation) {
-                    pulseAnimator.setStartDelay(ANIMATION_DELAY);
-                    mDelayAnimation = false;
+                if (mVersion == Version.VERSION_1) {
+                    ObjectAnimator pulseAnimator = Utils.getPulseAnimator(mYearView, 0.85f, 1.1f);
+                    if (mDelayAnimation) {
+                        pulseAnimator.setStartDelay(ANIMATION_DELAY);
+                        mDelayAnimation = false;
+                    }
+                    mYearPickerView.onDateChanged();
+                    if (mCurrentView != viewIndex) {
+                        mMonthAndDayView.setSelected(false);
+                        mYearView.setSelected(true);
+                        mAnimator.setDisplayedChild(YEAR_VIEW);
+                        mCurrentView = viewIndex;
+                    }
+                    pulseAnimator.start();
+                } else {
+                    mYearPickerView.onDateChanged();
+                    if (mCurrentView != viewIndex) {
+                        mMonthAndDayView.setSelected(false);
+                        mYearView.setSelected(true);
+                        mAnimator.setDisplayedChild(YEAR_VIEW);
+                        mCurrentView = viewIndex;
+                    }
                 }
-                mYearPickerView.onDateChanged();
-                if (mCurrentView != viewIndex) {
-                    mMonthAndDayView.setSelected(false);
-                    mYearView.setSelected(true);
-                    mAnimator.setDisplayedChild(YEAR_VIEW);
-                    mCurrentView = viewIndex;
-                }
-                pulseAnimator.start();
 
                 CharSequence yearString = YEAR_FORMAT.format(millis);
                 mAnimator.setContentDescription(mYearPickerDescription+": "+yearString);
@@ -420,18 +513,28 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     private void updateDisplay(boolean announce) {
-        if (mDayOfWeekView != null) {
-            if(mTitle != null) mDayOfWeekView.setText(mTitle.toUpperCase(Locale.getDefault()));
-            else {
-                mDayOfWeekView.setText(mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG,
-                        Locale.getDefault()).toUpperCase(Locale.getDefault()));
+        mYearView.setText(YEAR_FORMAT.format(mCalendar.getTime()));
+
+        if (mVersion == Version.VERSION_1) {
+            if (mDatePickerHeaderView != null) {
+                if (mTitle != null)
+                    mDatePickerHeaderView.setText(mTitle.toUpperCase(Locale.getDefault()));
+                else {
+                    mDatePickerHeaderView.setText(mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG,
+                            Locale.getDefault()).toUpperCase(Locale.getDefault()));
+                }
             }
+            mSelectedMonthTextView.setText(MONTH_FORMAT.format(mCalendar.getTime()));
+            mSelectedDayTextView.setText(DAY_FORMAT.format(mCalendar.getTime()));
         }
 
-        mSelectedMonthTextView.setText(mCalendar.getDisplayName(Calendar.MONTH, Calendar.SHORT,
-                Locale.getDefault()).toUpperCase(Locale.getDefault()));
-        mSelectedDayTextView.setText(DAY_FORMAT.format(mCalendar.getTime()));
-        mYearView.setText(YEAR_FORMAT.format(mCalendar.getTime()));
+        if (mVersion == Version.VERSION_2) {
+            mSelectedDayTextView.setText(VERSION_2_FORMAT.format(mCalendar.getTime()));
+            if (mTitle != null)
+                mDatePickerHeaderView.setText(mTitle.toUpperCase(Locale.getDefault()));
+            else
+                mDatePickerHeaderView.setVisibility(View.GONE);
+        }
 
         // Accessibility.
         long millis = mCalendar.getTimeInMillis();
@@ -464,11 +567,21 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     /**
+     * Set whether the picker should dismiss itself when a day is selected
+     * @param autoDismiss true if the dialog should dismiss itself when a day is selected
+     */
+    @SuppressWarnings("unused")
+    public void autoDismiss(boolean autoDismiss) {
+        mAutoDismiss = autoDismiss;
+    }
+
+    /**
      * Set whether the dark theme should be used
      * @param themeDark true if the dark theme should be used, false if the default theme should be used
      */
     public void setThemeDark(boolean themeDark) {
         mThemeDark = themeDark;
+        mThemeDarkChanged = true;
     }
 
     /**
@@ -482,10 +595,19 @@ public class DatePickerDialog extends DialogFragment implements
 
     /**
      * Set the accent color of this dialog
-     * @param accentColor the accent color you want
+     * @param color the accent color you want
      */
-    public void setAccentColor(int accentColor) {
-        mAccentColor = accentColor;
+    @SuppressWarnings("unused")
+    public void setAccentColor(String color) {
+        mAccentColor = Color.parseColor(color);
+    }
+
+    /**
+     * Set the accent color of this dialog
+     * @param color the accent color you want
+     */
+    public void setAccentColor(@ColorInt int color) {
+        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 
     /**
@@ -537,7 +659,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setMinDate(Calendar calendar) {
-        mMinDate = calendar;
+        mMinDate = trimToMidnight(calendar);
 
         if (mDayPickerView != null) {
             mDayPickerView.onChange();
@@ -547,6 +669,7 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * @return The minimal date supported by this DatePicker. Null if it has not been set.
      */
+    @SuppressWarnings("unused")
     public Calendar getMinDate() {
         return mMinDate;
     }
@@ -558,7 +681,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setMaxDate(Calendar calendar) {
-        mMaxDate = calendar;
+        mMaxDate = trimToMidnight(calendar);
 
         if (mDayPickerView != null) {
             mDayPickerView.onChange();
@@ -568,6 +691,7 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * @return The maximal date supported by this DatePicker. Null if it has not been set.
      */
+    @SuppressWarnings("unused")
     public Calendar getMaxDate() {
         return mMaxDate;
     }
@@ -578,9 +702,10 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setHighlightedDays(Calendar[] highlightedDays) {
-        // Sort the array to optimize searching over it later on
         Arrays.sort(highlightedDays);
+        for (Calendar highlightedDay : highlightedDays) trimToMidnight(highlightedDay);
         this.highlightedDays = highlightedDays;
+        if (mDayPickerView != null) mDayPickerView.onChange();
     }
 
     /**
@@ -592,23 +717,45 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     /**
-     * Set's a list of days which are the only valid selections.
+     * Sets a list of days which are the only valid selections.
      * Setting this value will take precedence over using setMinDate() and setMaxDate()
      * @param selectableDays an Array of Calendar Objects containing the selectable dates
      */
     @SuppressWarnings("unused")
     public void setSelectableDays(Calendar[] selectableDays) {
-        // Sort the array to optimize searching over it later on
         Arrays.sort(selectableDays);
+        for (Calendar selectableDay : selectableDays) trimToMidnight(selectableDay);
         this.selectableDays = selectableDays;
+        if (mDayPickerView != null) mDayPickerView.onChange();
     }
 
     /**
      * @return an Array of Calendar objects containing the list with selectable items. null if no restriction is set
      */
-    @Override
+    @SuppressWarnings("unused")
     public Calendar[] getSelectableDays() {
         return selectableDays;
+    }
+
+    /**
+     * Sets a list of days that are not selectable in the picker
+     * Setting this value will take precedence over using setMinDate() and setMaxDate(), but stacks with setSelectableDays()
+     * @param disabledDays an Array of Calendar Objects containing the disabled dates
+     */
+    @SuppressWarnings("unused")
+    public void setDisabledDays(Calendar[] disabledDays) {
+        Arrays.sort(disabledDays);
+        for (Calendar disabledDay : disabledDays) trimToMidnight(disabledDay);
+        this.disabledDays = disabledDays;
+        if (mDayPickerView != null) mDayPickerView.onChange();
+    }
+
+    /**
+     * @return an Array of Calendar objects containing the list of days that are not selectable. null if no restriction is set
+     */
+    @SuppressWarnings("unused")
+    public Calendar[] getDisabledDays() {
+        return disabledDays;
     }
 
     /**
@@ -617,6 +764,52 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public void setTitle(String title) {
         mTitle = title;
+    }
+
+    /**
+     * Set the label for the Ok button (max 12 characters)
+     * @param okString A literal String to be used as the Ok button label
+     */
+    @SuppressWarnings("unused")
+    public void setOkText(String okString) {
+        mOkString = okString;
+    }
+
+    /**
+     * Set the label for the Ok button (max 12 characters)
+     * @param okResid A resource ID to be used as the Ok button label
+     */
+    @SuppressWarnings("unused")
+    public void setOkText(@StringRes int okResid) {
+        mOkString = null;
+        mOkResid = okResid;
+    }
+
+    /**
+     * Set the label for the Cancel button (max 12 characters)
+     * @param cancelString A literal String to be used as the Cancel button label
+     */
+    @SuppressWarnings("unused")
+    public void setCancelText(String cancelString) {
+        mCancelString = cancelString;
+    }
+
+    /**
+     * Set the label for the Cancel button (max 12 characters)
+     * @param cancelResid A resource ID to be used as the Cancel button label
+     */
+    @SuppressWarnings("unused")
+    public void setCancelText(@StringRes int cancelResid) {
+        mCancelString = null;
+        mCancelResid = cancelResid;
+    }
+
+    /**
+     * Set which layout version the picker should use
+     * @param version The version to use
+     */
+    public void setVersion(Version version) {
+        mVersion = version;
     }
 
     @SuppressWarnings("unused")
@@ -673,6 +866,10 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.DAY_OF_MONTH, day);
         updatePickers();
         updateDisplay(true);
+        if (mAutoDismiss) {
+            notifyOnDateListener();
+            dismiss();
+        }
     }
 
     private void updatePickers() {
@@ -686,15 +883,37 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     @Override
+    public Calendar getStartDate() {
+        if (selectableDays != null) return selectableDays[0];
+        if (mMinDate != null) return mMinDate;
+        Calendar output = Calendar.getInstance();
+        output.set(Calendar.YEAR, mMinYear);
+        output.set(Calendar.DAY_OF_MONTH, 1);
+        output.set(Calendar.MONTH, Calendar.JANUARY);
+        return output;
+    }
+
+    @Override
+    public Calendar getEndDate() {
+        if (selectableDays != null) return selectableDays[selectableDays.length-1];
+        if (mMaxDate != null) return mMaxDate;
+        Calendar output = Calendar.getInstance();
+        output.set(Calendar.YEAR, mMaxYear);
+        output.set(Calendar.DAY_OF_MONTH, 31);
+        output.set(Calendar.MONTH, Calendar.DECEMBER);
+        return output;
+    }
+
+    @Override
     public int getMinYear() {
-        if(selectableDays != null) return selectableDays[0].get(Calendar.YEAR);
+        if (selectableDays != null) return selectableDays[0].get(Calendar.YEAR);
         // Ensure no years can be selected outside of the given minimum date
         return mMinDate != null && mMinDate.get(Calendar.YEAR) > mMinYear ? mMinDate.get(Calendar.YEAR) : mMinYear;
     }
 
     @Override
     public int getMaxYear() {
-        if(selectableDays != null) return selectableDays[selectableDays.length-1].get(Calendar.YEAR);
+        if (selectableDays != null) return selectableDays[selectableDays.length-1].get(Calendar.YEAR);
         // Ensure no years can be selected outside of the given maximum date
         return mMaxDate != null && mMaxDate.get(Calendar.YEAR) < mMaxYear ? mMaxDate.get(Calendar.YEAR) : mMaxYear;
     }
@@ -706,20 +925,10 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @Override
     public boolean isOutOfRange(int year, int month, int day) {
-        if (selectableDays != null) {
-            return !isSelectable(year, month, day);
-        }
-
-        if (isBeforeMin(year, month, day)) {
-            return true;
-        }
-        else if (isAfterMax(year, month, day)) {
-            return true;
-        }
-
-        return false;
+        return isDisabled(year, month, day) || !isSelectable(year, month, day);
     }
 
+    @SuppressWarnings("unused")
     public boolean isOutOfRange(Calendar calendar) {
         return isOutOfRange(
                 calendar.get(Calendar.YEAR),
@@ -728,8 +937,29 @@ public class DatePickerDialog extends DialogFragment implements
         );
     }
 
+    private boolean isDisabled(int year, int month, int day) {
+        return containsDate(disabledDays, year, month, day) || isBeforeMin(year, month, day) || isAfterMax(year, month, day);
+    }
+
+    private boolean isDisabled(Calendar c) {
+        return isDisabled(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+    }
+
     private boolean isSelectable(int year, int month, int day) {
-        for (Calendar c : selectableDays) {
+        return selectableDays == null || containsDate(selectableDays, year, month, day);
+    }
+
+    /**
+     * Checks whether the given data is contained in an array of dates
+     * @param dates Calendar[] which contents we want to search
+     * @param year the year as an int
+     * @param month the month as an int
+     * @param day the day as an int
+     * @return true if the data is present in the array
+     */
+    private boolean containsDate(Calendar[] dates, int year, int month, int day) {
+        if (dates == null) return false;
+        for (Calendar c : dates) {
             if(year < c.get(Calendar.YEAR)) break;
             if(year > c.get(Calendar.YEAR)) continue;
             if(month < c.get(Calendar.MONTH)) break;
@@ -806,18 +1036,38 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     private void setToNearestDate(Calendar calendar) {
-        if(selectableDays != null) {
-            int distance = Integer.MAX_VALUE;
+        if (selectableDays != null) {
+            long distance = Long.MAX_VALUE;
+            Calendar currentBest = calendar;
             for (Calendar c : selectableDays) {
-                int newDistance = Math.abs(calendar.compareTo(c));
-                if(newDistance < distance) distance = newDistance;
-                else {
-                    calendar.setTimeInMillis(c.getTimeInMillis());
-                    break;
+                long newDistance = Math.abs(calendar.getTimeInMillis() - c.getTimeInMillis());
+                if(newDistance < distance && !isDisabled(c)) {
+                    distance = newDistance;
+                    currentBest = c;
                 }
+                else break;
             }
+            calendar.setTimeInMillis(currentBest.getTimeInMillis());
             return;
         }
+
+        if (disabledDays != null) {
+            Calendar forwardDate = (Calendar) calendar.clone();
+            Calendar backwardDate = (Calendar) calendar.clone();
+            while (isDisabled(forwardDate) && isDisabled(backwardDate)) {
+                forwardDate.add(Calendar.DAY_OF_MONTH, 1);
+                backwardDate.add(Calendar.DAY_OF_MONTH, -1);
+            }
+            if (!isDisabled(backwardDate)) {
+                calendar.setTimeInMillis(backwardDate.getTimeInMillis());
+                return;
+            }
+            if (!isDisabled(forwardDate)) {
+                calendar.setTimeInMillis(forwardDate.getTimeInMillis());
+                return;
+            }
+        }
+
 
         if(isBeforeMin(calendar)) {
             calendar.setTimeInMillis(mMinDate.getTimeInMillis());
@@ -828,6 +1078,20 @@ public class DatePickerDialog extends DialogFragment implements
             calendar.setTimeInMillis(mMaxDate.getTimeInMillis());
             return;
         }
+    }
+
+    /**
+     * Trims off all time information, effectively setting it to midnight
+     * Makes it easier to compare at just the day level
+     * @param calendar The Calendar object to trim
+     * @return The trimmed Calendar object
+     */
+    private Calendar trimToMidnight(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar;
     }
 
     @Override

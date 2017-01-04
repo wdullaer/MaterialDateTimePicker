@@ -19,20 +19,18 @@ package com.wdullaer.materialdatetimepicker.date;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.StateListDrawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Displays a selectable list of years.
@@ -46,9 +44,6 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
     private int mChildSize;
     private TextViewWithCircularIndicator mSelectedView;
 
-    /**
-     * @param context
-     */
     public YearPickerView(Context context, DatePickerController controller) {
         super(context);
         mController = controller;
@@ -61,19 +56,15 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
         mChildSize = res.getDimensionPixelOffset(R.dimen.mdtp_year_label_height);
         setVerticalFadingEdgeEnabled(true);
         setFadingEdgeLength(mChildSize / 3);
-        init(context);
+        init();
         setOnItemClickListener(this);
         setSelector(new StateListDrawable());
         setDividerHeight(0);
         onDateChanged();
     }
 
-    private void init(Context context) {
-        ArrayList<String> years = new ArrayList<>();
-        for (int year = mController.getMinYear(); year <= mController.getMaxYear(); year++) {
-            years.add(String.format("%d", year));
-        }
-        mAdapter = new YearAdapter(context, R.layout.mdtp_year_label_text_view, years);
+    private void init() {
+        mAdapter = new YearAdapter(mController.getMinYear(), mController.getMaxYear());
         setAdapter(mAdapter);
     }
 
@@ -100,21 +91,48 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
         return Integer.valueOf(view.getText().toString());
     }
 
-    private class YearAdapter extends ArrayAdapter<String> {
+    private final class YearAdapter extends BaseAdapter {
+        private final int mMinYear;
+        private final int mMaxYear;
 
-        public YearAdapter(Context context, int resource, List<String> objects) {
-            super(context, resource, objects);
+        YearAdapter(int minYear, int maxYear) {
+            if (minYear > maxYear) {
+                throw new IllegalArgumentException("minYear > maxYear");
+            }
+            mMinYear = minYear;
+            mMaxYear = maxYear;
+        }
+
+        @Override
+        public int getCount() {
+            return mMaxYear - mMinYear + 1;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mMinYear + position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextViewWithCircularIndicator v = (TextViewWithCircularIndicator)
-                    super.getView(position, convertView, parent);
-            v.setAccentColor(mController.getAccentColor());
-            v.requestLayout();
-            int year = getYearFromTextView(v);
+            TextViewWithCircularIndicator v;
+            if (convertView != null) {
+                v = (TextViewWithCircularIndicator) convertView;
+            } else {
+                v = (TextViewWithCircularIndicator) LayoutInflater.from(parent.getContext())
+                  .inflate(R.layout.mdtp_year_label_text_view, parent, false);
+                v.setAccentColor(mController.getAccentColor(), mController.isThemeDark());
+            }
+            int year = mMinYear + position;
             boolean selected = mController.getSelectedDay().year == year;
+            v.setText(String.valueOf(year));
             v.drawIndicator(selected);
+            v.requestLayout();
             if (selected) {
                 mSelectedView = v;
             }

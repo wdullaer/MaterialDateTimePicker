@@ -121,49 +121,53 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mdtp_time_placeholder"
-            android:layout_toRightOf="@+id/separator_seconds"
+            android:layout_toRightOf="@id/separator_seconds"
             android:layout_centerVertical="true"
             android:visibility="invisible"
             android:textColor="@color/mdtp_accent_color_focused"
             style="@style/mdtp_time_label_small"
             android:importantForAccessibility="no" />
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_alignRight="@+id/seconds_space"
-            android:layout_alignLeft="@+id/seconds_space"
-            android:layout_marginLeft="-15dp"
-            android:layout_marginRight="-15dp"
-            android:layout_centerVertical="true" >
-            <com.wdullaer.materialdatetimepicker.AccessibleTextView
-                android:id="@+id/seconds"
-                style="@style/mdtp_time_label_small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/mdtp_time_placeholder"
-                android:layout_gravity="center"
-                android:textColor="@color/mdtp_accent_color_focused" />
-        </FrameLayout>
 
         <com.wdullaer.materialdatetimepicker.AccessibleTextView
-            android:id="@+id/ampm_hitspace"
-            android:layout_width="@dimen/mdtp_ampm_label_size"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignLeft="@+id/ampm_label"
-            android:layout_alignRight="@+id/ampm_label" />
-        <TextView
-            android:id="@+id/ampm_label"
+            android:id="@+id/seconds"
+            style="@style/mdtp_time_label_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:text="@string/mdtp_time_placeholder"
-            android:paddingLeft="@dimen/mdtp_ampm_left_padding"
-            android:paddingRight="@dimen/mdtp_ampm_left_padding"
-            android:layout_toRightOf="@+id/seconds_space"
-            android:layout_alignBaseline="@+id/separator"
-            android:textColor="@color/mdtp_accent_color_focused"
-            style="@style/mdtp_ampm_label"
-            android:importantForAccessibility="no" />
+            android:layout_gravity="center"
+            android:layout_toRightOf="@id/separator_seconds"
+            android:layout_alignBaseline="@id/separator"
+            android:textColor="@color/mdtp_accent_color_focused" />
+
+        <LinearLayout
+            android:id="@+id/ampm_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignBaseline="@id/seconds"
+            android:baselineAlignedChildIndex="1"
+            android:layout_toRightOf="@id/seconds">
+            <TextView
+                android:id="@+id/am_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mdtp_am"
+                android:paddingLeft="@dimen/mdtp_ampm_left_padding"
+                android:paddingRight="@dimen/mdtp_ampm_left_padding"
+                android:textColor="@color/mdtp_accent_color_focused"
+                style="@style/mdtp_ampm_label"
+                android:importantForAccessibility="no" />
+            <TextView
+                android:id="@+id/pm_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mdtp_pm"
+                android:layout_marginTop="6dp"
+                android:paddingLeft="@dimen/mdtp_ampm_left_padding"
+                android:paddingRight="@dimen/mdtp_ampm_left_padding"
+                android:textColor="@color/mdtp_accent_color_focused"
+                style="@style/mdtp_ampm_label"
+                android:importantForAccessibility="no" />
+        </LinearLayout>
   </RelativeLayout>

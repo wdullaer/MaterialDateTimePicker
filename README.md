@@ -12,6 +12,14 @@ Support for Android 4.0 and up.
 
 Feel free to fork or issue pull requests on github. Issues can be reported on the github issue tracker.
 
+**Version 2 Layout**
+
+Date Picker | Time Picker
+--- | ---
+![Date Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/date_picker_v2.png) | ![Time Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/time_picker_v2.png)
+
+**Version 1 Layout**
+
 Date Picker | Time Picker
 ---- | ----
 ![Date Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/date_picker.png) | ![Time Picker](https://raw.github.com/wdullaer/MaterialDateTimePicker/gh-pages/images/time_picker.png)
@@ -33,7 +41,7 @@ Date Picker | Time Picker
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:2.0.2'
+  compile 'com.wdullaer:materialdatetimepicker:3.0.0'
 }
 ```
 
@@ -53,8 +61,8 @@ In order to receive the date or time set in the picker, you will need to impleme
 `OnDateSetListener` interfaces. Typically this will be the `Activity` or `Fragment` that creates the Pickers. The callbacks use the same API as the standard Android pickers.
 ```java
 @Override
-public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-  String time = "You picked the following time: "+hourOfDay+"h"+minute;
+public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+  String time = "You picked the following time: "+hourOfDay+"h"+minute+"m"+second;
   timeTextView.setText(time);
 }
 
@@ -79,6 +87,16 @@ dpd.show(getFragmentManager(), "Datepickerdialog");
 ```
 
 ### Theme the pickers
+The library contains 2 layout versions for each picker.
+
+* Version 1: this is the original layout. It is based on the layout google used in the kitkat and early material design era
+* Version 2: this layout is based on the guidelines google posted when launching android marshmallow. This is the default and still the most current design.
+
+You can set the layout version using the factory
+```java
+dpd.setVersion(DatePickerDialog.Version.VERSION_2);
+```
+
 The pickers will be themed automatically based on the current theme where they are created, based on the current `colorAccent`. You can also theme the dialogs via the `setAccentColor(int color)` method. Alternatively, you can theme the pickers by overwriting the color resources `mdtp_accent_color` and `mdtp_accent_color_dark` in your project.
 ```xml
 <color name="mdtp_accent_color">#009688</color>
@@ -92,6 +110,11 @@ The exact order in which colors are selected is as follows:
 3. `R.attr.colorAccent` (eg. when using AppCompat)
 4. `R.color.mdtp_accent_color` and `R.color.mdtp_accent_color_dark` if none of the others are set in your project
 
+The pickers also have a dark theme. This can be specified globablly using the `mdtp_theme_dark` attribute in your theme or the `setThemeDark(boolean themeDark)` functions. The function calls overwrite the XML setting.
+```xml
+<item name="mdtp_theme_dark">true</item>
+```
+
 
 ## Additional Options
 * `TimePickerDialog` dark theme  
@@ -100,17 +123,23 @@ The `TimePickerDialog` has a dark theme that can be set by calling
 tpd.setThemeDark(true);
 ```
 
-* `DatePickerDialog` dark theme  
+* `DatePickerDialog` dark theme
 The `DatePickerDialog` has a dark theme that can be set by calling
 ```java
 dpd.setThemeDark(true);
 ```
+
+* `setAccentColor(String color)` and `setAccentColor(int color)`
+Set the accentColor to be used by the Dialog. The String version parses the color out using `Color.parseColor()`. The int version requires a ColorInt bytestring. It will explicitly set the color to fully opaque.
 
 * `TimePickerDialog` `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
 
 * `DatePickerDialog` `setTitle(String title)`
 Shows a title at the top of the `DatePickerDialog` instead of the day of the week
+
+* `setOkText()` and `setCancelText()`
+Set a custom text for the dialog Ok and Cancel labels. Can take a resourceId of a String. Works in both the DatePickerDialog and TimePickerDialog
 
 * `setMinTime(Timepoint time)`  
 Set the minimum valid time to be selected. Time values earlier in the day will be deactivated
@@ -119,10 +148,16 @@ Set the minimum valid time to be selected. Time values earlier in the day will b
 Set the maximum valid time to be selected. Time values later in the day will be deactivated
 
 * `setSelectableTimes(Timepoint[] times)`
-You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. It takes precedence over `setMinTime(Timepoint time)` and `setMaxTime(Timepoint time)`
+You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. `setMinTime(Timepoint time)` and `setMaxTime(Timepoint time)` will further trim this list down.
+
+* `setTimeInterval(int hourInterval, int minuteInterval, int secondInterval)`
+Set the interval for selectable times in the TimePickerDialog. This is a convenience wrapper around `setSelectableTimes`
 
 * `setSelectableDays(Calendar[] days)`  
 You can pass a `Calendar[]` to the `DatePickerDialog`. The values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
+
+* `setDisabledDays(Calendar[] days)`  
+The values in this `Calendar[]` are explicitly disabled (not selectable). This option can be used together with `setSelectableDays(Calendar[] days)`: in case there is a clash `setDisabledDays(Calendar[] days)` will take precedence over `setSelectableDays(Calendar[] days)`
 
 * `setHighlightedDays(Calendar[] days)`  
 You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the color of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`
@@ -147,6 +182,11 @@ Set whether the dialogs should vibrate the device when a selection is made. This
 * `dismissOnPause(boolean dismissOnPause)`  
 Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
 
+* `DatePickerDialog` `autoDismiss(boolean autoDismiss)`
+If set to `true` will dismiss the picker when the user selects a date. This defaults to `false`.
+
+* `TimepickerDialog` `enableSeconds(boolean enableSconds)` and `enableMinutes(boolean enableMinutes)`
+Allows you to enable or disable a seconds and minutes picker ont he `TimepickerDialog`. Enabling the seconds picker, implies enabling the minutes picker. Disabling the minute picker will disable the seconds picker. The last applied setting will be used. By default `enableSeconds = false` and `enableMinutes = true`.
 
 ## FAQ
 
@@ -164,6 +204,23 @@ If you do really need `SupportDialogFragment`, you should fork the library. It i
 
 ### Why does the `DatePickerDialog` return the selected month -1?
 In the java `Calendar` class months use 0 based indexing: January is month 0, December is month 11. This convention is widely used in the java world, for example the native Android DatePicker.
+
+### How do I use my custom logic to enable/disable dates?
+`DatePickerDialog` exposes some utility methods to enable / disable dates for common scenario's. If your needs are not covered by these, you can override the `isOutOfRange()` method by extending the `DatePickerDialog` class.
+
+```java
+class MyDatePickerDialog extends DatePickerDialog {
+  @override
+  public boolean isOutOfRange(int year, int month, int day) {
+    // disable days that are odd
+    return day % 2 == 1;
+  }
+}
+```
+
+> You need to override `isOutOfRange()` with this signature, not the one with the Calendar signature.
+
+When you override `isOutOfRange()` the built-in methods for setting the enabled / disabled dates will no longer work. It will need to be completely handled by your implementation.
 
 ### Why are my callbacks lost when the device changes orientation?
 The simple solution is to dismiss the pickers when your activity is paused.

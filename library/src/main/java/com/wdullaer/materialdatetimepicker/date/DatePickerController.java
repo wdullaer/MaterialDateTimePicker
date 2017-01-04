@@ -39,13 +39,15 @@ public interface DatePickerController {
     
     Calendar[] getHighlightedDays();
 
-    Calendar[] getSelectableDays();
-
     int getFirstDayOfWeek();
 
     int getMinYear();
 
     int getMaxYear();
+
+    Calendar getStartDate();
+
+    Calendar getEndDate();
 
     boolean isOutOfRange(int year, int month, int day);
 
