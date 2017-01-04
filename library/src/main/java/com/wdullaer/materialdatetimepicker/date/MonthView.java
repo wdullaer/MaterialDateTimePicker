@@ -197,8 +197,8 @@ public abstract class MonthView extends View {
         mController = controller;
         Resources res = context.getResources();
 
-        mDayLabelCalendar = Calendar.getInstance();
-        mCalendar = Calendar.getInstance();
+        mDayLabelCalendar = Calendar.getInstance(mController.getTimeZone());
+        mCalendar = Calendar.getInstance(mController.getTimeZone());
 
         mDayOfWeekTypeface = res.getString(R.string.mdtp_day_of_week_label_typeface);
         mMonthTitleTypeface = res.getString(R.string.mdtp_sans_serif);
@@ -367,7 +367,7 @@ public abstract class MonthView extends View {
         // Figure out what day today is
         //final Time today = new Time(Time.getCurrentTimezone());
         //today.setToNow();
-        final Calendar today = Calendar.getInstance();
+        final Calendar today = Calendar.getInstance(mController.getTimeZone());
         mHasToday = false;
         mToday = -1;
 
@@ -704,7 +704,7 @@ public abstract class MonthView extends View {
         private static final String DATE_FORMAT = "dd MMMM yyyy";
 
         private final Rect mTempRect = new Rect();
-        private final Calendar mTempCalendar = Calendar.getInstance();
+        private final Calendar mTempCalendar = Calendar.getInstance(mController.getTimeZone());
 
         public MonthViewTouchHelper(View host) {
             super(host);

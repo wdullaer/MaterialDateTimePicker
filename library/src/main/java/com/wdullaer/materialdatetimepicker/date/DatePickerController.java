@@ -17,6 +17,7 @@
 package com.wdullaer.materialdatetimepicker.date;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Controller class to communicate among the various components of the date picker dialog.
@@ -52,4 +53,6 @@ public interface DatePickerController {
     boolean isOutOfRange(int year, int month, int day);
 
     void tryVibrate();
+
+    TimeZone getTimeZone();
 }

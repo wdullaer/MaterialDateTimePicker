@@ -54,6 +54,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Dialog allowing users to select a date.
@@ -99,6 +100,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_CANCEL_RESID = "cancel_resid";
     private static final String KEY_CANCEL_STRING = "cancel_string";
     private static final String KEY_VERSION = "version";
+    private static final String KEY_TIMEZONE = "timezone";
 
 
     private static final int DEFAULT_START_YEAR = 1900;
@@ -112,7 +114,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
     private static SimpleDateFormat VERSION_2_FORMAT;
 
-    private final Calendar mCalendar = trimToMidnight(Calendar.getInstance());
+    private final Calendar mCalendar = trimToMidnight(Calendar.getInstance(getTimeZone()));
     private OnDateSetListener mCallBack;
     private HashSet<OnDateChangedListener> mListeners = new HashSet<>();
     private DialogInterface.OnCancelListener mOnCancelListener;
@@ -151,6 +153,7 @@ public class DatePickerDialog extends DialogFragment implements
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
     private Version mVersion;
+    private TimeZone mTimezone;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -269,6 +272,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putInt(KEY_CANCEL_RESID, mCancelResid);
         outState.putString(KEY_CANCEL_STRING, mCancelString);
         outState.putSerializable(KEY_VERSION, mVersion);
+        outState.putSerializable(KEY_TIMEZONE, mTimezone);
     }
 
     @Override
@@ -301,6 +305,7 @@ public class DatePickerDialog extends DialogFragment implements
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
             mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
+            mTimezone = (TimeZone) savedInstanceState.getSerializable(KEY_TIMEZONE);
         }
 
         int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_date_picker_dialog : R.layout.mdtp_date_picker_dialog_v2;
@@ -812,6 +817,16 @@ public class DatePickerDialog extends DialogFragment implements
         mVersion = version;
     }
 
+    /**
+     * Set which timezone the picker should use
+     * @param timeZone The timezone to use
+     */
+    @SuppressWarnings("unused")
+    public void setTimeZone(TimeZone timeZone) {
+        mTimezone = timeZone;
+        mCalendar.setTimeZone(timeZone);
+    }
+
     @SuppressWarnings("unused")
     public void setOnDateSetListener(OnDateSetListener listener) {
         mCallBack = listener;
@@ -879,14 +894,14 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public MonthAdapter.CalendarDay getSelectedDay() {
-        return new MonthAdapter.CalendarDay(mCalendar);
+        return new MonthAdapter.CalendarDay(mCalendar, getTimeZone());
     }
 
     @Override
     public Calendar getStartDate() {
         if (selectableDays != null) return selectableDays[0];
         if (mMinDate != null) return mMinDate;
-        Calendar output = Calendar.getInstance();
+        Calendar output = Calendar.getInstance(getTimeZone());
         output.set(Calendar.YEAR, mMinYear);
         output.set(Calendar.DAY_OF_MONTH, 1);
         output.set(Calendar.MONTH, Calendar.JANUARY);
@@ -897,7 +912,7 @@ public class DatePickerDialog extends DialogFragment implements
     public Calendar getEndDate() {
         if (selectableDays != null) return selectableDays[selectableDays.length-1];
         if (mMaxDate != null) return mMaxDate;
-        Calendar output = Calendar.getInstance();
+        Calendar output = Calendar.getInstance(getTimeZone());
         output.set(Calendar.YEAR, mMaxYear);
         output.set(Calendar.DAY_OF_MONTH, 31);
         output.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -1112,6 +1127,10 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void tryVibrate() {
         if(mVibrate) mHapticFeedbackController.tryVibrate();
+    }
+
+    @Override public TimeZone getTimeZone() {
+        return mTimezone == null ? TimeZone.getDefault() : mTimezone;
     }
 
     public void notifyOnDateListener() {
