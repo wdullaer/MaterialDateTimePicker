@@ -71,10 +71,10 @@ public abstract class DayPickerView extends ListView implements OnScrollListener
     protected Handler mHandler;
 
     // highlighted time
-    protected MonthAdapter.CalendarDay mSelectedDay = new MonthAdapter.CalendarDay();
+    protected MonthAdapter.CalendarDay mSelectedDay;
     protected MonthAdapter mAdapter;
 
-    protected MonthAdapter.CalendarDay mTempDay = new MonthAdapter.CalendarDay();
+    protected MonthAdapter.CalendarDay mTempDay;
 
     // When the week starts; numbered like Time.<WEEKDAY> (e.g. SUNDAY=0).
     protected int mFirstDayOfWeek;
@@ -106,6 +106,8 @@ public abstract class DayPickerView extends ListView implements OnScrollListener
     public void setController(DatePickerController controller) {
         mController = controller;
         mController.registerOnDateChangedListener(this);
+        mSelectedDay = new MonthAdapter.CalendarDay(mController.getTimeZone());
+        mTempDay = new MonthAdapter.CalendarDay(mController.getTimeZone());
         refreshAdapter();
         onDateChanged();
     }
