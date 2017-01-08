@@ -242,6 +242,7 @@ public class TimePickerDialog extends DialogFragment implements
      * Set the accent color of this dialog
      * @param color the accent color you want
      */
+    @SuppressWarnings("unused")
     public void setAccentColor(String color) {
         mAccentColor = Color.parseColor(color);
     }
@@ -251,7 +252,7 @@ public class TimePickerDialog extends DialogFragment implements
      * @param color the accent color you want
      */
     public void setAccentColor(@ColorInt int color) {
-        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));;
+        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 
     /**
@@ -336,6 +337,7 @@ public class TimePickerDialog extends DialogFragment implements
      * Will disable seconds if minutes are disbled
      * @param enableMinutes true if minutes picker should be shown
      */
+    @SuppressWarnings("unused")
     public void enableMinutes(boolean enableMinutes) {
         if (!enableMinutes) mEnableSeconds = false;
         mEnableMinutes = enableMinutes;
@@ -1330,7 +1332,7 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         int val = getValFromKeyCode(keyCode);
-        Utils.tryAccessibilityAnnounce(mTimePicker, String.format("%d", val));
+        Utils.tryAccessibilityAnnounce(mTimePicker, String.format(Locale.getDefault(), "%d", val));
         // Automatically fill in 0's if AM or PM was legally entered.
         if (isTypedTimeFullyLegal()) {
             if (!mIs24HourMode && mTypedTimes.size() <= (textSize - 1)) {
