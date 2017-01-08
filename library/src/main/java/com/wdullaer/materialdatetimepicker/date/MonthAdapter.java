@@ -27,6 +27,7 @@ import com.wdullaer.materialdatetimepicker.date.MonthView.OnDayClickListener;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 /**
  * An adapter for a list of {@link MonthView} items.
@@ -51,16 +52,20 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
         int year;
         int month;
         int day;
+        TimeZone mTimeZone;
 
-        public CalendarDay() {
+        public CalendarDay(TimeZone timeZone) {
+            mTimeZone = timeZone;
             setTime(System.currentTimeMillis());
         }
 
-        public CalendarDay(long timeInMillis) {
+        public CalendarDay(long timeInMillis, TimeZone timeZone) {
+            mTimeZone = timeZone;
             setTime(timeInMillis);
         }
 
-        public CalendarDay(Calendar calendar) {
+        public CalendarDay(Calendar calendar, TimeZone timeZone) {
+            mTimeZone = timeZone;
             year = calendar.get(Calendar.YEAR);
             month = calendar.get(Calendar.MONTH);
             day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -84,7 +89,7 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
 
         private void setTime(long timeInMillis) {
             if (calendar == null) {
-                calendar = Calendar.getInstance();
+                calendar = Calendar.getInstance(mTimeZone);
             }
             calendar.setTimeInMillis(timeInMillis);
             month = calendar.get(Calendar.MONTH);
@@ -132,7 +137,7 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
      * Set up the gesture detector and selected time
      */
     protected void init() {
-        mSelectedDay = new CalendarDay(System.currentTimeMillis());
+        mSelectedDay = new CalendarDay(System.currentTimeMillis(), mController.getTimeZone());
     }
 
     @Override
