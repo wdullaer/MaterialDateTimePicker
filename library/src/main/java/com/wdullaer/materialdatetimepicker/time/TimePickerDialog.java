@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -1108,12 +1109,12 @@ public class TimePickerDialog extends DialogFragment implements
      * @param time Timepoint - The timepoint to round
      * @return Timepoint - The nearest valid Timepoint
      */
-    private Timepoint roundToNearest(Timepoint time) {
-        return roundToNearest(time, Timepoint.TYPE.HOUR);
+    private Timepoint roundToNearest(@NonNull Timepoint time) {
+        return roundToNearest(time, null);
     }
 
     @Override
-    public Timepoint roundToNearest(Timepoint time, Timepoint.TYPE type) {
+    public Timepoint roundToNearest(@NonNull Timepoint time, @Nullable Timepoint.TYPE type) {
 
         if(mMinTime != null && mMinTime.compareTo(time) > 0) return mMinTime;
 
@@ -1122,8 +1123,13 @@ public class TimePickerDialog extends DialogFragment implements
             int currentDistance = Integer.MAX_VALUE;
             Timepoint output = time;
             for(Timepoint t : mSelectableTimes) {
-                if(type == Timepoint.TYPE.MINUTE && t.getHour() != time.getHour()) continue;
-                if(type == Timepoint.TYPE.SECOND && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
+                // type == null: no restrictions
+                // type == HOUR: do not change the hour
+                if (type == Timepoint.TYPE.HOUR && t.getHour() != time.getHour()) continue;
+                // type == MINUTE: do not change hour or minute
+                if (type == Timepoint.TYPE.MINUTE  && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
+                // type == SECOND: cannot change anything, return input
+                if (type == Timepoint.TYPE.SECOND) return time;
                 int newDistance = Math.abs(t.compareTo(time));
                 if(newDistance < currentDistance) {
                     currentDistance = newDistance;
