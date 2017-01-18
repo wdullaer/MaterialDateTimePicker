@@ -123,4 +123,9 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
             return new Timepoint[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "" + hour + "h " + minute + "m " + second + "s";
+    }
 }

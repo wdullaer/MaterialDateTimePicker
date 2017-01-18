@@ -54,14 +54,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Dialog allowing users to select a date.
  */
 public class DatePickerDialog extends DialogFragment implements
         OnClickListener, DatePickerController {
-
-    private static final String TAG = "DatePickerDialog";
 
     public enum Version {
         VERSION_1,
@@ -96,9 +95,12 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_TITLE = "title";
     private static final String KEY_OK_RESID = "ok_resid";
     private static final String KEY_OK_STRING = "ok_string";
+    private static final String KEY_OK_COLOR = "ok_color";
     private static final String KEY_CANCEL_RESID = "cancel_resid";
     private static final String KEY_CANCEL_STRING = "cancel_string";
+    private static final String KEY_CANCEL_COLOR = "cancel_color";
     private static final String KEY_VERSION = "version";
+    private static final String KEY_TIMEZONE = "timezone";
 
 
     private static final int DEFAULT_START_YEAR = 1900;
@@ -112,7 +114,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
     private static SimpleDateFormat VERSION_2_FORMAT;
 
-    private final Calendar mCalendar = trimToMidnight(Calendar.getInstance());
+    private final Calendar mCalendar = trimToMidnight(Calendar.getInstance(getTimeZone()));
     private OnDateSetListener mCallBack;
     private HashSet<OnDateChangedListener> mListeners = new HashSet<>();
     private DialogInterface.OnCancelListener mOnCancelListener;
@@ -148,9 +150,12 @@ public class DatePickerDialog extends DialogFragment implements
     private int mDefaultView = MONTH_AND_DAY_VIEW;
     private int mOkResid = R.string.mdtp_ok;
     private String mOkString;
+    private int mOkColor = -1;
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
+    private int mCancelColor = -1;
     private Version mVersion;
+    private TimeZone mTimezone;
 
     private HapticFeedbackController mHapticFeedbackController;
 
@@ -180,7 +185,7 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * The callback used to notify other date picker components of a change in selected date.
      */
-    public interface OnDateChangedListener {
+    interface OnDateChangedListener {
 
         void onDateChanged();
     }
@@ -266,9 +271,12 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putString(KEY_TITLE, mTitle);
         outState.putInt(KEY_OK_RESID, mOkResid);
         outState.putString(KEY_OK_STRING, mOkString);
+        outState.putInt(KEY_OK_COLOR, mOkColor);
         outState.putInt(KEY_CANCEL_RESID, mCancelResid);
         outState.putString(KEY_CANCEL_STRING, mCancelString);
+        outState.putInt(KEY_CANCEL_COLOR, mCancelColor);
         outState.putSerializable(KEY_VERSION, mVersion);
+        outState.putSerializable(KEY_TIMEZONE, mTimezone);
     }
 
     @Override
@@ -298,9 +306,12 @@ public class DatePickerDialog extends DialogFragment implements
             mTitle = savedInstanceState.getString(KEY_TITLE);
             mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
+            mOkColor = savedInstanceState.getInt(KEY_OK_COLOR);
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
+            mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR);
             mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
+            mTimezone = (TimeZone) savedInstanceState.getSerializable(KEY_TIMEZONE);
         }
 
         int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_date_picker_dialog : R.layout.mdtp_date_picker_dialog_v2;
@@ -380,8 +391,12 @@ public class DatePickerDialog extends DialogFragment implements
         }
         if(mDatePickerHeaderView != null) mDatePickerHeaderView.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
-        okButton.setTextColor(mAccentColor);
-        cancelButton.setTextColor(mAccentColor);
+
+        // Buttons can have a different color
+        if (mOkColor != -1) okButton.setTextColor(mOkColor);
+        else okButton.setTextColor(mAccentColor);
+        if (mCancelColor != -1) cancelButton.setTextColor(mCancelColor);
+        else cancelButton.setTextColor(mAccentColor);
 
         if(getDialog() == null) {
             view.findViewById(R.id.done_background).setVisibility(View.GONE);
@@ -611,6 +626,42 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     /**
+     * Set the text color of the OK button
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setOkColor(String color) {
+        mOkColor = Color.parseColor(color);
+    }
+
+    /**
+     * Set the text color of the OK button
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setOkColor(@ColorInt int color) {
+        mOkColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
+     * Set the text color of the Cancel button
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setCancelColor(String color) {
+        mCancelColor = Color.parseColor(color);
+    }
+
+    /**
+     * Set the text color of the Cancel button
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setCancelColor(@ColorInt int color) {
+        mCancelColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
      * Get the accent color of this dialog
      * @return accent color
      */
@@ -812,6 +863,16 @@ public class DatePickerDialog extends DialogFragment implements
         mVersion = version;
     }
 
+    /**
+     * Set which timezone the picker should use
+     * @param timeZone The timezone to use
+     */
+    @SuppressWarnings("unused")
+    public void setTimeZone(TimeZone timeZone) {
+        mTimezone = timeZone;
+        mCalendar.setTimeZone(timeZone);
+    }
+
     @SuppressWarnings("unused")
     public void setOnDateSetListener(OnDateSetListener listener) {
         mCallBack = listener;
@@ -879,14 +940,14 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public MonthAdapter.CalendarDay getSelectedDay() {
-        return new MonthAdapter.CalendarDay(mCalendar);
+        return new MonthAdapter.CalendarDay(mCalendar, getTimeZone());
     }
 
     @Override
     public Calendar getStartDate() {
         if (selectableDays != null) return selectableDays[0];
         if (mMinDate != null) return mMinDate;
-        Calendar output = Calendar.getInstance();
+        Calendar output = Calendar.getInstance(getTimeZone());
         output.set(Calendar.YEAR, mMinYear);
         output.set(Calendar.DAY_OF_MONTH, 1);
         output.set(Calendar.MONTH, Calendar.JANUARY);
@@ -897,7 +958,7 @@ public class DatePickerDialog extends DialogFragment implements
     public Calendar getEndDate() {
         if (selectableDays != null) return selectableDays[selectableDays.length-1];
         if (mMaxDate != null) return mMaxDate;
-        Calendar output = Calendar.getInstance();
+        Calendar output = Calendar.getInstance(getTimeZone());
         output.set(Calendar.YEAR, mMaxYear);
         output.set(Calendar.DAY_OF_MONTH, 31);
         output.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -1112,6 +1173,10 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void tryVibrate() {
         if(mVibrate) mHapticFeedbackController.tryVibrate();
+    }
+
+    @Override public TimeZone getTimeZone() {
+        return mTimezone == null ? TimeZone.getDefault() : mTimezone;
     }
 
     public void notifyOnDateListener() {

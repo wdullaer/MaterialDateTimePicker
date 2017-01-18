@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -50,8 +51,6 @@ import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -89,8 +88,10 @@ public class TimePickerDialog extends DialogFragment implements
     private static final String KEY_ENABLE_MINUTES = "enable_minutes";
     private static final String KEY_OK_RESID = "ok_resid";
     private static final String KEY_OK_STRING = "ok_string";
+    private static final String KEY_OK_COLOR = "ok_color";
     private static final String KEY_CANCEL_RESID = "cancel_resid";
     private static final String KEY_CANCEL_STRING = "cancel_string";
+    private static final String KEY_CANCEL_COLOR = "cancel_color";
     private static final String KEY_VERSION = "version";
 
     public static final int HOUR_INDEX = 0;
@@ -142,8 +143,10 @@ public class TimePickerDialog extends DialogFragment implements
     private boolean mEnableMinutes;
     private int mOkResid;
     private String mOkString;
+    private int mOkColor;
     private int mCancelResid;
     private String mCancelString;
+    private int mCancelColor;
     private Version mVersion;
 
     // For hardware IME input.
@@ -211,7 +214,9 @@ public class TimePickerDialog extends DialogFragment implements
         mEnableSeconds = false;
         mEnableMinutes = true;
         mOkResid = R.string.mdtp_ok;
+        mOkColor = -1;
         mCancelResid = R.string.mdtp_cancel;
+        mCancelColor = -1;
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
     }
 
@@ -238,12 +243,9 @@ public class TimePickerDialog extends DialogFragment implements
      * Set the accent color of this dialog
      * @param color the accent color you want
      */
+    @SuppressWarnings("unused")
     public void setAccentColor(String color) {
-        try {
-            mAccentColor = Color.parseColor(color);
-        } catch(IllegalArgumentException e) {
-            throw e;
-        }
+        mAccentColor = Color.parseColor(color);
     }
 
     /**
@@ -251,7 +253,43 @@ public class TimePickerDialog extends DialogFragment implements
      * @param color the accent color you want
      */
     public void setAccentColor(@ColorInt int color) {
-        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));;
+        mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
+     * Set the text color of the OK button
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setOkColor(String color) {
+        mOkColor = Color.parseColor(color);
+    }
+
+    /**
+     * Set the text color of the OK button
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setOkColor(@ColorInt int color) {
+        mOkColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
+     * Set the text color of the Cancel button
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setCancelColor(String color) {
+        mCancelColor = Color.parseColor(color);
+    }
+
+    /**
+     * Set the text color of the Cancel button
+     * @param color the color you want
+     */
+    @SuppressWarnings("unused")
+    public void setCancelColor(@ColorInt int color) {
+        mCancelColor= Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 
     @Override
@@ -300,6 +338,7 @@ public class TimePickerDialog extends DialogFragment implements
      * Will disable seconds if minutes are disbled
      * @param enableMinutes true if minutes picker should be shown
      */
+    @SuppressWarnings("unused")
     public void enableMinutes(boolean enableMinutes) {
         if (!enableMinutes) mEnableSeconds = false;
         mEnableMinutes = enableMinutes;
@@ -479,8 +518,10 @@ public class TimePickerDialog extends DialogFragment implements
             mEnableMinutes = savedInstanceState.getBoolean(KEY_ENABLE_MINUTES);
             mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
+            mOkColor = savedInstanceState.getInt(KEY_OK_COLOR);
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
+            mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR);
             mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
         }
     }
@@ -819,11 +860,15 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
-        mOkButton.setTextColor(mAccentColor);
-        mCancelButton.setTextColor(mAccentColor);
         timePickerHeader.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
         view.findViewById(R.id.time_display).setBackgroundColor(mAccentColor);
+
+        // Button text can have a different color
+        if (mOkColor != -1) mOkButton.setTextColor(mOkColor);
+        else mOkButton.setTextColor(mAccentColor);
+        if (mCancelColor != -1) mCancelButton.setTextColor(mCancelColor);
+        else mCancelButton.setTextColor(mAccentColor);
 
         if(getDialog() == null) {
             view.findViewById(R.id.done_background).setVisibility(View.GONE);
@@ -936,8 +981,10 @@ public class TimePickerDialog extends DialogFragment implements
             outState.putBoolean(KEY_ENABLE_MINUTES, mEnableMinutes);
             outState.putInt(KEY_OK_RESID, mOkResid);
             outState.putString(KEY_OK_STRING, mOkString);
+            outState.putInt(KEY_OK_COLOR, mOkColor);
             outState.putInt(KEY_CANCEL_RESID, mCancelResid);
             outState.putString(KEY_CANCEL_STRING, mCancelString);
+            outState.putInt(KEY_CANCEL_COLOR, mCancelColor);
             outState.putSerializable(KEY_VERSION, mVersion);
         }
     }
@@ -1062,12 +1109,12 @@ public class TimePickerDialog extends DialogFragment implements
      * @param time Timepoint - The timepoint to round
      * @return Timepoint - The nearest valid Timepoint
      */
-    private Timepoint roundToNearest(Timepoint time) {
-        return roundToNearest(time, Timepoint.TYPE.HOUR);
+    private Timepoint roundToNearest(@NonNull Timepoint time) {
+        return roundToNearest(time, null);
     }
 
     @Override
-    public Timepoint roundToNearest(Timepoint time, Timepoint.TYPE type) {
+    public Timepoint roundToNearest(@NonNull Timepoint time, @Nullable Timepoint.TYPE type) {
 
         if(mMinTime != null && mMinTime.compareTo(time) > 0) return mMinTime;
 
@@ -1076,8 +1123,13 @@ public class TimePickerDialog extends DialogFragment implements
             int currentDistance = Integer.MAX_VALUE;
             Timepoint output = time;
             for(Timepoint t : mSelectableTimes) {
-                if(type == Timepoint.TYPE.MINUTE && t.getHour() != time.getHour()) continue;
-                if(type == Timepoint.TYPE.SECOND && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
+                // type == null: no restrictions
+                // type == HOUR: do not change the hour
+                if (type == Timepoint.TYPE.HOUR && t.getHour() != time.getHour()) continue;
+                // type == MINUTE: do not change hour or minute
+                if (type == Timepoint.TYPE.MINUTE  && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
+                // type == SECOND: cannot change anything, return input
+                if (type == Timepoint.TYPE.SECOND) return time;
                 int newDistance = Math.abs(t.compareTo(time));
                 if(newDistance < currentDistance) {
                     currentDistance = newDistance;
@@ -1286,7 +1338,7 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         int val = getValFromKeyCode(keyCode);
-        Utils.tryAccessibilityAnnounce(mTimePicker, String.format("%d", val));
+        Utils.tryAccessibilityAnnounce(mTimePicker, String.format(Locale.getDefault(), "%d", val));
         // Automatically fill in 0's if AM or PM was legally entered.
         if (isTypedTimeFullyLegal()) {
             if (!mIs24HourMode && mTypedTimes.size() <= (textSize - 1)) {

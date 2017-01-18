@@ -41,7 +41,7 @@ Date Picker | Time Picker
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:3.0.0'
+  compile 'com.wdullaer:materialdatetimepicker:3.1.0'
 }
 ```
 
@@ -132,6 +132,9 @@ dpd.setThemeDark(true);
 * `setAccentColor(String color)` and `setAccentColor(int color)`
 Set the accentColor to be used by the Dialog. The String version parses the color out using `Color.parseColor()`. The int version requires a ColorInt bytestring. It will explicitly set the color to fully opaque.
 
+* `setOkColor()` and `setCancelColor()`
+Set the text color for the OK or Cancel button. Behaves similar to `setAccentColor()`
+
 * `TimePickerDialog` `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
 
@@ -187,6 +190,9 @@ If set to `true` will dismiss the picker when the user selects a date. This defa
 
 * `TimepickerDialog` `enableSeconds(boolean enableSconds)` and `enableMinutes(boolean enableMinutes)`
 Allows you to enable or disable a seconds and minutes picker ont he `TimepickerDialog`. Enabling the seconds picker, implies enabling the minutes picker. Disabling the minute picker will disable the seconds picker. The last applied setting will be used. By default `enableSeconds = false` and `enableMinutes = true`.
+
+* `DatePickerDialog` `setTimeZone(Timezone timezone)`  
+Sets the `Timezone` used to represent time internally in the picker. Defaults to the current default Timezone of the device.
 
 ## FAQ
 
