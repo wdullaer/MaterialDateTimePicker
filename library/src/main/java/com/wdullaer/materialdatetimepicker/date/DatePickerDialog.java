@@ -236,6 +236,7 @@ public class DatePickerDialog extends DialogFragment implements
         } else {
             VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMMdd"), Locale.getDefault());
         }
+        VERSION_2_FORMAT.setTimeZone(getTimeZone());
     }
 
     @Override
@@ -871,6 +872,9 @@ public class DatePickerDialog extends DialogFragment implements
     public void setTimeZone(TimeZone timeZone) {
         mTimezone = timeZone;
         mCalendar.setTimeZone(timeZone);
+        YEAR_FORMAT.setTimeZone(timeZone);
+        MONTH_FORMAT.setTimeZone(timeZone);
+        DAY_FORMAT.setTimeZone(timeZone);
     }
 
     @SuppressWarnings("unused")
