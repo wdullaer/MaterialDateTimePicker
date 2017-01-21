@@ -435,13 +435,13 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private Timepoint roundToValidTime(Timepoint newSelection, int currentItemShowing) {
         switch(currentItemShowing) {
             case HOUR_INDEX:
-                newSelection = mController.roundToNearest(newSelection, Timepoint.TYPE.HOUR);
+                newSelection = mController.roundToNearest(newSelection, null);
                 break;
             case MINUTE_INDEX:
-                newSelection = mController.roundToNearest(newSelection, Timepoint.TYPE.MINUTE);
+                newSelection = mController.roundToNearest(newSelection, Timepoint.TYPE.HOUR);
                 break;
             case SECOND_INDEX:
-                newSelection = mController.roundToNearest(newSelection, Timepoint.TYPE.SECOND);
+                newSelection = mController.roundToNearest(newSelection, Timepoint.TYPE.MINUTE);
                 break;
             default:
                 newSelection = mCurrentTime;
@@ -638,6 +638,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
         int lastIndex = getCurrentItemShowing();
         mCurrentItemShowing = index;
+        reselectSelector(getTime(), true, index);
 
         if (animate && (index != lastIndex)) {
             ObjectAnimator[] anims = new ObjectAnimator[4];
