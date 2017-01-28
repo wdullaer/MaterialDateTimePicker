@@ -41,7 +41,7 @@ Date Picker | Time Picker
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:3.1.0'
+  compile 'com.wdullaer:materialdatetimepicker:3.1.1'
 }
 ```
 
