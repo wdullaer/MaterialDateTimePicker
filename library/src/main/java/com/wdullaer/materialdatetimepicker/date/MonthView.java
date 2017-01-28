@@ -601,18 +601,7 @@ public abstract class MonthView extends View {
      * @return true if the given date should be highlighted
      */
     protected boolean isHighlighted(int year, int month, int day) {
-        Calendar[] highlightedDays = mController.getHighlightedDays();
-        if(highlightedDays == null) return false;
-        for (Calendar c : highlightedDays) {
-            if(year < c.get(Calendar.YEAR)) break;
-            if(year > c.get(Calendar.YEAR)) continue;
-            if(month < c.get(Calendar.MONTH)) break;
-            if(month > c.get(Calendar.MONTH)) continue;
-            if(day < c.get(Calendar.DAY_OF_MONTH)) break;
-            if(day > c.get(Calendar.DAY_OF_MONTH)) continue;
-            return true;
-        }
-        return false;
+        return mController.isHighlighted(year, month, day);
     }
 
     /**
