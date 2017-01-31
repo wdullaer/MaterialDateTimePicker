@@ -1035,11 +1035,18 @@ public class DatePickerDialog extends DialogFragment implements
 
     private void setToNearestDate(Calendar calendar) {
         if (!selectableDays.isEmpty()) {
+            Calendar newCalendar = null;
             Calendar higher = selectableDays.ceiling(calendar);
             Calendar lower = selectableDays.lower(calendar);
 
-            if (higher == null) higher = calendar;
-            if (lower == null) lower = calendar;
+            if (higher == null && lower != null) newCalendar = lower;
+            else if (lower == null && higher != null) newCalendar = higher;
+
+            if (newCalendar != null || higher == null) {
+                newCalendar = newCalendar == null ? calendar : newCalendar;
+                calendar.setTimeInMillis(newCalendar.getTimeInMillis());
+                return;
+            }
 
             long highDistance = Math.abs(higher.getTimeInMillis() - calendar.getTimeInMillis());
             long lowDistance = Math.abs(calendar.getTimeInMillis() - lower.getTimeInMillis());
