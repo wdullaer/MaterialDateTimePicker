@@ -1123,6 +1123,7 @@ public class TimePickerDialog extends DialogFragment implements
             int currentDistance = Integer.MAX_VALUE;
             Timepoint output = time;
             for(Timepoint t : mSelectableTimes) {
+                Log.d("Timepoing", "" +  type + " " + time + " compared to " + t.toString());
                 // type == null: no restrictions
                 // type == HOUR: do not change the hour
                 if (type == Timepoint.TYPE.HOUR && t.getHour() != time.getHour()) continue;
@@ -1130,8 +1131,9 @@ public class TimePickerDialog extends DialogFragment implements
                 if (type == Timepoint.TYPE.MINUTE  && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
                 // type == SECOND: cannot change anything, return input
                 if (type == Timepoint.TYPE.SECOND) return time;
+                Log.d("Timepoing", "Comparing");
                 int newDistance = Math.abs(t.compareTo(time));
-                if(newDistance < currentDistance) {
+                if (newDistance < currentDistance) {
                     currentDistance = newDistance;
                     output = t;
                 }
