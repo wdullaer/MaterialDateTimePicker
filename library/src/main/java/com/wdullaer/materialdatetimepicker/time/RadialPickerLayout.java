@@ -18,13 +18,13 @@ package com.wdullaer.materialdatetimepicker.time;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -904,13 +904,16 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     @SuppressWarnings("deprecation")
     public void onInitializeAccessibilityNodeInfo(@NonNull AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        if(Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= 21) {
             info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD);
             info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD);
         }
-        else {
+        else if (Build.VERSION.SDK_INT >= 16) {
             info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
             info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+        } else {
+            info.addAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
+            info.addAction(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);
         }
     }
 
@@ -942,7 +945,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      * When scroll forward/backward events are received, jump the time to the higher/lower
      * discrete, visible value on the circle.
      */
-    @SuppressLint("NewApi")
     @Override
     public boolean performAccessibilityAction(int action, Bundle arguments) {
         if (super.performAccessibilityAction(action, arguments)) {
@@ -950,9 +952,18 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         }
 
         int changeMultiplier = 0;
-        if (action == AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) {
+        int forward;
+        int backward;
+        if (Build.VERSION.SDK_INT >= 16) {
+            forward = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD;
+            backward = AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD;
+        } else {
+            forward = AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD;
+            backward = AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD;
+        }
+        if (action == forward) {
             changeMultiplier = 1;
-        } else if (action == AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD) {
+        } else if (action == backward) {
             changeMultiplier = -1;
         }
         if (changeMultiplier != 0) {
