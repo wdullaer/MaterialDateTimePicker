@@ -1044,6 +1044,7 @@ public class DatePickerDialog extends DialogFragment implements
 
             if (newCalendar != null || higher == null) {
                 newCalendar = newCalendar == null ? calendar : newCalendar;
+                newCalendar.setTimeZone(getTimeZone());
                 calendar.setTimeInMillis(newCalendar.getTimeInMillis());
                 return;
             }
