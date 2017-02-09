@@ -55,6 +55,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 /**
  * Dialog allowing users to select a date.
@@ -138,9 +139,9 @@ public class DatePickerDialog extends DialogFragment implements
     private String mTitle;
     private Calendar mMinDate;
     private Calendar mMaxDate;
-    private Calendar[] highlightedDays;
-    private Calendar[] selectableDays;
-    private Calendar[] disabledDays;
+    private HashSet<Calendar> highlightedDays = new HashSet<>();
+    private TreeSet<Calendar> selectableDays = new TreeSet<>();
+    private HashSet<Calendar> disabledDays = new HashSet<>();
     private boolean mThemeDark = false;
     private boolean mThemeDarkChanged = false;
     private int mAccentColor = -1;
@@ -236,6 +237,7 @@ public class DatePickerDialog extends DialogFragment implements
         } else {
             VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMMdd"), Locale.getDefault());
         }
+        VERSION_2_FORMAT.setTimeZone(getTimeZone());
     }
 
     @Override
@@ -294,9 +296,9 @@ public class DatePickerDialog extends DialogFragment implements
             listPositionOffset = savedInstanceState.getInt(KEY_LIST_POSITION_OFFSET);
             mMinDate = (Calendar)savedInstanceState.getSerializable(KEY_MIN_DATE);
             mMaxDate = (Calendar)savedInstanceState.getSerializable(KEY_MAX_DATE);
-            highlightedDays = (Calendar[])savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
-            selectableDays = (Calendar[])savedInstanceState.getSerializable(KEY_SELECTABLE_DAYS);
-            disabledDays = (Calendar[]) savedInstanceState.getSerializable(KEY_DISABLED_DAYS);
+            highlightedDays = (HashSet<Calendar>) savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
+            selectableDays = (TreeSet<Calendar>) savedInstanceState.getSerializable(KEY_SELECTABLE_DAYS);
+            disabledDays = (HashSet<Calendar>) savedInstanceState.getSerializable(KEY_DISABLED_DAYS);
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
             mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
@@ -753,18 +755,30 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setHighlightedDays(Calendar[] highlightedDays) {
-        Arrays.sort(highlightedDays);
         for (Calendar highlightedDay : highlightedDays) trimToMidnight(highlightedDay);
-        this.highlightedDays = highlightedDays;
+        this.highlightedDays.addAll(Arrays.asList(highlightedDays));
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
 
     /**
      * @return The list of dates, as Calendar Objects, which should be highlighted. null is no dates should be highlighted
      */
-    @Override
+    @SuppressWarnings("unused")
     public Calendar[] getHighlightedDays() {
-        return highlightedDays;
+        if (highlightedDays.isEmpty()) return null;
+        Calendar[] output = highlightedDays.toArray(new Calendar[0]);
+        Arrays.sort(output);
+        return output;
+    }
+
+    @Override
+    public boolean isHighlighted(int year, int month, int day) {
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, day);
+        trimToMidnight(date);
+        return highlightedDays.contains(date);
     }
 
     /**
@@ -774,9 +788,8 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setSelectableDays(Calendar[] selectableDays) {
-        Arrays.sort(selectableDays);
         for (Calendar selectableDay : selectableDays) trimToMidnight(selectableDay);
-        this.selectableDays = selectableDays;
+        this.selectableDays.addAll(Arrays.asList(selectableDays));
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
 
@@ -785,7 +798,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public Calendar[] getSelectableDays() {
-        return selectableDays;
+        return selectableDays.isEmpty() ? null : selectableDays.toArray(new Calendar[0]);
     }
 
     /**
@@ -795,9 +808,8 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setDisabledDays(Calendar[] disabledDays) {
-        Arrays.sort(disabledDays);
         for (Calendar disabledDay : disabledDays) trimToMidnight(disabledDay);
-        this.disabledDays = disabledDays;
+        this.disabledDays.addAll(Arrays.asList(disabledDays));
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
 
@@ -806,7 +818,10 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public Calendar[] getDisabledDays() {
-        return disabledDays;
+        if (disabledDays.isEmpty()) return null;
+        Calendar[] output = disabledDays.toArray(new Calendar[0]);
+        Arrays.sort(output);
+        return output;
     }
 
     /**
@@ -871,6 +886,9 @@ public class DatePickerDialog extends DialogFragment implements
     public void setTimeZone(TimeZone timeZone) {
         mTimezone = timeZone;
         mCalendar.setTimeZone(timeZone);
+        YEAR_FORMAT.setTimeZone(timeZone);
+        MONTH_FORMAT.setTimeZone(timeZone);
+        DAY_FORMAT.setTimeZone(timeZone);
     }
 
     @SuppressWarnings("unused")
@@ -945,7 +963,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public Calendar getStartDate() {
-        if (selectableDays != null) return selectableDays[0];
+        if (!selectableDays.isEmpty()) return selectableDays.first();
         if (mMinDate != null) return mMinDate;
         Calendar output = Calendar.getInstance(getTimeZone());
         output.set(Calendar.YEAR, mMinYear);
@@ -956,7 +974,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public Calendar getEndDate() {
-        if (selectableDays != null) return selectableDays[selectableDays.length-1];
+        if (!selectableDays.isEmpty()) return selectableDays.last();
         if (mMaxDate != null) return mMaxDate;
         Calendar output = Calendar.getInstance(getTimeZone());
         output.set(Calendar.YEAR, mMaxYear);
@@ -967,14 +985,14 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public int getMinYear() {
-        if (selectableDays != null) return selectableDays[0].get(Calendar.YEAR);
+        if (!selectableDays.isEmpty()) return selectableDays.first().get(Calendar.YEAR);
         // Ensure no years can be selected outside of the given minimum date
         return mMinDate != null && mMinDate.get(Calendar.YEAR) > mMinYear ? mMinDate.get(Calendar.YEAR) : mMinYear;
     }
 
     @Override
     public int getMaxYear() {
-        if (selectableDays != null) return selectableDays[selectableDays.length-1].get(Calendar.YEAR);
+        if (!selectableDays.isEmpty()) return selectableDays.last().get(Calendar.YEAR);
         // Ensure no years can be selected outside of the given maximum date
         return mMaxDate != null && mMaxDate.get(Calendar.YEAR) < mMaxYear ? mMaxDate.get(Calendar.YEAR) : mMaxYear;
     }
@@ -986,133 +1004,60 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @Override
     public boolean isOutOfRange(int year, int month, int day) {
-        return isDisabled(year, month, day) || !isSelectable(year, month, day);
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, day);
+        return isOutOfRange(date);
     }
 
     @SuppressWarnings("unused")
     public boolean isOutOfRange(Calendar calendar) {
-        return isOutOfRange(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-    }
-
-    private boolean isDisabled(int year, int month, int day) {
-        return containsDate(disabledDays, year, month, day) || isBeforeMin(year, month, day) || isAfterMax(year, month, day);
+        trimToMidnight(calendar);
+        return isDisabled(calendar) || !isSelectable(calendar);
     }
 
     private boolean isDisabled(Calendar c) {
-        return isDisabled(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        return disabledDays.contains(trimToMidnight(c)) || isBeforeMin(c) || isAfterMax(c);
     }
 
-    private boolean isSelectable(int year, int month, int day) {
-        return selectableDays == null || containsDate(selectableDays, year, month, day);
-    }
-
-    /**
-     * Checks whether the given data is contained in an array of dates
-     * @param dates Calendar[] which contents we want to search
-     * @param year the year as an int
-     * @param month the month as an int
-     * @param day the day as an int
-     * @return true if the data is present in the array
-     */
-    private boolean containsDate(Calendar[] dates, int year, int month, int day) {
-        if (dates == null) return false;
-        for (Calendar c : dates) {
-            if(year < c.get(Calendar.YEAR)) break;
-            if(year > c.get(Calendar.YEAR)) continue;
-            if(month < c.get(Calendar.MONTH)) break;
-            if(month > c.get(Calendar.MONTH)) continue;
-            if(day < c.get(Calendar.DAY_OF_MONTH)) break;
-            if(day > c.get(Calendar.DAY_OF_MONTH)) continue;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isBeforeMin(int year, int month, int day) {
-        if (mMinDate == null) {
-            return false;
-        }
-
-        if (year < mMinDate.get(Calendar.YEAR)) {
-            return true;
-        } else if (year > mMinDate.get(Calendar.YEAR)) {
-            return false;
-        }
-
-        if (month < mMinDate.get(Calendar.MONTH)) {
-            return true;
-        } else if (month > mMinDate.get(Calendar.MONTH)) {
-            return false;
-        }
-
-        if (day < mMinDate.get(Calendar.DAY_OF_MONTH)) {
-            return true;
-        } else {
-            return false;
-        }
+    private boolean isSelectable(Calendar c) {
+        return selectableDays.isEmpty() || selectableDays.contains(trimToMidnight(c));
     }
 
     private boolean isBeforeMin(Calendar calendar) {
-        return isBeforeMin(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-    }
-
-    private boolean isAfterMax(int year, int month, int day) {
-        if (mMaxDate == null) {
-            return false;
-        }
-
-        if (year > mMaxDate.get(Calendar.YEAR)) {
-            return true;
-        } else if (year < mMaxDate.get(Calendar.YEAR)) {
-            return false;
-        }
-
-        if (month > mMaxDate.get(Calendar.MONTH)) {
-            return true;
-        } else if (month < mMaxDate.get(Calendar.MONTH)) {
-            return false;
-        }
-
-        if (day > mMaxDate.get(Calendar.DAY_OF_MONTH)) {
-            return true;
-        } else {
-            return false;
-        }
+        return mMinDate != null && calendar.before(mMinDate);
     }
 
     private boolean isAfterMax(Calendar calendar) {
-        return isAfterMax(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
+        return mMaxDate != null && calendar.after(mMaxDate);
     }
 
     private void setToNearestDate(Calendar calendar) {
-        if (selectableDays != null) {
-            long distance = Long.MAX_VALUE;
-            Calendar currentBest = calendar;
-            for (Calendar c : selectableDays) {
-                long newDistance = Math.abs(calendar.getTimeInMillis() - c.getTimeInMillis());
-                if(newDistance < distance && !isDisabled(c)) {
-                    distance = newDistance;
-                    currentBest = c;
-                }
-                else break;
+        if (!selectableDays.isEmpty()) {
+            Calendar newCalendar = null;
+            Calendar higher = selectableDays.ceiling(calendar);
+            Calendar lower = selectableDays.lower(calendar);
+
+            if (higher == null && lower != null) newCalendar = lower;
+            else if (lower == null && higher != null) newCalendar = higher;
+
+            if (newCalendar != null || higher == null) {
+                newCalendar = newCalendar == null ? calendar : newCalendar;
+                calendar.setTimeInMillis(newCalendar.getTimeInMillis());
+                return;
             }
-            calendar.setTimeInMillis(currentBest.getTimeInMillis());
+
+            long highDistance = Math.abs(higher.getTimeInMillis() - calendar.getTimeInMillis());
+            long lowDistance = Math.abs(calendar.getTimeInMillis() - lower.getTimeInMillis());
+
+            if (lowDistance < highDistance) calendar.setTimeInMillis(lower.getTimeInMillis());
+            else calendar.setTimeInMillis(higher.getTimeInMillis());
+
             return;
         }
 
-        if (disabledDays != null) {
+        if (!disabledDays.isEmpty()) {
             Calendar forwardDate = (Calendar) calendar.clone();
             Calendar backwardDate = (Calendar) calendar.clone();
             while (isDisabled(forwardDate) && isDisabled(backwardDate)) {

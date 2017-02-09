@@ -38,7 +38,7 @@ public interface DatePickerController {
 
     int getAccentColor();
     
-    Calendar[] getHighlightedDays();
+    boolean isHighlighted(int year, int month, int day);
 
     int getFirstDayOfWeek();
 
