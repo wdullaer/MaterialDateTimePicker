@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="mdtp_theme_dark" format="boolean" />
+    <attr name="mdtp_monthViewTheme" format="reference" />
+
+    <declare-styleable name="MonthView">
+        <attr name="dayTextColor" format="color" />
+        <attr name="dayHighlightedTextColor" format="color" />
+        <attr name="dayDisabledTextColor" format="color" />
+        <attr name="monthDayTextColor" format="color" />
+        <attr name="miniDayNumberTextSize" format="dimension" />
+        <attr name="monthLabelTextSize" format="dimension" />
+        <attr name="monthDayTextSize" format="dimension" />
+        <attr name="monthHeaderSize" format="dimension" />
+        <attr name="daySelectedCircleSize" format="dimension" />
+    </declare-styleable>
+
+</resources>
