@@ -244,7 +244,6 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         });
     }
 
-
     /**
      * Sets the month displayed at the top of this view based on time. Override
      * to add custom events when the title is changed.
@@ -261,22 +260,23 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     }
 
     public MonthView getMostVisibleMonth() {
-        final int height = getHeight();
-        int maxDisplayedHeight = 0;
+        boolean verticalScroll = ((LinearLayoutManager) getLayoutManager()).getOrientation() == LinearLayoutManager.VERTICAL;
+        final int maxSize = verticalScroll ? getHeight() : getWidth();
+        int maxDisplayedSize = 0;
         int i = 0;
-        int bottom = 0;
+        int size = 0;
         MonthView mostVisibleMonth = null;
 
-        while (bottom < height) {
+        while (size < maxSize) {
             View child = getChildAt(i);
             if (child == null) {
                 break;
             }
-            bottom = child.getBottom();
-            int displayedHeight = Math.min(bottom, height) - Math.max(0, child.getTop());
-            if (displayedHeight > maxDisplayedHeight) {
+            size = verticalScroll ? child.getBottom() : getRight();
+            int displayedSize = Math.min(size, maxSize) - Math.max(0, child.getTop());
+            if (displayedSize > maxDisplayedSize) {
                 mostVisibleMonth = (MonthView) child;
-                maxDisplayedHeight = displayedHeight;
+                maxDisplayedSize = displayedSize;
             }
             i++;
         }
