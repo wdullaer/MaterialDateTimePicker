@@ -712,7 +712,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setMinDate(Calendar calendar) {
-        mMinDate = trimToMidnight(calendar);
+        mMinDate = trimToMidnight((Calendar) calendar.clone());
 
         if (mDayPickerView != null) {
             mDayPickerView.onChange();
@@ -734,7 +734,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setMaxDate(Calendar calendar) {
-        mMaxDate = trimToMidnight(calendar);
+        mMaxDate = trimToMidnight((Calendar) calendar.clone());
 
         if (mDayPickerView != null) {
             mDayPickerView.onChange();
