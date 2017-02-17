@@ -206,7 +206,13 @@ This means that in the current setup everyone can use the library: people using 
 
 Finally changing to `SupportDialogFragment` now will break the API for all the people using this library.
 
-If you do really need `SupportDialogFragment`, you should fork the library. It involves changing all of 2 lines of code, so it should be easy enough to keep it up to date with the upstream.
+If you do really need `SupportDialogFragment`, you can fork the library (It involves changing all of 2 lines of code, so it should be easy enough to keep it up to date with the upstream) or use this fork: https://github.com/infinum/MaterialDateTimePicker
+
+```java
+dependencies {
+  compile 'co.infinum:materialdatetimepicker-support:3.1.1'
+}
+```
 
 ### Why does the `DatePickerDialog` return the selected month -1?
 In the java `Calendar` class months use 0 based indexing: January is month 0, December is month 11. This convention is widely used in the java world, for example the native Android DatePicker.
