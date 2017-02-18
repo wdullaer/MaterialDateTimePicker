@@ -32,6 +32,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -62,6 +63,7 @@ import java.util.TreeSet;
  */
 public class DatePickerDialog extends DialogFragment implements
         OnClickListener, DatePickerController {
+
 
     public enum Version {
         VERSION_1,
@@ -123,6 +125,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     private AccessibleDateAnimator mAnimator;
 
+    private LinearLayout mDateHeaderView;
     private TextView mDatePickerHeaderView;
     private LinearLayout mMonthAndDayView;
     private TextView mSelectedMonthTextView;
@@ -144,6 +147,7 @@ public class DatePickerDialog extends DialogFragment implements
     private HashSet<Calendar> disabledDays = new HashSet<>();
     private boolean mThemeDark = false;
     private boolean mThemeDarkChanged = false;
+    private boolean mDateHeaderEnabled = true;
     private int mAccentColor = -1;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
@@ -155,6 +159,9 @@ public class DatePickerDialog extends DialogFragment implements
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
     private int mCancelColor = -1;
+    private int mTitleSize;
+    private int mTitleBackgroundColor;
+    private int[] mTitlePadding;
     private Version mVersion;
     private TimeZone mTimezone;
 
@@ -321,6 +328,7 @@ public class DatePickerDialog extends DialogFragment implements
         // All options have been set at this point: round the initial selection if necessary
         setToNearestDate(mCalendar);
 
+        mDateHeaderView = (LinearLayout) view.findViewById(R.id.day_picker_selected_date_layout);
         mDatePickerHeaderView = (TextView) view.findViewById(R.id.date_picker_header);
         mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
         mMonthAndDayView.setOnClickListener(this);
@@ -392,7 +400,7 @@ public class DatePickerDialog extends DialogFragment implements
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
         if(mDatePickerHeaderView != null) mDatePickerHeaderView.setBackgroundColor(Utils.darkenColor(mAccentColor));
-        view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
+        mDateHeaderView.setBackgroundColor(mAccentColor);
 
         // Buttons can have a different color
         if (mOkColor != -1) okButton.setTextColor(mOkColor);
@@ -552,6 +560,21 @@ public class DatePickerDialog extends DialogFragment implements
             else
                 mDatePickerHeaderView.setVisibility(View.GONE);
         }
+
+        if (mTitleSize > 0) {
+            mDatePickerHeaderView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTitleSize);
+            mDatePickerHeaderView.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+
+        if (mTitleBackgroundColor != 0)
+            mDatePickerHeaderView.setBackgroundColor(mTitleBackgroundColor);
+
+        if (mTitlePadding != null)
+            mDatePickerHeaderView.setPadding(mTitlePadding[0], mTitlePadding[1], mTitlePadding[2], mTitlePadding[3]);
+
+        if(!mDateHeaderEnabled)
+            mDateHeaderView.setVisibility(View.GONE);
 
         // Accessibility.
         long millis = mCalendar.getTimeInMillis();
@@ -830,6 +853,45 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public void setTitle(String title) {
         mTitle = title;
+    }
+
+    /**
+     * Set a size of title
+     * @param sizeSP int - The size of title to be displayed
+     */
+    public void setTitleSize(int sizeSP){
+        mTitleSize = sizeSP;
+    }
+
+    /**
+     * Set padding of title
+     * @param left int - Title padding
+     * @param right int
+     * @param top int
+     * @param bottom int
+     */
+    public void setTitlePadding(int left, int right, int top, int bottom){
+        mTitlePadding = new int[4];
+        mTitlePadding[0] = left;
+        mTitlePadding[1] = top;
+        mTitlePadding[2] = right;
+        mTitlePadding[3] = bottom;
+    }
+
+    /**
+     * Set visibility of date header
+     * @param enabled boolean - enables or disables header visibility
+     */
+    public void setDateHeaderEnabled(boolean enabled){
+        mDateHeaderEnabled = enabled;
+    }
+
+    /**
+     * Set title background color
+     * @param color int - Color of title background
+     */
+    public void setTitleBackgroundColor(@ColorInt int color){
+        mTitleBackgroundColor = color;
     }
 
     /**
