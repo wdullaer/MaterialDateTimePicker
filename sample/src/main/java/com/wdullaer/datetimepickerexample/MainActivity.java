@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity
         for(int i=0;i<adapter.getCount();i++) tabLayout.getTabAt(i).setText(adapter.getTitle(i));
     }
 
-    class PickerAdapter extends FragmentPagerAdapter {
+    private class PickerAdapter extends FragmentPagerAdapter {
         private static final int NUM_PAGES = 2;
         Fragment timePickerFragment;
         Fragment datePickerFragment;

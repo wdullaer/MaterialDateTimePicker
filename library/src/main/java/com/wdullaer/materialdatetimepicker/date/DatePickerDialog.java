@@ -321,12 +321,12 @@ public class DatePickerDialog extends DialogFragment implements
         // All options have been set at this point: round the initial selection if necessary
         setToNearestDate(mCalendar);
 
-        mDatePickerHeaderView = (TextView) view.findViewById(R.id.date_picker_header);
-        mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
+        mDatePickerHeaderView = (TextView) view.findViewById(R.id.mdtp_date_picker_header);
+        mMonthAndDayView = (LinearLayout) view.findViewById(R.id.mdtp_date_picker_month_and_day);
         mMonthAndDayView.setOnClickListener(this);
-        mSelectedMonthTextView = (TextView) view.findViewById(R.id.date_picker_month);
-        mSelectedDayTextView = (TextView) view.findViewById(R.id.date_picker_day);
-        mYearView = (TextView) view.findViewById(R.id.date_picker_year);
+        mSelectedMonthTextView = (TextView) view.findViewById(R.id.mdtp_date_picker_month);
+        mSelectedDayTextView = (TextView) view.findViewById(R.id.mdtp_date_picker_day);
+        mYearView = (TextView) view.findViewById(R.id.mdtp_date_picker_year);
         mYearView.setOnClickListener(this);
 
         final Activity activity = getActivity();
@@ -347,7 +347,7 @@ public class DatePickerDialog extends DialogFragment implements
         int bgColorResource = mThemeDark ? R.color.mdtp_date_picker_view_animator_dark_theme : R.color.mdtp_date_picker_view_animator;
         view.setBackgroundColor(ContextCompat.getColor(activity, bgColorResource));
 
-        mAnimator = (AccessibleDateAnimator) view.findViewById(R.id.animator);
+        mAnimator = (AccessibleDateAnimator) view.findViewById(R.id.mdtp_animator);
         mAnimator.addView(mDayPickerView);
         mAnimator.addView(mYearPickerView);
         mAnimator.setDateMillis(mCalendar.getTimeInMillis());
@@ -360,7 +360,7 @@ public class DatePickerDialog extends DialogFragment implements
         animation2.setDuration(ANIMATION_DURATION);
         mAnimator.setOutAnimation(animation2);
 
-        Button okButton = (Button) view.findViewById(R.id.ok);
+        Button okButton = (Button) view.findViewById(R.id.mdtp_ok);
         okButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -374,7 +374,7 @@ public class DatePickerDialog extends DialogFragment implements
         if(mOkString != null) okButton.setText(mOkString);
         else okButton.setText(mOkResid);
 
-        Button cancelButton = (Button) view.findViewById(R.id.cancel);
+        Button cancelButton = (Button) view.findViewById(R.id.mdtp_cancel);
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -392,7 +392,7 @@ public class DatePickerDialog extends DialogFragment implements
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
         if(mDatePickerHeaderView != null) mDatePickerHeaderView.setBackgroundColor(Utils.darkenColor(mAccentColor));
-        view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
+        view.findViewById(R.id.mdtp_day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
 
         // Buttons can have a different color
         if (mOkColor != -1) okButton.setTextColor(mOkColor);
@@ -401,7 +401,7 @@ public class DatePickerDialog extends DialogFragment implements
         else cancelButton.setTextColor(mAccentColor);
 
         if(getDialog() == null) {
-            view.findViewById(R.id.done_background).setVisibility(View.GONE);
+            view.findViewById(R.id.mdtp_done_background).setVisibility(View.GONE);
         }
 
         updateDisplay(false);
@@ -922,9 +922,9 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void onClick(View v) {
         tryVibrate();
-        if (v.getId() == R.id.date_picker_year) {
+        if (v.getId() == R.id.mdtp_date_picker_year) {
             setCurrentView(YEAR_VIEW);
-        } else if (v.getId() == R.id.date_picker_month_and_day) {
+        } else if (v.getId() == R.id.mdtp_date_picker_month_and_day) {
             setCurrentView(MONTH_AND_DAY_VIEW);
         }
     }

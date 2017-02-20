@@ -16,7 +16,7 @@
   -->
 <com.wdullaer.materialdatetimepicker.VerticalTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/time_picker_header"
+    android:id="@+id/mdtp_time_picker_header"
     android:visibility="gone"
     android:layout_width="@dimen/mdtp_date_picker_title_height"
     android:layout_height="match_parent"

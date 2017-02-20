@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/done_background"
+    android:id="@+id/mdtp_done_background"
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:orientation="horizontal"
@@ -24,7 +24,7 @@
     android:paddingBottom="8dp">
 
     <Button
-        android:id="@+id/cancel"
+        android:id="@+id/mdtp_cancel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_marginRight="8dp"
@@ -33,7 +33,7 @@
         android:text="@string/mdtp_cancel" />
 
     <Button
-        android:id="@+id/ok"
+        android:id="@+id/mdtp_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
