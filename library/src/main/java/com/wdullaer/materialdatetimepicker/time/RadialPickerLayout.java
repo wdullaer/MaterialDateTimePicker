@@ -674,24 +674,32 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 anims[3] = mHourRadialSelectorView.getDisappearAnimator();
             }
 
-            if (mTransition != null && mTransition.isRunning()) {
-                mTransition.end();
+            if (anims[0] != null && anims[1] != null && anims[2] != null &&
+                anims[3] != null) {
+                if (mTransition != null && mTransition.isRunning()) {
+                    mTransition.end();
+                }
+                mTransition = new AnimatorSet();
+                mTransition.playTogether(anims);
+                mTransition.start();
+            } else {
+                transitionWithoutAnimation(index);
             }
-            mTransition = new AnimatorSet();
-            mTransition.playTogether(anims);
-            mTransition.start();
         } else {
-            int hourAlpha = (index == HOUR_INDEX) ? 1 : 0;
-            int minuteAlpha = (index == MINUTE_INDEX) ? 1 : 0;
-            int secondAlpha = (index == SECOND_INDEX) ? 1 : 0;
-            mHourRadialTextsView.setAlpha(hourAlpha);
-            mHourRadialSelectorView.setAlpha(hourAlpha);
-            mMinuteRadialTextsView.setAlpha(minuteAlpha);
-            mMinuteRadialSelectorView.setAlpha(minuteAlpha);
-            mSecondRadialTextsView.setAlpha(secondAlpha);
-            mSecondRadialSelectorView.setAlpha(secondAlpha);
+            transitionWithoutAnimation(index);
         }
+    }
 
+    private void transitionWithoutAnimation(int index) {
+        int hourAlpha = (index == HOUR_INDEX) ? 1 : 0;
+        int minuteAlpha = (index == MINUTE_INDEX) ? 1 : 0;
+        int secondAlpha = (index == SECOND_INDEX) ? 1 : 0;
+        mHourRadialTextsView.setAlpha(hourAlpha);
+        mHourRadialSelectorView.setAlpha(hourAlpha);
+        mMinuteRadialTextsView.setAlpha(minuteAlpha);
+        mMinuteRadialSelectorView.setAlpha(minuteAlpha);
+        mSecondRadialTextsView.setAlpha(secondAlpha);
+        mSecondRadialSelectorView.setAlpha(secondAlpha);
     }
 
     @Override
