@@ -16,27 +16,23 @@
 
 package com.wdullaer.materialdatetimepicker.date;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.view.View;
+import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
-import android.widget.BaseAdapter;
 
+import com.wdullaer.materialdatetimepicker.date.MonthAdapter.MonthViewHolder;
 import com.wdullaer.materialdatetimepicker.date.MonthView.OnDayClickListener;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.TimeZone;
 
 /**
  * An adapter for a list of {@link MonthView} items.
  */
-public abstract class MonthAdapter extends BaseAdapter implements OnDayClickListener {
+@SuppressWarnings("WeakerAccess")
+public abstract class MonthAdapter extends RecyclerView.Adapter<MonthViewHolder> implements OnDayClickListener {
 
-    private static final String TAG = "SimpleMonthAdapter";
-
-    private final Context mContext;
     protected final DatePickerController mController;
 
     private CalendarDay mSelectedDay;
@@ -110,12 +106,11 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
         }
     }
 
-    public MonthAdapter(Context context,
-            DatePickerController controller) {
-        mContext = context;
+    public MonthAdapter(DatePickerController controller) {
         mController = controller;
         init();
         setSelectedDay(mController.getSelectedDay());
+        setHasStableIds(true);
     }
 
     /**
@@ -140,8 +135,28 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
         mSelectedDay = new CalendarDay(System.currentTimeMillis(), mController.getTimeZone());
     }
 
+    @Override public MonthViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        MonthView v = createMonthView(parent.getContext());
+        // Set up the new view
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        v.setLayoutParams(params);
+        v.setClickable(true);
+        v.setOnDayClickListener(this);
+
+        return new MonthViewHolder(v);
+    }
+
+    @Override public void onBindViewHolder(MonthViewHolder holder, int position) {
+        holder.bind(position, mController, mSelectedDay);
+    }
+
     @Override
-    public int getCount() {
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override public int getItemCount() {
         Calendar endDate = mController.getEndDate();
         Calendar startDate = mController.getStartDate();
         int endMonth = endDate.get(Calendar.YEAR) * MONTHS_IN_YEAR + endDate.get(Calendar.MONTH);
@@ -150,72 +165,7 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
         //return ((mController.getMaxYear() - mController.getMinYear()) + 1) * MONTHS_IN_YEAR;
     }
 
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
-    }
-
-    @SuppressLint("NewApi")
-    @SuppressWarnings("unchecked")
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        MonthView v;
-        HashMap<String, Integer> drawingParams = null;
-        if (convertView != null) {
-            v = (MonthView) convertView;
-            // We store the drawing parameters in the view so it can be recycled
-            drawingParams = (HashMap<String, Integer>) v.getTag();
-        } else {
-            v = createMonthView(mContext);
-            // Set up the new view
-            LayoutParams params = new LayoutParams(
-                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            v.setLayoutParams(params);
-            v.setClickable(true);
-            v.setOnDayClickListener(this);
-        }
-        if (drawingParams == null) {
-            drawingParams = new HashMap<>();
-        }
-        drawingParams.clear();
-
-        final int month = (position + mController.getStartDate().get(Calendar.MONTH)) % MONTHS_IN_YEAR;
-        final int year = (position + mController.getStartDate().get(Calendar.MONTH)) / MONTHS_IN_YEAR + mController.getMinYear();
-
-        int selectedDay = -1;
-        if (isSelectedDayInMonth(year, month)) {
-            selectedDay = mSelectedDay.day;
-        }
-
-        // Invokes requestLayout() to ensure that the recycled view is set with the appropriate
-        // height/number of weeks before being displayed.
-        v.reuse();
-
-        drawingParams.put(MonthView.VIEW_PARAMS_SELECTED_DAY, selectedDay);
-        drawingParams.put(MonthView.VIEW_PARAMS_YEAR, year);
-        drawingParams.put(MonthView.VIEW_PARAMS_MONTH, month);
-        drawingParams.put(MonthView.VIEW_PARAMS_WEEK_START, mController.getFirstDayOfWeek());
-        v.setMonthParams(drawingParams);
-        v.invalidate();
-        return v;
-    }
-
     public abstract MonthView createMonthView(Context context);
-
-    private boolean isSelectedDayInMonth(int year, int month) {
-        return mSelectedDay.year == year && mSelectedDay.month == month;
-    }
-
 
     @Override
     public void onDayClick(MonthView view, CalendarDay day) {
@@ -233,5 +183,30 @@ public abstract class MonthAdapter extends BaseAdapter implements OnDayClickList
         mController.tryVibrate();
         mController.onDayOfMonthSelected(day.year, day.month, day.day);
         setSelectedDay(day);
+    }
+
+    static class MonthViewHolder extends RecyclerView.ViewHolder {
+
+        public MonthViewHolder(MonthView itemView) {
+            super(itemView);
+
+        }
+
+        void bind(int position, DatePickerController mController, CalendarDay selectedCalendarDay) {
+            final int month = (position + mController.getStartDate().get(Calendar.MONTH)) % MONTHS_IN_YEAR;
+            final int year = (position + mController.getStartDate().get(Calendar.MONTH)) / MONTHS_IN_YEAR + mController.getMinYear();
+
+            int selectedDay = -1;
+            if (isSelectedDayInMonth(selectedCalendarDay, year, month)) {
+                selectedDay = selectedCalendarDay.day;
+            }
+
+            ((MonthView) itemView).setMonthParams(selectedDay, year, month, mController.getFirstDayOfWeek());
+            this.itemView.invalidate();
+        }
+
+        private boolean isSelectedDayInMonth(CalendarDay selectedDay, int year, int month) {
+            return selectedDay.year == year && selectedDay.month == month;
+        }
     }
 }
