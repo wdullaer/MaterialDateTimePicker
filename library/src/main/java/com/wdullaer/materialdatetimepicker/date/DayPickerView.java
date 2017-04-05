@@ -26,10 +26,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.wdullaer.materialdatetimepicker.GravitySnapHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
 
@@ -121,11 +123,19 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     protected void setUpRecyclerView() {
         setVerticalScrollBarEnabled(false);
         setFadingEdgeLength(0);
-        addOnScrollListener(onScrollListener);
+        GravitySnapHelper helper = new GravitySnapHelper(Gravity.TOP);
+        helper.attachToRecyclerView(this);
     }
 
     public void onChange() {
         refreshAdapter();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        final MonthAdapter.CalendarDay focusedDay = findAccessibilityFocus();
+        restoreAccessibilityFocus(focusedDay);
     }
 
     /**
@@ -143,26 +153,6 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     }
 
     public abstract MonthAdapter createMonthAdapter(DatePickerController controller);
-
-    private OnScrollListener onScrollListener = new OnScrollListener() {
-
-        @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                postDelayed(new Runnable() {
-                    @Override public void run() {
-                        if (getScrollState() != RecyclerView.SCROLL_STATE_DRAGGING) {
-                            MonthView mostVisibleMonth = getMostVisibleMonth();
-                            smoothScrollBy(mostVisibleMonth.getLeft(), mostVisibleMonth.getTop());
-                        }
-                    }
-                }, 200);
-            }
-        }
-
-        @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
-        }
-    };
 
     /**
      * This moves to the specified time in the view. If the time is not already
@@ -239,7 +229,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
 
             @Override
             public void run() {
-                scrollToPosition(position);
+                ((LinearLayoutManager) getLayoutManager()).scrollToPositionWithOffset(position, 0);
             }
         });
     }
@@ -313,42 +303,30 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         return null;
     }
 
-//    /**
-//     * Attempts to restore accessibility focus to a given date. No-op if
-//     * {@code day} is {@code null}.
-//     *
-//     * @param day The date that should receive accessibility focus
-//     * @return {@code true} if focus was restored
-//     */
-//    private boolean restoreAccessibilityFocus(MonthAdapter.CalendarDay day) {
-//        if (day == null) {
-//            return false;
-//        }
-//
-//        final int childCount = getChildCount();
-//        for (int i = 0; i < childCount; i++) {
-//            final View child = getChildAt(i);
-//            if (child instanceof MonthView) {
-//                if (((MonthView) child).restoreAccessibilityFocus(day)) {
-//                    return true;
-//                }
-//            }
-//        }
-//
-//        return false;
-//    }
+    /**
+     * Attempts to restore accessibility focus to a given date. No-op if
+     * {@code day} is {@code null}.
+     *
+     * @param day The date that should receive accessibility focus
+     * @return {@code true} if focus was restored
+     */
+    private boolean restoreAccessibilityFocus(MonthAdapter.CalendarDay day) {
+        if (day == null) {
+            return false;
+        }
 
-//    @Override
-//    protected void layoutChildren() {
-//        final MonthAdapter.CalendarDay focusedDay = findAccessibilityFocus();
-//        super.layoutChildren();
-//        if (mPerformingScroll) {
-//            mPerformingScroll = false;
-//        } else {
-//            restoreAccessibilityFocus(focusedDay);
-//        }
-//    }
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = getChildAt(i);
+            if (child instanceof MonthView) {
+                if (((MonthView) child).restoreAccessibilityFocus(day)) {
+                    return true;
+                }
+            }
+        }
 
+        return false;
+    }
 
     @Override
     public void onInitializeAccessibilityEvent(@NonNull AccessibilityEvent event) {
