@@ -209,6 +209,12 @@ public class DatePickerDialog extends DialogFragment implements
         return ret;
     }
 
+    @SuppressWarnings("unused")
+    public static DatePickerDialog newInstance(OnDateSetListener callback) {
+        Calendar now = Calendar.getInstance();
+        return DatePickerDialog.newInstance(callback, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+    }
+
     public void initialize(OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
         mCallBack = callBack;
         mCalendar.set(Calendar.YEAR, year);

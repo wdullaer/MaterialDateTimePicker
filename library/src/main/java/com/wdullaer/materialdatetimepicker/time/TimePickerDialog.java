@@ -55,6 +55,7 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelect
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -196,6 +197,12 @@ public class TimePickerDialog extends DialogFragment implements
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
             int hourOfDay, int minute, boolean is24HourMode) {
         return TimePickerDialog.newInstance(callback, hourOfDay, minute, 0, is24HourMode);
+    }
+
+    @SuppressWarnings("unused")
+    public static TimePickerDialog newInstance(OnTimeSetListener callback, boolean is24HourMode) {
+        Calendar now = Calendar.getInstance();
+        return TimePickerDialog.newInstance(callback, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), is24HourMode);
     }
 
     public void initialize(OnTimeSetListener callback,
