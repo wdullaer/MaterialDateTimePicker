@@ -16,16 +16,16 @@ public class HapticFeedbackController {
     private static final int VIBRATE_DELAY_MS = 125;
     private static final int VIBRATE_LENGTH_MS = 50;
 
-    private static boolean checkGlobalSetting(Context context) {
+    static boolean checkGlobalSetting(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.HAPTIC_FEEDBACK_ENABLED, 0) == 1;
     }
 
-    private final Context mContext;
+    final Context mContext;
     private final ContentObserver mContentObserver;
 
     private Vibrator mVibrator;
-    private boolean mIsGloballyEnabled;
+    boolean mIsGloballyEnabled;
     private long mLastVibrate;
 
     public HapticFeedbackController(Context context) {

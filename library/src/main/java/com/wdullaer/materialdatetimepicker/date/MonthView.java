@@ -514,7 +514,7 @@ public abstract class MonthView extends View {
      *
      * @param day The day that was clicked
      */
-    private void onDayClick(int day) {
+    void onDayClick(int day) {
         // If the min / max date are set, only process the click if it's a valid selection.
         if (mController.isOutOfRange(mYear, mMonth, day)) {
             return;

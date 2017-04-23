@@ -38,11 +38,11 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedLi
 public class YearPickerView extends ListView implements OnItemClickListener, OnDateChangedListener {
     private static final String TAG = "YearPickerView";
 
-    private final DatePickerController mController;
+    final DatePickerController mController;
     private YearAdapter mAdapter;
     private int mViewSize;
     private int mChildSize;
-    private TextViewWithCircularIndicator mSelectedView;
+    TextViewWithCircularIndicator mSelectedView;
 
     public YearPickerView(Context context, DatePickerController controller) {
         super(context);

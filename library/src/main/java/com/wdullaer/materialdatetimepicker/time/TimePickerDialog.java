@@ -120,7 +120,7 @@ public class TimePickerDialog extends DialogFragment implements
     private TextView mAmTextView;
     private TextView mPmTextView;
     private View mAmPmLayout;
-    private RadialPickerLayout mTimePicker;
+    RadialPickerLayout mTimePicker;
 
     private int mSelectedColor;
     private int mUnselectedColor;
@@ -153,7 +153,7 @@ public class TimePickerDialog extends DialogFragment implements
     private char mPlaceholderText;
     private String mDoublePlaceholderText;
     private String mDeletedKeyFormat;
-    private boolean mInKbMode;
+    boolean mInKbMode;
     private ArrayList<Integer> mTypedTimes;
     private Node mLegalTimesTree;
     private int mAmKeyCode;
@@ -1186,7 +1186,7 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     // Show either Hours or Minutes.
-    private void setCurrentItemShowing(int index, boolean animateCircle, boolean delayLabelAnimate,
+    void setCurrentItemShowing(int index, boolean animateCircle, boolean delayLabelAnimate,
             boolean announce) {
         mTimePicker.setCurrentItemShowing(index, animateCircle);
 
@@ -1239,7 +1239,7 @@ public class TimePickerDialog extends DialogFragment implements
      * @param keyCode the pressed key.
      * @return true if the key was successfully processed, false otherwise.
      */
-    private boolean processKeyUp(int keyCode) {
+    boolean processKeyUp(int keyCode) {
         if (keyCode == KeyEvent.KEYCODE_ESCAPE || keyCode == KeyEvent.KEYCODE_BACK) {
             if(isCancelable()) dismiss();
             return true;
