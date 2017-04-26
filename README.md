@@ -211,7 +211,7 @@ Finally changing to `SupportDialogFragment` now will break the API for all the p
 
 If you do really need `SupportDialogFragment`, you can fork the library (It involves changing all of 2 lines of code, so it should be easy enough to keep it up to date with the upstream) or use this fork: https://github.com/infinum/MaterialDateTimePicker
 
-```java
+```groovy
 dependencies {
   compile 'co.infinum:materialdatetimepicker-support:3.1.3'
 }
@@ -227,12 +227,12 @@ In the java `Calendar` class months use 0 based indexing: January is month 0, De
 class MyDateRangeLimiter implements DateRangeLimiter {
   @Override
   public int getMinYear() {
-    return 1900
+    return 1900;
   }
 
   @Override
   public int getMaxYear() {
-    return 2100
+    return 2100;
   }
 
   @Override
@@ -259,7 +259,8 @@ class MyDateRangeLimiter implements DateRangeLimiter {
   }
 
   @Override
-  public void setToNearestDate(Calendar day) {    
+  public Calendar setToNearestDate(Calendar day) {
+      return day;
   }
 }
 ```
