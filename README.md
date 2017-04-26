@@ -2,6 +2,7 @@
 
 [![Join the chat at https://gitter.im/wdullaer/MaterialDateTimePicker](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/wdullaer/MaterialDateTimePicker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ![Maven Central](https://img.shields.io/maven-central/v/com.wdullaer/materialdatetimepicker.svg)
+![Build Status](https://travis-ci.org/wdullaer/MaterialDateTimePicker.svg?branch=master)
 
 
 Material DateTime Picker tries to offer you the date and time pickers as shown in [the Material Design spec](http://www.google.com/design/spec/components/pickers.html), with an
@@ -194,6 +195,9 @@ Allows you to enable or disable a seconds and minutes picker ont he `TimepickerD
 * `DatePickerDialog` `setTimeZone(Timezone timezone)`  
 Sets the `Timezone` used to represent time internally in the picker. Defaults to the current default Timezone of the device.
 
+* `DatePickerDialog` `setDateRangeLimited(DateRangeLimiter limiter)`
+Provide a custom implementation of DateRangeLimiter, giving you full control over which days are available for selection. This disables all of the other options that limit date selection.
+
 ## FAQ
 
 ### Why not use `SupportDialogFragment`?
@@ -208,7 +212,7 @@ Finally changing to `SupportDialogFragment` now will break the API for all the p
 
 If you do really need `SupportDialogFragment`, you can fork the library (It involves changing all of 2 lines of code, so it should be easy enough to keep it up to date with the upstream) or use this fork: https://github.com/infinum/MaterialDateTimePicker
 
-```java
+```groovy
 dependencies {
   compile 'co.infinum:materialdatetimepicker-support:3.1.3'
 }
@@ -218,21 +222,51 @@ dependencies {
 In the java `Calendar` class months use 0 based indexing: January is month 0, December is month 11. This convention is widely used in the java world, for example the native Android DatePicker.
 
 ### How do I use my custom logic to enable/disable dates?
-`DatePickerDialog` exposes some utility methods to enable / disable dates for common scenario's. If your needs are not covered by these, you can override the `isOutOfRange()` method by extending the `DatePickerDialog` class.
+`DatePickerDialog` exposes some utility methods to enable / disable dates for common scenario's. If your needs are not covered by these, you can supply a custom implementation of the `DateRangeLimiter` interface.
 
 ```java
-class MyDatePickerDialog extends DatePickerDialog {
-  @override
+class MyDateRangeLimiter implements DateRangeLimiter {
+  @Override
+  public int getMinYear() {
+    return 1900;
+  }
+
+  @Override
+  public int getMaxYear() {
+    return 2100;
+  }
+
+  @Override
+  public Calendar getStartDate() {
+    Calendar output = Calendar.newInstance();
+    output.set(Calendar.YEAR, 1900);
+    output.set(Calendar.DAY_OF_MONTH, 1);
+    output.set(Calendar.MONTH, Calendar.JANUARY);
+    return output;
+  }
+
+  @Override
+  public Calendar getEndDate() {
+    Calendar output = Calendar.newInstance();
+    output.set(Calendar.YEAR, 2100);
+    output.set(Calendar.DAY_OF_MONTH, 1);
+    output.set(Calendar.MONTH, Calendar.JANUARY);
+    return output;
+  }
+
+  @Override
   public boolean isOutOfRange(int year, int month, int day) {
-    // disable days that are odd
-    return day % 2 == 1;
+    return false;
+  }
+
+  @Override
+  public Calendar setToNearestDate(Calendar day) {
+      return day;
   }
 }
 ```
 
-> You need to override `isOutOfRange()` with this signature, not the one with the Calendar signature.
-
-When you override `isOutOfRange()` the built-in methods for setting the enabled / disabled dates will no longer work. It will need to be completely handled by your implementation.
+When you provide a custom `DateRangeLimiter` the built-in methods for setting the enabled / disabled dates will no longer work. It will need to be completely handled by your implementation.
 
 ### Why are my callbacks lost when the device changes orientation?
 The simple solution is to dismiss the pickers when your activity is paused.
