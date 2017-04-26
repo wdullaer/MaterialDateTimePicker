@@ -42,7 +42,7 @@ Date Picker | Time Picker
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:3.1.3'
+  compile 'com.wdullaer:materialdatetimepicker:3.2.0'
 }
 ```
 
@@ -195,7 +195,7 @@ Allows you to enable or disable a seconds and minutes picker ont he `TimepickerD
 * `DatePickerDialog` `setTimeZone(Timezone timezone)`  
 Sets the `Timezone` used to represent time internally in the picker. Defaults to the current default Timezone of the device.
 
-* `DatePickerDialog` `setDateRangeLimited(DateRangeLimiter limiter)`
+* `DatePickerDialog` `setDateRangeLimiter(DateRangeLimiter limiter)`
 Provide a custom implementation of DateRangeLimiter, giving you full control over which days are available for selection. This disables all of the other options that limit date selection.
 
 ## FAQ
@@ -214,7 +214,7 @@ If you do really need `SupportDialogFragment`, you can fork the library (It invo
 
 ```groovy
 dependencies {
-  compile 'co.infinum:materialdatetimepicker-support:3.1.3'
+  compile 'co.infinum:materialdatetimepicker-support:3.2.0'
 }
 ```
 
