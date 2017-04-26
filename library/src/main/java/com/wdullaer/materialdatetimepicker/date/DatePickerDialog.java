@@ -30,7 +30,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.OrientationHelper;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -449,7 +448,7 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     /**
-     * @param orientation can be {@link OrientationHelper#HORIZONTAL} or {@link OrientationHelper#VERTICAL}
+     * @param orientation can be OrientationHelper.HORIZONTAL or OrientationHelper.VERTICAL
      */
     @SuppressWarnings("unused")
     public void setDatePickerScrollOrientation(int orientation) {
