@@ -107,7 +107,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
     private static SimpleDateFormat VERSION_2_FORMAT;
 
-    private final Calendar mCalendar = Utils.trimToMidnight(Calendar.getInstance(getTimeZone()));
+    private Calendar mCalendar = Utils.trimToMidnight(Calendar.getInstance(getTimeZone()));
     private OnDateSetListener mCallBack;
     private HashSet<OnDateChangedListener> mListeners = new HashSet<>();
     private DialogInterface.OnCancelListener mOnCancelListener;
@@ -174,6 +174,7 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * The callback used to notify other date picker components of a change in selected date.
      */
+    @SuppressWarnings("WeakerAccess")
     protected interface OnDateChangedListener {
 
         void onDateChanged();
@@ -304,7 +305,7 @@ public class DatePickerDialog extends DialogFragment implements
         int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_date_picker_dialog : R.layout.mdtp_date_picker_dialog_v2;
         View view = inflater.inflate(viewRes, container, false);
         // All options have been set at this point: round the initial selection if necessary
-        mDateRangeLimiter.setToNearestDate(mCalendar);
+        mCalendar = mDateRangeLimiter.setToNearestDate(mCalendar);
 
         mDatePickerHeaderView = (TextView) view.findViewById(R.id.mdtp_date_picker_header);
         mMonthAndDayView = (LinearLayout) view.findViewById(R.id.mdtp_date_picker_month_and_day);
@@ -794,7 +795,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setSelectableDays(Calendar[] selectableDays) {
-        mDefaultLimiter.setSelectedDays(selectableDays);
+        mDefaultLimiter.setSelectableDays(selectableDays);
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
 
@@ -928,13 +929,13 @@ public class DatePickerDialog extends DialogFragment implements
     // change the selected day number to the last day of the selected month or year.
     //      e.g. Switching from Mar to Apr when Mar 31 is selected -> Apr 30
     //      e.g. Switching from 2012 to 2013 when Feb 29, 2012 is selected -> Feb 28, 2013
-    private void adjustDayInMonthIfNeeded(Calendar calendar) {
+    private Calendar adjustDayInMonthIfNeeded(Calendar calendar) {
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         if (day > daysInMonth) {
             calendar.set(Calendar.DAY_OF_MONTH, daysInMonth);
         }
-        mDateRangeLimiter.setToNearestDate(calendar);
+        return mDateRangeLimiter.setToNearestDate(calendar);
     }
 
     @Override
@@ -950,7 +951,7 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void onYearSelected(int year) {
         mCalendar.set(Calendar.YEAR, year);
-        adjustDayInMonthIfNeeded(mCalendar);
+        mCalendar = adjustDayInMonthIfNeeded(mCalendar);
         updatePickers();
         setCurrentView(MONTH_AND_DAY_VIEW);
         updateDisplay(true);

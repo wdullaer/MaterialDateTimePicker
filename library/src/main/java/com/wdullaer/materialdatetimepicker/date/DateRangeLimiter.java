@@ -31,5 +31,5 @@ public interface DateRangeLimiter extends Serializable {
 
     boolean isOutOfRange(int year, int month, int day);
 
-    void setToNearestDate(Calendar day);
+    Calendar setToNearestDate(Calendar day);
 }

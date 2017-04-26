@@ -42,7 +42,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         mController = controller;
     }
 
-    void setSelectedDays(@NonNull Calendar[] days) {
+    void setSelectableDays(@NonNull Calendar[] days) {
         for (Calendar selectableDay : days) Utils.trimToMidnight(selectableDay);
         this.selectableDays.addAll(Arrays.asList(days));
     }
@@ -101,8 +101,8 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
 
     @Override
     public @NonNull Calendar getStartDate() {
-        if (!selectableDays.isEmpty()) return selectableDays.first();
-        if (mMinDate != null) return mMinDate;
+        if (!selectableDays.isEmpty()) return (Calendar) selectableDays.first().clone();
+        if (mMinDate != null) return (Calendar) mMinDate.clone();
         Calendar output = Calendar.getInstance(mController.getTimeZone());
         output.set(Calendar.YEAR, mMinYear);
         output.set(Calendar.DAY_OF_MONTH, 1);
@@ -112,8 +112,8 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
 
     @Override
     public @NonNull Calendar getEndDate() {
-        if (!selectableDays.isEmpty()) return selectableDays.last();
-        if (mMaxDate != null) return mMaxDate;
+        if (!selectableDays.isEmpty()) return (Calendar) selectableDays.last().clone();
+        if (mMaxDate != null) return (Calendar) mMaxDate.clone();
         Calendar output = Calendar.getInstance(mController.getTimeZone());
         output.set(Calendar.YEAR, mMaxYear);
         output.set(Calendar.DAY_OF_MONTH, 31);
@@ -135,29 +135,28 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         return isOutOfRange(date);
     }
 
-    private boolean isOutOfRange(Calendar calendar) {
+    private boolean isOutOfRange(@NonNull Calendar calendar) {
         Utils.trimToMidnight(calendar);
         return isDisabled(calendar) || !isSelectable(calendar);
     }
 
-    private boolean isDisabled(Calendar c) {
+    private boolean isDisabled(@NonNull Calendar c) {
         return disabledDays.contains(Utils.trimToMidnight(c)) || isBeforeMin(c) || isAfterMax(c);
     }
 
-    private boolean isSelectable(Calendar c) {
+    private boolean isSelectable(@NonNull Calendar c) {
         return selectableDays.isEmpty() || selectableDays.contains(Utils.trimToMidnight(c));
     }
 
-    private boolean isBeforeMin(Calendar calendar) {
-        return mMinDate != null && calendar.before(mMinDate);
+    private boolean isBeforeMin(@NonNull Calendar calendar) {
+        return mMinDate != null && calendar.before(mMinDate) || calendar.get(Calendar.YEAR) < mMinYear;
     }
 
-    private boolean isAfterMax(Calendar calendar) {
-        return mMaxDate != null && calendar.after(mMaxDate);
+    private boolean isAfterMax(@NonNull Calendar calendar) {
+        return mMaxDate != null && calendar.after(mMaxDate) || calendar.get(Calendar.YEAR) > mMaxYear;
     }
 
-    @SuppressWarnings("UnnecessaryReturnStatement")
-    public void setToNearestDate(Calendar calendar) {
+    public @NonNull Calendar setToNearestDate(@NonNull Calendar calendar) {
         if (!selectableDays.isEmpty()) {
             Calendar newCalendar = null;
             Calendar higher = selectableDays.ceiling(calendar);
@@ -169,45 +168,40 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
             if (newCalendar != null || higher == null) {
                 newCalendar = newCalendar == null ? calendar : newCalendar;
                 newCalendar.setTimeZone(mController.getTimeZone());
-                calendar.setTimeInMillis(newCalendar.getTimeInMillis());
-                return;
+                return (Calendar) newCalendar.clone();
             }
 
             long highDistance = Math.abs(higher.getTimeInMillis() - calendar.getTimeInMillis());
             long lowDistance = Math.abs(calendar.getTimeInMillis() - lower.getTimeInMillis());
 
-            if (lowDistance < highDistance) calendar.setTimeInMillis(lower.getTimeInMillis());
-            else calendar.setTimeInMillis(higher.getTimeInMillis());
-
-            return;
+            if (lowDistance < highDistance) return (Calendar) lower.clone();
+            else return (Calendar) higher.clone();
         }
 
         if (!disabledDays.isEmpty()) {
-            Calendar forwardDate = (Calendar) calendar.clone();
-            Calendar backwardDate = (Calendar) calendar.clone();
+            Calendar forwardDate = isBeforeMin(calendar) ? getStartDate() : (Calendar) calendar.clone();
+            Calendar backwardDate = isAfterMax(calendar) ? getEndDate() : (Calendar) calendar.clone();
             while (isDisabled(forwardDate) && isDisabled(backwardDate)) {
                 forwardDate.add(Calendar.DAY_OF_MONTH, 1);
                 backwardDate.add(Calendar.DAY_OF_MONTH, -1);
             }
             if (!isDisabled(backwardDate)) {
-                calendar.setTimeInMillis(backwardDate.getTimeInMillis());
-                return;
+                return backwardDate;
             }
             if (!isDisabled(forwardDate)) {
-                calendar.setTimeInMillis(forwardDate.getTimeInMillis());
-                return;
+                return forwardDate;
             }
         }
 
 
-        if (isBeforeMin(calendar)) {
-            calendar.setTimeInMillis(mMinDate.getTimeInMillis());
-            return;
+        if (mMinDate != null && isBeforeMin(calendar)) {
+            return (Calendar) mMinDate.clone();
         }
 
-        if (isAfterMax(calendar)) {
-            calendar.setTimeInMillis(mMaxDate.getTimeInMillis());
-            return;
+        if (mMaxDate != null && isAfterMax(calendar)) {
+            return (Calendar) mMaxDate.clone();
         }
+
+        return calendar;
     }
 }
