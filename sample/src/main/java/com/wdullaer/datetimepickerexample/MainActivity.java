@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity
         Fragment timePickerFragment;
         Fragment datePickerFragment;
 
-        public PickerAdapter(FragmentManager fm) {
+        PickerAdapter(FragmentManager fm) {
             super(fm);
             timePickerFragment = new TimePickerFragment();
             datePickerFragment = new DatePickerFragment();
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        public int getTitle(int position) {
+        int getTitle(int position) {
             switch(position) {
                 case 0:
                     return R.string.tab_title_time;
