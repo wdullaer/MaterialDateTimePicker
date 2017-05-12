@@ -16,11 +16,13 @@
 
 package com.wdullaer.materialdatetimepicker.date;
 
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Calendar;
 
 @SuppressWarnings("WeakerAccess")
-public interface DateRangeLimiter extends Serializable {
+public interface DateRangeLimiter extends Parcelable {
     int getMinYear();
 
     int getMaxYear();

@@ -223,9 +223,14 @@ In the java `Calendar` class months use 0 based indexing: January is month 0, De
 
 ### How do I use my custom logic to enable/disable dates?
 `DatePickerDialog` exposes some utility methods to enable / disable dates for common scenario's. If your needs are not covered by these, you can supply a custom implementation of the `DateRangeLimiter` interface.
+Because the `DateRangeLimiter` is preserved when the `Dialog` pauzes, your implementation must also implement `Parcelable`.
 
 ```java
 class MyDateRangeLimiter implements DateRangeLimiter {
+  public MyDateRangeLimiter(Parcel in) {
+
+  }
+
   @Override
   public int getMinYear() {
     return 1900;
@@ -263,6 +268,27 @@ class MyDateRangeLimiter implements DateRangeLimiter {
   public Calendar setToNearestDate(Calendar day) {
       return day;
   }
+
+  @Override
+  public void writeToParcel(Parcel out) {
+
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  public static final Parcelable.Creator<MyDateRangeLimiter> CREATOR
+        = new Parcelable.Creator<MyDateRangeLimiter>() {
+    public MyDateRangeLimiter createFromParcel(Parcel in) {
+        return new MyDateRangeLimiter(in);
+    }
+
+    public MyDateRangeLimiter[] newArray(int size) {
+        return new MyDateRangeLimiter[size];
+    }
+  };
 }
 ```
 

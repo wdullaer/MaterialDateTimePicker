@@ -91,7 +91,7 @@ public class DefaultDateRangeLimiterTest {
     // getters
     @Test
     public void getSelectableDaysShouldHaveDatesTrimmedToMidnight() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0;i < days.length; i++) {
             Calendar day = Calendar.getInstance();
@@ -118,7 +118,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void getDisabledDaysShouldHaveDatesTrimmedToMidnight() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0;i < days.length; i++) {
             Calendar day = Calendar.getInstance();
@@ -145,7 +145,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void getMinDateShouldHaveDateTrimmedToMidnight() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar day = Calendar.getInstance();
         day.set(Calendar.YEAR, 1999);
         day.set(Calendar.HOUR_OF_DAY, 2);
@@ -165,7 +165,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void getMaxDateShouldHaveDateTrimmedToMidnight() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar day = Calendar.getInstance();
         day.set(Calendar.YEAR, 1999);
         day.set(Calendar.HOUR_OF_DAY, 2);
@@ -186,7 +186,7 @@ public class DefaultDateRangeLimiterTest {
     // getStartDate()
     @Test
     public void getStartDateShouldReturnFirstSelectableDay() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0; i < days.length; i++) {
             days[i] = Calendar.getInstance();
@@ -200,7 +200,19 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void getStartDateShouldReturnMinDate() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+        Calendar minDate = Calendar.getInstance();
+
+        limiter.setMinDate(minDate);
+        minDate = Utils.trimToMidnight(minDate);
+
+        Assert.assertEquals(limiter.getStartDate().getTimeInMillis(), minDate.getTimeInMillis());
+    }
+
+    @Test
+    public void getStartDateShouldReturnMinDateWhenAControllerIsSet() {
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+        limiter.setController(controller);
         Calendar minDate = Calendar.getInstance();
 
         limiter.setMinDate(minDate);
@@ -211,7 +223,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void getStartDateShouldPreferSelectableOverMinDate() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0; i < days.length; i++) {
             days[i] = Calendar.getInstance();
@@ -228,7 +240,7 @@ public class DefaultDateRangeLimiterTest {
     // getEndDate()
     @Test
     public void getEndDateShouldReturnLastSelectableDay() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0; i < days.length; i++) {
             days[i] = Calendar.getInstance();
@@ -242,7 +254,19 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void getEndDateShouldReturnMaxDate() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+        Calendar maxDate = Calendar.getInstance();
+
+        limiter.setMaxDate(maxDate);
+        maxDate = Utils.trimToMidnight(maxDate);
+
+        Assert.assertEquals(limiter.getEndDate().getTimeInMillis(), maxDate.getTimeInMillis());
+    }
+
+    @Test
+    public void getEndDateShouldReturnMaxDateWhenAControllerIsSet() {
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+        limiter.setController(controller);
         Calendar maxDate = Calendar.getInstance();
 
         limiter.setMaxDate(maxDate);
@@ -253,7 +277,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void getEndDateShouldPreferSelectableOverMaxDate() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0; i < days.length; i++) {
             days[i] = Calendar.getInstance();
@@ -270,7 +294,7 @@ public class DefaultDateRangeLimiterTest {
     // isOutOfRange()
     @Test
     public void isOutOfRangeShouldReturnTrueForDisabledDates() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[1];
         Calendar day = Calendar.getInstance();
         day.set(Calendar.YEAR, 1999);
@@ -286,7 +310,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void isOutOfRangeShouldReturnFalseForEnabledDates() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[1];
         Calendar day = Calendar.getInstance();
         day.set(Calendar.YEAR, 1999);
@@ -302,7 +326,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void isOutOfRangeShouldReturnTrueIfDateIsBeforeMin() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar day = Calendar.getInstance();
         day.set(Calendar.YEAR, 1999);
 
@@ -317,7 +341,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void isOutOfRangeShouldReturnTrueIfDateIsBeforeMinYear() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         int minYear = 1999;
 
         limiter.setYearRange(minYear, minYear + 1);
@@ -333,7 +357,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void isOutOfRangeShouldReturnTrueIfDateIsAfterMax() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar day = Calendar.getInstance();
         day.set(Calendar.YEAR, 1999);
 
@@ -348,7 +372,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void isOutOfRangeShouldReturnTrueIfDateIsAfterMaxYear() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         int maxYear = 1999;
 
         limiter.setYearRange(maxYear - 1, maxYear);
@@ -364,7 +388,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void isOutOfRangeShouldPreferDisabledOverEnabled() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[1];
         Calendar day = Calendar.getInstance();
         day.set(Calendar.YEAR, 1999);
@@ -382,7 +406,7 @@ public class DefaultDateRangeLimiterTest {
     // setToNearestDate()
     @Test
     public void setToNearestShouldReturnTheInputWhenValid() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar day = Calendar.getInstance();
         Calendar expected = (Calendar) day.clone();
 
@@ -391,7 +415,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void setToNearestShouldRoundDisabledDates() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0;i < days.length; i++) {
             Calendar day = Calendar.getInstance();
@@ -411,7 +435,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void setToNearestShouldRoundToMinDate() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar minDate = Calendar.getInstance();
         minDate.set(Calendar.YEAR, 1999);
 
@@ -428,7 +452,7 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void setToNearestShouldRoundToMaxDate() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar maxDate = Calendar.getInstance();
         maxDate.set(Calendar.YEAR, 1999);
 
@@ -445,7 +469,28 @@ public class DefaultDateRangeLimiterTest {
 
     @Test
     public void setToNearestShouldRoundToASelectableDay() {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+        Calendar[] days = new Calendar[3];
+        for (int i = 0;i < days.length; i++) {
+            Calendar day = Calendar.getInstance();
+            day.set(Calendar.YEAR, 1999 + i);
+            day.set(Calendar.HOUR_OF_DAY, 2);
+            day.set(Calendar.MINUTE, 10);
+            day.set(Calendar.SECOND, 30);
+            day.set(Calendar.MILLISECOND, 25);
+            days[i] = day;
+        }
+
+        limiter.setSelectableDays(days);
+        Calendar day = Calendar.getInstance();
+
+        Assert.assertTrue(Arrays.asList(days).contains(limiter.setToNearestDate(day)));
+    }
+
+    @Test
+    public void setToNearestShouldRoundToASelectableDayWhenAControllerIsSet() {
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+        limiter.setController(controller);
         Calendar[] days = new Calendar[3];
         for (int i = 0;i < days.length; i++) {
             Calendar day = Calendar.getInstance();

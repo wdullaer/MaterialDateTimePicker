@@ -96,7 +96,6 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_VERSION = "version";
     private static final String KEY_TIMEZONE = "timezone";
     private static final String KEY_DATERANGELIMITER = "daterangelimiter";
-    private static final String KEY_DEFAULTDATERANGELIMITER = "defaultdaterangelimiter";
 
     private static final int ANIMATION_DURATION = 300;
     private static final int ANIMATION_DELAY = 500;
@@ -142,7 +141,7 @@ public class DatePickerDialog extends DialogFragment implements
     private int mCancelColor = -1;
     private Version mVersion;
     private TimeZone mTimezone;
-    private DefaultDateRangeLimiter mDefaultLimiter = new DefaultDateRangeLimiter(this);
+    private DefaultDateRangeLimiter mDefaultLimiter = new DefaultDateRangeLimiter();
     private DateRangeLimiter mDateRangeLimiter = mDefaultLimiter;
 
     private HapticFeedbackController mHapticFeedbackController;
@@ -265,8 +264,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putInt(KEY_CANCEL_COLOR, mCancelColor);
         outState.putSerializable(KEY_VERSION, mVersion);
         outState.putSerializable(KEY_TIMEZONE, mTimezone);
-        outState.putSerializable(KEY_DATERANGELIMITER, mDateRangeLimiter);
-        outState.putSerializable(KEY_DEFAULTDATERANGELIMITER, mDefaultLimiter);
+        outState.putParcelable(KEY_DATERANGELIMITER, mDateRangeLimiter);
     }
 
     @Override
@@ -297,9 +295,24 @@ public class DatePickerDialog extends DialogFragment implements
             mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR);
             mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
             mTimezone = (TimeZone) savedInstanceState.getSerializable(KEY_TIMEZONE);
-            mDateRangeLimiter = (DateRangeLimiter) savedInstanceState.getSerializable(KEY_DATERANGELIMITER);
-            mDefaultLimiter = (DefaultDateRangeLimiter) savedInstanceState.getSerializable(KEY_DEFAULTDATERANGELIMITER);
+            mDateRangeLimiter = savedInstanceState.getParcelable(KEY_DATERANGELIMITER);
+
+            /*
+            If the user supplied a custom limiter, we need to create a new default one to prevent
+            null pointer exceptions on the configuration methods
+            If the user did not supply a custom limiter we need to ensure both mDefaultLimiter
+            and mDateRangeLimiter are the same reference, so that the config methods actually
+            ffect the behaviour of the picker (in the unlikely event the user reconfigures
+            the picker when it is shown)
+             */
+            if (mDateRangeLimiter instanceof DefaultDateRangeLimiter) {
+                mDefaultLimiter = (DefaultDateRangeLimiter) mDateRangeLimiter;
+            } else {
+                mDefaultLimiter = new DefaultDateRangeLimiter();
+            }
         }
+
+        mDefaultLimiter.setController(this);
 
         int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_date_picker_dialog : R.layout.mdtp_date_picker_dialog_v2;
         View view = inflater.inflate(viewRes, container, false);

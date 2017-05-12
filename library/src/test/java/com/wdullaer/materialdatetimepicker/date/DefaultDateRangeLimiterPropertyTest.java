@@ -108,7 +108,7 @@ public class DefaultDateRangeLimiterPropertyTest {
             @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
             @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date[] dates
     ) {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
         Calendar day = Calendar.getInstance();
         day.setTime(date);
@@ -128,7 +128,7 @@ public class DefaultDateRangeLimiterPropertyTest {
             @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
             @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date[] dates
     ) {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
         Calendar day = Calendar.getInstance();
         day.setTime(date);
@@ -144,7 +144,7 @@ public class DefaultDateRangeLimiterPropertyTest {
             @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
             @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date minDate
     ) {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
         Calendar day = Calendar.getInstance();
         day.setTime(date);
@@ -161,7 +161,7 @@ public class DefaultDateRangeLimiterPropertyTest {
             @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
             @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date maxDate
     ) {
-        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter(controller);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
         Calendar day = Calendar.getInstance();
         day.setTime(date);
