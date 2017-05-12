@@ -460,14 +460,6 @@ public class DatePickerDialog extends DialogFragment implements
         if (mOnDismissListener != null) mOnDismissListener.onDismiss(dialog);
     }
 
-    /**
-     * @param orientation can be OrientationHelper.HORIZONTAL or OrientationHelper.VERTICAL
-     */
-    @SuppressWarnings("unused")
-    public void setDatePickerScrollOrientation(int orientation) {
-        mDayPickerView.setScrollOrientation(orientation);
-    }
-
     private void setCurrentView(final int viewIndex) {
         long millis = mCalendar.getTimeInMillis();
 
