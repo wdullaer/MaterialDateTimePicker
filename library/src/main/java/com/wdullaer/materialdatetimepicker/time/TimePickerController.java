@@ -5,7 +5,7 @@ package com.wdullaer.materialdatetimepicker.time;
  *
  * Created by wdullaer on 6/10/15.
  */
-public interface TimePickerController {
+interface TimePickerController {
     /**
      * @return boolean - true if the dark theme should be used
      */

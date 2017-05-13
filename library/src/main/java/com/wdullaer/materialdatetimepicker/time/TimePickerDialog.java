@@ -443,14 +443,64 @@ public class TimePickerDialog extends DialogFragment implements
         mOnDismissListener = onDismissListener;
     }
 
+    /**
+     * Set the time that will be shown when the picker opens for the first time
+     * Overrides the value given in newInstance()
+     *
+     * @deprecated in favor of {@link #setInitialSelection(int, int, int)}
+     * @param hourOfDay the hour of the day
+     * @param minute the minute of the hour
+     * @param second the second of the minute
+     */
+    @Deprecated
     public void setStartTime(int hourOfDay, int minute, int second) {
         mInitialTime = roundToNearest(new Timepoint(hourOfDay, minute, second));
         mInKbMode = false;
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Set the time that will be shown when the picker opens for the first time
+     * Overrides the value given in newInstance
+     *
+     * @deprecated in favor of {@link #setInitialSelection(int, int)}
+     * @param hourOfDay the hour of the day
+     * @param minute the minute of the hour
+     */
+    @SuppressWarnings("unused")@Deprecated
     public void setStartTime(int hourOfDay, int minute) {
         setStartTime(hourOfDay, minute, 0);
+    }
+
+    /**
+     * Set the time that will be shown when the picker opens for the first time
+     * Overrides the value given in newInstance()
+     * @param hourOfDay the hour of the day
+     * @param minute the minute of the hour
+     * @param second the second of the minute
+     */
+    public void setInitialSelection(int hourOfDay, int minute, int second) {
+        setInitialSelection(new Timepoint(hourOfDay, minute, second));
+    }
+
+    /**
+     * Set the time that will be shown when the picker opens for the first time
+     * Overrides the value given in newInstance
+     * @param hourOfDay the hour of the day
+     * @param minute the minute of the hour
+     */
+    @SuppressWarnings("unused")
+    public void setInitialSelection(int hourOfDay, int minute) {
+        setInitialSelection(hourOfDay, minute, 0);
+    }
+
+    /**
+     * Set the time that will be shown when the picker opens for the first time
+     * Overrides the value given in newInstance()
+     * @param time the Timepoint selected when the Dialog opens
+     */
+    public void setInitialSelection(Timepoint time) {
+        mInitialTime = roundToNearest(time);
+        mInKbMode = false;
     }
 
     /**
