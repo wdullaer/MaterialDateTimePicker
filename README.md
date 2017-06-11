@@ -204,7 +204,7 @@ Provide a custom implementation of DateRangeLimiter, giving you full control ove
 Not using the support library versions has been a well considered choice, based on the following considerations:
 
 * Less than 5% of the devices using the android market do not support native `Fragments`, a number which will decrease even further going forward.
-* Even if you use `SupportFragments` in your application, you can still use the normal `FragmentManager`
+* Even if you use `SupportFragments` in your application, you can still use the normal `FragmentManager`. Both can exist side by side.
 
 This means that in the current setup everyone can use the library: people using the support library and people not using the support library.
 
