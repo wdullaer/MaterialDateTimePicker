@@ -64,17 +64,17 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private static final int AM = TimePickerDialog.AM;
     private static final int PM = TimePickerDialog.PM;
 
-    private Timepoint mLastValueSelected;
+    Timepoint mLastValueSelected;
 
-    private TimePickerController mController;
-    private OnValueSelectedListener mListener;
+    TimePickerController mController;
+    OnValueSelectedListener mListener;
     private boolean mTimeInitialized;
-    private Timepoint mCurrentTime;
-    private boolean mIs24HourMode;
+    Timepoint mCurrentTime;
+    boolean mIs24HourMode;
     private int mCurrentItemShowing;
 
     private CircleView mCircleView;
-    private AmPmCirclesView mAmPmCirclesView;
+    AmPmCirclesView mAmPmCirclesView;
     private RadialTextsView mHourRadialTextsView;
     private RadialTextsView mMinuteRadialTextsView;
     private RadialTextsView mSecondRadialTextsView;
@@ -85,10 +85,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
     private int[] mSnapPrefer30sMap;
     private boolean mInputEnabled;
-    private int mIsTouchingAmOrPm = -1;
-    private boolean mDoingMove;
+    int mIsTouchingAmOrPm = -1;
+    boolean mDoingMove;
     private boolean mDoingTouch;
-    private int mDownDegrees;
+    int mDownDegrees;
     private float mDownX;
     private float mDownY;
     private AccessibilityManager mAccessibilityManager;
@@ -432,7 +432,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      * @param currentItemShowing int - The index of the current view
      * @return Timepoint - the rounded value
      */
-    private Timepoint roundToValidTime(Timepoint newSelection, int currentItemShowing) {
+    Timepoint roundToValidTime(Timepoint newSelection, int currentItemShowing) {
         switch(currentItemShowing) {
             case HOUR_INDEX:
                 return mController.roundToNearest(newSelection, null);
@@ -452,7 +452,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      * @param index The picker to use as a reference. Will be getCurrentItemShow() except when AM/PM is changed
      * is on non-visible values, but use this to force the dot to be shown.
      */
-    private void reselectSelector(Timepoint newSelection, boolean forceDrawDot, int index) {
+    void reselectSelector(Timepoint newSelection, boolean forceDrawDot, int index) {
         switch(index) {
             case HOUR_INDEX:
                 // The selection might have changed, recalculate the degrees and innerCircle values
@@ -513,7 +513,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         }
     }
 
-    private Timepoint getTimeFromDegrees(int degrees, boolean isInnerCircle, boolean forceToVisibleValue) {
+    Timepoint getTimeFromDegrees(int degrees, boolean isInnerCircle, boolean forceToVisibleValue) {
         if (degrees == -1) {
             return null;
         }

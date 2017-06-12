@@ -39,8 +39,8 @@ public class GravitySnapHelper extends LinearSnapHelper {
     private OrientationHelper horizontalHelper;
     private int gravity;
     private boolean isRtlHorizontal;
-    private GravitySnapHelper.SnapListener listener;
-    private boolean snapping;
+    GravitySnapHelper.SnapListener listener;
+    boolean snapping;
     private RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -247,7 +247,7 @@ public class GravitySnapHelper extends LinearSnapHelper {
         return null;
     }
 
-    private int getSnappedPosition(RecyclerView recyclerView) {
+    int getSnappedPosition(RecyclerView recyclerView) {
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
 
         if (layoutManager instanceof LinearLayoutManager) {
