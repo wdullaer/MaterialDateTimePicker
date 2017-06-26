@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +64,8 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                         TimePickerFragment.this,
                         now.get(Calendar.HOUR_OF_DAY),
                         now.get(Calendar.MINUTE),
-                        mode24Hours.isChecked()
+                        mode24Hours.isChecked(),
+                        new Locale("en", "US")
                 );
                 tpd.setThemeDark(modeDarkTime.isChecked());
                 tpd.vibrate(vibrateTime.isChecked());

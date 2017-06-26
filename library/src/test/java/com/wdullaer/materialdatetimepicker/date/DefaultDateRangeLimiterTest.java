@@ -31,7 +31,7 @@ public class DefaultDateRangeLimiterTest {
 
         @Override
         public MonthAdapter.CalendarDay getSelectedDay() {
-            return new MonthAdapter.CalendarDay(Calendar.getInstance(), TimeZone.getDefault());
+            return new MonthAdapter.CalendarDay(Calendar.getInstance(DatePickerDialog.getLocale()), TimeZone.getDefault());
         }
 
         @Override
@@ -71,7 +71,7 @@ public class DefaultDateRangeLimiterTest {
 
         @Override
         public Calendar getEndDate() {
-            return Calendar.getInstance();
+            return Calendar.getInstance(DatePickerDialog.getLocale());
         }
 
         @Override
@@ -94,7 +94,7 @@ public class DefaultDateRangeLimiterTest {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0;i < days.length; i++) {
-            Calendar day = Calendar.getInstance();
+            Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);
             day.set(Calendar.MINUTE, 10);
@@ -121,7 +121,7 @@ public class DefaultDateRangeLimiterTest {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0;i < days.length; i++) {
-            Calendar day = Calendar.getInstance();
+            Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);
             day.set(Calendar.MINUTE, 10);
@@ -146,7 +146,7 @@ public class DefaultDateRangeLimiterTest {
     @Test
     public void getMinDateShouldHaveDateTrimmedToMidnight() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, 1999);
         day.set(Calendar.HOUR_OF_DAY, 2);
         day.set(Calendar.MINUTE, 10);
@@ -166,7 +166,7 @@ public class DefaultDateRangeLimiterTest {
     @Test
     public void getMaxDateShouldHaveDateTrimmedToMidnight() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, 1999);
         day.set(Calendar.HOUR_OF_DAY, 2);
         day.set(Calendar.MINUTE, 10);
@@ -189,7 +189,7 @@ public class DefaultDateRangeLimiterTest {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0; i < days.length; i++) {
-            days[i] = Calendar.getInstance();
+            days[i] = Calendar.getInstance(DatePickerDialog.getLocale());
             days[i].set(Calendar.YEAR, 1999 + i);
         }
 
@@ -201,7 +201,7 @@ public class DefaultDateRangeLimiterTest {
     @Test
     public void getStartDateShouldReturnMinDate() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        Calendar minDate = Calendar.getInstance();
+        Calendar minDate = Calendar.getInstance(DatePickerDialog.getLocale());
 
         limiter.setMinDate(minDate);
         minDate = Utils.trimToMidnight(minDate);
@@ -213,7 +213,7 @@ public class DefaultDateRangeLimiterTest {
     public void getStartDateShouldReturnMinDateWhenAControllerIsSet() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         limiter.setController(controller);
-        Calendar minDate = Calendar.getInstance();
+        Calendar minDate = Calendar.getInstance(DatePickerDialog.getLocale());
 
         limiter.setMinDate(minDate);
         minDate = Utils.trimToMidnight(minDate);
@@ -226,10 +226,10 @@ public class DefaultDateRangeLimiterTest {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0; i < days.length; i++) {
-            days[i] = Calendar.getInstance();
+            days[i] = Calendar.getInstance(DatePickerDialog.getLocale());
             days[i].set(Calendar.YEAR, 1999 + i);
         }
-        Calendar minDate = Calendar.getInstance();
+        Calendar minDate = Calendar.getInstance(DatePickerDialog.getLocale());
 
         limiter.setSelectableDays(days);
         limiter.setMinDate(minDate);
@@ -243,7 +243,7 @@ public class DefaultDateRangeLimiterTest {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0; i < days.length; i++) {
-            days[i] = Calendar.getInstance();
+            days[i] = Calendar.getInstance(DatePickerDialog.getLocale());
             days[i].set(Calendar.YEAR, 1999 + i);
         }
 
@@ -255,7 +255,7 @@ public class DefaultDateRangeLimiterTest {
     @Test
     public void getEndDateShouldReturnMaxDate() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        Calendar maxDate = Calendar.getInstance();
+        Calendar maxDate = Calendar.getInstance(DatePickerDialog.getLocale());
 
         limiter.setMaxDate(maxDate);
         maxDate = Utils.trimToMidnight(maxDate);
@@ -267,7 +267,7 @@ public class DefaultDateRangeLimiterTest {
     public void getEndDateShouldReturnMaxDateWhenAControllerIsSet() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         limiter.setController(controller);
-        Calendar maxDate = Calendar.getInstance();
+        Calendar maxDate = Calendar.getInstance(DatePickerDialog.getLocale());
 
         limiter.setMaxDate(maxDate);
         maxDate = Utils.trimToMidnight(maxDate);
@@ -280,10 +280,10 @@ public class DefaultDateRangeLimiterTest {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0; i < days.length; i++) {
-            days[i] = Calendar.getInstance();
+            days[i] = Calendar.getInstance(DatePickerDialog.getLocale());
             days[i].set(Calendar.YEAR, 1999 + i);
         }
-        Calendar maxDate = Calendar.getInstance();
+        Calendar maxDate = Calendar.getInstance(DatePickerDialog.getLocale());
 
         limiter.setSelectableDays(days);
         limiter.setMinDate(maxDate);
@@ -296,7 +296,7 @@ public class DefaultDateRangeLimiterTest {
     public void isOutOfRangeShouldReturnTrueForDisabledDates() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[1];
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, 1999);
         days[0] = day;
 
@@ -312,7 +312,7 @@ public class DefaultDateRangeLimiterTest {
     public void isOutOfRangeShouldReturnFalseForEnabledDates() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[1];
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, 1999);
         days[0] = day;
 
@@ -327,7 +327,7 @@ public class DefaultDateRangeLimiterTest {
     @Test
     public void isOutOfRangeShouldReturnTrueIfDateIsBeforeMin() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, 1999);
 
         limiter.setMinDate(day);
@@ -346,7 +346,7 @@ public class DefaultDateRangeLimiterTest {
 
         limiter.setYearRange(minYear, minYear + 1);
 
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, minYear - 1);
         int year = day.get(Calendar.YEAR);
         int month = day.get(Calendar.MONTH);
@@ -358,7 +358,7 @@ public class DefaultDateRangeLimiterTest {
     @Test
     public void isOutOfRangeShouldReturnTrueIfDateIsAfterMax() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, 1999);
 
         limiter.setMaxDate(day);
@@ -377,7 +377,7 @@ public class DefaultDateRangeLimiterTest {
 
         limiter.setYearRange(maxYear - 1, maxYear);
 
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, maxYear + 1);
         int year = day.get(Calendar.YEAR);
         int month = day.get(Calendar.MONTH);
@@ -390,7 +390,7 @@ public class DefaultDateRangeLimiterTest {
     public void isOutOfRangeShouldPreferDisabledOverEnabled() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[1];
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, 1999);
         days[0] = day;
 
@@ -407,7 +407,7 @@ public class DefaultDateRangeLimiterTest {
     @Test
     public void setToNearestShouldReturnTheInputWhenValid() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         Calendar expected = (Calendar) day.clone();
 
         Assert.assertEquals(limiter.setToNearestDate(day).getTimeInMillis(), expected.getTimeInMillis());
@@ -418,7 +418,7 @@ public class DefaultDateRangeLimiterTest {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0;i < days.length; i++) {
-            Calendar day = Calendar.getInstance();
+            Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);
             day.set(Calendar.MINUTE, 10);
@@ -436,12 +436,12 @@ public class DefaultDateRangeLimiterTest {
     @Test
     public void setToNearestShouldRoundToMinDate() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        Calendar minDate = Calendar.getInstance();
+        Calendar minDate = Calendar.getInstance(DatePickerDialog.getLocale());
         minDate.set(Calendar.YEAR, 1999);
 
         limiter.setMinDate(minDate);
 
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, 1998);
 
         Assert.assertEquals(
@@ -453,12 +453,12 @@ public class DefaultDateRangeLimiterTest {
     @Test
     public void setToNearestShouldRoundToMaxDate() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        Calendar maxDate = Calendar.getInstance();
+        Calendar maxDate = Calendar.getInstance(DatePickerDialog.getLocale());
         maxDate.set(Calendar.YEAR, 1999);
 
         limiter.setMaxDate(maxDate);
 
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.set(Calendar.YEAR, 2000);
 
         Assert.assertEquals(
@@ -472,7 +472,7 @@ public class DefaultDateRangeLimiterTest {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
         for (int i = 0;i < days.length; i++) {
-            Calendar day = Calendar.getInstance();
+            Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);
             day.set(Calendar.MINUTE, 10);
@@ -482,7 +482,7 @@ public class DefaultDateRangeLimiterTest {
         }
 
         limiter.setSelectableDays(days);
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
 
         Assert.assertTrue(Arrays.asList(days).contains(limiter.setToNearestDate(day)));
     }
@@ -493,7 +493,7 @@ public class DefaultDateRangeLimiterTest {
         limiter.setController(controller);
         Calendar[] days = new Calendar[3];
         for (int i = 0;i < days.length; i++) {
-            Calendar day = Calendar.getInstance();
+            Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);
             day.set(Calendar.MINUTE, 10);
@@ -503,7 +503,7 @@ public class DefaultDateRangeLimiterTest {
         }
 
         limiter.setSelectableDays(days);
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
 
         Assert.assertTrue(Arrays.asList(days).contains(limiter.setToNearestDate(day)));
     }

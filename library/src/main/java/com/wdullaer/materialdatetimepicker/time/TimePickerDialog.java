@@ -168,6 +168,12 @@ public class TimePickerDialog extends DialogFragment implements
     private String mSecondPickerDescription;
     private String mSelectSeconds;
 
+    public static Locale getLocale() {
+        return locale;
+    }
+
+    private static Locale locale = Locale.getDefault();
+
     /**
      * The callback interface used to indicate the user is done filling in
      * the time (they clicked on the 'Set' button).
@@ -199,9 +205,15 @@ public class TimePickerDialog extends DialogFragment implements
         return TimePickerDialog.newInstance(callback, hourOfDay, minute, 0, is24HourMode);
     }
 
+    public static TimePickerDialog newInstance(OnTimeSetListener callback,
+                                               int hourOfDay, int minute, boolean is24HourMode, Locale newLocale) {
+        locale = newLocale;
+        return TimePickerDialog.newInstance(callback, hourOfDay, minute, 0, is24HourMode);
+    }
+
     @SuppressWarnings("unused")
     public static TimePickerDialog newInstance(OnTimeSetListener callback, boolean is24HourMode) {
-        Calendar now = Calendar.getInstance();
+        Calendar now = Calendar.getInstance(TimePickerDialog.getLocale());
         return TimePickerDialog.newInstance(callback, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), is24HourMode);
     }
 
@@ -863,7 +875,7 @@ public class TimePickerDialog extends DialogFragment implements
         TextView timePickerHeader = (TextView) view.findViewById(R.id.mdtp_time_picker_header);
         if (!mTitle.isEmpty()) {
             timePickerHeader.setVisibility(TextView.VISIBLE);
-            timePickerHeader.setText(mTitle.toUpperCase(Locale.getDefault()));
+            timePickerHeader.setText(mTitle.toUpperCase(locale));
         }
 
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
@@ -1001,6 +1013,7 @@ public class TimePickerDialog extends DialogFragment implements
      */
     @Override
     public void onValueSelected(Timepoint newValue) {
+
         setHour(newValue.getHour(), false);
         mTimePicker.setContentDescription(mHourPickerDescription + ": " + newValue.getHour());
         setMinute(newValue.getMinute());
@@ -1161,8 +1174,9 @@ public class TimePickerDialog extends DialogFragment implements
                 value = 12;
             }
         }
-
-        CharSequence text = String.format(format, value);
+        Log.d("checkcalHour" ,value+"");
+        CharSequence text = String.format(locale,format, value);
+        Log.d("checkcalHour" ,text.toString());
         mHourView.setText(text);
         mHourSpaceView.setText(text);
         if (announce) {
@@ -1174,7 +1188,7 @@ public class TimePickerDialog extends DialogFragment implements
         if (value == 60) {
             value = 0;
         }
-        CharSequence text = String.format(Locale.getDefault(), "%02d", value);
+        CharSequence text = String.format(locale, "%02d", value);
         Utils.tryAccessibilityAnnounce(mTimePicker, text);
         mMinuteView.setText(text);
         mMinuteSpaceView.setText(text);
@@ -1184,7 +1198,7 @@ public class TimePickerDialog extends DialogFragment implements
         if(value == 60) {
             value = 0;
         }
-        CharSequence text = String.format(Locale.getDefault(), "%02d", value);
+        CharSequence text = String.format(locale, "%02d", value);
         Utils.tryAccessibilityAnnounce(mTimePicker, text);
         mSecondView.setText(text);
         mSecondSpaceView.setText(text);
@@ -1345,7 +1359,7 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         int val = getValFromKeyCode(keyCode);
-        Utils.tryAccessibilityAnnounce(mTimePicker, String.format(Locale.getDefault(), "%d", val));
+        Utils.tryAccessibilityAnnounce(mTimePicker, String.format(locale, "%d", val));
         // Automatically fill in 0's if AM or PM was legally entered.
         if (isTypedTimeFullyLegal()) {
             if (!mIs24HourMode && mTypedTimes.size() <= (textSize - 1)) {
@@ -1570,8 +1584,8 @@ public class TimePickerDialog extends DialogFragment implements
             char amChar;
             char pmChar;
             for (int i = 0; i < Math.max(mAmText.length(), mPmText.length()); i++) {
-                amChar = mAmText.toLowerCase(Locale.getDefault()).charAt(i);
-                pmChar = mPmText.toLowerCase(Locale.getDefault()).charAt(i);
+                amChar = mAmText.toLowerCase(locale).charAt(i);
+                pmChar = mPmText.toLowerCase(locale).charAt(i);
                 if (amChar != pmChar) {
                     KeyEvent[] events = kcm.getEvents(new char[]{amChar, pmChar});
                     // There should be 4 events: a down and up for both AM and PM.

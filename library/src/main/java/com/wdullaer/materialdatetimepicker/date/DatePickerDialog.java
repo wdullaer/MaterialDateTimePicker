@@ -100,12 +100,12 @@ public class DatePickerDialog extends DialogFragment implements
     private static final int ANIMATION_DURATION = 300;
     private static final int ANIMATION_DELAY = 500;
 
-    private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
-    private static SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("MMM", Locale.getDefault());
-    private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
+    private static SimpleDateFormat YEAR_FORMAT;
+    private static SimpleDateFormat MONTH_FORMAT;
+    private static SimpleDateFormat DAY_FORMAT;
     private static SimpleDateFormat VERSION_2_FORMAT;
 
-    private Calendar mCalendar = Utils.trimToMidnight(Calendar.getInstance(getTimeZone()));
+    private static Calendar mCalendar ;
     private OnDateSetListener mCallBack;
     private HashSet<OnDateChangedListener> mListeners = new HashSet<>();
     private DialogInterface.OnCancelListener mOnCancelListener;
@@ -123,7 +123,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     private int mCurrentView = UNINITIALIZED;
 
-    private int mWeekStart = mCalendar.getFirstDayOfWeek();
+    private static int mWeekStart;
     private String mTitle;
     private HashSet<Calendar> highlightedDays = new HashSet<>();
     private boolean mThemeDark = false;
@@ -153,6 +153,12 @@ public class DatePickerDialog extends DialogFragment implements
     private String mSelectDay;
     private String mYearPickerDescription;
     private String mSelectYear;
+
+    public static Locale getLocale() {
+        return locale;
+    }
+
+    private static Locale locale = Locale.getDefault();
 
     /**
      * The callback used to indicate the user is done filling in the date.
@@ -190,14 +196,32 @@ public class DatePickerDialog extends DialogFragment implements
      * @param dayOfMonth  The initial day of the dialog.
      */
     public static DatePickerDialog newInstance(OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
+
+            mCalendar = Utils.trimToMidnight(Calendar.getInstance(Locale.getDefault()));
+            mWeekStart = mCalendar.getFirstDayOfWeek();
+        YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
+        MONTH_FORMAT = new SimpleDateFormat("MMM", Locale.getDefault());
+        DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());
+
         DatePickerDialog ret = new DatePickerDialog();
         ret.initialize(callBack, year, monthOfYear, dayOfMonth);
         return ret;
     }
 
+    public static DatePickerDialog newInstance(OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth, Locale newLocale) {
+        locale=newLocale;
+
+         mCalendar = Utils.trimToMidnight(Calendar.getInstance(locale));
+        mWeekStart = mCalendar.getFirstDayOfWeek();
+       YEAR_FORMAT = new SimpleDateFormat("yyyy", locale);
+        MONTH_FORMAT = new SimpleDateFormat("MMM", locale);
+       DAY_FORMAT = new SimpleDateFormat("dd", locale);
+        return newInstance(callBack, year, monthOfYear, dayOfMonth);
+    }
+
     @SuppressWarnings("unused")
     public static DatePickerDialog newInstance(OnDateSetListener callback) {
-        Calendar now = Calendar.getInstance();
+        Calendar now = Calendar.getInstance(locale);
         return DatePickerDialog.newInstance(callback, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
     }
 
@@ -224,9 +248,9 @@ public class DatePickerDialog extends DialogFragment implements
             mDefaultView = savedInstanceState.getInt(KEY_DEFAULT_VIEW);
         }
         if (Build.VERSION.SDK_INT < 18) {
-            VERSION_2_FORMAT = new SimpleDateFormat(activity.getResources().getString(R.string.mdtp_date_v2_daymonthyear), Locale.getDefault());
+            VERSION_2_FORMAT = new SimpleDateFormat(activity.getResources().getString(R.string.mdtp_date_v2_daymonthyear), locale);
         } else {
-            VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMMdd"), Locale.getDefault());
+            VERSION_2_FORMAT = new SimpleDateFormat(DateFormat.getBestDateTimePattern(locale, "EEEMMMdd"), locale);
         }
         VERSION_2_FORMAT.setTimeZone(getTimeZone());
     }
@@ -528,15 +552,17 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     private void updateDisplay(boolean announce) {
+        mCalendar.getTime();
+        YEAR_FORMAT.format(mCalendar.getTime());
         mYearView.setText(YEAR_FORMAT.format(mCalendar.getTime()));
 
         if (mVersion == Version.VERSION_1) {
             if (mDatePickerHeaderView != null) {
                 if (mTitle != null)
-                    mDatePickerHeaderView.setText(mTitle.toUpperCase(Locale.getDefault()));
+                    mDatePickerHeaderView.setText(mTitle.toUpperCase(locale));
                 else {
                     mDatePickerHeaderView.setText(mCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG,
-                            Locale.getDefault()).toUpperCase(Locale.getDefault()));
+                            locale).toUpperCase(locale));
                 }
             }
             mSelectedMonthTextView.setText(MONTH_FORMAT.format(mCalendar.getTime()));
@@ -546,7 +572,7 @@ public class DatePickerDialog extends DialogFragment implements
         if (mVersion == Version.VERSION_2) {
             mSelectedDayTextView.setText(VERSION_2_FORMAT.format(mCalendar.getTime()));
             if (mTitle != null)
-                mDatePickerHeaderView.setText(mTitle.toUpperCase(Locale.getDefault()));
+                mDatePickerHeaderView.setText(mTitle.toUpperCase(locale));
             else
                 mDatePickerHeaderView.setVisibility(View.GONE);
         }
@@ -783,7 +809,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public boolean isHighlighted(int year, int month, int day) {
-        Calendar date = Calendar.getInstance();
+        Calendar date = Calendar.getInstance(locale);
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
         date.set(Calendar.DAY_OF_MONTH, day);

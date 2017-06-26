@@ -39,6 +39,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -166,7 +167,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             Log.e(TAG, "Time has already been initialized.");
             return;
         }
-
+        Locale locale = TimePickerDialog.getLocale();
         mController = timePickerController;
         mIs24HourMode = mAccessibilityManager.isTouchExplorationEnabled() || is24HourMode;
 
@@ -214,10 +215,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         String[] secondsTexts = new String[12];
         for (int i = 0; i < 12; i++) {
             hoursTexts[i] = is24HourMode?
-                    String.format(Locale.getDefault(), "%02d", hours_24[i]) : String.format(Locale.getDefault(), "%d", hours[i]);
-            innerHoursTexts[i] = String.format(Locale.getDefault(), "%d", hours[i]);
-            minutesTexts[i] = String.format(Locale.getDefault(), "%02d", minutes[i]);
-            secondsTexts[i] = String.format(Locale.getDefault(), "%02d", seconds[i]);
+                    String.format(locale, "%02d", hours_24[i]) : String.format(locale, "%d", hours[i]);
+            innerHoursTexts[i] = String.format(locale, "%d", hours[i]);
+            minutesTexts[i] = String.format(locale, "%02d", minutes[i]);
+            secondsTexts[i] = String.format(locale, "%02d", seconds[i]);
         }
         mHourRadialTextsView.initialize(context,
                 hoursTexts, (is24HourMode ? innerHoursTexts : null), mController, hourValidator, true);
@@ -911,7 +912,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             // Clear the event's current text so that only the current time will be spoken.
             event.getText().clear();
-            Calendar time = Calendar.getInstance();
+            Calendar time = Calendar.getInstance(TimePickerDialog.getLocale());
             time.set(Calendar.HOUR, getHours());
             time.set(Calendar.MINUTE, getMinutes());
             time.set(Calendar.SECOND, getSeconds());

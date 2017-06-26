@@ -145,7 +145,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         if (!selectableDays.isEmpty()) return (Calendar) selectableDays.first().clone();
         if (mMinDate != null) return (Calendar) mMinDate.clone();
         TimeZone timeZone = mController == null ? TimeZone.getDefault() : mController.getTimeZone();
-        Calendar output = Calendar.getInstance(timeZone);
+        Calendar output = Calendar.getInstance(DatePickerDialog.getLocale());
         output.set(Calendar.YEAR, mMinYear);
         output.set(Calendar.DAY_OF_MONTH, 1);
         output.set(Calendar.MONTH, Calendar.JANUARY);
@@ -157,7 +157,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         if (!selectableDays.isEmpty()) return (Calendar) selectableDays.last().clone();
         if (mMaxDate != null) return (Calendar) mMaxDate.clone();
         TimeZone timeZone = mController == null ? TimeZone.getDefault() : mController.getTimeZone();
-        Calendar output = Calendar.getInstance(timeZone);
+        Calendar output = Calendar.getInstance(DatePickerDialog.getLocale());
         output.set(Calendar.YEAR, mMaxYear);
         output.set(Calendar.DAY_OF_MONTH, 31);
         output.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -171,7 +171,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
      */
     @Override
     public boolean isOutOfRange(int year, int month, int day) {
-        Calendar date = Calendar.getInstance();
+        Calendar date = Calendar.getInstance(DatePickerDialog.getLocale());
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
         date.set(Calendar.DAY_OF_MONTH, day);

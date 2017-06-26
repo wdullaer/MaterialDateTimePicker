@@ -381,9 +381,13 @@ public abstract class MonthView extends View {
         return MONTH_HEADER_SIZE;
     }
 
+
+
+
+
     @NonNull
     private String getMonthAndYearString() {
-        Locale locale = Locale.getDefault();
+        Locale locale = DatePickerDialog.getLocale();
         String pattern = "MMMM yyyy";
 
         if (Build.VERSION.SDK_INT < 18) pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
@@ -546,7 +550,7 @@ public abstract class MonthView extends View {
      * @return The weekday label
      */
     private String getWeekDayLabel(Calendar day) {
-        Locale locale = Locale.getDefault();
+      Locale locale = DatePickerDialog.getLocale();
 
         // Localised short version of the string is not available on API < 18
         if (Build.VERSION.SDK_INT < 18) {
