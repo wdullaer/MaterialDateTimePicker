@@ -1174,9 +1174,7 @@ public class TimePickerDialog extends DialogFragment implements
                 value = 12;
             }
         }
-        Log.d("checkcalHour" ,value+"");
         CharSequence text = String.format(locale,format, value);
-        Log.d("checkcalHour" ,text.toString());
         mHourView.setText(text);
         mHourSpaceView.setText(text);
         if (announce) {
