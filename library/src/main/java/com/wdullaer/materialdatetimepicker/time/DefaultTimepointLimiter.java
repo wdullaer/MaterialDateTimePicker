@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.Arrays;
+import java.util.TreeSet;
 
 import static com.wdullaer.materialdatetimepicker.time.TimePickerDialog.HOUR_INDEX;
 import static com.wdullaer.materialdatetimepicker.time.TimePickerDialog.MINUTE_INDEX;
@@ -17,7 +18,7 @@ import static com.wdullaer.materialdatetimepicker.time.TimePickerDialog.MINUTE_I
  */
 
 class DefaultTimepointLimiter implements TimepointLimiter {
-    private Timepoint[] mSelectableTimes;
+    private TreeSet<Timepoint> mSelectableTimes = new TreeSet<>();
     private Timepoint mMinTime;
     private Timepoint mMaxTime;
 
@@ -27,14 +28,14 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     public DefaultTimepointLimiter(Parcel in) {
         mMinTime = in.readParcelable(Timepoint.class.getClassLoader());
         mMaxTime = in.readParcelable(Timepoint.class.getClassLoader());
-        mSelectableTimes = (Timepoint[]) in.readParcelableArray(Timepoint[].class.getClassLoader());
+        mSelectableTimes.addAll(Arrays.asList((Timepoint[]) in.readParcelableArray(Timepoint[].class.getClassLoader())));
     }
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeParcelable(mMinTime, flags);
         out.writeParcelable(mMaxTime, flags);
-        out.writeParcelableArray(mSelectableTimes, flags);
+        out.writeParcelableArray((Timepoint[]) mSelectableTimes.toArray(), flags);
     }
 
     @Override
@@ -66,43 +67,42 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     }
 
     void setSelectableTimes(@NonNull Timepoint[] selectableTimes) {
-        mSelectableTimes = selectableTimes;
-        Arrays.sort(mSelectableTimes);
+        mSelectableTimes.addAll(Arrays.asList(selectableTimes));
     }
 
     @Override
     public boolean isOutOfRange(@Nullable Timepoint current, int index) {
-        if(current == null) return false;
+        if (current == null) return false;
 
-        if(index == HOUR_INDEX) {
-            if(mMinTime != null && mMinTime.getHour() > current.getHour()) return true;
+        if (index == HOUR_INDEX) {
+            if (mMinTime != null && mMinTime.getHour() > current.getHour()) return true;
 
-            if(mMaxTime != null && mMaxTime.getHour()+1 <= current.getHour()) return true;
+            if (mMaxTime != null && mMaxTime.getHour()+1 <= current.getHour()) return true;
 
-            if(mSelectableTimes != null) {
-                for(Timepoint t : mSelectableTimes) {
-                    if(t.getHour() == current.getHour()) return false;
-                }
-                return true;
+            if (!mSelectableTimes.isEmpty()) {
+                Timepoint ceil = mSelectableTimes.ceiling(current);
+                Timepoint floor = mSelectableTimes.floor(current);
+                return !(ceil.getHour() == current.getHour() || floor.getHour() == current.getHour());
             }
 
             return false;
         }
-        else if(index == MINUTE_INDEX) {
-            if(mMinTime != null) {
+        else if (index == MINUTE_INDEX) {
+            if (mMinTime != null) {
                 Timepoint roundedMin = new Timepoint(mMinTime.getHour(), mMinTime.getMinute());
                 if (roundedMin.compareTo(current) > 0) return true;
             }
 
-            if(mMaxTime != null) {
+            if (mMaxTime != null) {
                 Timepoint roundedMax = new Timepoint(mMaxTime.getHour(), mMaxTime.getMinute(), 59);
                 if (roundedMax.compareTo(current) < 0) return true;
             }
 
-            if(mSelectableTimes != null) {
-                for(Timepoint t : mSelectableTimes) {
-                    if(t.getHour() == current.getHour() && t.getMinute() == current.getMinute()) return false;
-                }
+            if (!mSelectableTimes.isEmpty()) {
+                Timepoint ceil = mSelectableTimes.ceiling(current);
+                Timepoint floor = mSelectableTimes.floor(current);
+                if (ceil.getHour() == current.getHour() && ceil.getMinute() == current.getMinute()) return false;
+                if (floor.getHour() == current.getHour() && ceil.getMinute() == current.getMinute()) return false;
                 return true;
             }
 
@@ -112,11 +112,11 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     }
 
     public boolean isOutOfRange(@NonNull Timepoint current) {
-        if(mMinTime != null && mMinTime.compareTo(current) > 0) return true;
+        if (mMinTime != null && mMinTime.compareTo(current) > 0) return true;
 
-        if(mMaxTime != null && mMaxTime.compareTo(current) < 0) return true;
+        if (mMaxTime != null && mMaxTime.compareTo(current) < 0) return true;
 
-        if(mSelectableTimes != null) return !Arrays.asList(mSelectableTimes).contains(current);
+        if (!mSelectableTimes.isEmpty()) return !mSelectableTimes.contains(current);
 
         return false;
     }
@@ -125,12 +125,9 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     public boolean isAmDisabled() {
         Timepoint midday = new Timepoint(12);
 
-        if(mMinTime != null && mMinTime.compareTo(midday) >= 0) return true;
+        if (mMinTime != null && mMinTime.compareTo(midday) >= 0) return true;
 
-        if(mSelectableTimes != null) {
-            for(Timepoint t : mSelectableTimes) if(t.compareTo(midday) < 0) return false;
-            return true;
-        }
+        if (!mSelectableTimes.isEmpty()) return mSelectableTimes.first().compareTo(midday) >= 0;
 
         return false;
     }
@@ -139,40 +136,49 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     public boolean isPmDisabled() {
         Timepoint midday = new Timepoint(12);
 
-        if(mMaxTime != null && mMaxTime.compareTo(midday) < 0) return true;
+        if (mMaxTime != null && mMaxTime.compareTo(midday) < 0) return true;
 
-        if(mSelectableTimes != null) {
-            for(Timepoint t : mSelectableTimes) if(t.compareTo(midday) >= 0) return false;
-            return true;
-        }
+        if (!mSelectableTimes.isEmpty()) return mSelectableTimes.last().compareTo(midday) < 0;
 
         return false;
     }
 
     @Override
     public @NonNull Timepoint roundToNearest(@NonNull Timepoint time,@Nullable Timepoint.TYPE type) {
-        if(mMinTime != null && mMinTime.compareTo(time) > 0) return mMinTime;
+        if (mMinTime != null && mMinTime.compareTo(time) > 0) return mMinTime;
 
-        if(mMaxTime != null && mMaxTime.compareTo(time) < 0) return mMaxTime;
-        if(mSelectableTimes != null) {
-            int currentDistance = Integer.MAX_VALUE;
-            Timepoint output = time;
-            for(Timepoint t : mSelectableTimes) {
-                // type == null: no restrictions
-                // type == HOUR: do not change the hour
-                if (type == Timepoint.TYPE.HOUR && t.getHour() != time.getHour()) continue;
-                // type == MINUTE: do not change hour or minute
-                if (type == Timepoint.TYPE.MINUTE  && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
-                // type == SECOND: cannot change anything, return input
-                if (type == Timepoint.TYPE.SECOND) return time;
-                int newDistance = Math.abs(t.compareTo(time));
-                if (newDistance < currentDistance) {
-                    currentDistance = newDistance;
-                    output = t;
-                }
-                else break;
+        if (mMaxTime != null && mMaxTime.compareTo(time) < 0) return mMaxTime;
+
+        if (!mSelectableTimes.isEmpty()) {
+            // type == SECOND: cannot change anything, return input
+            if (type == Timepoint.TYPE.SECOND) return time;
+
+            Timepoint floor = mSelectableTimes.floor(time);
+            Timepoint ceil = mSelectableTimes.ceiling(time);
+
+            if (type == Timepoint.TYPE.HOUR) {
+                if (floor.getHour() != time.getHour() && ceil.getHour() == time.getHour()) return ceil;
+                if (floor.getHour() == time.getHour() && ceil.getHour() != time.getHour()) return floor;
+                if (floor.getHour() != time.getHour() && ceil.getHour() != time.getHour()) return time;
             }
-            return output;
+
+            if (type == Timepoint.TYPE.MINUTE) {
+                if (floor.getHour() != time.getHour() && ceil.getHour() != time.getHour()) return time;
+                if (floor.getHour() != time.getHour() && ceil.getHour() == time.getHour()) {
+                    return ceil.getMinute() == time.getMinute() ? ceil : time;
+                }
+                if (floor.getHour() == time.getHour() && ceil.getHour() != time.getHour()) {
+                    return floor.getMinute() == time.getMinute() ? floor : time;
+                }
+                if (floor.getMinute() != time.getMinute() && ceil.getMinute() == time.getMinute()) return ceil;
+                if (floor.getMinute() == time.getMinute() && ceil.getMinute() != time.getMinute()) return floor;
+                if (floor.getMinute() != time.getMinute() && ceil.getMinute() != time.getMinute()) return time;
+            }
+
+            int floorDist = floor == null ? Integer.MAX_VALUE : Math.abs(time.compareTo(floor));
+            int ceilDist = ceil == null ? Integer.MAX_VALUE : Math.abs(time.compareTo(ceil));
+            
+            return floorDist < ceilDist ? floor : ceil;
         }
 
         return time;
