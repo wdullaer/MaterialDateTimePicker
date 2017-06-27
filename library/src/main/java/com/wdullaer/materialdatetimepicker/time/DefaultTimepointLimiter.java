@@ -125,7 +125,7 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     public boolean isAmDisabled() {
         Timepoint midday = new Timepoint(12);
 
-        if(mMinTime != null && mMinTime.compareTo(midday) > 0) return true;
+        if(mMinTime != null && mMinTime.compareTo(midday) >= 0) return true;
 
         if(mSelectableTimes != null) {
             for(Timepoint t : mSelectableTimes) if(t.compareTo(midday) < 0) return false;
