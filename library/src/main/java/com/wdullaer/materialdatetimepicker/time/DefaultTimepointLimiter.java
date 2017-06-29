@@ -82,6 +82,8 @@ class DefaultTimepointLimiter implements TimepointLimiter {
             if (!mSelectableTimes.isEmpty()) {
                 Timepoint ceil = mSelectableTimes.ceiling(current);
                 Timepoint floor = mSelectableTimes.floor(current);
+                if (ceil == null) return floor.getHour() != current.getHour();
+                if (floor == null) return ceil.getHour() != current.getHour();
                 return !(ceil.getHour() == current.getHour() || floor.getHour() == current.getHour());
             }
 
@@ -101,8 +103,8 @@ class DefaultTimepointLimiter implements TimepointLimiter {
             if (!mSelectableTimes.isEmpty()) {
                 Timepoint ceil = mSelectableTimes.ceiling(current);
                 Timepoint floor = mSelectableTimes.floor(current);
-                if (ceil.getHour() == current.getHour() && ceil.getMinute() == current.getMinute()) return false;
-                if (floor.getHour() == current.getHour() && ceil.getMinute() == current.getMinute()) return false;
+                if (ceil != null && ceil.getHour() == current.getHour() && ceil.getMinute() == current.getMinute()) return false;
+                if (floor != null && floor.getHour() == current.getHour() && floor.getMinute() == current.getMinute()) return false;
                 return true;
             }
 
@@ -156,6 +158,14 @@ class DefaultTimepointLimiter implements TimepointLimiter {
             Timepoint floor = mSelectableTimes.floor(time);
             Timepoint ceil = mSelectableTimes.ceiling(time);
 
+            if (floor == null || ceil == null) {
+                Timepoint t = floor == null ? ceil : floor;
+                if (type == null) return t;
+                if (t.getHour() != time.getHour()) return time;
+                if (type == Timepoint.TYPE.MINUTE && t.getMinute() != time.getMinute()) return time;
+                return t;
+            }
+
             if (type == Timepoint.TYPE.HOUR) {
                 if (floor.getHour() != time.getHour() && ceil.getHour() == time.getHour()) return ceil;
                 if (floor.getHour() == time.getHour() && ceil.getHour() != time.getHour()) return floor;
@@ -175,9 +185,9 @@ class DefaultTimepointLimiter implements TimepointLimiter {
                 if (floor.getMinute() != time.getMinute() && ceil.getMinute() != time.getMinute()) return time;
             }
 
-            int floorDist = floor == null ? Integer.MAX_VALUE : Math.abs(time.compareTo(floor));
-            int ceilDist = ceil == null ? Integer.MAX_VALUE : Math.abs(time.compareTo(ceil));
-            
+            int floorDist = Math.abs(time.compareTo(floor));
+            int ceilDist = Math.abs(time.compareTo(ceil));
+
             return floorDist < ceilDist ? floor : ceil;
         }
 

@@ -324,6 +324,51 @@ public class DefaultTimepointLimiterTest {
     }
 
     @Test
+    public void isOutOfRangeMinuteShouldReturnFalseWhenTimeEqualsSelectableTimeToTheMinute2() {
+        Timepoint[] selectableTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = new Timepoint(13, 14, 59);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX));
+    }
+
+    @Test
+    public void isOutOfRangeMinuteShouldReturnFalseWhenTimeEqualsSelectableTimeToTheMinute3() {
+        Timepoint[] selectableTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = new Timepoint(11, 12, 0);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX));
+    }
+
+    @Test
+    public void isOutOfRangeMinuteShouldReturnTrueWhenTimeDoesNotEqualSelectableTimeToTheMinute() {
+        Timepoint[] selectableTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = new Timepoint(11, 11, 0);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertTrue(limiter.isOutOfRange(input, MINUTE_INDEX));
+    }
+
+    @Test
     public void isOutOfRangeHourShouldReturnFalseWhenMinTimeEqualsToTheHour() {
         Timepoint minTime = new Timepoint(12, 13, 14);
         Timepoint input = new Timepoint(12);
@@ -353,6 +398,36 @@ public class DefaultTimepointLimiterTest {
                 new Timepoint(13, 14, 15)
         };
         Timepoint input = new Timepoint(12);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX));
+    }
+
+    @Test
+    public void isOutOfRangeHourShouldReturnFalseWhenTimeEqualsSelectableTimeToTheHour2() {
+        Timepoint[] selectableTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = new Timepoint(13, 15, 15);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX));
+    }
+
+    @Test
+    public void isOutOfRangeHourShouldReturnFalseWhenTimeEqualsSelectableTimeToTheHour3() {
+        Timepoint[] selectableTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = new Timepoint(11);
         DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
 
         limiter.setSelectableTimes(selectableTimes);
@@ -432,6 +507,23 @@ public class DefaultTimepointLimiterTest {
                 new Timepoint(15, 16, 17)
         };
         Timepoint input = new Timepoint(12, 59, 59);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.HOUR).getHour(), input.getHour());
+    }
+
+    @Test
+    public void roundToNearestShouldNotChangeTheHourWhenOptionIsSet2() {
+        Timepoint[] selectableTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13),
+                new Timepoint(15, 16, 17)
+        };
+        Timepoint input = new Timepoint(15, 59, 59);
         DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
 
         limiter.setSelectableTimes(selectableTimes);
