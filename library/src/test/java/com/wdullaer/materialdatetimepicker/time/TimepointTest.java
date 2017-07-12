@@ -1,4 +1,4 @@
-package com.wdullaer.materialdatetimepicker.date;
+package com.wdullaer.materialdatetimepicker.time;
 
 
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
