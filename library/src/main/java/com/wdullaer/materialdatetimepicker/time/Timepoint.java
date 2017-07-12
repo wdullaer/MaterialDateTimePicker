@@ -72,7 +72,7 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
     }
 
     public boolean isPM() {
-        return hour >= 12 && hour < 24;
+        return !isAM();
     }
 
     public void setAM() {
@@ -100,7 +100,7 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
 
     @Override
     public int compareTo(@NonNull Timepoint t) {
-        return (this.hour - t.hour)*3600 + (this.minute - t.minute)*60 + (this.second - t.second);
+        return hashCode() - t.hashCode();
     }
 
     @Override
