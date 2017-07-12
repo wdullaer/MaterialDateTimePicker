@@ -5,6 +5,8 @@ import android.os.Parcelable;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
+import java.util.Objects;
+
 /**
  * Simple utility class that represents a time in the day up to second precision
  * The time input is expected to use 24 hour mode.
@@ -83,17 +85,21 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        try {
-            Timepoint other = (Timepoint) o;
+    public int hashCode() {
+        int result = hour;
+        result = 31 * result + minute;
+        result = 31 * result + second;
+        return result;
+    }
 
-            return other.getHour() == hour &&
-                    other.getMinute() == minute &&
-                    other.getSecond() == second;
-        }
-        catch(ClassCastException e) {
-            return false;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Timepoint timepoint = (Timepoint) o;
+
+        return hour == timepoint.hour && minute == timepoint.minute && second == timepoint.second;
     }
 
     @Override
