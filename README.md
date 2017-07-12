@@ -221,6 +221,19 @@ dependencies {
 ### Why does the `DatePickerDialog` return the selected month -1?
 In the java `Calendar` class months use 0 based indexing: January is month 0, December is month 11. This convention is widely used in the java world, for example the native Android DatePicker.
 
+### How do I use a different version of the support library in my app?
+This library depends on the android support library. Because the jvm allows only one version of a fully namespaced class to be loaded, you will run into issues if your app depends on a different version of the support library than the one used in this app. Gradle will not be able to satisfy both requirements.
+
+Using the following snippet in your apps `build.gradle` file you can exclude this library's transitive support library dependency from being installed.
+
+```groovy
+compile ('com.wdullaer:materialdatetimepicker:3.2.2') {
+        exclude group: 'com.android.support'
+}
+```
+
+This will work fine as long as the support library version your app depends on is recent enough (supports `RecyclerView`) and google doesn't release a version in the future that contains breaking changes. (If/When this happens I will try hard to document this). See issue [#338](https://github.com/wdullaer/MaterialDateTimePicker/issues/338) for more information.
+
 ### How do I use my custom logic to enable/disable dates?
 `DatePickerDialog` exposes some utility methods to enable / disable dates for common scenario's. If your needs are not covered by these, you can supply a custom implementation of the `DateRangeLimiter` interface.
 Because the `DateRangeLimiter` is preserved when the `Dialog` pauzes, your implementation must also implement `Parcelable`.
