@@ -16,13 +16,21 @@ android {
             minifyEnabled false
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:support-v13:25.1.0'
-    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:support-v13:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'com.pholser:junit-quickcheck-core:0.7'
+    testCompile 'com.pholser:junit-quickcheck-generators:0.7'
 }
 
 apply from: 'gradle-mvn-push.gradle'

@@ -15,7 +15,7 @@
 -->
 <com.wdullaer.materialdatetimepicker.date.TextViewWithCircularIndicator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/month_text_view"
+    android:id="@+id/mdtp_month_text_view"
     android:layout_width="match_parent"
     android:layout_height="@dimen/mdtp_year_label_height"
     android:layout_gravity="center"

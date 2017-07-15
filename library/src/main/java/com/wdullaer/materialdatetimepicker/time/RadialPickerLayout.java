@@ -435,18 +435,12 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private Timepoint roundToValidTime(Timepoint newSelection, int currentItemShowing) {
         switch(currentItemShowing) {
             case HOUR_INDEX:
-                newSelection = mController.roundToNearest(newSelection, Timepoint.TYPE.HOUR);
-                break;
+                return mController.roundToNearest(newSelection, null);
             case MINUTE_INDEX:
-                newSelection = mController.roundToNearest(newSelection, Timepoint.TYPE.MINUTE);
-                break;
-            case SECOND_INDEX:
-                newSelection = mController.roundToNearest(newSelection, Timepoint.TYPE.SECOND);
-                break;
+                return mController.roundToNearest(newSelection, Timepoint.TYPE.HOUR);
             default:
-                newSelection = mCurrentTime;
+                return mController.roundToNearest(newSelection, Timepoint.TYPE.MINUTE);
         }
-        return newSelection;
     }
 
     /**
@@ -674,24 +668,32 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 anims[3] = mHourRadialSelectorView.getDisappearAnimator();
             }
 
-            if (mTransition != null && mTransition.isRunning()) {
-                mTransition.end();
+            if (anims[0] != null && anims[1] != null && anims[2] != null &&
+                anims[3] != null) {
+                if (mTransition != null && mTransition.isRunning()) {
+                    mTransition.end();
+                }
+                mTransition = new AnimatorSet();
+                mTransition.playTogether(anims);
+                mTransition.start();
+            } else {
+                transitionWithoutAnimation(index);
             }
-            mTransition = new AnimatorSet();
-            mTransition.playTogether(anims);
-            mTransition.start();
         } else {
-            int hourAlpha = (index == HOUR_INDEX) ? 1 : 0;
-            int minuteAlpha = (index == MINUTE_INDEX) ? 1 : 0;
-            int secondAlpha = (index == SECOND_INDEX) ? 1 : 0;
-            mHourRadialTextsView.setAlpha(hourAlpha);
-            mHourRadialSelectorView.setAlpha(hourAlpha);
-            mMinuteRadialTextsView.setAlpha(minuteAlpha);
-            mMinuteRadialSelectorView.setAlpha(minuteAlpha);
-            mSecondRadialTextsView.setAlpha(secondAlpha);
-            mSecondRadialSelectorView.setAlpha(secondAlpha);
+            transitionWithoutAnimation(index);
         }
+    }
 
+    private void transitionWithoutAnimation(int index) {
+        int hourAlpha = (index == HOUR_INDEX) ? 1 : 0;
+        int minuteAlpha = (index == MINUTE_INDEX) ? 1 : 0;
+        int secondAlpha = (index == SECOND_INDEX) ? 1 : 0;
+        mHourRadialTextsView.setAlpha(hourAlpha);
+        mHourRadialSelectorView.setAlpha(hourAlpha);
+        mMinuteRadialTextsView.setAlpha(minuteAlpha);
+        mMinuteRadialSelectorView.setAlpha(minuteAlpha);
+        mSecondRadialTextsView.setAlpha(secondAlpha);
+        mSecondRadialSelectorView.setAlpha(secondAlpha);
     }
 
     @Override
@@ -799,26 +801,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 mHandler.removeCallbacksAndMessages(null);
                 degrees = getDegreesFromCoords(eventX, eventY, true, isInnerCircle);
                 if (degrees != -1) {
-                    switch(getCurrentItemShowing()) {
-                        case HOUR_INDEX:
-                            value = mController.roundToNearest(
-                                    getTimeFromDegrees(degrees, isInnerCircle[0], false),
-                                    null
-                            );
-                            break;
-                        case MINUTE_INDEX:
-                            value = mController.roundToNearest(
-                                    getTimeFromDegrees(degrees, isInnerCircle[0], false),
-                                    Timepoint.TYPE.HOUR
-                            );
-                            break;
-                        default:
-                            value = mController.roundToNearest(
-                                    getTimeFromDegrees(degrees, isInnerCircle[0], false),
-                                    Timepoint.TYPE.MINUTE
-                            );
-                            break;
-                    }
+                    value = roundToValidTime(
+                            getTimeFromDegrees(degrees, isInnerCircle[0], false),
+                            getCurrentItemShowing()
+                    );
                     reselectSelector(value, true, getCurrentItemShowing());
                     if (value != null && (mLastValueSelected == null || !mLastValueSelected.equals(value))) {
                         mController.tryVibrate();

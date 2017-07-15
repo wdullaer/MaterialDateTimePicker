@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
  *
  * Created by wdullaer on 13/10/15.
  */
+@SuppressWarnings("WeakerAccess")
 public class Timepoint implements Parcelable, Comparable<Timepoint> {
     private int hour;
     private int minute;
@@ -71,7 +72,7 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
     }
 
     public boolean isPM() {
-        return hour >= 12 && hour < 24;
+        return !isAM();
     }
 
     public void setAM() {
@@ -83,22 +84,23 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        try {
-            Timepoint other = (Timepoint) o;
+    public int hashCode() {
+        return 3600 * hour + 60 * minute + second;
+    }
 
-            return other.getHour() == hour &&
-                    other.getMinute() == minute &&
-                    other.getSecond() == second;
-        }
-        catch(ClassCastException e) {
-            return false;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Timepoint timepoint = (Timepoint) o;
+
+        return hashCode() == timepoint.hashCode();
     }
 
     @Override
     public int compareTo(@NonNull Timepoint t) {
-        return (this.hour - t.hour)*3600 + (this.minute - t.minute)*60 + (this.second - t.second);
+        return hashCode() - t.hashCode();
     }
 
     @Override

@@ -15,7 +15,7 @@
   ~ limitations under the License
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/time_picker_dialog"
+    android:id="@+id/mdtp_time_picker_dialog"
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     android:orientation="horizontal"
@@ -23,7 +23,7 @@
     android:focusable="true" >
     <include layout="@layout/mdtp_time_title_view_v2" />
     <FrameLayout
-        android:id="@+id/time_display_background"
+        android:id="@+id/mdtp_time_display_background"
         android:layout_width="@dimen/mdtp_date_picker_header_width"
         android:layout_height="match_parent"
         android:background="@color/mdtp_accent_color" >
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:orientation="vertical" >
         <com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
-            android:id="@+id/time_picker"
+            android:id="@+id/mdtp_time_picker"
             android:layout_width="@dimen/mdtp_picker_dimen"
             android:layout_height="@dimen/mdtp_picker_dimen"
             android:layout_gravity="center"

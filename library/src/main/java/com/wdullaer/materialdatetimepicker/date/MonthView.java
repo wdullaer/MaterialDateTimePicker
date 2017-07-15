@@ -41,14 +41,11 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.wdullaer.materialdatetimepicker.R;
-import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter.CalendarDay;
 
 import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Formatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -57,49 +54,6 @@ import java.util.Locale;
  * within the specified month.
  */
 public abstract class MonthView extends View {
-    private static final String TAG = "MonthView";
-
-    /**
-     * These params can be passed into the view to control how it appears.
-     * {@link #VIEW_PARAMS_WEEK} is the only required field, though the default
-     * values are unlikely to fit most layouts correctly.
-     */
-    /**
-     * This sets the height of this week in pixels
-     */
-    public static final String VIEW_PARAMS_HEIGHT = "height";
-    /**
-     * This specifies the position (or weeks since the epoch) of this week.
-     */
-    public static final String VIEW_PARAMS_MONTH = "month";
-    /**
-     * This specifies the position (or weeks since the epoch) of this week.
-     */
-    public static final String VIEW_PARAMS_YEAR = "year";
-    /**
-     * This sets one of the days in this view as selected {@link Calendar#SUNDAY}
-     * through {@link Calendar#SATURDAY}.
-     */
-    public static final String VIEW_PARAMS_SELECTED_DAY = "selected_day";
-    /**
-     * Which day the week should start on. {@link Calendar#SUNDAY} through
-     * {@link Calendar#SATURDAY}.
-     */
-    public static final String VIEW_PARAMS_WEEK_START = "week_start";
-    /**
-     * How many days to display at a time. Days will be displayed starting with
-     * {@link #mWeekStart}.
-     */
-    public static final String VIEW_PARAMS_NUM_DAYS = "num_days";
-    /**
-     * Which month is currently in focus, as defined by {@link Calendar#MONTH}
-     * [0-11].
-     */
-    public static final String VIEW_PARAMS_FOCUS_MONTH = "focus_month";
-    /**
-     * If this month should display week numbers. false if 0, true otherwise.
-     */
-    public static final String VIEW_PARAMS_SHOW_WK_NUM = "show_wk_num";
 
     protected static int DEFAULT_HEIGHT = 32;
     protected static int MIN_HEIGHT = 10;
@@ -136,7 +90,6 @@ public abstract class MonthView extends View {
     protected Paint mSelectedCirclePaint;
     protected Paint mMonthDayLabelPaint;
 
-    private final Formatter mFormatter;
     private final StringBuilder mStringBuilder;
 
     // The Julian day of the first day displayed by this item
@@ -190,6 +143,8 @@ public abstract class MonthView extends View {
     protected int mHighlightedDayTextColor;
     protected int mDisabledDayTextColor;
 
+    private SimpleDateFormat weekDayLabelFormatter;
+
     public MonthView(Context context) {
         this(context, null, null);
     }
@@ -225,7 +180,6 @@ public abstract class MonthView extends View {
         mMonthTitleColor = ContextCompat.getColor(context, R.color.mdtp_white);
 
         mStringBuilder = new StringBuilder(50);
-        mFormatter = new Formatter(mStringBuilder, Locale.getDefault());
 
 
         mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
@@ -310,7 +264,7 @@ public abstract class MonthView extends View {
         mMonthDayLabelPaint.setAntiAlias(true);
         mMonthDayLabelPaint.setTextSize(MONTH_DAY_LABEL_TEXT_SIZE);
         mMonthDayLabelPaint.setColor(mMonthDayTextColor);
-        mMonthDayLabelPaint.setTypeface(TypefaceHelper.get(getContext(), "Roboto-Medium"));
+        mMonthTitlePaint.setTypeface(Typeface.create(mDayOfWeekTypeface, Typeface.BOLD));
         mMonthDayLabelPaint.setStyle(Style.FILL);
         mMonthDayLabelPaint.setTextAlign(Align.CENTER);
         mMonthDayLabelPaint.setFakeBoldText(true);
@@ -336,31 +290,18 @@ public abstract class MonthView extends View {
      * Sets all the parameters for displaying this week. The only required
      * parameter is the week number. Other parameters have a default value and
      * will only update if a new value is included, except for focus month,
-     * which will always default to no focus month if no value is passed in. See
-     * {@link #VIEW_PARAMS_HEIGHT} for more info on parameters.
-     *
-     * @param params A map of the new parameters, see
-     *               {@link #VIEW_PARAMS_HEIGHT}
+     * which will always default to no focus month if no value is passed in.
      */
-    public void setMonthParams(HashMap<String, Integer> params) {
-        if (!params.containsKey(VIEW_PARAMS_MONTH) && !params.containsKey(VIEW_PARAMS_YEAR)) {
+    public void setMonthParams(int selectedDay, int year, int month, int weekStart) {
+        if (month == -1 && year == -1) {
             throw new InvalidParameterException("You must specify month and year for this view");
         }
-        setTag(params);
-        // We keep the current value for any params not present
-        if (params.containsKey(VIEW_PARAMS_HEIGHT)) {
-            mRowHeight = params.get(VIEW_PARAMS_HEIGHT);
-            if (mRowHeight < MIN_HEIGHT) {
-                mRowHeight = MIN_HEIGHT;
-            }
-        }
-        if (params.containsKey(VIEW_PARAMS_SELECTED_DAY)) {
-            mSelectedDay = params.get(VIEW_PARAMS_SELECTED_DAY);
-        }
+
+        mSelectedDay = selectedDay;
 
         // Allocate space for caching the day numbers and focus values
-        mMonth = params.get(VIEW_PARAMS_MONTH);
-        mYear = params.get(VIEW_PARAMS_YEAR);
+        mMonth = month;
+        mYear = year;
 
         // Figure out what day today is
         //final Time today = new Time(Time.getCurrentTimezone());
@@ -374,8 +315,8 @@ public abstract class MonthView extends View {
         mCalendar.set(Calendar.DAY_OF_MONTH, 1);
         mDayOfWeekStart = mCalendar.get(Calendar.DAY_OF_WEEK);
 
-        if (params.containsKey(VIEW_PARAMS_WEEK_START)) {
-            mWeekStart = params.get(VIEW_PARAMS_WEEK_START);
+        if (weekStart != -1) {
+            mWeekStart = weekStart;
         } else {
             mWeekStart = mCalendar.getFirstDayOfWeek();
         }
@@ -398,11 +339,6 @@ public abstract class MonthView extends View {
         mSelectedDay = day;
     }
 
-    public void reuse() {
-        mNumRows = DEFAULT_NUM_ROWS;
-        requestLayout();
-    }
-
     private int calculateNumRows() {
         int offset = findDayOffset();
         int dividend = (offset + mNumCells) / mNumDays;
@@ -418,8 +354,7 @@ public abstract class MonthView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mRowHeight * mNumRows
-                + getMonthHeaderSize() + 5);
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mRowHeight * mNumRows + getMonthHeaderSize() + 5);
     }
 
     @Override
@@ -454,6 +389,7 @@ public abstract class MonthView extends View {
         else pattern = DateFormat.getBestDateTimePattern(locale, pattern);
 
         SimpleDateFormat formatter = new SimpleDateFormat(pattern, locale);
+        formatter.setTimeZone(mController.getTimeZone());
         formatter.applyLocalizedPattern(pattern);
         mStringBuilder.setLength(0);
         return formatter.format(mCalendar.getTime());
@@ -645,7 +581,10 @@ public abstract class MonthView extends View {
             return dayLabel;
         }
         // Getting the short label is a one liner on API >= 18
-        return new SimpleDateFormat("EEEEE", locale).format(day.getTime());
+        if (weekDayLabelFormatter == null) {
+            weekDayLabelFormatter = new SimpleDateFormat("EEEEE", locale);
+        }
+        return weekDayLabelFormatter.format(day.getTime());
     }
 
     /**

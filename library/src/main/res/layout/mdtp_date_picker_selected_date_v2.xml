@@ -17,7 +17,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/day_picker_selected_date_layout"
+    android:id="@+id/mdtp_day_picker_selected_date_layout"
     android:layout_width="@dimen/mdtp_date_picker_header_width"
     android:layout_height="@dimen/mdtp_date_picker_header_height"
     android:layout_weight="1"
@@ -27,7 +27,7 @@
     android:orientation="vertical">
 
     <com.wdullaer.materialdatetimepicker.AccessibleTextView
-        android:id="@+id/date_picker_year"
+        android:id="@+id/mdtp_date_picker_year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -39,7 +39,7 @@
         tools:text="2015" />
 
     <com.wdullaer.materialdatetimepicker.AccessibleLinearLayout
-        android:id="@+id/date_picker_month_and_day"
+        android:id="@+id/mdtp_date_picker_month_and_day"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -47,7 +47,7 @@
         android:orientation="horizontal"
         android:textColor="@color/mdtp_date_picker_selector" >
         <TextView
-            android:id="@+id/date_picker_day"
+            android:id="@+id/mdtp_date_picker_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

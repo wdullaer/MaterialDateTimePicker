@@ -30,9 +30,12 @@ import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
 
+import java.util.Calendar;
+
 /**
  * Utility helper functions for time and date pickers.
  */
+@SuppressWarnings("WeakerAccess")
 public class Utils {
 
     //public static final int MONDAY_BEFORE_JULIAN_EPOCH = Time.EPOCH_JULIAN_DAY - 3;
@@ -58,47 +61,6 @@ public class Utils {
             view.announceForAccessibility(text);
         }
     }
-
-    /**
-     * Takes a number of weeks since the epoch and calculates the Julian day of
-     * the Monday for that week.
-     *
-     * This assumes that the week containing the {@link Time#EPOCH_JULIAN_DAY}
-     * is considered week 0. It returns the Julian day for the Monday
-     * {@code week} weeks after the Monday of the week containing the epoch.
-     *
-     * @param week Number of weeks since the epoch
-     * @return The julian day for the Monday of the given week since the epoch
-     */
-    /**
-    public static int getJulianMondayFromWeeksSinceEpoch(int week) {
-        return MONDAY_BEFORE_JULIAN_EPOCH + week * 7;
-    }
-     */
-
-    /**
-     * Returns the week since {@link Time#EPOCH_JULIAN_DAY} (Jan 1, 1970)
-     * adjusted for first day of week.
-     *
-     * This takes a julian day and the week start day and calculates which
-     * week since {@link Time#EPOCH_JULIAN_DAY} that day occurs in, starting
-     * at 0. *Do not* use this to compute the ISO week number for the year.
-     *
-     * @param julianDay The julian day to calculate the week number for
-     * @param firstDayOfWeek Which week day is the first day of the week,
-     *          see {@link Time#SUNDAY}
-     * @return Weeks since the epoch
-     */
-    /**
-    public static int getWeeksSinceEpochFromJulianDay(int julianDay, int firstDayOfWeek) {
-        int diff = Time.THURSDAY - firstDayOfWeek;
-        if (diff < 0) {
-            diff += 7;
-        }
-        int refDay = Time.EPOCH_JULIAN_DAY - diff;
-        return (julianDay - refDay) / 7;
-    }
-     */
 
     /**
      * Render an animator to pulsate a view in place.
@@ -182,5 +144,20 @@ public class Utils {
         } finally {
             a.recycle();
         }
+    }
+
+    /**
+     * Trims off all time information, effectively setting it to midnight
+     * Makes it easier to compare at just the day level
+     *
+     * @param calendar The Calendar object to trim
+     * @return The trimmed Calendar object
+     */
+    public static Calendar trimToMidnight(Calendar calendar) {
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar;
     }
 }

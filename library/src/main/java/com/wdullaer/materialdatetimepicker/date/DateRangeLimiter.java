@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project
+ * Copyright (C) 2017 Wouter Dullaert
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,22 @@
 
 package com.wdullaer.materialdatetimepicker.date;
 
-import android.content.Context;
+import android.os.Parcelable;
 
-/**
- * An adapter for a list of {@link SimpleMonthView} items.
- */
-public class SimpleMonthAdapter extends MonthAdapter {
+import java.io.Serializable;
+import java.util.Calendar;
 
-    public SimpleMonthAdapter(DatePickerController controller) {
-        super(controller);
-    }
+@SuppressWarnings("WeakerAccess")
+public interface DateRangeLimiter extends Parcelable {
+    int getMinYear();
 
-    @Override
-    public MonthView createMonthView(Context context) {
-        return new SimpleMonthView(context, null, mController);
-    }
+    int getMaxYear();
+
+    Calendar getStartDate();
+
+    Calendar getEndDate();
+
+    boolean isOutOfRange(int year, int month, int day);
+
+    Calendar setToNearestDate(Calendar day);
 }

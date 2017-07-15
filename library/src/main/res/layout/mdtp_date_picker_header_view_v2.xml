@@ -16,7 +16,7 @@
 -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tool="http://schemas.android.com/tools"
-    android:id="@+id/date_picker_header"
+    android:id="@+id/mdtp_date_picker_header"
     android:layout_width="match_parent"
     android:layout_height="@dimen/mdtp_date_picker_title_height"
     android:background="@color/mdtp_calendar_header"
