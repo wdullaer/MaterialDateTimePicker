@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mdtp_time_placeholder"
-            android:layout_toRightOf="@id/mdtp_separator_seconds"
+            android:layout_toRightOf="@+id/mdtp_separator_seconds"
             android:layout_centerVertical="true"
             android:visibility="invisible"
             android:textColor="@color/mdtp_accent_color_focused"
@@ -136,7 +136,7 @@
             android:gravity="center_horizontal"
             android:text="@string/mdtp_time_placeholder"
             android:layout_gravity="center"
-            android:layout_toRightOf="@id/mdtp_separator_seconds"
+            android:layout_toRightOf="@+id/mdtp_separator_seconds"
             android:layout_alignBaseline="@id/mdtp_separator"
             android:textColor="@color/mdtp_accent_color_focused" />
 
@@ -145,7 +145,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_alignBaseline="@id/mdtp_seconds"
+            android:layout_alignBaseline="@+id/mdtp_seconds"
             android:baselineAlignedChildIndex="1"
             android:layout_toRightOf="@id/mdtp_seconds">
             <TextView
