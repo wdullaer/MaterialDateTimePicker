@@ -331,7 +331,7 @@ public class DefaultDateRangeLimiterTest {
         day.set(Calendar.YEAR, 1999);
 
         limiter.setMinDate(day);
-        day.roll(Calendar.DAY_OF_MONTH, false);
+        day.add(Calendar.DAY_OF_MONTH, -1);
         int year = day.get(Calendar.YEAR);
         int month = day.get(Calendar.MONTH);
         int dayNumber = day.get(Calendar.DAY_OF_MONTH);
@@ -362,7 +362,7 @@ public class DefaultDateRangeLimiterTest {
         day.set(Calendar.YEAR, 1999);
 
         limiter.setMaxDate(day);
-        day.roll(Calendar.DAY_OF_MONTH, true);
+        day.add(Calendar.DAY_OF_MONTH, 1);
         int year = day.get(Calendar.YEAR);
         int month = day.get(Calendar.MONTH);
         int dayNumber = day.get(Calendar.DAY_OF_MONTH);
