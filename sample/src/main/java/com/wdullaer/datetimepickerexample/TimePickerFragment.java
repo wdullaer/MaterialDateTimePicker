@@ -69,7 +69,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());
                 tpd.enableSeconds(enableSeconds.isChecked());
-                tpd.setVersion(showVersion2.isChecked() ? TimePickerDialog.Version.VERSION_2 : TimePickerDialog.Version.VERSION_1);
+                tpd.setVersion(showVersion2.isChecked() ? TimePickerDialog.VERSION_2 : TimePickerDialog.VERSION_1);
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }

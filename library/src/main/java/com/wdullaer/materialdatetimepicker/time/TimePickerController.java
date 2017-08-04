@@ -24,7 +24,7 @@ public interface TimePickerController {
     /**
      * @return Version - The current version to render
      */
-    TimePickerDialog.Version getVersion();
+    @TimePickerDialog.Version int getVersion();
 
     /**
      * Request the device to vibrate
@@ -57,5 +57,5 @@ public interface TimePickerController {
      * @param type Timepoint.TYPE - whether we should round the hours, minutes or seconds
      * @return timepoint - the nearest valid timepoint
      */
-    Timepoint roundToNearest(Timepoint time, Timepoint.TYPE type);
+    Timepoint roundToNearest(Timepoint time, @Timepoint.type int type);
 }

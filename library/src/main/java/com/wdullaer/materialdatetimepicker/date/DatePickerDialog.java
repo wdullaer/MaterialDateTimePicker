@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
@@ -48,7 +49,10 @@ import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -62,10 +66,25 @@ import java.util.TimeZone;
 public class DatePickerDialog extends DialogFragment implements
         OnClickListener, DatePickerController {
 
-    public enum Version {
-        VERSION_1,
-        VERSION_2
-    }
+    /**
+     * Version 1 layout
+     * <p>
+     *      This is the original layout. It is based on the layout google used in the kitkat and early material design era
+     * </p>
+     */
+    public static final int VERSION_1 = 0;
+
+    /**
+     * Version 2 layout
+     * <p>
+     *     This layout is based on the guidelines google posted when launching android marshmallow. This is the default and still the most current design.
+     * </p>
+     */
+    public static final int VERSION_2 = 1;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({VERSION_1, VERSION_2})
+    public @interface Version{}
 
     private static final int UNINITIALIZED = -1;
     private static final int MONTH_AND_DAY_VIEW = 0;
@@ -139,7 +158,7 @@ public class DatePickerDialog extends DialogFragment implements
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
     private int mCancelColor = -1;
-    private Version mVersion;
+    private @DatePickerDialog.Version int mVersion;
     private TimeZone mTimezone;
     private DefaultDateRangeLimiter mDefaultLimiter = new DefaultDateRangeLimiter();
     private DateRangeLimiter mDateRangeLimiter = mDefaultLimiter;
@@ -207,7 +226,7 @@ public class DatePickerDialog extends DialogFragment implements
         mCalendar.set(Calendar.MONTH, monthOfYear);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
+        mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? VERSION_1 : VERSION_2;
     }
 
     @Override
@@ -293,7 +312,7 @@ public class DatePickerDialog extends DialogFragment implements
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
             mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR);
-            mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
+            mVersion = parsingIntToVersion((int) savedInstanceState.getSerializable(KEY_VERSION));
             mTimezone = (TimeZone) savedInstanceState.getSerializable(KEY_TIMEZONE);
             mDateRangeLimiter = savedInstanceState.getParcelable(KEY_DATERANGELIMITER);
 
@@ -314,7 +333,7 @@ public class DatePickerDialog extends DialogFragment implements
 
         mDefaultLimiter.setController(this);
 
-        int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_date_picker_dialog : R.layout.mdtp_date_picker_dialog_v2;
+        int viewRes = mVersion == VERSION_1 ? R.layout.mdtp_date_picker_dialog : R.layout.mdtp_date_picker_dialog_v2;
         View view = inflater.inflate(viewRes, container, false);
         // All options have been set at this point: round the initial selection if necessary
         mCalendar = mDateRangeLimiter.setToNearestDate(mCalendar);
@@ -465,7 +484,7 @@ public class DatePickerDialog extends DialogFragment implements
 
         switch (viewIndex) {
             case MONTH_AND_DAY_VIEW:
-                if (mVersion == Version.VERSION_1) {
+                if (mVersion == VERSION_1) {
                     ObjectAnimator pulseAnimator = Utils.getPulseAnimator(mMonthAndDayView, 0.9f,
                             1.05f);
                     if (mDelayAnimation) {
@@ -496,7 +515,7 @@ public class DatePickerDialog extends DialogFragment implements
                 Utils.tryAccessibilityAnnounce(mAnimator, mSelectDay);
                 break;
             case YEAR_VIEW:
-                if (mVersion == Version.VERSION_1) {
+                if (mVersion == VERSION_1) {
                     ObjectAnimator pulseAnimator = Utils.getPulseAnimator(mYearView, 0.85f, 1.1f);
                     if (mDelayAnimation) {
                         pulseAnimator.setStartDelay(ANIMATION_DELAY);
@@ -530,7 +549,7 @@ public class DatePickerDialog extends DialogFragment implements
     private void updateDisplay(boolean announce) {
         mYearView.setText(YEAR_FORMAT.format(mCalendar.getTime()));
 
-        if (mVersion == Version.VERSION_1) {
+        if (mVersion == VERSION_1) {
             if (mDatePickerHeaderView != null) {
                 if (mTitle != null)
                     mDatePickerHeaderView.setText(mTitle.toUpperCase(Locale.getDefault()));
@@ -543,7 +562,7 @@ public class DatePickerDialog extends DialogFragment implements
             mSelectedDayTextView.setText(DAY_FORMAT.format(mCalendar.getTime()));
         }
 
-        if (mVersion == Version.VERSION_2) {
+        if (mVersion == VERSION_2) {
             mSelectedDayTextView.setText(VERSION_2_FORMAT.format(mCalendar.getTime()));
             if (mTitle != null)
                 mDatePickerHeaderView.setText(mTitle.toUpperCase(Locale.getDefault()));
@@ -896,7 +915,7 @@ public class DatePickerDialog extends DialogFragment implements
      *
      * @param version The version to use
      */
-    public void setVersion(Version version) {
+    public void setVersion(@Version int version) {
         mVersion = version;
     }
 
@@ -1039,5 +1058,21 @@ public class DatePickerDialog extends DialogFragment implements
             mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
                     mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
         }
+    }
+
+    /**
+     * Parsing int type data to version type data
+     * @param value int type
+     * @return version type data
+     */
+    private @DatePickerDialog.Version int parsingIntToVersion(int value){
+        switch (value){
+            case VERSION_1:
+                return VERSION_1;
+            case VERSION_2:
+                return VERSION_2;
+        }
+
+        throw new IllegalArgumentException("no version for this value, value = "+value+ ", at class"+getClass().getSimpleName());
     }
 }

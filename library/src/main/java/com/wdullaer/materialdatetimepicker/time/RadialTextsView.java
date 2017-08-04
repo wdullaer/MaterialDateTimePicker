@@ -123,7 +123,7 @@ public class RadialTextsView extends View {
         mHasInnerCircle = (innerTexts != null);
 
         // Calculate the radius for the main circle.
-        if (mIs24HourMode || controller.getVersion() != TimePickerDialog.Version.VERSION_1) {
+        if (mIs24HourMode || controller.getVersion() != TimePickerDialog.VERSION_1) {
             mCircleRadiusMultiplier = Float.parseFloat(
                     res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {

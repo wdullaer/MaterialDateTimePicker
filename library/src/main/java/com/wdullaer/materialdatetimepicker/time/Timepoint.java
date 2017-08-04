@@ -2,8 +2,12 @@ package com.wdullaer.materialdatetimepicker.time;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * Simple utility class that represents a time in the day up to second precision
@@ -19,11 +23,29 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
     private int minute;
     private int second;
 
-    public enum TYPE {
-        HOUR,
-        MINUTE,
-        SECOND
-    }
+    /**
+     * No type
+     */
+    public static final int NONE = 0;
+    /**
+     * Hour type
+     */
+    public static final int HOUR = 1;
+    /**
+     * Minute type
+     */
+    public static final int MINUTE = 2;
+    /**
+     * Second type
+     */
+    public static final int SECOND = 3;
+
+    /**
+     * Type of HOUR, MINUTE, SECOND
+     */
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({HOUR, MINUTE, SECOND, NONE})
+    public @interface type{}
 
     public Timepoint(Timepoint time) {
         this(time.hour, time.minute, time.second);
