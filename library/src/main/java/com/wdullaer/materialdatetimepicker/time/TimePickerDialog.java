@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -52,6 +53,8 @@ import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,10 +69,25 @@ public class TimePickerDialog extends DialogFragment implements
         OnValueSelectedListener, TimePickerController {
     private static final String TAG = "TimePickerDialog";
 
-    public enum Version {
-        VERSION_1,
-        VERSION_2
-    }
+    /**
+     * Version 1 layout
+     * <p>
+     *      This is the original layout. It is based on the layout google used in the kitkat and early material design era
+     * </p>
+     */
+    public static final int VERSION_1 = 0;
+
+    /**
+     * Version 2 layout
+     * <p>
+     *     This layout is based on the guidelines google posted when launching android marshmallow. This is the default and still the most current design.
+     * </p>
+     */
+    public static final int VERSION_2 = 1;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({VERSION_1, VERSION_2})
+    public @interface Version{}
 
     private static final String KEY_INITIAL_TIME = "initial_time";
     private static final String KEY_IS_24_HOUR_VIEW = "is_24_hour_view";
@@ -148,7 +166,7 @@ public class TimePickerDialog extends DialogFragment implements
     private int mCancelResid;
     private String mCancelString;
     private int mCancelColor;
-    private Version mVersion;
+    private @Version int mVersion;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -224,7 +242,7 @@ public class TimePickerDialog extends DialogFragment implements
         mOkColor = -1;
         mCancelResid = R.string.mdtp_cancel;
         mCancelColor = -1;
-        mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
+        mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? VERSION_1 : VERSION_2;
     }
 
     /**
@@ -495,14 +513,32 @@ public class TimePickerDialog extends DialogFragment implements
      * Set which layout version the picker should use
      * @param version The version to use
      */
-    public void setVersion(Version version) {
+    public void setVersion(@Version int version) {
         mVersion = version;
     }
 
     @Override
-    public Version getVersion() {
+    public @Version int getVersion() {
         return mVersion;
     }
+
+
+    /**
+     * Parsing int type data to version type data
+     * @param value int type
+     * @return version type data
+     */
+    private @Version int parsingIntToVersion(int value){
+        switch (value){
+            case VERSION_1:
+                return VERSION_1;
+            case VERSION_2:
+                return VERSION_2;
+        }
+
+        throw new IllegalArgumentException("no version for this value, value = "+value+ ", at class"+getClass().getSimpleName());
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -529,7 +565,7 @@ public class TimePickerDialog extends DialogFragment implements
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
             mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR);
-            mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
+            mVersion = parsingIntToVersion((int) savedInstanceState.getSerializable(KEY_VERSION));
         }
     }
 
@@ -537,7 +573,7 @@ public class TimePickerDialog extends DialogFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_time_picker_dialog : R.layout.mdtp_time_picker_dialog_v2;
+        int viewRes = mVersion == VERSION_1 ? R.layout.mdtp_time_picker_dialog : R.layout.mdtp_time_picker_dialog_v2;
         View view = inflater.inflate(viewRes, container,false);
         KeyboardListener keyboardListener = new KeyboardListener();
         view.findViewById(R.id.mdtp_time_picker_dialog).setOnKeyListener(keyboardListener);
@@ -678,7 +714,7 @@ public class TimePickerDialog extends DialogFragment implements
             mAmTextView .setVisibility(View.GONE);
             mPmTextView.setVisibility(View.VISIBLE);
             mAmPmLayout.setOnClickListener(listener);
-            if (mVersion == Version.VERSION_2) {
+            if (mVersion == VERSION_2) {
                 mAmTextView.setText(mAmText);
                 mPmTextView.setText(mPmText);
                 mAmTextView.setVisibility(View.VISIBLE);
@@ -940,7 +976,7 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     private void updateAmPmDisplay(int amOrPm) {
-        if (mVersion == Version.VERSION_2) {
+        if (mVersion == VERSION_2) {
             if (amOrPm == AM) {
                 mAmTextView.setTextColor(mSelectedColor);
                 mPmTextView.setTextColor(mUnselectedColor);
@@ -1117,11 +1153,11 @@ public class TimePickerDialog extends DialogFragment implements
      * @return Timepoint - The nearest valid Timepoint
      */
     private Timepoint roundToNearest(@NonNull Timepoint time) {
-        return roundToNearest(time, null);
+        return roundToNearest(time, Timepoint.NONE);
     }
 
     @Override
-    public Timepoint roundToNearest(@NonNull Timepoint time, @Nullable Timepoint.TYPE type) {
+    public Timepoint roundToNearest(@NonNull Timepoint time, @Nullable @Timepoint.type int type) {
 
         if(mMinTime != null && mMinTime.compareTo(time) > 0) return mMinTime;
 
@@ -1132,11 +1168,11 @@ public class TimePickerDialog extends DialogFragment implements
             for(Timepoint t : mSelectableTimes) {
                 // type == null: no restrictions
                 // type == HOUR: do not change the hour
-                if (type == Timepoint.TYPE.HOUR && t.getHour() != time.getHour()) continue;
+                if (type == Timepoint.HOUR && t.getHour() != time.getHour()) continue;
                 // type == MINUTE: do not change hour or minute
-                if (type == Timepoint.TYPE.MINUTE  && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
+                if (type == Timepoint.MINUTE  && t.getHour() != time.getHour() && t.getMinute() != time.getMinute()) continue;
                 // type == SECOND: cannot change anything, return input
-                if (type == Timepoint.TYPE.SECOND) return time;
+                if (type == Timepoint.SECOND) return time;
                 int newDistance = Math.abs(t.compareTo(time));
                 if (newDistance < currentDistance) {
                     currentDistance = newDistance;

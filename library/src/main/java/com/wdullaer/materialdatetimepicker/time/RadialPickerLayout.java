@@ -173,7 +173,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         // Initialize the circle and AM/PM circles if applicable.
         mCircleView.initialize(context, mController);
         mCircleView.invalidate();
-        if (!mIs24HourMode && mController.getVersion() == TimePickerDialog.Version.VERSION_1) {
+        if (!mIs24HourMode && mController.getVersion() == TimePickerDialog.VERSION_1) {
             mAmPmCirclesView.initialize(context, mController, initialTime.isAM() ? AM : PM);
             mAmPmCirclesView.invalidate();
         }
@@ -435,11 +435,11 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private Timepoint roundToValidTime(Timepoint newSelection, int currentItemShowing) {
         switch(currentItemShowing) {
             case HOUR_INDEX:
-                return mController.roundToNearest(newSelection, null);
+                return mController.roundToNearest(newSelection, Timepoint.NONE);
             case MINUTE_INDEX:
-                return mController.roundToNearest(newSelection, Timepoint.TYPE.HOUR);
+                return mController.roundToNearest(newSelection, Timepoint.HOUR);
             default:
-                return mController.roundToNearest(newSelection, Timepoint.TYPE.MINUTE);
+                return mController.roundToNearest(newSelection, Timepoint.MINUTE);
         }
     }
 
@@ -718,7 +718,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 mDoingMove = false;
                 mDoingTouch = true;
                 // If we're showing the AM/PM, check to see if the user is touching it.
-                if (!mIs24HourMode && mController.getVersion() == TimePickerDialog.Version.VERSION_1) {
+                if (!mIs24HourMode && mController.getVersion() == TimePickerDialog.VERSION_1) {
                     mIsTouchingAmOrPm = mAmPmCirclesView.getIsTouchingAmOrPm(eventX, eventY);
                 } else {
                     mIsTouchingAmOrPm = -1;
