@@ -17,6 +17,7 @@
 package com.wdullaer.materialdatetimepicker.date;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -27,11 +28,11 @@ public interface DateRangeLimiter extends Parcelable {
 
     int getMaxYear();
 
-    Calendar getStartDate();
+    @NonNull Calendar getStartDate();
 
-    Calendar getEndDate();
+    @NonNull Calendar getEndDate();
 
     boolean isOutOfRange(int year, int month, int day);
 
-    Calendar setToNearestDate(Calendar day);
+    @NonNull Calendar setToNearestDate(@NonNull Calendar day);
 }

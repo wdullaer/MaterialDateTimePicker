@@ -199,6 +199,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         return mMaxDate != null && calendar.after(mMaxDate) || calendar.get(Calendar.YEAR) > mMaxYear;
     }
 
+    @Override
     public @NonNull Calendar setToNearestDate(@NonNull Calendar calendar) {
         if (!selectableDays.isEmpty()) {
             Calendar newCalendar = null;
