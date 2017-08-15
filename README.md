@@ -42,7 +42,7 @@ Date Picker | Time Picker
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:3.2.2'
+  compile 'com.wdullaer:materialdatetimepicker:3.2.3'
 }
 ```
 
@@ -214,7 +214,7 @@ If you do really need `SupportDialogFragment`, you can fork the library (It invo
 
 ```groovy
 dependencies {
-  compile 'co.infinum:materialdatetimepicker-support:3.2.2'
+  compile 'co.infinum:materialdatetimepicker-support:3.2.3'
 }
 ```
 
@@ -227,7 +227,7 @@ This library depends on the android support library. Because the jvm allows only
 Using the following snippet in your apps `build.gradle` file you can exclude this library's transitive support library dependency from being installed.
 
 ```groovy
-compile ('com.wdullaer:materialdatetimepicker:3.2.2') {
+compile ('com.wdullaer:materialdatetimepicker:3.2.3') {
         exclude group: 'com.android.support'
 }
 ```
