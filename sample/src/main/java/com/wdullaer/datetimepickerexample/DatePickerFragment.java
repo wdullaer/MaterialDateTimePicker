@@ -41,17 +41,17 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         View view = inflater.inflate(R.layout.datepicker_layout, container, false);
 
         // Find our View instances
-        dateTextView = (TextView) view.findViewById(R.id.date_textview);
-        Button dateButton = (Button) view.findViewById(R.id.date_button);
-        modeDarkDate = (CheckBox) view.findViewById(R.id.mode_dark_date);
-        modeCustomAccentDate = (CheckBox) view.findViewById(R.id.mode_custom_accent_date);
-        vibrateDate = (CheckBox) view.findViewById(R.id.vibrate_date);
-        dismissDate = (CheckBox) view.findViewById(R.id.dismiss_date);
-        titleDate = (CheckBox) view.findViewById(R.id.title_date);
-        showYearFirst = (CheckBox) view.findViewById(R.id.show_year_first);
-        showVersion2 = (CheckBox) view.findViewById(R.id.show_version_2);
-        limitSelectableDays = (CheckBox) view.findViewById(R.id.limit_dates);
-        highlightDays = (CheckBox) view.findViewById(R.id.highlight_dates);
+        dateTextView = view.findViewById(R.id.date_textview);
+        Button dateButton = view.findViewById(R.id.date_button);
+        modeDarkDate = view.findViewById(R.id.mode_dark_date);
+        modeCustomAccentDate = view.findViewById(R.id.mode_custom_accent_date);
+        vibrateDate = view.findViewById(R.id.vibrate_date);
+        dismissDate = view.findViewById(R.id.dismiss_date);
+        titleDate = view.findViewById(R.id.title_date);
+        showYearFirst = view.findViewById(R.id.show_year_first);
+        showVersion2 = view.findViewById(R.id.show_version_2);
+        limitSelectableDays = view.findViewById(R.id.limit_dates);
+        highlightDays = view.findViewById(R.id.highlight_dates);
 
         // Show a datepicker when the dateButton is clicked
         dateButton.setOnClickListener(new View.OnClickListener() {

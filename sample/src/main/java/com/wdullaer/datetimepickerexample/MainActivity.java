@@ -20,11 +20,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         adapter = new PickerAdapter(getFragmentManager());
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager);
         viewPager.setAdapter(adapter);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         for(int i=0;i<adapter.getCount();i++) //noinspection ConstantConditions
             tabLayout.getTabAt(i).setText(adapter.getTitle(i));
