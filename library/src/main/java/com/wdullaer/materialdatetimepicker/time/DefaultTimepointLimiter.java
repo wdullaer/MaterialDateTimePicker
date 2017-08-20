@@ -19,6 +19,8 @@ import static com.wdullaer.materialdatetimepicker.time.TimePickerDialog.MINUTE_I
 
 class DefaultTimepointLimiter implements TimepointLimiter {
     private TreeSet<Timepoint> mSelectableTimes = new TreeSet<>();
+    private TreeSet<Timepoint> mDisabledTimes = new TreeSet<>();
+    private TreeSet<Timepoint> exclusiveSelectableTimes = new TreeSet<>();
     private Timepoint mMinTime;
     private Timepoint mMaxTime;
 
@@ -29,6 +31,8 @@ class DefaultTimepointLimiter implements TimepointLimiter {
         mMinTime = in.readParcelable(Timepoint.class.getClassLoader());
         mMaxTime = in.readParcelable(Timepoint.class.getClassLoader());
         mSelectableTimes.addAll(Arrays.asList((Timepoint[]) in.readParcelableArray(Timepoint[].class.getClassLoader())));
+        mDisabledTimes.addAll(Arrays.asList((Timepoint[]) in.readParcelableArray(Timepoint[].class.getClassLoader())));
+        exclusiveSelectableTimes = getExclusiveSelectableTimes(mSelectableTimes, mDisabledTimes);
     }
 
     @Override
@@ -36,6 +40,7 @@ class DefaultTimepointLimiter implements TimepointLimiter {
         out.writeParcelable(mMinTime, flags);
         out.writeParcelable(mMaxTime, flags);
         out.writeParcelableArray((Timepoint[]) mSelectableTimes.toArray(), flags);
+        out.writeParcelableArray((Timepoint[]) mDisabledTimes.toArray(), flags);
     }
 
     @Override
@@ -68,10 +73,22 @@ class DefaultTimepointLimiter implements TimepointLimiter {
 
     void setSelectableTimes(@NonNull Timepoint[] selectableTimes) {
         mSelectableTimes.addAll(Arrays.asList(selectableTimes));
+        exclusiveSelectableTimes = getExclusiveSelectableTimes(mSelectableTimes, mDisabledTimes);
+    }
+
+    void setDisabledTimes(@NonNull Timepoint[] disabledTimes) {
+        mDisabledTimes.addAll(Arrays.asList(disabledTimes));
+        exclusiveSelectableTimes = getExclusiveSelectableTimes(mSelectableTimes, mDisabledTimes);
+    }
+
+    private TreeSet<Timepoint> getExclusiveSelectableTimes(TreeSet<Timepoint> selectable, TreeSet<Timepoint> disabled) {
+        TreeSet<Timepoint> output = (TreeSet<Timepoint>) selectable.clone();
+        output.removeAll(disabled);
+        return output;
     }
 
     @Override
-    public boolean isOutOfRange(@Nullable Timepoint current, int index) {
+    public boolean isOutOfRange(@Nullable Timepoint current, int index, @NonNull Timepoint.TYPE resolution) {
         if (current == null) return false;
 
         if (index == HOUR_INDEX) {
@@ -79,12 +96,16 @@ class DefaultTimepointLimiter implements TimepointLimiter {
 
             if (mMaxTime != null && mMaxTime.getHour()+1 <= current.getHour()) return true;
 
-            if (!mSelectableTimes.isEmpty()) {
-                Timepoint ceil = mSelectableTimes.ceiling(current);
-                Timepoint floor = mSelectableTimes.floor(current);
-                if (ceil == null) return floor.getHour() != current.getHour();
-                if (floor == null) return ceil.getHour() != current.getHour();
-                return !(ceil.getHour() == current.getHour() || floor.getHour() == current.getHour());
+            if (!exclusiveSelectableTimes.isEmpty()) {
+                Timepoint ceil = exclusiveSelectableTimes.ceiling(current);
+                Timepoint floor = exclusiveSelectableTimes.floor(current);
+                return !(current.equals(ceil, Timepoint.TYPE.HOUR) || current.equals(floor, Timepoint.TYPE.HOUR));
+            }
+
+            if (!mDisabledTimes.isEmpty() && resolution == Timepoint.TYPE.HOUR) {
+                Timepoint ceil = mDisabledTimes.ceiling(current);
+                Timepoint floor = mDisabledTimes.floor(current);
+                return current.equals(ceil, Timepoint.TYPE.HOUR) || current.equals(floor, Timepoint.TYPE.HOUR);
             }
 
             return false;
@@ -100,12 +121,18 @@ class DefaultTimepointLimiter implements TimepointLimiter {
                 if (roundedMax.compareTo(current) < 0) return true;
             }
 
-            if (!mSelectableTimes.isEmpty()) {
-                Timepoint ceil = mSelectableTimes.ceiling(current);
-                Timepoint floor = mSelectableTimes.floor(current);
-                if (ceil != null && ceil.getHour() == current.getHour() && ceil.getMinute() == current.getMinute()) return false;
-                if (floor != null && floor.getHour() == current.getHour() && floor.getMinute() == current.getMinute()) return false;
-                return true;
+            if (!exclusiveSelectableTimes.isEmpty()) {
+                Timepoint ceil = exclusiveSelectableTimes.ceiling(current);
+                Timepoint floor = exclusiveSelectableTimes.floor(current);
+                return !(current.equals(ceil, Timepoint.TYPE.MINUTE) || current.equals(floor, Timepoint.TYPE.MINUTE));
+            }
+
+            if (!mDisabledTimes.isEmpty() && resolution == Timepoint.TYPE.MINUTE) {
+                Timepoint ceil = mDisabledTimes.ceiling(current);
+                Timepoint floor = mDisabledTimes.floor(current);
+                boolean ceilExclude = current.equals(ceil, Timepoint.TYPE.MINUTE);
+                boolean floorExclude = current.equals(floor, Timepoint.TYPE.MINUTE);
+                return ceilExclude || floorExclude;
             }
 
             return false;
@@ -118,9 +145,9 @@ class DefaultTimepointLimiter implements TimepointLimiter {
 
         if (mMaxTime != null && mMaxTime.compareTo(current) < 0) return true;
 
-        if (!mSelectableTimes.isEmpty()) return !mSelectableTimes.contains(current);
+        if (!exclusiveSelectableTimes.isEmpty()) return !exclusiveSelectableTimes.contains(current);
 
-        return false;
+        return mDisabledTimes.contains(current);
     }
 
     @Override
@@ -129,7 +156,7 @@ class DefaultTimepointLimiter implements TimepointLimiter {
 
         if (mMinTime != null && mMinTime.compareTo(midday) >= 0) return true;
 
-        if (!mSelectableTimes.isEmpty()) return mSelectableTimes.first().compareTo(midday) >= 0;
+        if (!exclusiveSelectableTimes.isEmpty()) return exclusiveSelectableTimes.first().compareTo(midday) >= 0;
 
         return false;
     }
@@ -140,23 +167,23 @@ class DefaultTimepointLimiter implements TimepointLimiter {
 
         if (mMaxTime != null && mMaxTime.compareTo(midday) < 0) return true;
 
-        if (!mSelectableTimes.isEmpty()) return mSelectableTimes.last().compareTo(midday) < 0;
+        if (!exclusiveSelectableTimes.isEmpty()) return exclusiveSelectableTimes.last().compareTo(midday) < 0;
 
         return false;
     }
 
     @Override
-    public @NonNull Timepoint roundToNearest(@NonNull Timepoint time,@Nullable Timepoint.TYPE type) {
+    public @NonNull Timepoint roundToNearest(@NonNull Timepoint time,@Nullable Timepoint.TYPE type, @NonNull Timepoint.TYPE resolution) {
         if (mMinTime != null && mMinTime.compareTo(time) > 0) return mMinTime;
 
         if (mMaxTime != null && mMaxTime.compareTo(time) < 0) return mMaxTime;
 
-        if (!mSelectableTimes.isEmpty()) {
-            // type == SECOND: cannot change anything, return input
-            if (type == Timepoint.TYPE.SECOND) return time;
+        // type == SECOND: cannot change anything, return input
+        if (type == Timepoint.TYPE.SECOND) return time;
 
-            Timepoint floor = mSelectableTimes.floor(time);
-            Timepoint ceil = mSelectableTimes.ceiling(time);
+        if (!exclusiveSelectableTimes.isEmpty()) {
+            Timepoint floor = exclusiveSelectableTimes.floor(time);
+            Timepoint ceil = exclusiveSelectableTimes.ceiling(time);
 
             if (floor == null || ceil == null) {
                 Timepoint t = floor == null ? ceil : floor;
@@ -191,6 +218,70 @@ class DefaultTimepointLimiter implements TimepointLimiter {
             return floorDist < ceilDist ? floor : ceil;
         }
 
+        if (!mDisabledTimes.isEmpty()) {
+            // if type matches resolution: cannot change anything, return input
+            if (type != null && type == resolution) return time;
+
+            if (resolution == Timepoint.TYPE.SECOND) {
+                if (!mDisabledTimes.contains(time)) return time;
+                return searchValidTimePoint(time, type, resolution);
+            }
+
+            if (resolution == Timepoint.TYPE.MINUTE) {
+                Timepoint ceil = mDisabledTimes.ceiling(time);
+                Timepoint floor = mDisabledTimes.floor(time);
+                boolean ceilDisabled = time.equals(ceil, Timepoint.TYPE.MINUTE);
+                boolean floorDisabled = time.equals(floor, Timepoint.TYPE.MINUTE);
+
+                if (ceilDisabled || floorDisabled) return searchValidTimePoint(time, type, resolution);
+                return time;
+            }
+
+            if (resolution == Timepoint.TYPE.HOUR) {
+                Timepoint ceil = mDisabledTimes.ceiling(time);
+                Timepoint floor = mDisabledTimes.floor(time);
+                boolean ceilDisabled = time.equals(ceil, Timepoint.TYPE.HOUR);
+                boolean floorDisabled = time.equals(floor, Timepoint.TYPE.HOUR);
+
+                if (ceilDisabled || floorDisabled) return searchValidTimePoint(time, type, resolution);
+                return time;
+            }
+        }
+
+        return time;
+    }
+
+    private Timepoint searchValidTimePoint(@NonNull Timepoint time, @Nullable Timepoint.TYPE type, @NonNull Timepoint.TYPE resolution) {
+        Timepoint forward = new Timepoint(time);
+        Timepoint backward = new Timepoint(time);
+        int iteration = 0;
+        int resolutionMultiplier = 1;
+        if (resolution == Timepoint.TYPE.MINUTE) resolutionMultiplier = 60;
+        if (resolution == Timepoint.TYPE.SECOND) resolutionMultiplier = 3600;
+
+        while (iteration < 24 * resolutionMultiplier) {
+            iteration++;
+            forward.add(resolution, 1);
+            backward.add(resolution, -1);
+
+            if (type == null || forward.get(type) == time.get(type)) {
+                Timepoint forwardCeil = mDisabledTimes.ceiling(forward);
+                Timepoint forwardFloor = mDisabledTimes.floor(forward);
+                if (!forward.equals(forwardCeil, resolution) && !forward.equals(forwardFloor, resolution))
+                    return forward;
+            }
+
+            if (type == null || backward.get(type) == time.get(type)) {
+                Timepoint backwardCeil = mDisabledTimes.ceiling(backward);
+                Timepoint backwardFloor = mDisabledTimes.floor(backward);
+                if (!backward.equals(backwardCeil, resolution) && !backward.equals(backwardFloor, resolution))
+                    return backward;
+            }
+
+            if (type != null && backward.get(type) != time.get(type) && forward.get(type) != time.get(type))
+                break;
+        }
+        // If this step is reached, the user has disabled all timepoints
         return time;
     }
 }

@@ -22,6 +22,7 @@
     <string name="limit_times">Limit selectable times</string>
     <string name="limit_dates">Limit selectable dates</string>
     <string name="disable_dates">Disable specific dates</string>
+    <string name="disable_times">Disable specific times</string>
     <string name="highlight_dates">Highlight certain dates</string>
     <string name="action_settings">Settings</string>
 

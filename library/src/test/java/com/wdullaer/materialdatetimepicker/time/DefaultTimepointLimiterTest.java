@@ -283,7 +283,7 @@ public class DefaultTimepointLimiterTest {
     public void isOutOfRangeWithIndexShouldHandleNull() {
         DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
 
-        Assert.assertFalse(limiter.isOutOfRange(null, HOUR_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(null, HOUR_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -294,7 +294,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setMinTime(minTime);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -305,7 +305,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setMaxTime(maxTime);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -320,7 +320,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -335,7 +335,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -350,7 +350,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -365,7 +365,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertTrue(limiter.isOutOfRange(input, MINUTE_INDEX));
+        Assert.assertTrue(limiter.isOutOfRange(input, MINUTE_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -376,7 +376,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setMinTime(minTime);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -387,7 +387,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setMaxTime(maxTime);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -402,7 +402,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -417,7 +417,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX, Timepoint.TYPE.SECOND));
     }
 
     @Test
@@ -432,7 +432,175 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX));
+        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX, Timepoint.TYPE.SECOND));
+    }
+
+    @Test
+    public void isOutOfRangeShouldWorkWhenSelectableTimesContainsDuplicateEntries() {
+        Timepoint[] selectableTimes = {
+                new Timepoint(11),
+                new Timepoint(12),
+                new Timepoint(12),
+                new Timepoint(13)
+        };
+        Timepoint input = new Timepoint(11, 30);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertTrue(limiter.isOutOfRange(input));
+    }
+
+    @Test
+    public void isOutOfRangeShouldReturnTrueWhenInputIsInDisabledTimes() {
+        Timepoint[] disabledTimes = {
+                new Timepoint(11),
+                new Timepoint(12),
+                new Timepoint(13)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertTrue(limiter.isOutOfRange(input));
+    }
+
+    @Test
+    public void isOutOfRangeShouldUseDisabledOverSelectable() {
+        Timepoint[] disabledTimes = {
+                new Timepoint(11),
+                new Timepoint(12),
+                new Timepoint(13)
+        };
+        Timepoint[] selectableTimes = {
+                new Timepoint(12),
+                new Timepoint(14)
+        };
+        Timepoint input = new Timepoint(12);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setDisabledTimes(disabledTimes);
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertTrue(limiter.isOutOfRange(input));
+    }
+
+    @Test
+    public void isOutOfRangeHourShouldReturnFalseWhenADisabledTimeIsTestedWithSecondResolution() {
+        // If there are only disabledTimes, there will still be other times that are valid
+        Timepoint[] disabledTimes = {
+                new Timepoint(12),
+                new Timepoint(13),
+                new Timepoint(14)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX, Timepoint.TYPE.SECOND));
+    }
+
+    @Test
+    public void isOutOfRangeHourShouldReturnFalseWhenADisabledTimeIsTestedWithMinuteResolution() {
+        // If there are only disabledTimes, there will still be other times that are valid
+        Timepoint[] disabledTimes = {
+                new Timepoint(12),
+                new Timepoint(13),
+                new Timepoint(14)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertFalse(limiter.isOutOfRange(input, HOUR_INDEX, Timepoint.TYPE.MINUTE));
+    }
+
+    @Test
+    public void isOutOfRangeHourShouldReturnTrueWhenADisabledTimeIsTestedWithHourResolution() {
+        // If there are only disabledTimes, there will still be other times that are valid
+        Timepoint[] disabledTimes = {
+                new Timepoint(12),
+                new Timepoint(13),
+                new Timepoint(14)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertTrue(limiter.isOutOfRange(input, HOUR_INDEX, Timepoint.TYPE.HOUR));
+    }
+
+    @Test
+    public void isOutOfRangeMinuteShouldReturnFalseWhenADisabledTimeIsTestedWithSecondResolution() {
+        // If there are only disabledTimes, there will still be other times that are valid
+        Timepoint[] disabledTimes = {
+                new Timepoint(12, 15),
+                new Timepoint(13, 16),
+                new Timepoint(14, 17)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertFalse(limiter.isOutOfRange(input, MINUTE_INDEX, Timepoint.TYPE.SECOND));
+    }
+
+    @Test
+    public void isOutOfRangeMinuteShouldReturnFalseWhenADisabledTimeIsTestedWithMinuteResolution() {
+        // If there are only disabledTimes, there will still be other times that are valid
+        Timepoint[] disabledTimes = {
+                new Timepoint(12, 15),
+                new Timepoint(13, 16),
+                new Timepoint(14, 17)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertTrue(limiter.isOutOfRange(input, MINUTE_INDEX, Timepoint.TYPE.MINUTE));
+    }
+
+    @Test
+    public void isOutOfRangeHourShouldReturnTrueWhenADisabledTimeCancelsASelectableTime() {
+        Timepoint[] disabledTimes = {
+                new Timepoint(12),
+                new Timepoint(13)
+        };
+        Timepoint[] selectableTimes = {
+                new Timepoint(12),
+                new Timepoint(14),
+                new Timepoint(15)
+        };
+        Timepoint input = new Timepoint(12);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setDisabledTimes(disabledTimes);
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertTrue(limiter.isOutOfRange(input, HOUR_INDEX, Timepoint.TYPE.SECOND));
+    }
+
+    @Test
+    public void roundToNearestShouldWorkWhenSelectableTimesContainsDuplicateEntries() {
+        Timepoint[] selectableTimes = {
+                new Timepoint(11),
+                new Timepoint(12),
+                new Timepoint(12),
+                new Timepoint(13)
+        };
+        Timepoint input = new Timepoint(12, 29);
+        Timepoint expected = new Timepoint(12);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setSelectableTimes(selectableTimes);
+
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), expected);
     }
 
     @Test
@@ -443,7 +611,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setMaxTime(maxTime);
 
-        Assert.assertEquals(limiter.roundToNearest(input, null), maxTime);
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), maxTime);
     }
 
     @Test
@@ -454,7 +622,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setMinTime(minTime);
 
-        Assert.assertEquals(limiter.roundToNearest(input, null), minTime);
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), minTime);
     }
 
     @Test
@@ -462,7 +630,7 @@ public class DefaultTimepointLimiterTest {
         Timepoint input = new Timepoint(12, 13, 14);
         DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
 
-        Assert.assertEquals(limiter.roundToNearest(input, null), input);
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), input);
     }
 
     @Test
@@ -477,7 +645,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertEquals(limiter.roundToNearest(input, null), selectableTimes[0]);
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), selectableTimes[0]);
     }
 
     @Test
@@ -493,8 +661,8 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.MINUTE).getHour(), input.getHour());
-        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.MINUTE).getMinute(), input.getMinute());
+        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.MINUTE, Timepoint.TYPE.SECOND).getHour(), input.getHour());
+        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.MINUTE, Timepoint.TYPE.SECOND).getMinute(), input.getMinute());
     }
 
     @Test
@@ -511,7 +679,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.HOUR).getHour(), input.getHour());
+        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.HOUR, Timepoint.TYPE.SECOND).getHour(), input.getHour());
     }
 
     @Test
@@ -528,11 +696,11 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.HOUR).getHour(), input.getHour());
+        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.HOUR, Timepoint.TYPE.SECOND).getHour(), input.getHour());
     }
 
     @Test
-    public void roundToNearestShouldNotChangeEverythingWhenSecondOptionIsSet() {
+    public void roundToNearestShouldNotChangeAnythingWhenSecondOptionIsSet() {
         Timepoint[] selectableTimes = {
                 new Timepoint(11, 12, 13),
                 new Timepoint(12),
@@ -545,7 +713,7 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.SECOND), input);
+        Assert.assertEquals(limiter.roundToNearest(input, Timepoint.TYPE.SECOND, Timepoint.TYPE.SECOND), input);
     }
 
     @Test
@@ -560,6 +728,108 @@ public class DefaultTimepointLimiterTest {
 
         limiter.setSelectableTimes(selectableTimes);
 
-        Assert.assertEquals(limiter.roundToNearest(input, null), selectableTimes[0]);
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), selectableTimes[0]);
+    }
+
+    @Test
+    public void roundToNearestShouldRoundToNearestSelectableThatIsNotDisabled() {
+        Timepoint[] selectableTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13)
+        };
+        Timepoint[] disabledTimes = {
+                new Timepoint(12, 13, 14)
+        };
+        Timepoint input = new Timepoint(12, 13, 15);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+
+        limiter.setSelectableTimes(selectableTimes);
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), selectableTimes[2]);
+    }
+
+    @Test
+    public void roundToNearestShouldRoundWithSecondIncrementsIfInputIsDisabled() {
+        Timepoint[] disabledTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+        Timepoint expected = new Timepoint(11, 12, 14);
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), expected);
+    }
+
+    @Test
+    public void roundToNearestShouldRoundWithSecondIncrementsIfInputIsDisabled2() {
+        Timepoint[] disabledTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(11, 12, 14),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+        Timepoint expected = new Timepoint(11, 12, 12);
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), expected);
+    }
+
+    @Test
+    public void roundToNearestShouldRoundWithSecondIncrementsIfInputIsDisabled3() {
+        Timepoint[] disabledTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(11, 12, 12),
+                new Timepoint(11, 12, 14),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+        Timepoint expected = new Timepoint(11, 12, 15);
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.SECOND), expected);
+    }
+
+    @Test
+    public void roundToNearestShouldRoundWithMinuteIncrementsIfInputIsDisabled() {
+        Timepoint[] disabledTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+        Timepoint expected = new Timepoint(11, 13, 13);
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.MINUTE), expected);
+    }
+
+    @Test
+    public void roundToNearestShouldRoundWithHourIncrementsIfInputIsDisabled() {
+        Timepoint[] disabledTimes = {
+                new Timepoint(11, 12, 13),
+                new Timepoint(12, 13, 14),
+                new Timepoint(13, 14, 15)
+        };
+        Timepoint input = disabledTimes[0];
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+        Timepoint expected = new Timepoint(10, 12, 13);
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.HOUR), expected);
     }
 }

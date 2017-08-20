@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.Timepoint;
 
 import java.util.Calendar;
 
@@ -30,6 +31,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     private CheckBox titleTime;
     private CheckBox enableSeconds;
     private CheckBox limitSelectableTimes;
+    private CheckBox disableSpecificTimes;
     private CheckBox showVersion2;
 
     public TimePickerFragment() {
@@ -52,6 +54,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         titleTime = (CheckBox) view.findViewById(R.id.title_time);
         enableSeconds = (CheckBox) view.findViewById(R.id.enable_seconds);
         limitSelectableTimes = (CheckBox) view.findViewById(R.id.limit_times);
+        disableSpecificTimes = (CheckBox) view.findViewById(R.id.disable_times);
         showVersion2 = (CheckBox) view.findViewById(R.id.show_version_2);
 
         // Show a timepicker when the timeButton is clicked
@@ -77,7 +80,20 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                     tpd.setTitle("TimePicker Title");
                 }
                 if (limitSelectableTimes.isChecked()) {
-                    tpd.setTimeInterval(3, 5, 10);
+                    if (enableSeconds.isChecked()) {
+                        tpd.setTimeInterval(3, 5, 10);
+                    } else {
+                        tpd.setTimeInterval(3, 5, 60);
+                    }
+                }
+                if (disableSpecificTimes.isChecked()) {
+                    Timepoint[] disabledTimes = {
+                            new Timepoint(10),
+                            new Timepoint(10, 30),
+                            new Timepoint(11),
+                            new Timepoint(12, 30)
+                    };
+                    tpd.setDisabledTimes(disabledTimes);
                 }
                 tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override

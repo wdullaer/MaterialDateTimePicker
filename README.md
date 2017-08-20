@@ -142,7 +142,7 @@ Shows a title at the top of the `TimePickerDialog`
 * `DatePickerDialog` `setTitle(String title)`
 Shows a title at the top of the `DatePickerDialog` instead of the day of the week
 
-* `setOkText()` and `setCancelText()`
+* `setOkText()` and `setCancelText()`  
 Set a custom text for the dialog Ok and Cancel labels. Can take a resourceId of a String. Works in both the DatePickerDialog and TimePickerDialog
 
 * `setMinTime(Timepoint time)`  
@@ -151,11 +151,18 @@ Set the minimum valid time to be selected. Time values earlier in the day will b
 * `setMaxTime(Timepoint time)`  
 Set the maximum valid time to be selected. Time values later in the day will be deactivated
 
-* `setSelectableTimes(Timepoint[] times)`
-You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. `setMinTime(Timepoint time)` and `setMaxTime(Timepoint time)` will further trim this list down.
+* `setSelectableTimes(Timepoint[] times)`  
+You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. `setMinTime(Timepoint time)`, `setMaxTime(Timepoint time)` and `setDisabledTimes(Timepoint[] times)` will further trim this list down. Try to specify Timepoints only up to the resolution of your picker (i.e. do not add seconds if the resolution of the picker is minutes).
 
-* `setTimeInterval(int hourInterval, int minuteInterval, int secondInterval)`
-Set the interval for selectable times in the TimePickerDialog. This is a convenience wrapper around `setSelectableTimes`
+* `setDisabledTimes(Timepoint[] times)`  
+You can pass in an array of `Timepoints`. These values will not be available for selection. These take precedence over `setSelectableTimes` and `setTimeInterval`. Be careful when using this without selectableTimes: rounding to a valid Timepoint is a very expensive operation if a lot of consecutive Timepoints are disabled. Try to specify Timepoints only up to the resolution of your picker (i.e. do not add seconds if the resolution of the picker is minutes).
+
+* `setTimeInterval(int hourInterval, int minuteInterval, int secondInterval)`  
+Set the interval for selectable times in the TimePickerDialog. This is a convenience wrapper around `setSelectableTimes`. The interval for all three time components can be set independently. If you are not using the seconds / minutes picker, set the respective item to 60 for better performance.
+
+* `setTimepointLimiter(TimepointLimiter limiter)`  
+Pass in a custom implementation of `TimeLimiter`
+Disables `setSelectableTimes`, `setDisabledTimes`, `setTimeInterval`, `setMinTime` and `setMaxTime`
 
 * `setSelectableDays(Calendar[] days)`  
 You can pass a `Calendar[]` to the `DatePickerDialog`. The values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`

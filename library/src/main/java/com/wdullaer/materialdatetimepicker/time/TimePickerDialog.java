@@ -364,15 +364,35 @@ public class TimePickerDialog extends DialogFragment implements
         mDefaultLimiter.setMaxTime(maxTime);
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Pass in an array of Timepoints which are the only possible selections.
+     * Try to specify Timepoints only up to the resolution of your picker (i.e. do not add seconds
+     * if the resolution of the picker is minutes)
+     * @param selectableTimes Array of Timepoints which are the only valid selections in the picker
+     */
     public void setSelectableTimes(Timepoint[] selectableTimes) {
         mDefaultLimiter.setSelectableTimes(selectableTimes);
     }
 
     /**
+     * Pass in an array of Timepoints that cannot be selected. These take precedence over
+     * {@link TimePickerDialog#setSelectableTimes(Timepoint[])}
+     * Be careful when using this without selectableTimes: rounding to a valid Timepoint is a
+     * very expensive operation if a lot of consecutive Timepoints are disabled
+     * Try to specify Timepoints only up to the resolution of your picker (i.e. do not add seconds
+     * if the resolution of the picker is minutes)
+     * @param disabledTimes Array of Timepoints which are disabled in the resulting picker
+     */
+    public void setDisabledTimes(Timepoint[] disabledTimes) {
+        mDefaultLimiter.setDisabledTimes(disabledTimes);
+    }
+
+    /**
      * Set the interval for selectable times in the TimePickerDialog
-     * This is a convenience wrapper around setSelectableTimes
+     * This is a convenience wrapper around {@link TimePickerDialog#setSelectableTimes(Timepoint[])}
      * The interval for all three time components can be set independently
+     * If you are not using the seconds / minutes picker, set the respective item to 60 for
+     * better performance.
      * @param hourInterval The interval between 2 selectable hours ([1,24])
      * @param minuteInterval The interval between 2 selectable minutes ([1,60])
      * @param secondInterval The interval between 2 selectable seconds ([1,60])
@@ -402,6 +422,8 @@ public class TimePickerDialog extends DialogFragment implements
      * Set the interval for selectable times in the TimePickerDialog
      * This is a convenience wrapper around setSelectableTimes
      * The interval for all three time components can be set independently
+     * If you are not using the seconds / minutes picker, set the respective item to 60 for
+     * better performance.
      * @param hourInterval The interval between 2 selectable hours ([1,24])
      * @param minuteInterval The interval between 2 selectable minutes ([1,60])
      */
@@ -414,6 +436,8 @@ public class TimePickerDialog extends DialogFragment implements
      * Set the interval for selectable times in the TimePickerDialog
      * This is a convenience wrapper around setSelectableTimes
      * The interval for all three time components can be set independently
+     * If you are not using the seconds / minutes picker, set the respective item to 60 for
+     * better performance.
      * @param hourInterval The interval between 2 selectable hours ([1,24])
      */
     @SuppressWarnings("unused")
@@ -542,7 +566,7 @@ public class TimePickerDialog extends DialogFragment implements
 
     /**
      * Pass in a custom implementation of TimeLimiter
-     * Disables setSelectableTimes, setTimeInterval, setMinTime and setMaxTime
+     * Disables setSelectableTimes, setDisabledTimes, setTimeInterval, setMinTime and setMaxTime
      * @param limiter A custom implementation of TimeLimiter
      */
     @SuppressWarnings("unused")
@@ -1097,7 +1121,7 @@ public class TimePickerDialog extends DialogFragment implements
 
     @Override
     public boolean isOutOfRange(Timepoint current, int index) {
-        return mLimiter.isOutOfRange(current, index);
+        return mLimiter.isOutOfRange(current, index, getPickerResolution());
     }
 
     @Override
@@ -1121,7 +1145,17 @@ public class TimePickerDialog extends DialogFragment implements
 
     @Override
     public Timepoint roundToNearest(@NonNull Timepoint time, @Nullable Timepoint.TYPE type) {
-        return mLimiter.roundToNearest(time, type);
+        return mLimiter.roundToNearest(time, type, getPickerResolution());
+    }
+
+    /**
+     * Get the configured resolution of the current picker in terms of Timepoint components
+     * @return Timepoint.TYPE (hour, minute or second)
+     */
+    @NonNull Timepoint.TYPE getPickerResolution() {
+        if (mEnableSeconds) return Timepoint.TYPE.SECOND;
+        if (mEnableMinutes) return Timepoint.TYPE.MINUTE;
+        return Timepoint.TYPE.HOUR;
     }
 
     private void setHour(int value, boolean announce) {

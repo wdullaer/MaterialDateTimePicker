@@ -181,4 +181,53 @@ public class TimepointTest {
         Assert.assertEquals(timepoint.getMinute(), 14);
         Assert.assertEquals(timepoint.getSecond(), 15);
     }
+
+    @Test
+    public void equalsShouldReturnTrueWhenInputsAreEqualWithSecondsResolution() {
+        Timepoint timepoint1 = new Timepoint(1, 14, 15);
+        Timepoint timepoint2 = new Timepoint(1, 14, 15);
+        Assert.assertTrue(timepoint1.equals(timepoint2, Timepoint.TYPE.SECOND));
+    }
+
+    @Test
+    public void equalsShouldReturnFalseWhenInputsDifferWithSecondsResolution() {
+        Timepoint timepoint1 = new Timepoint(1, 14, 15);
+        Timepoint timepoint2 = new Timepoint(1, 14, 16);
+        Assert.assertFalse(timepoint1.equals(timepoint2, Timepoint.TYPE.SECOND));
+    }
+
+    @Test
+    public void equalsShouldIgnoreSecondsWithMinuteResolution() {
+        Timepoint timepoint1 = new Timepoint(1, 14, 15);
+        Timepoint timepoint2 = new Timepoint(1, 14, 16);
+        Assert.assertTrue(timepoint1.equals(timepoint2, Timepoint.TYPE.MINUTE));
+    }
+
+    @Test
+    public void equalsShouldReturnFalseWhenInputsDifferWithMinuteResolution() {
+        Timepoint timepoint1 = new Timepoint(1, 14, 15);
+        Timepoint timepoint2 = new Timepoint(1, 15, 15);
+        Assert.assertFalse(timepoint1.equals(timepoint2, Timepoint.TYPE.MINUTE));
+    }
+
+    @Test
+    public void equalsShouldIgnoreSecondsWithHourResolution() {
+        Timepoint timepoint1 = new Timepoint(1, 14, 15);
+        Timepoint timepoint2 = new Timepoint(1, 14, 16);
+        Assert.assertTrue(timepoint1.equals(timepoint2, Timepoint.TYPE.HOUR));
+    }
+
+    @Test
+    public void equalsShouldIgnoreMinutesWithHourResolution() {
+        Timepoint timepoint1 = new Timepoint(1, 14, 15);
+        Timepoint timepoint2 = new Timepoint(1, 15, 16);
+        Assert.assertTrue(timepoint1.equals(timepoint2, Timepoint.TYPE.HOUR));
+    }
+
+    @Test
+    public void equalsShouldReturnFalseWhenInputsDifferWithHourResolution() {
+        Timepoint timepoint1 = new Timepoint(1, 14, 15);
+        Timepoint timepoint2 = new Timepoint(2, 14, 15);
+        Assert.assertFalse(timepoint1.equals(timepoint2, Timepoint.TYPE.HOUR));
+    }
 }

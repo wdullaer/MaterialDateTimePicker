@@ -78,5 +78,12 @@
             android:text="@string/limit_times"
             android:checked="false"/>
 
+        <CheckBox
+            android:id="@+id/disable_times"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/disable_times"
+            android:checked="false"/>
+
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
