@@ -18,7 +18,9 @@ package com.wdullaer.materialdatetimepicker.date;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
@@ -137,9 +139,9 @@ public abstract class MonthView extends View {
     protected int mSelectedDayTextColor;
     protected int mMonthDayTextColor;
     protected int mTodayNumberColor;
+    protected int mMonthTitleColor;
     protected int mHighlightedDayTextColor;
     protected int mDisabledDayTextColor;
-    protected int mMonthTitleColor;
 
     private SimpleDateFormat weekDayLabelFormatter;
 
@@ -158,30 +160,27 @@ public abstract class MonthView extends View {
         mDayOfWeekTypeface = res.getString(R.string.mdtp_day_of_week_label_typeface);
         mMonthTitleTypeface = res.getString(R.string.mdtp_sans_serif);
 
-        boolean darkTheme = mController != null && mController.isThemeDark();
-        if (darkTheme) {
-            mDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_normal_dark_theme);
-            mMonthDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_month_day_dark_theme);
-            mDisabledDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled_dark_theme);
-            mHighlightedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_highlighted_dark_theme);
-        } else {
-            mDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_normal);
-            mMonthDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_month_day);
-            mDisabledDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled);
-            mHighlightedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_highlighted);
-        }
+        TypedArray typedArray = context.obtainStyledAttributes(attr, R.styleable.MonthView, R.attr.mdtp_monthViewTheme, R.style.MonthView);
+
+        mDayTextColor = typedArray.getColor(R.styleable.MonthView_dayTextColor, Color.BLACK);
+        mHighlightedDayTextColor = typedArray.getColor(R.styleable.MonthView_dayHighlightedTextColor, Color.BLACK);
+        mDisabledDayTextColor = typedArray.getColor(R.styleable.MonthView_dayDisabledTextColor, Color.BLACK);
+        mMonthDayTextColor = typedArray.getColor(R.styleable.MonthView_monthDayTextColor, Color.BLACK);
+
+        MINI_DAY_NUMBER_TEXT_SIZE = typedArray.getDimensionPixelSize(R.styleable.MonthView_miniDayNumberTextSize, 0);
+        MONTH_LABEL_TEXT_SIZE = typedArray.getDimensionPixelSize(R.styleable.MonthView_monthLabelTextSize, 0);
+        MONTH_DAY_LABEL_TEXT_SIZE = typedArray.getDimensionPixelSize(R.styleable.MonthView_monthDayTextSize, 0);
+        MONTH_HEADER_SIZE = typedArray.getDimensionPixelOffset(R.styleable.MonthView_monthHeaderSize, 0);
+        DAY_SELECTED_CIRCLE_SIZE = typedArray.getDimensionPixelSize(R.styleable.MonthView_daySelectedCircleSize, 0);
+
+        typedArray.recycle();
+
         mSelectedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_white);
         mTodayNumberColor = mController.getAccentColor();
         mMonthTitleColor = ContextCompat.getColor(context, R.color.mdtp_white);
 
         mStringBuilder = new StringBuilder(50);
 
-        MINI_DAY_NUMBER_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_day_number_size);
-        MONTH_LABEL_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_month_label_size);
-        MONTH_DAY_LABEL_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_month_day_label_text_size);
-        MONTH_HEADER_SIZE = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height);
-        DAY_SELECTED_CIRCLE_SIZE = res
-                .getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius);
 
         mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
                 - getMonthHeaderSize()) / MAX_NUM_ROWS;

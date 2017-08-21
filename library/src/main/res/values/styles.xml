@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,7 +14,25 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
-    <attr name="mdtp_theme_dark" format="boolean">false</attr>
+
+    <style name="MonthView">
+        <item name="dayTextColor">@color/mdtp_date_picker_text_normal</item>
+        <item name="dayHighlightedTextColor">@color/mdtp_date_picker_text_highlighted</item>
+        <item name="dayDisabledTextColor">@color/mdtp_date_picker_text_disabled</item>
+        <item name="monthDayTextColor">@color/mdtp_date_picker_month_day</item>
+        <item name="miniDayNumberTextSize">@dimen/mdtp_day_number_size</item>
+        <item name="monthLabelTextSize">@dimen/mdtp_month_label_size</item>
+        <item name="monthDayTextSize">@dimen/mdtp_month_day_label_text_size</item>
+        <item name="monthHeaderSize">@dimen/mdtp_month_list_item_header_height</item>
+        <item name="daySelectedCircleSize">@dimen/mdtp_day_number_select_circle_radius</item>
+    </style>
+
+    <style name="MonthView.Dark">
+        <item name="dayTextColor">@color/mdtp_date_picker_text_normal_dark_theme</item>
+        <item name="dayDisabledTextColor">@color/mdtp_date_picker_text_disabled_dark_theme</item>
+        <item name="dayHighlightedTextColor">@color/mdtp_date_picker_text_highlighted_dark_theme</item>
+        <item name="monthDayTextColor">@color/mdtp_date_picker_month_day_dark_theme</item>
+    </style>
 
     <style name="mdtp_time_label">
         <item name="android:textSize">@dimen/mdtp_time_label_size</item>
