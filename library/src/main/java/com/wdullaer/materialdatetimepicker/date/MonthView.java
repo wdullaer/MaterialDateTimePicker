@@ -71,6 +71,8 @@ public abstract class MonthView extends View {
     protected static int MONTH_DAY_LABEL_TEXT_SIZE;
     protected static int MONTH_HEADER_SIZE;
     protected static int DAY_SELECTED_CIRCLE_SIZE;
+    protected static int DAY_HIGHLIGHT_CIRCLE_SIZE;
+    protected static int DAY_HIGHLIGHT_CIRCLE_MARGIN;
 
     // used for scaling to the device density
     protected static float mScale = 0;
@@ -182,6 +184,10 @@ public abstract class MonthView extends View {
         MONTH_HEADER_SIZE = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height);
         DAY_SELECTED_CIRCLE_SIZE = res
                 .getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius);
+        DAY_HIGHLIGHT_CIRCLE_SIZE = res
+                .getDimensionPixelSize(R.dimen.mdtp_day_highlight_circle_radius);
+        DAY_HIGHLIGHT_CIRCLE_MARGIN = res
+                .getDimensionPixelSize(R.dimen.mdtp_day_highlight_circle_margin);
 
         mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
                 - getMonthHeaderSize()) / MAX_NUM_ROWS;

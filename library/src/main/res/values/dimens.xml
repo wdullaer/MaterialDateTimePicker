@@ -55,6 +55,8 @@
     <dimen name="mdtp_month_list_item_header_height">56dp</dimen>
     <dimen name="mdtp_month_day_label_text_size">12sp</dimen>
     <dimen name="mdtp_day_number_select_circle_radius">16dp</dimen>
+    <dimen name="mdtp_day_highlight_circle_radius">2dp</dimen>
+    <dimen name="mdtp_day_highlight_circle_margin">5dp</dimen>
     <dimen name="mdtp_month_select_circle_radius">45dp</dimen>
     <dimen name="mdtp_selected_date_year_size">25dp</dimen>
     <dimen name="mdtp_selected_date_day_size">70dp</dimen>
