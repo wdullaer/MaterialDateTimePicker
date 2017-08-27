@@ -46,7 +46,6 @@ import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
-import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.text.SimpleDateFormat;
@@ -368,7 +367,7 @@ public class DatePickerDialog extends DialogFragment implements
                 dismiss();
             }
         });
-        okButton.setTypeface(TypefaceHelper.get(activity, "Roboto-Medium"));
+//        okButton.setTypeface(TypefaceHelper.get(activity, "Roboto-Medium"));
         if (mOkString != null) okButton.setText(mOkString);
         else okButton.setText(mOkResid);
 
@@ -380,7 +379,7 @@ public class DatePickerDialog extends DialogFragment implements
                 if (getDialog() != null) getDialog().cancel();
             }
         });
-        cancelButton.setTypeface(TypefaceHelper.get(activity, "Roboto-Medium"));
+//        cancelButton.setTypeface(TypefaceHelper.get(activity, "Roboto-Medium"));
         if (mCancelString != null) cancelButton.setText(mCancelString);
         else cancelButton.setText(mCancelResid);
         cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
