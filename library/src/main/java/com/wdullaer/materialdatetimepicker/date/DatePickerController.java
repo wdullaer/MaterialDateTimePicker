@@ -56,4 +56,6 @@ public interface DatePickerController {
     void tryVibrate();
 
     TimeZone getTimeZone();
+
+    DatePickerDialog.Version getVersion();
 }

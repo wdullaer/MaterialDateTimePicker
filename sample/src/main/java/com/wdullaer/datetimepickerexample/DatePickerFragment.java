@@ -3,11 +3,13 @@ package com.wdullaer.datetimepickerexample;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -53,6 +55,25 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         showVersion2 = view.findViewById(R.id.show_version_2);
         limitSelectableDays = view.findViewById(R.id.limit_dates);
         highlightDays = view.findViewById(R.id.highlight_dates);
+
+        view.findViewById(R.id.original_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar now = Calendar.getInstance();
+                new android.app.DatePickerDialog(
+                        getActivity(),
+                        new android.app.DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                Log.d("Orignal", "Got clicked");
+                            }
+                        },
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                ).show();
+            }
+        });
 
         // Show a datepicker when the dateButton is clicked
         dateButton.setOnClickListener(new View.OnClickListener() {

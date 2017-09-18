@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@android:color/transparent">
-            <include layout="@layout/mdtp_date_picker_view_animator" />
+            <include layout="@layout/mdtp_date_picker_view_animator_v2" />
             <include layout="@layout/mdtp_done_button" />
         </LinearLayout>
     </LinearLayout>

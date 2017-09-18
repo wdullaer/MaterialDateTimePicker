@@ -86,6 +86,11 @@ public class DefaultDateRangeLimiterTest {
         public TimeZone getTimeZone() {
             return TimeZone.getDefault();
         }
+
+        @Override
+        public DatePickerDialog.Version getVersion() {
+            return DatePickerDialog.Version.VERSION_2;
+        }
     };
 
     // getters

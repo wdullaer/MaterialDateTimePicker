@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="mdtp_date_picker_view_animator_height">252dp</dimen>
-    <dimen name="mdtp_time_picker_height">300dip</dimen>
-</resources>

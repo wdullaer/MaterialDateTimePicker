@@ -189,8 +189,13 @@ public abstract class MonthView extends View {
         DAY_HIGHLIGHT_CIRCLE_MARGIN = res
                 .getDimensionPixelSize(R.dimen.mdtp_day_highlight_circle_margin);
 
-        mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
-                - getMonthHeaderSize()) / MAX_NUM_ROWS;
+        if (mController.getVersion() == DatePickerDialog.Version.VERSION_1) {
+            mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
+                    - getMonthHeaderSize()) / MAX_NUM_ROWS;
+        } else {
+            mRowHeight = (res.getDimensionPixelSize(R.dimen.mdtp_date_picker_view_animator_height_v2)
+                    - getMonthHeaderSize()) / MAX_NUM_ROWS;
+        }
 
         // Set up accessibility components.
         mTouchHelper = getMonthViewTouchHelper();

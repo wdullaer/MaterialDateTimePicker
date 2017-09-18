@@ -87,8 +87,8 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
 
     public DayPickerView(Context context, DatePickerController controller) {
         super(context);
-        init(context);
         setController(controller);
+        init(context);
     }
 
     public void setController(DatePickerController controller) {
@@ -101,7 +101,10 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     }
 
     public void init(Context context) {
-        linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        int scrollOrientation = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+                ? LinearLayoutManager.VERTICAL
+                : LinearLayoutManager.HORIZONTAL;
+        linearLayoutManager = new LinearLayoutManager(context, scrollOrientation, false);
         setLayoutManager(linearLayoutManager);
         mHandler = new Handler();
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -123,7 +126,10 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     protected void setUpRecyclerView() {
         setVerticalScrollBarEnabled(false);
         setFadingEdgeLength(0);
-        GravitySnapHelper helper = new GravitySnapHelper(Gravity.TOP);
+        int gravity = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+                ? Gravity.TOP
+                : Gravity.START;
+        GravitySnapHelper helper = new GravitySnapHelper(gravity);
         helper.attachToRecyclerView(this);
     }
 

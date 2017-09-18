@@ -201,13 +201,27 @@ public class DatePickerDialog extends DialogFragment implements
         return DatePickerDialog.newInstance(callback, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
     }
 
-    public void initialize(OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
+    @SuppressWarnings("unused")
+    public static DatePickerDialog newInstance(OnDateSetListener callback, Calendar initialSelection) {
+        DatePickerDialog ret = new DatePickerDialog();
+        ret.initialize(callback, initialSelection);
+        return ret;
+    }
+
+    public void initialize(OnDateSetListener callBack, Calendar initialSelection) {
         mCallBack = callBack;
-        mCalendar.set(Calendar.YEAR, year);
-        mCalendar.set(Calendar.MONTH, monthOfYear);
-        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        mCalendar = Utils.trimToMidnight(initialSelection);
+        setTimeZone(mCalendar.getTimeZone());
 
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
+    }
+
+    public void initialize(OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, monthOfYear);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        this.initialize(callBack, cal);
     }
 
     @Override
@@ -900,6 +914,15 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public void setVersion(Version version) {
         mVersion = version;
+    }
+
+    /**
+     * Get the layout version the Dialog is using
+     *
+     * @return Version
+     */
+    public Version getVersion() {
+        return mVersion;
     }
 
     /**
