@@ -39,8 +39,8 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     public void writeToParcel(Parcel out, int flags) {
         out.writeParcelable(mMinTime, flags);
         out.writeParcelable(mMaxTime, flags);
-        out.writeParcelableArray((Timepoint[]) mSelectableTimes.toArray(), flags);
-        out.writeParcelableArray((Timepoint[]) mDisabledTimes.toArray(), flags);
+        out.writeParcelableArray(mSelectableTimes.toArray(new Timepoint[mSelectableTimes.size()]), flags);
+        out.writeParcelableArray(mDisabledTimes.toArray(new Timepoint[mDisabledTimes.size()]), flags);
     }
 
     @Override
@@ -79,6 +79,22 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     void setDisabledTimes(@NonNull Timepoint[] disabledTimes) {
         mDisabledTimes.addAll(Arrays.asList(disabledTimes));
         exclusiveSelectableTimes = getExclusiveSelectableTimes(mSelectableTimes, mDisabledTimes);
+    }
+
+    @Nullable Timepoint getMinTime() {
+        return mMinTime;
+    }
+
+    @Nullable Timepoint getMaxTime() {
+        return mMaxTime;
+    }
+
+    @NonNull Timepoint[] getSelectableTimes() {
+        return mSelectableTimes.toArray(new Timepoint[mSelectableTimes.size()]);
+    }
+
+    @NonNull Timepoint[] getDisabledTimes() {
+        return mDisabledTimes.toArray(new Timepoint[mDisabledTimes.size()]);
     }
 
     private TreeSet<Timepoint> getExclusiveSelectableTimes(TreeSet<Timepoint> selectable, TreeSet<Timepoint> disabled) {
