@@ -42,7 +42,7 @@ Date Picker | Time Picker
 The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```java
 dependencies {
-  compile 'com.wdullaer:materialdatetimepicker:3.3.0'
+  compile 'com.wdullaer:materialdatetimepicker:3.3.1'
 }
 ```
 
@@ -221,7 +221,7 @@ If you do really need `SupportDialogFragment`, you can fork the library (It invo
 
 ```groovy
 dependencies {
-  compile 'co.infinum:materialdatetimepicker-support:3.3.0'
+  compile 'co.infinum:materialdatetimepicker-support:3.3.1'
 }
 ```
 
@@ -229,14 +229,23 @@ dependencies {
 In the java `Calendar` class months use 0 based indexing: January is month 0, December is month 11. This convention is widely used in the java world, for example the native Android DatePicker.
 
 ### How do I use a different version of the support library in my app?
-This library depends on the android support library. Because the jvm allows only one version of a fully namespaced class to be loaded, you will run into issues if your app depends on a different version of the support library than the one used in this app. Gradle will not be able to satisfy both requirements.
+This library depends on the android support library. Because the jvm allows only one version of a fully namespaced class to be loaded, you will run into issues if your app depends on a different version of the support library than the one used in this app. Gradle is generally quite good at resolving version conflicts (be default it will retain the latest version of a library), but should you run into problems (eg because you disabled conflict resolution), you can disable loading the support
+library for MaterialDateTimePicker.
 
 Using the following snippet in your apps `build.gradle` file you can exclude this library's transitive support library dependency from being installed.
 
 ```groovy
-compile ('com.wdullaer:materialdatetimepicker:3.3.0') {
+compile ('com.wdullaer:materialdatetimepicker:3.3.1') {
         exclude group: 'com.android.support'
 }
+```
+
+Your app will need to depend on at least the following pieces of the support library
+
+```groovy
+compile 'com.android.support:support-v4:26.0.1'
+compile 'com.android.support:support-v13:26.0.1'
+compile 'com.android.support:design:26.0.1'
 ```
 
 This will work fine as long as the support library version your app depends on is recent enough (supports `RecyclerView`) and google doesn't release a version in the future that contains breaking changes. (If/When this happens I will try hard to document this). See issue [#338](https://github.com/wdullaer/MaterialDateTimePicker/issues/338) for more information.
