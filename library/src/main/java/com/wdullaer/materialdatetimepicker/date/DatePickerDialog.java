@@ -302,7 +302,7 @@ public class DatePickerDialog extends DialogFragment implements
             null pointer exceptions on the configuration methods
             If the user did not supply a custom limiter we need to ensure both mDefaultLimiter
             and mDateRangeLimiter are the same reference, so that the config methods actually
-            ffect the behaviour of the picker (in the unlikely event the user reconfigures
+            affect the behaviour of the picker (in the unlikely event the user reconfigures
             the picker when it is shown)
              */
             if (mDateRangeLimiter instanceof DefaultDateRangeLimiter) {
@@ -319,12 +319,12 @@ public class DatePickerDialog extends DialogFragment implements
         // All options have been set at this point: round the initial selection if necessary
         mCalendar = mDateRangeLimiter.setToNearestDate(mCalendar);
 
-        mDatePickerHeaderView = (TextView) view.findViewById(R.id.mdtp_date_picker_header);
-        mMonthAndDayView = (LinearLayout) view.findViewById(R.id.mdtp_date_picker_month_and_day);
+        mDatePickerHeaderView = view.findViewById(R.id.mdtp_date_picker_header);
+        mMonthAndDayView = view.findViewById(R.id.mdtp_date_picker_month_and_day);
         mMonthAndDayView.setOnClickListener(this);
-        mSelectedMonthTextView = (TextView) view.findViewById(R.id.mdtp_date_picker_month);
-        mSelectedDayTextView = (TextView) view.findViewById(R.id.mdtp_date_picker_day);
-        mYearView = (TextView) view.findViewById(R.id.mdtp_date_picker_year);
+        mSelectedMonthTextView = view.findViewById(R.id.mdtp_date_picker_month);
+        mSelectedDayTextView = view.findViewById(R.id.mdtp_date_picker_day);
+        mYearView = view.findViewById(R.id.mdtp_date_picker_year);
         mYearView.setOnClickListener(this);
 
         final Activity activity = getActivity();
@@ -345,7 +345,7 @@ public class DatePickerDialog extends DialogFragment implements
         int bgColorResource = mThemeDark ? R.color.mdtp_date_picker_view_animator_dark_theme : R.color.mdtp_date_picker_view_animator;
         view.setBackgroundColor(ContextCompat.getColor(activity, bgColorResource));
 
-        mAnimator = (AccessibleDateAnimator) view.findViewById(R.id.mdtp_animator);
+        mAnimator = view.findViewById(R.id.mdtp_animator);
         mAnimator.addView(mDayPickerView);
         mAnimator.addView(mYearPickerView);
         mAnimator.setDateMillis(mCalendar.getTimeInMillis());
@@ -358,7 +358,7 @@ public class DatePickerDialog extends DialogFragment implements
         animation2.setDuration(ANIMATION_DURATION);
         mAnimator.setOutAnimation(animation2);
 
-        Button okButton = (Button) view.findViewById(R.id.mdtp_ok);
+        Button okButton = view.findViewById(R.id.mdtp_ok);
         okButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -372,7 +372,7 @@ public class DatePickerDialog extends DialogFragment implements
         if (mOkString != null) okButton.setText(mOkString);
         else okButton.setText(mOkResid);
 
-        Button cancelButton = (Button) view.findViewById(R.id.mdtp_cancel);
+        Button cancelButton = view.findViewById(R.id.mdtp_cancel);
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
