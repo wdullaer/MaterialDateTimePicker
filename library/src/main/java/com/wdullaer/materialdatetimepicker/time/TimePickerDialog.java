@@ -690,22 +690,19 @@ public class TimePickerDialog extends DialogFragment implements
         mHourView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCurrentItemShowing(HOUR_INDEX, true, false, true);
-                tryVibrate();
+                onHourViewClicked(v);
             }
         });
         mMinuteView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCurrentItemShowing(MINUTE_INDEX, true, false, true);
-                tryVibrate();
+                onMinuteViewClicked(v);
             }
         });
         mSecondView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                setCurrentItemShowing(SECOND_INDEX, true, false, true);
-                tryVibrate();
+                onSecondViewClicked(view);
             }
         });
 
@@ -713,13 +710,7 @@ public class TimePickerDialog extends DialogFragment implements
         mOkButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mInKbMode && isTypedTimeFullyLegal()) {
-                    finishKbMode(false);
-                } else {
-                    tryVibrate();
-                }
-                notifyOnDateListener();
-                dismiss();
+                onOkButtonClicked(v);
             }
         });
         mOkButton.setOnKeyListener(keyboardListener);
@@ -731,8 +722,7 @@ public class TimePickerDialog extends DialogFragment implements
         mCancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                tryVibrate();
-                if (getDialog() != null) getDialog().cancel();
+                onCancelButtonClicked(v);
             }
         });
         mCancelButton.setTypeface(TypefaceHelper.get(context, "Roboto-Medium"));
@@ -936,7 +926,7 @@ public class TimePickerDialog extends DialogFragment implements
         mPlaceholderText = mDoublePlaceholderText.charAt(0);
         mAmKeyCode = mPmKeyCode = -1;
         generateLegalTimesTree();
-        if (mInKbMode) {
+        if (isInKbMode()) {
             mTypedTimes = savedInstanceState.getIntegerArrayList(KEY_TYPED_TIMES);
             tryStartingKbMode(-1);
             mHourView.invalidate();
@@ -1056,8 +1046,8 @@ public class TimePickerDialog extends DialogFragment implements
             outState.putParcelable(KEY_INITIAL_TIME, mTimePicker.getTime());
             outState.putBoolean(KEY_IS_24_HOUR_VIEW, mIs24HourMode);
             outState.putInt(KEY_CURRENT_ITEM_SHOWING, mTimePicker.getCurrentItemShowing());
-            outState.putBoolean(KEY_IN_KB_MODE, mInKbMode);
-            if (mInKbMode) {
+            outState.putBoolean(KEY_IN_KB_MODE, isInKbMode());
+            if (isInKbMode()) {
                 outState.putIntegerArrayList(KEY_TYPED_TIMES, mTypedTimes);
             }
             outState.putString(KEY_TITLE, mTitle);
@@ -1257,27 +1247,28 @@ public class TimePickerDialog extends DialogFragment implements
             if(isCancelable()) dismiss();
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_TAB) {
-            if(mInKbMode) {
+            if(isInKbMode()) {
                 if (isTypedTimeFullyLegal()) {
                     finishKbMode(true);
                 }
                 return true;
             }
         } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            if (mInKbMode) {
+            if (isInKbMode()) {
                 if (!isTypedTimeFullyLegal()) {
                     return true;
                 }
                 finishKbMode(false);
             }
-            if (mCallback != null) {
-                mCallback.onTimeSet(this,
+            final OnTimeSetListener onTimeSetListener = getOnTimeSetListener();
+            if (onTimeSetListener != null) {
+                onTimeSetListener.onTimeSet(this,
                         mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
             }
             dismiss();
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DEL) {
-            if (mInKbMode) {
+            if (isInKbMode()) {
                 if (!mTypedTimes.isEmpty()) {
                     int deleted = deleteLastTypedKey();
                     String deletedKeyStr;
@@ -1300,7 +1291,7 @@ public class TimePickerDialog extends DialogFragment implements
                 || keyCode == KeyEvent.KEYCODE_8 || keyCode == KeyEvent.KEYCODE_9
                 || (!mIs24HourMode &&
                         (keyCode == getAmOrPmKeyCode(AM) || keyCode == getAmOrPmKeyCode(PM)))) {
-            if (!mInKbMode) {
+            if (!isInKbMode()) {
                 if (mTimePicker == null) {
                     // Something's wrong, because time picker should definitely not be null.
                     Log.e(TAG, "Unable to initiate keyboard mode, TimePicker was null.");
@@ -1384,7 +1375,7 @@ public class TimePickerDialog extends DialogFragment implements
     /**
      * Check if the time that has been typed so far is completely legal, as is.
      */
-    private boolean isTypedTimeFullyLegal() {
+    protected final boolean isTypedTimeFullyLegal() {
         if (mIs24HourMode) {
             // For 24-hour mode, the time is legal if the hours and minutes are each legal. Note:
             // getEnteredTime() will ONLY call isTypedTimeFullyLegal() when NOT in 24hour mode.
@@ -1861,17 +1852,53 @@ public class TimePickerDialog extends DialogFragment implements
     private class KeyboardListener implements OnKeyListener {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (event.getAction() == KeyEvent.ACTION_UP) {
-                return processKeyUp(keyCode);
-            }
-            return false;
+            return event.getAction() == KeyEvent.ACTION_UP && processKeyUp(keyCode);
         }
     }
 
     public void notifyOnDateListener() {
-        if (mCallback != null) {
-            mCallback.onTimeSet(this, mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
+        final OnTimeSetListener onTimeSetListener = getOnTimeSetListener();
+        if (onTimeSetListener != null) {
+            onTimeSetListener.onTimeSet(this, mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
         }
+    }
+
+    protected OnTimeSetListener getOnTimeSetListener() {
+        return mCallback;
+    }
+
+    protected boolean isInKbMode() {
+        return mInKbMode;
+    }
+
+    protected void onOkButtonClicked(View v) {
+        if (isInKbMode() && isTypedTimeFullyLegal()) {
+            finishKbMode(false);
+        } else {
+            tryVibrate();
+        }
+        notifyOnDateListener();
+        dismiss();
+    }
+
+    protected void onCancelButtonClicked(View v) {
+        tryVibrate();
+        if (getDialog() != null) getDialog().cancel();
+    }
+
+    protected void onSecondViewClicked(View v) {
+        setCurrentItemShowing(SECOND_INDEX, true, false, true);
+        tryVibrate();
+    }
+
+    protected void onMinuteViewClicked(View v) {
+        setCurrentItemShowing(MINUTE_INDEX, true, false, true);
+        tryVibrate();
+    }
+
+    protected void onHourViewClicked(View v) {
+        setCurrentItemShowing(HOUR_INDEX, true, false, true);
+        tryVibrate();
     }
 
     public Timepoint getSelectedTime() {
