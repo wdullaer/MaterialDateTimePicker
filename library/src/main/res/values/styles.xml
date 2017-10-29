@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <attr name="mdtp_theme_dark" format="boolean">false</attr>
 
     <style name="mdtp_time_label">
@@ -43,12 +43,11 @@
         <item name="android:focusable">true</item>
     </style>
 
-    <style name="mdtp_ActionButton.Text" tools:ignore="NewApi">
+    <style name="mdtp_ActionButton.Text">
         <item name="android:textSize">@dimen/mdtp_material_button_textsize</item>
         <item name="android:singleLine">true</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center</item>
-        <item name="android:stateListAnimator">@null</item>
         <item name="android:background">@drawable/mdtp_material_button_background</item>
         <item name="android:minWidth">@dimen/mdtp_material_button_minwidth</item>
         <item name="android:paddingLeft">@dimen/mdtp_material_button_textpadding_horizontal</item>
