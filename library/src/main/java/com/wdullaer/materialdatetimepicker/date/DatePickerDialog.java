@@ -929,6 +929,15 @@ public class DatePickerDialog extends DialogFragment implements
         mOnDismissListener = onDismissListener;
     }
 
+    /**
+     * Get a reference to the callback
+     * @return OnDateSetListener the callback
+     */
+    @SuppressWarnings("unused")
+    public OnDateSetListener getOnDateSetListener() {
+        return mCallBack;
+    }
+
     // If the newly selected month / year does not contain the currently selected day number,
     // change the selected day number to the last day of the selected month or year.
     //      e.g. Switching from Mar to Apr when Mar 31 is selected -> Apr 30

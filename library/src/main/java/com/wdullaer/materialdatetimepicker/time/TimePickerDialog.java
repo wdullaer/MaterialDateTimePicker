@@ -481,7 +481,8 @@ public class TimePickerDialog extends DialogFragment implements
      * @param hourOfDay the hour of the day
      * @param minute the minute of the hour
      */
-    @SuppressWarnings("unused")@Deprecated
+    @SuppressWarnings({"unused", "deprecation"})
+    @Deprecated
     public void setStartTime(int hourOfDay, int minute) {
         setStartTime(hourOfDay, minute, 0);
     }
@@ -577,6 +578,15 @@ public class TimePickerDialog extends DialogFragment implements
     @Override
     public Version getVersion() {
         return mVersion;
+    }
+
+    /**
+     * Get a reference to the OnTimeSetListener callback
+     * @return OnTimeSetListener the callback
+     */
+    @SuppressWarnings("unused")
+    public OnTimeSetListener getOnTimeSetListener() {
+        return mCallback;
     }
 
     @Override
@@ -1388,7 +1398,8 @@ public class TimePickerDialog extends DialogFragment implements
         if (mIs24HourMode) {
             // For 24-hour mode, the time is legal if the hours and minutes are each legal. Note:
             // getEnteredTime() will ONLY call isTypedTimeFullyLegal() when NOT in 24hour mode.
-            int[] values = getEnteredTime(null);
+            Boolean[] enteredZeros = {false, false, false};
+            int[] values = getEnteredTime(enteredZeros);
             return (values[0] >= 0 && values[1] >= 0 && values[1] < 60 && values[2] >= 0 && values[2] < 60);
         } else {
             // For AM/PM mode, the time is legal if it contains an AM or PM, as those can only be
@@ -1413,7 +1424,8 @@ public class TimePickerDialog extends DialogFragment implements
     private void finishKbMode(boolean updateDisplays) {
         mInKbMode = false;
         if (!mTypedTimes.isEmpty()) {
-            int values[] = getEnteredTime(null);
+            Boolean[] enteredZeros = {false, false, false};
+            int values[] = getEnteredTime(enteredZeros);
             mTimePicker.setTime(new Timepoint(values[0], values[1], values[2]));
             if (!mIs24HourMode) {
                 mTimePicker.setAmOrPm(values[3]);
@@ -1508,7 +1520,8 @@ public class TimePickerDialog extends DialogFragment implements
      * @return A size-3 int array. The first value will be the hours, the second value will be the
      * minutes, and the third will be either TimePickerDialog.AM or TimePickerDialog.PM.
      */
-    private int[] getEnteredTime(Boolean[] enteredZeros) {
+    @NonNull
+    private int[] getEnteredTime(@NonNull Boolean[] enteredZeros) {
         int amOrPm = -1;
         int startIndex = 1;
         if (!mIs24HourMode && isTypedTimeFullyLegal()) {

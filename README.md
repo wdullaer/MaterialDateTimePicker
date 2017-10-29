@@ -205,6 +205,9 @@ Sets the `Timezone` used to represent time internally in the picker. Defaults to
 * `DatePickerDialog` `setDateRangeLimiter(DateRangeLimiter limiter)`
 Provide a custom implementation of DateRangeLimiter, giving you full control over which days are available for selection. This disables all of the other options that limit date selection.
 
+* `getOnTimeSetListener()` and `getOnDateSetListener()`  
+Getters that allow the retrieval of a reference to the callbacks currently associated with the pickers
+
 ## FAQ
 
 ### Why not use `SupportDialogFragment`?
