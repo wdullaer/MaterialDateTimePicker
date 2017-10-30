@@ -20,14 +20,13 @@ android {
     lintOptions {
         abortOnError false
     }
-    buildToolsVersion '26.0.2'
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:26.1.0'
-    compile 'com.android.support:support-v13:26.1.0'
-    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:support-v4:27.0.0'
+    compile 'com.android.support:support-v13:27.0.0'
+    compile 'com.android.support:design:27.0.0'
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.pholser:junit-quickcheck-core:0.7'
