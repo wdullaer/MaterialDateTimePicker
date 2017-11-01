@@ -139,12 +139,21 @@ public class RadialTextsView extends View {
         if (mHasInnerCircle) {
             mNumbersRadiusMultiplier = Float.parseFloat(
                     res.getString(R.string.mdtp_numbers_radius_multiplier_outer));
-            mTextSizeMultiplier = Float.parseFloat(
-                    res.getString(R.string.mdtp_text_size_multiplier_outer));
             mInnerNumbersRadiusMultiplier = Float.parseFloat(
                     res.getString(R.string.mdtp_numbers_radius_multiplier_inner));
-            mInnerTextSizeMultiplier = Float.parseFloat(
-                    res.getString(R.string.mdtp_text_size_multiplier_inner));
+
+            // Version 2 layout draws outer circle bigger than inner
+            if (controller.getVersion() == TimePickerDialog.Version.VERSION_1) {
+                mTextSizeMultiplier = Float.parseFloat(
+                        res.getString(R.string.mdtp_text_size_multiplier_outer));
+                mInnerTextSizeMultiplier = Float.parseFloat(
+                        res.getString(R.string.mdtp_text_size_multiplier_inner));
+            } else {
+                mTextSizeMultiplier = Float.parseFloat(
+                        res.getString(R.string.mdtp_text_size_multiplier_outer_v2));
+                mInnerTextSizeMultiplier = Float.parseFloat(
+                        res.getString(R.string.mdtp_text_size_multiplier_inner_v2));
+            }
 
             mInnerTextGridHeights = new float[7];
             mInnerTextGridWidths = new float[7];

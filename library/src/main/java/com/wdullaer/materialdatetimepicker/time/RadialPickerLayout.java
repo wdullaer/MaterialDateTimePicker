@@ -219,6 +219,14 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             minutesTexts[i] = String.format(Locale.getDefault(), "%02d", minutes[i]);
             secondsTexts[i] = String.format(Locale.getDefault(), "%02d", seconds[i]);
         }
+        // The version 2 layout has the hours > 12 on the inner circle rather than the outer circle
+        // Inner circle and outer circle should be swapped (see #411)
+        if (mController.getVersion() == TimePickerDialog.Version.VERSION_2) {
+            String[] temp = hoursTexts;
+            hoursTexts = innerHoursTexts;
+            innerHoursTexts = temp;
+        }
+
         mHourRadialTextsView.initialize(context,
                 hoursTexts, (is24HourMode ? innerHoursTexts : null), mController, hourValidator, true);
         mHourRadialTextsView.setSelection(is24HourMode ? initialTime.getHour() : hours[initialTime.getHour() % 12]);
@@ -264,7 +272,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      */
     private boolean isHourInnerCircle(int hourOfDay) {
         // We'll have the 00 hours on the outside circle.
-        return mIs24HourMode && (hourOfDay <= 12 && hourOfDay != 0);
+        boolean isMorning = hourOfDay <= 12 && hourOfDay != 0;
+        // In the version 2 layout the circles are swapped
+        if (mController.getVersion() != TimePickerDialog.Version.VERSION_1) isMorning = !isMorning;
+        return mIs24HourMode && isMorning;
     }
 
     public int getHours() {
@@ -466,33 +477,33 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 mHourRadialTextsView.setSelection(hour);
                 // If we rounded the minutes, reposition the minuteSelector too.
                 if(newSelection.getMinute() != mCurrentTime.getMinute()) {
-                    int minDegrees = newSelection.getMinute()*360/60;
+                    int minDegrees = newSelection.getMinute() * (360 / 60);
                     mMinuteRadialSelectorView.setSelection(minDegrees, isInnerCircle, forceDrawDot);
                     mMinuteRadialTextsView.setSelection(newSelection.getMinute());
                 }
                 // If we rounded the seconds, reposition the secondSelector too.
                 if(newSelection.getSecond() != mCurrentTime.getSecond()) {
-                    int secDegrees = newSelection.getSecond()*360/60;
+                    int secDegrees = newSelection.getSecond() * (360 / 60);
                     mSecondRadialSelectorView.setSelection(secDegrees, isInnerCircle, forceDrawDot);
                     mSecondRadialTextsView.setSelection(newSelection.getSecond());
                 }
                 break;
             case MINUTE_INDEX:
                 // The selection might have changed, recalculate the degrees
-                degrees = newSelection.getMinute()*360/60;
+                degrees = newSelection.getMinute() * (360 / 60);
 
                 mMinuteRadialSelectorView.setSelection(degrees, false, forceDrawDot);
                 mMinuteRadialTextsView.setSelection(newSelection.getMinute());
                 // If we rounded the seconds, reposition the secondSelector too.
                 if(newSelection.getSecond() != mCurrentTime.getSecond()) {
-                    int secDegrees = newSelection.getSecond()*360/60;
+                    int secDegrees = newSelection.getSecond()* (360 / 60);
                     mSecondRadialSelectorView.setSelection(secDegrees, false, forceDrawDot);
                     mSecondRadialTextsView.setSelection(newSelection.getSecond());
                 }
                 break;
             case SECOND_INDEX:
                 // The selection might have changed, recalculate the degrees
-                degrees = newSelection.getSecond()*360/60;
+                degrees = newSelection.getSecond() * (360 / 60);
                 mSecondRadialSelectorView.setSelection(degrees, false, forceDrawDot);
                 mSecondRadialTextsView.setSelection(newSelection.getSecond());
         }
@@ -539,6 +550,8 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 stepSize = SECOND_VALUE_TO_DEGREES_STEP_SIZE;
         }
 
+        // TODO: simplify this logic. Just appending a swap of the values at the end for the v2
+        // TODO: layout makes this code rather hard to read
         if (currentShowing == HOUR_INDEX) {
             if (mIs24HourMode) {
                 if (degrees == 0 && isInnerCircle) {
@@ -557,6 +570,12 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
         if (currentShowing == HOUR_INDEX && mIs24HourMode && !isInnerCircle && degrees != 0) {
             value += 12;
+        }
+
+        if (currentShowing == HOUR_INDEX
+                && mController.getVersion() != TimePickerDialog.Version.VERSION_1
+                && mIs24HourMode) {
+            value = (value + 12) % 24;
         }
 
         Timepoint newSelection;

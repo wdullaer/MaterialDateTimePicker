@@ -26,6 +26,8 @@
     <item name="mdtp_text_size_multiplier_normal" format="float" type="string" translatable="false">0.12</item>
     <item name="mdtp_text_size_multiplier_inner" format="float" type="string" translatable="false">0.11</item>
     <item name="mdtp_text_size_multiplier_outer" format="float" type="string" translatable="false">0.08</item>
+    <item name="mdtp_text_size_multiplier_inner_v2" format="float" type="string" translatable="false">0.08</item>
+    <item name="mdtp_text_size_multiplier_outer_v2" format="float" type="string" translatable="false">0.11</item>
 
     <dimen name="mdtp_time_label_size">54dp</dimen>
     <dimen name="mdtp_time_label_subscript_size">30dp</dimen>
