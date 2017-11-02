@@ -30,8 +30,8 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     public DefaultTimepointLimiter(Parcel in) {
         mMinTime = in.readParcelable(Timepoint.class.getClassLoader());
         mMaxTime = in.readParcelable(Timepoint.class.getClassLoader());
-        mSelectableTimes.addAll(Arrays.asList((Timepoint[]) in.readParcelableArray(Timepoint[].class.getClassLoader())));
-        mDisabledTimes.addAll(Arrays.asList((Timepoint[]) in.readParcelableArray(Timepoint[].class.getClassLoader())));
+        mSelectableTimes.addAll(Arrays.asList(in.createTypedArray(Timepoint.CREATOR)));
+        mDisabledTimes.addAll(Arrays.asList(in.createTypedArray(Timepoint.CREATOR)));
         exclusiveSelectableTimes = getExclusiveSelectableTimes(mSelectableTimes, mDisabledTimes);
     }
 
@@ -39,8 +39,8 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     public void writeToParcel(Parcel out, int flags) {
         out.writeParcelable(mMinTime, flags);
         out.writeParcelable(mMaxTime, flags);
-        out.writeParcelableArray(mSelectableTimes.toArray(new Timepoint[mSelectableTimes.size()]), flags);
-        out.writeParcelableArray(mDisabledTimes.toArray(new Timepoint[mDisabledTimes.size()]), flags);
+        out.writeTypedArray(mSelectableTimes.toArray(new Timepoint[mSelectableTimes.size()]), flags);
+        out.writeTypedArray(mDisabledTimes.toArray(new Timepoint[mDisabledTimes.size()]), flags);
     }
 
     @Override
@@ -48,6 +48,7 @@ class DefaultTimepointLimiter implements TimepointLimiter {
         return 0;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static final Parcelable.Creator<DefaultTimepointLimiter> CREATOR
             = new Parcelable.Creator<DefaultTimepointLimiter>() {
         public DefaultTimepointLimiter createFromParcel(Parcel in) {
@@ -98,7 +99,7 @@ class DefaultTimepointLimiter implements TimepointLimiter {
     }
 
     private TreeSet<Timepoint> getExclusiveSelectableTimes(TreeSet<Timepoint> selectable, TreeSet<Timepoint> disabled) {
-        TreeSet<Timepoint> output = (TreeSet<Timepoint>) selectable.clone();
+        TreeSet<Timepoint> output = new TreeSet<>(selectable);
         output.removeAll(disabled);
         return output;
     }
@@ -166,6 +167,7 @@ class DefaultTimepointLimiter implements TimepointLimiter {
         return mDisabledTimes.contains(current);
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
     @Override
     public boolean isAmDisabled() {
         Timepoint midday = new Timepoint(12);
@@ -177,6 +179,7 @@ class DefaultTimepointLimiter implements TimepointLimiter {
         return false;
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
     @Override
     public boolean isPmDisabled() {
         Timepoint midday = new Timepoint(12);

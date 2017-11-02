@@ -9,6 +9,7 @@ android {
         targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
         versionName project.VERSION_NAME
         versionCode Integer.parseInt(project.VERSION_CODE)
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -31,6 +32,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'com.pholser:junit-quickcheck-core:0.7'
     testCompile 'com.pholser:junit-quickcheck-generators:0.7'
+
+    androidTestCompile 'com.android.support:support-annotations:27.0.0'
+    androidTestCompile 'com.android.support.test:runner:1.0.1'
+    androidTestCompile 'com.android.support.test:rules:1.0.1'
 }
 
 apply from: 'gradle-mvn-push.gradle'
