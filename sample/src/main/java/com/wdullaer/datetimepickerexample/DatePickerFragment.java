@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,7 +63,8 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                         DatePickerFragment.this,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH)
+                        now.get(Calendar.DAY_OF_MONTH),
+                        new Locale("us", "US")
                 );
                 dpd.setThemeDark(modeDarkDate.isChecked());
                 dpd.vibrate(vibrateDate.isChecked());

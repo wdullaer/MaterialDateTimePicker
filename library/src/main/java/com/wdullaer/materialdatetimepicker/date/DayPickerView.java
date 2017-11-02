@@ -55,7 +55,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     protected int mNumWeeks = 6;
     protected boolean mShowWeekNumber = false;
     protected int mDaysPerWeek = 7;
-    private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
+    private static SimpleDateFormat YEAR_FORMAT;
 
     protected Context mContext;
     protected Handler mHandler;
@@ -79,14 +79,17 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
 
     private DatePickerController mController;
     private LinearLayoutManager linearLayoutManager;
+    private static Locale locale = Locale.getDefault();
 
     public DayPickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        YEAR_FORMAT = new SimpleDateFormat("yyyy", DatePickerDialog.getLocale());
         init(context);
     }
 
     public DayPickerView(Context context, DatePickerController controller) {
         super(context);
+        YEAR_FORMAT = new SimpleDateFormat("yyyy", DatePickerDialog.getLocale());
         init(context);
         setController(controller);
     }
@@ -335,11 +338,11 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     }
 
     private static String getMonthAndYearString(MonthAdapter.CalendarDay day) {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(locale);
         cal.set(day.year, day.month, day.day);
 
         String sbuf = "";
-        sbuf += cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+        sbuf += cal.getDisplayName(Calendar.MONTH, Calendar.LONG, DatePickerDialog.getLocale());
         sbuf += " ";
         sbuf += YEAR_FORMAT.format(cal.getTime());
         return sbuf;

@@ -35,7 +35,7 @@ public class DefaultDateRangeLimiterPropertyTest {
 
         @Override
         public MonthAdapter.CalendarDay getSelectedDay() {
-            return new MonthAdapter.CalendarDay(Calendar.getInstance(), TimeZone.getDefault());
+            return new MonthAdapter.CalendarDay(Calendar.getInstance(DatePickerDialog.getLocale()), TimeZone.getDefault());
         }
 
         @Override
@@ -70,12 +70,12 @@ public class DefaultDateRangeLimiterPropertyTest {
 
         @Override
         public Calendar getStartDate() {
-            return Calendar.getInstance();
+            return Calendar.getInstance(DatePickerDialog.getLocale());
         }
 
         @Override
         public Calendar getEndDate() {
-            return Calendar.getInstance();
+            return Calendar.getInstance(DatePickerDialog.getLocale());
         }
 
         @Override
@@ -94,7 +94,7 @@ public class DefaultDateRangeLimiterPropertyTest {
 
     private static Calendar[] datesToCalendars(Date[] dates) {
         Calendar[] output = new Calendar[dates.length];
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         for (int i = 0; i < dates.length; i++) {
             Calendar cal = (Calendar) day.clone();
             cal.setTime(dates[i]);
@@ -110,7 +110,7 @@ public class DefaultDateRangeLimiterPropertyTest {
     ) {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.setTime(date);
 
         Calendar[] selectables = datesToCalendars(dates);
@@ -130,7 +130,7 @@ public class DefaultDateRangeLimiterPropertyTest {
     ) {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.setTime(date);
 
         Calendar[] disableds = datesToCalendars(dates);
@@ -146,10 +146,10 @@ public class DefaultDateRangeLimiterPropertyTest {
     ) {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.setTime(date);
 
-        Calendar minDay = Calendar.getInstance();
+        Calendar minDay = Calendar.getInstance(DatePickerDialog.getLocale());
         minDay.setTime(minDate);
 
         limiter.setMinDate(minDay);
@@ -163,10 +163,10 @@ public class DefaultDateRangeLimiterPropertyTest {
     ) {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
-        Calendar day = Calendar.getInstance();
+        Calendar day = Calendar.getInstance(DatePickerDialog.getLocale());
         day.setTime(date);
 
-        Calendar maxDay = Calendar.getInstance();
+        Calendar maxDay = Calendar.getInstance(DatePickerDialog.getLocale());
         maxDay.setTime(maxDate);
 
         limiter.setMaxDate(maxDay);
