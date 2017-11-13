@@ -29,6 +29,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox showVersion2;
     private CheckBox limitSelectableDays;
     private CheckBox highlightDays;
+    private DatePickerDialog dpd;
 
     public DatePickerFragment() {
         // Required empty public constructor
@@ -58,12 +59,26 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
             @Override
             public void onClick(View v) {
                 Calendar now = Calendar.getInstance();
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        DatePickerFragment.this,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH)
-                );
+                /*
+                It is recommended to always create a new instance whenever you need to show a Dialog.
+                The sample app is reusing them because it is useful when looking for regressions
+                during testing
+                 */
+                if (dpd == null) {
+                    dpd = DatePickerDialog.newInstance(
+                            DatePickerFragment.this,
+                            now.get(Calendar.YEAR),
+                            now.get(Calendar.MONTH),
+                            now.get(Calendar.DAY_OF_MONTH)
+                    );
+                } else {
+                    dpd.initialize(
+                            DatePickerFragment.this,
+                            now.get(Calendar.YEAR),
+                            now.get(Calendar.MONTH),
+                            now.get(Calendar.DAY_OF_MONTH)
+                    );
+                }
                 dpd.setThemeDark(modeDarkDate.isChecked());
                 dpd.vibrate(vibrateDate.isChecked());
                 dpd.dismissOnPause(dismissDate.isChecked());

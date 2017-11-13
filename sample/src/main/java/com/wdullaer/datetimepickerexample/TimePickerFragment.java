@@ -33,6 +33,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     private CheckBox limitSelectableTimes;
     private CheckBox disableSpecificTimes;
     private CheckBox showVersion2;
+    private TimePickerDialog tpd;
 
     public TimePickerFragment() {
         // Required empty public constructor
@@ -62,12 +63,27 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
             @Override
             public void onClick(View v) {
                 Calendar now = Calendar.getInstance();
-                TimePickerDialog tpd = TimePickerDialog.newInstance(
-                        TimePickerFragment.this,
-                        now.get(Calendar.HOUR_OF_DAY),
-                        now.get(Calendar.MINUTE),
-                        mode24Hours.isChecked()
-                );
+                /*
+                It is recommended to always create a new instance whenever you need to show a Dialog.
+                The sample app is reusing them because it is useful when looking for regressions
+                during testing
+                 */
+                if (tpd == null) {
+                    tpd = TimePickerDialog.newInstance(
+                            TimePickerFragment.this,
+                            now.get(Calendar.HOUR_OF_DAY),
+                            now.get(Calendar.MINUTE),
+                            mode24Hours.isChecked()
+                    );
+                } else {
+                    tpd.initialize(
+                            TimePickerFragment.this,
+                            now.get(Calendar.HOUR_OF_DAY),
+                            now.get(Calendar.MINUTE),
+                            now.get(Calendar.SECOND),
+                            mode24Hours.isChecked()
+                    );
+                }
                 tpd.setThemeDark(modeDarkTime.isChecked());
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());

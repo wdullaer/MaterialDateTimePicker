@@ -30,6 +30,7 @@ public interface DatePickerController {
 
     void registerOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener);
 
+    @SuppressWarnings("unused")
     void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener);
 
     MonthAdapter.CalendarDay getSelectedDay();

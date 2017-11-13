@@ -221,6 +221,8 @@ public class TimePickerDialog extends DialogFragment implements
         mCancelResid = R.string.mdtp_cancel;
         mCancelColor = -1;
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
+        // Throw away the current TimePicker, which might contain old state if the dialog instance is reused
+        mTimePicker = null;
     }
 
     /**
