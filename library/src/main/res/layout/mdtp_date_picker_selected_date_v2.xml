@@ -34,6 +34,7 @@
         android:layout_marginBottom="4dp"
         android:gravity="center_vertical"
         android:includeFontPadding="false"
+        android:background="@android:color/transparent"
         android:textColor="@color/mdtp_date_picker_selector"
         android:textSize="@dimen/mdtp_datepicker_year_selection_text_size"
         tools:text="2015" />
@@ -45,6 +46,7 @@
         android:layout_gravity="center"
         android:clickable="true"
         android:orientation="horizontal"
+        android:background="@android:color/transparent"
         android:textColor="@color/mdtp_date_picker_selector" >
         <TextView
             android:id="@+id/mdtp_date_picker_day"
@@ -54,6 +56,7 @@
             android:duplicateParentState="true"
             android:gravity="left"
             android:includeFontPadding="false"
+            android:background="@android:color/transparent"
             android:textColor="@color/mdtp_date_picker_selector"
             android:textSize="@dimen/mdtp_datepicker_selection_text_size"
             tools:text="Fri, May 15"/>

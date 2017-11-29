@@ -32,6 +32,7 @@
         android:layout_gravity="center"
         android:clickable="true"
         android:orientation="vertical"
+        android:background="@android:color/transparent"
         android:textColor="@color/mdtp_date_picker_selector" >
 
         <TextView
@@ -41,6 +42,7 @@
             android:duplicateParentState="true"
             android:gravity="center_horizontal|bottom"
             android:includeFontPadding="false"
+            android:background="@android:color/transparent"
             android:textColor="@color/mdtp_date_picker_selector"
             android:textSize="@dimen/mdtp_selected_date_month_size"
             android:textAllCaps="true"
@@ -56,6 +58,7 @@
             android:duplicateParentState="true"
             android:gravity="center"
             android:includeFontPadding="false"
+            android:background="@android:color/transparent"
             android:textColor="@color/mdtp_date_picker_selector"
             android:textSize="@dimen/mdtp_selected_date_day_size"
             tools:text="15"/>
@@ -68,6 +71,7 @@
         android:layout_gravity="center"
         android:gravity="center_horizontal|top"
         android:includeFontPadding="false"
+        android:background="@android:color/transparent"
         android:textColor="@color/mdtp_date_picker_selector"
         android:textSize="@dimen/mdtp_selected_date_year_size"
         tools:text="2015" />

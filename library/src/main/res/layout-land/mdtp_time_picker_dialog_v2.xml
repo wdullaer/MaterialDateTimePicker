@@ -36,7 +36,8 @@
     <LinearLayout
         android:layout_height="@dimen/mdtp_time_picker_height"
         android:layout_width="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:background="@android:color/transparent">
         <com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
             android:id="@+id/mdtp_time_picker"
             android:layout_width="@dimen/mdtp_picker_dimen"
