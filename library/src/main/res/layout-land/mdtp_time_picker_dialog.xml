@@ -32,7 +32,8 @@
     <LinearLayout
         android:layout_height="@dimen/mdtp_time_picker_height"
         android:layout_width="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:background="@android:color/transparent">
         <include layout="@layout/mdtp_time_title_view" />
         <FrameLayout
             android:id="@+id/mdtp_time_display_background"
