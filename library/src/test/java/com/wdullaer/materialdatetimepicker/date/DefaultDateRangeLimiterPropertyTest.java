@@ -105,8 +105,8 @@ public class DefaultDateRangeLimiterPropertyTest {
 
     @Property
     public void setToNearestShouldBeInSelectableDays(
-            @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
-            @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date[] dates
+            @InRange(min = "01/01/1900", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
+            @InRange(min = "01/01/1900", max = "12/31/2099", format = "MM/dd/yyyy") Date[] dates
     ) {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
@@ -125,8 +125,8 @@ public class DefaultDateRangeLimiterPropertyTest {
 
     @Property
     public void setToNearestShouldNeverBeInDisabledDays(
-            @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
-            @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date[] dates
+            @InRange(min = "01/01/1900", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
+            @InRange(min = "01/01/1900", max = "12/31/2099", format = "MM/dd/yyyy") Date[] dates
     ) {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
@@ -141,8 +141,8 @@ public class DefaultDateRangeLimiterPropertyTest {
 
     @Property
     public void setToNearestShouldNeverBeBelowMinDate(
-            @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
-            @InRange(min = "01/01/1800", max = "12/31/2099", format = "MM/dd/yyyy") Date minDate
+            @InRange(min = "01/01/1900", max = "12/31/2099", format = "MM/dd/yyyy") Date date,
+            @InRange(min = "01/01/1900", max = "12/31/2099", format = "MM/dd/yyyy") Date minDate
     ) {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
 
@@ -166,9 +166,16 @@ public class DefaultDateRangeLimiterPropertyTest {
         Calendar day = Calendar.getInstance();
         day.setTime(date);
 
+        Calendar minDay = Calendar.getInstance();
+        minDay.set(Calendar.YEAR, 1800);
+        minDay.set(Calendar.MONTH, Calendar.JANUARY);
+        minDay.set(Calendar.DAY_OF_MONTH, 1);
+        Utils.trimToMidnight(minDay);
+
         Calendar maxDay = Calendar.getInstance();
         maxDay.setTime(maxDate);
 
+        limiter.setMinDate(minDay);
         limiter.setMaxDate(maxDay);
         Assert.assertTrue(Utils.trimToMidnight(maxDay).getTimeInMillis() >= limiter.setToNearestDate(day).getTimeInMillis());
     }
