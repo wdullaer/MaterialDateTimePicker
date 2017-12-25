@@ -507,4 +507,44 @@ public class DefaultDateRangeLimiterTest {
 
         Assert.assertTrue(Arrays.asList(days).contains(limiter.setToNearestDate(day)));
     }
+
+    @Test
+    public void setToNearestShouldRoundToFirstJanOfMinYearWhenBeforeMin() {
+        // Case with just year range and no other restrictions
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+
+        limiter.setYearRange(1980, 2100);
+        Calendar day = Calendar.getInstance();
+        day.set(Calendar.YEAR, 1970);
+
+        Calendar expectedDay = Calendar.getInstance();
+        expectedDay.set(Calendar.YEAR, 1980);
+        expectedDay.set(Calendar.MONTH, Calendar.JANUARY);
+        expectedDay.set(Calendar.DAY_OF_MONTH, 1);
+
+        Assert.assertEquals(
+                Utils.trimToMidnight(expectedDay).getTimeInMillis(),
+                limiter.setToNearestDate(day).getTimeInMillis()
+        );
+    }
+
+    @Test
+    public void setToNearestShouldReturn31stDecOfMaxYearWhenAfterMax() {
+        // Case with just year range and no other restrictions
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+
+        limiter.setYearRange(1900, 1950);
+        Calendar day = Calendar.getInstance();
+        day.set(Calendar.YEAR, 1970);
+
+        Calendar expectedDay = Calendar.getInstance();
+        expectedDay.set(Calendar.YEAR, 1950);
+        expectedDay.set(Calendar.MONTH, Calendar.DECEMBER);
+        expectedDay.set(Calendar.DAY_OF_MONTH, 31);
+
+        Assert.assertEquals(
+                Utils.trimToMidnight(expectedDay).getTimeInMillis(),
+                limiter.setToNearestDate(day).getTimeInMillis()
+        );
+    }
 }

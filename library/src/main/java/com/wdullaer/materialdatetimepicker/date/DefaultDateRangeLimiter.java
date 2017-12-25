@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 
 import com.wdullaer.materialdatetimepicker.Utils;
 
+import java.time.Year;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -239,12 +240,22 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         }
 
 
-        if (mMinDate != null && isBeforeMin(calendar)) {
-            return (Calendar) mMinDate.clone();
+        if (isBeforeMin(calendar)) {
+            if (mMinDate != null) return (Calendar) mMinDate.clone();
+            Calendar output = Calendar.getInstance();
+            output.set(Calendar.YEAR, mMinYear);
+            output.set(Calendar.MONTH, Calendar.JANUARY);
+            output.set(Calendar.DAY_OF_MONTH, 1);
+            return Utils.trimToMidnight(output);
         }
 
-        if (mMaxDate != null && isAfterMax(calendar)) {
-            return (Calendar) mMaxDate.clone();
+        if (isAfterMax(calendar)) {
+            if (mMaxDate != null) return (Calendar) mMaxDate.clone();
+            Calendar output = Calendar.getInstance();
+            output.set(Calendar.YEAR, mMaxYear);
+            output.set(Calendar.MONTH, Calendar.DECEMBER);
+            output.set(Calendar.DAY_OF_MONTH, 31);
+            return Utils.trimToMidnight(output);
         }
 
         return calendar;
