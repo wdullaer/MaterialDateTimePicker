@@ -19,7 +19,6 @@ package com.wdullaer.materialdatetimepicker.date;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import java.io.Serializable;
 import java.util.Calendar;
 
 @SuppressWarnings("WeakerAccess")

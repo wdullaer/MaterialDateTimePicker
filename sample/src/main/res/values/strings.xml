@@ -24,6 +24,7 @@
     <string name="disable_dates">Disable specific dates</string>
     <string name="disable_times">Disable specific times</string>
     <string name="highlight_dates">Highlight certain dates</string>
+    <string name="switch_orientation">Switch scroll orientation</string>
     <string name="action_settings">Settings</string>
 
     <string name="tab_title_time">Time</string>

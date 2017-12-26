@@ -29,6 +29,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox titleDate;
     private CheckBox showYearFirst;
     private CheckBox showVersion2;
+    private CheckBox switchOrientation;
     private CheckBox limitSelectableDays;
     private CheckBox highlightDays;
     private DatePickerDialog dpd;
@@ -53,6 +54,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         titleDate = view.findViewById(R.id.title_date);
         showYearFirst = view.findViewById(R.id.show_year_first);
         showVersion2 = view.findViewById(R.id.show_version_2);
+        switchOrientation = view.findViewById(R.id.switch_orientation);
         limitSelectableDays = view.findViewById(R.id.limit_dates);
         highlightDays = view.findViewById(R.id.highlight_dates);
 
@@ -128,6 +130,13 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                         days[i + 6] = day;
                     }
                     dpd.setSelectableDays(days);
+                }
+                if (switchOrientation.isChecked()) {
+                    if (dpd.getVersion() == DatePickerDialog.Version.VERSION_1) {
+                        dpd.setScrollOrientation(DatePickerDialog.ScrollOrientation.HORIZONTAL);
+                    } else {
+                        dpd.setScrollOrientation(DatePickerDialog.ScrollOrientation.VERTICAL);
+                    }
                 }
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }

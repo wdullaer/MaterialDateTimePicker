@@ -67,6 +67,11 @@ public class DatePickerDialog extends DialogFragment implements
         VERSION_2
     }
 
+    public enum ScrollOrientation {
+        HORIZONTAL,
+        VERTICAL
+    }
+
     private static final int UNINITIALIZED = -1;
     private static final int MONTH_AND_DAY_VIEW = 0;
     private static final int YEAR_VIEW = 1;
@@ -96,6 +101,7 @@ public class DatePickerDialog extends DialogFragment implements
     private static final String KEY_VERSION = "version";
     private static final String KEY_TIMEZONE = "timezone";
     private static final String KEY_DATERANGELIMITER = "daterangelimiter";
+    private static final String KEY_SCROLL_ORIENTATION = "scrollorientation";
 
     private static final int ANIMATION_DURATION = 300;
     private static final int ANIMATION_DELAY = 500;
@@ -140,6 +146,7 @@ public class DatePickerDialog extends DialogFragment implements
     private String mCancelString;
     private int mCancelColor = -1;
     private Version mVersion;
+    private ScrollOrientation mScrollOrientation;
     private TimeZone mTimezone;
     private DefaultDateRangeLimiter mDefaultLimiter = new DefaultDateRangeLimiter();
     private DateRangeLimiter mDateRangeLimiter = mDefaultLimiter;
@@ -211,6 +218,7 @@ public class DatePickerDialog extends DialogFragment implements
     public void initialize(OnDateSetListener callBack, Calendar initialSelection) {
         mCallBack = callBack;
         mCalendar = Utils.trimToMidnight(initialSelection);
+        mScrollOrientation = null;
         setTimeZone(mCalendar.getTimeZone());
 
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
@@ -277,6 +285,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putString(KEY_CANCEL_STRING, mCancelString);
         outState.putInt(KEY_CANCEL_COLOR, mCancelColor);
         outState.putSerializable(KEY_VERSION, mVersion);
+        outState.putSerializable(KEY_SCROLL_ORIENTATION, mScrollOrientation);
         outState.putSerializable(KEY_TIMEZONE, mTimezone);
         outState.putParcelable(KEY_DATERANGELIMITER, mDateRangeLimiter);
     }
@@ -287,6 +296,11 @@ public class DatePickerDialog extends DialogFragment implements
         int listPosition = -1;
         int listPositionOffset = 0;
         int currentView = mDefaultView;
+        if (mScrollOrientation == null) {
+            mScrollOrientation = mVersion == Version.VERSION_1
+                    ? ScrollOrientation.VERTICAL
+                    : ScrollOrientation.HORIZONTAL;
+        }
         if (savedInstanceState != null) {
             mWeekStart = savedInstanceState.getInt(KEY_WEEK_START);
             currentView = savedInstanceState.getInt(KEY_CURRENT_VIEW);
@@ -308,6 +322,7 @@ public class DatePickerDialog extends DialogFragment implements
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
             mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR);
             mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
+            mScrollOrientation = (ScrollOrientation) savedInstanceState.getSerializable(KEY_SCROLL_ORIENTATION);
             mTimezone = (TimeZone) savedInstanceState.getSerializable(KEY_TIMEZONE);
             mDateRangeLimiter = savedInstanceState.getParcelable(KEY_DATERANGELIMITER);
 
@@ -923,6 +938,22 @@ public class DatePickerDialog extends DialogFragment implements
      */
     public Version getVersion() {
         return mVersion;
+    }
+
+    /**
+     * Set which way the user needs to swipe to switch months in the MonthView
+     * @param orientation The orientation to use
+     */
+    public void setScrollOrientation(ScrollOrientation orientation) {
+        mScrollOrientation = orientation;
+    }
+
+    /**
+     * Get which way the user needs to swipe to switch months in the MonthView
+     * @return SwipeOrientation
+     */
+    public ScrollOrientation getScrollOrientation() {
+        return mScrollOrientation;
     }
 
     /**

@@ -58,4 +58,6 @@ public interface DatePickerController {
     TimeZone getTimeZone();
 
     DatePickerDialog.Version getVersion();
+
+    DatePickerDialog.ScrollOrientation getScrollOrientation();
 }

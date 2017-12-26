@@ -95,6 +95,11 @@ public class DefaultDateRangeLimiterPropertyTest {
         public DatePickerDialog.Version getVersion() {
             return DatePickerDialog.Version.VERSION_2;
         }
+
+        @Override
+        public DatePickerDialog.ScrollOrientation getScrollOrientation() {
+            return DatePickerDialog.ScrollOrientation.HORIZONTAL;
+        }
     };
 
     private static Calendar[] datesToCalendars(Date[] dates) {
