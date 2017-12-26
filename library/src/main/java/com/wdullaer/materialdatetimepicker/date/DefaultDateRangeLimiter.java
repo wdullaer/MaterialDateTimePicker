@@ -172,7 +172,8 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
      */
     @Override
     public boolean isOutOfRange(int year, int month, int day) {
-        Calendar date = Calendar.getInstance();
+        TimeZone timeZone = mController == null ? TimeZone.getDefault() : mController.getTimeZone();
+        Calendar date = Calendar.getInstance(timeZone);
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
         date.set(Calendar.DAY_OF_MONTH, day);
