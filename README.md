@@ -199,8 +199,9 @@ If set to `true` will dismiss the picker when the user selects a date. This defa
 * `TimepickerDialog` `enableSeconds(boolean enableSconds)` and `enableMinutes(boolean enableMinutes)`
 Allows you to enable or disable a seconds and minutes picker ont he `TimepickerDialog`. Enabling the seconds picker, implies enabling the minutes picker. Disabling the minute picker will disable the seconds picker. The last applied setting will be used. By default `enableSeconds = false` and `enableMinutes = true`.
 
-* `DatePickerDialog` `setTimeZone(Timezone timezone)`  
+* `DatePickerDialog` `setTimeZone(Timezone timezone)` *deprecated*  
 Sets the `Timezone` used to represent time internally in the picker. Defaults to the current default Timezone of the device.
+This method has been deprecated: you should use the `newInstance()` method which takes a Calendar set to the appropriate TimeZone.
 
 * `DatePickerDialog` `setDateRangeLimiter(DateRangeLimiter limiter)`
 Provide a custom implementation of DateRangeLimiter, giving you full control over which days are available for selection. This disables all of the other options that limit date selection.

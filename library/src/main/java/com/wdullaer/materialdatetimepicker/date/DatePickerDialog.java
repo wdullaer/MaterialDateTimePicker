@@ -219,13 +219,14 @@ public class DatePickerDialog extends DialogFragment implements
         mCallBack = callBack;
         mCalendar = Utils.trimToMidnight(initialSelection);
         mScrollOrientation = null;
+        //noinspection deprecation
         setTimeZone(mCalendar.getTimeZone());
 
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
     }
 
     public void initialize(OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(getTimeZone());
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, monthOfYear);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -814,7 +815,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     @Override
     public boolean isHighlighted(int year, int month, int day) {
-        Calendar date = Calendar.getInstance();
+        Calendar date = Calendar.getInstance(getTimeZone());
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
         date.set(Calendar.DAY_OF_MONTH, day);
@@ -959,9 +960,12 @@ public class DatePickerDialog extends DialogFragment implements
     /**
      * Set which timezone the picker should use
      *
+     * This has been deprecated in favor of setting the TimeZone using the constructor that
+     * takes a Calendar object
      * @param timeZone The timezone to use
      */
     @SuppressWarnings("unused")
+    @Deprecated
     public void setTimeZone(TimeZone timeZone) {
         mTimezone = timeZone;
         mCalendar.setTimeZone(timeZone);

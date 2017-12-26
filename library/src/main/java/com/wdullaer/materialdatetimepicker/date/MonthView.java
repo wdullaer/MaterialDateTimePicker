@@ -533,7 +533,7 @@ public abstract class MonthView extends View {
 
 
         if (mOnDayClickListener != null) {
-            mOnDayClickListener.onDayClick(this, new CalendarDay(mYear, mMonth, day));
+            mOnDayClickListener.onDayClick(this, new CalendarDay(mYear, mMonth, day, mController.getTimeZone()));
         }
 
         // This is a no-op if accessibility is turned off.
@@ -606,7 +606,7 @@ public abstract class MonthView extends View {
     public CalendarDay getAccessibilityFocus() {
         final int day = mTouchHelper.getFocusedVirtualView();
         if (day >= 0) {
-            return new CalendarDay(mYear, mMonth, day);
+            return new CalendarDay(mYear, mMonth, day, mController.getTimeZone());
         }
         return null;
     }

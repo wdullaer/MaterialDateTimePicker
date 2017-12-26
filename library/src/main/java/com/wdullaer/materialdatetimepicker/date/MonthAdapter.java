@@ -67,7 +67,13 @@ public abstract class MonthAdapter extends RecyclerView.Adapter<MonthViewHolder>
             day = calendar.get(Calendar.DAY_OF_MONTH);
         }
 
+        @SuppressWarnings("unused")
         public CalendarDay(int year, int month, int day) {
+            setDay(year, month, day);
+        }
+
+        public CalendarDay(int year, int month, int day, TimeZone timezone) {
+            mTimeZone = timezone;
             setDay(year, month, day);
         }
 

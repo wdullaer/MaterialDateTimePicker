@@ -413,6 +413,111 @@ public class DefaultDateRangeLimiterTest {
         Assert.assertTrue(limiter.isOutOfRange(year, month, dayNumber));
     }
 
+    @Test
+    public void isOutOfRangeShouldWorkWithCustomTimeZones() {
+        final String timeZoneString = "America/Los_Angeles";
+        TimeZone timeZone = TimeZone.getTimeZone(timeZoneString);
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+
+        int year = 1985;
+        int month = 1;
+        int day = 1;
+        Calendar disabledDay = Calendar.getInstance(timeZone);
+        disabledDay.set(Calendar.YEAR, year);
+        disabledDay.set(Calendar.MONTH, month);
+        disabledDay.set(Calendar.DAY_OF_MONTH, day);
+        Calendar[] days = new Calendar[1];
+        days[0] = disabledDay;
+        DatePickerController controller = new DatePickerController() {
+            @Override
+            public void onYearSelected(int year) {}
+
+            @Override
+            public void onDayOfMonthSelected(int year, int month, int day) {}
+
+            @Override
+            public void registerOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {}
+
+            @Override
+            public void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {}
+
+            @Override
+            public MonthAdapter.CalendarDay getSelectedDay() {
+                return null;
+            }
+
+            @Override
+            public boolean isThemeDark() {
+                return false;
+            }
+
+            @Override
+            public int getAccentColor() {
+                return 0;
+            }
+
+            @Override
+            public boolean isHighlighted(int year, int month, int day) {
+                return false;
+            }
+
+            @Override
+            public int getFirstDayOfWeek() {
+                return 0;
+            }
+
+            @Override
+            public int getMinYear() {
+                return 0;
+            }
+
+            @Override
+            public int getMaxYear() {
+                return 0;
+            }
+
+            @Override
+            public Calendar getStartDate() {
+                return null;
+            }
+
+            @Override
+            public Calendar getEndDate() {
+                return null;
+            }
+
+            @Override
+            public boolean isOutOfRange(int year, int month, int day) {
+                return false;
+            }
+
+            @Override
+            public void tryVibrate() {
+
+            }
+
+            @Override
+            public TimeZone getTimeZone() {
+                return TimeZone.getTimeZone(timeZoneString);
+            }
+
+            @Override
+            public DatePickerDialog.Version getVersion() {
+                return null;
+            }
+
+            @Override
+            public DatePickerDialog.ScrollOrientation getScrollOrientation() {
+                return null;
+            }
+        };
+
+        limiter.setDisabledDays(days);
+        limiter.setController(controller);
+
+        Assert.assertTrue(limiter.isOutOfRange(year, month, day));
+    }
+
     // setToNearestDate()
     @Test
     public void setToNearestShouldReturnTheInputWhenValid() {

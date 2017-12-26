@@ -383,7 +383,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         int minMonth = mController.getStartDate().get(Calendar.MONTH);
         int month = (firstVisiblePosition + minMonth) % MonthAdapter.MONTHS_IN_YEAR;
         int year = (firstVisiblePosition + minMonth) / MonthAdapter.MONTHS_IN_YEAR + mController.getMinYear();
-        MonthAdapter.CalendarDay day = new MonthAdapter.CalendarDay(year, month, 1);
+        MonthAdapter.CalendarDay day = new MonthAdapter.CalendarDay(year, month, 1, mController.getTimeZone());
 
         // Scroll either forward or backward one month.
         if (action == AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) {

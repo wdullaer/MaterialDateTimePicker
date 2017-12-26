@@ -23,7 +23,6 @@ import android.support.annotation.Nullable;
 
 import com.wdullaer.materialdatetimepicker.Utils;
 
-import java.time.Year;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -69,6 +68,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         return 0;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static final Parcelable.Creator<DefaultDateRangeLimiter> CREATOR
             = new Parcelable.Creator<DefaultDateRangeLimiter>() {
         public DefaultDateRangeLimiter createFromParcel(Parcel in) {
@@ -172,7 +172,8 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
      */
     @Override
     public boolean isOutOfRange(int year, int month, int day) {
-        Calendar date = Calendar.getInstance();
+        TimeZone timezone = mController == null ? TimeZone.getDefault() : mController.getTimeZone();
+        Calendar date = Calendar.getInstance(timezone);
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
         date.set(Calendar.DAY_OF_MONTH, day);
@@ -239,10 +240,10 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
             }
         }
 
-
+        TimeZone timezone = mController == null ? TimeZone.getDefault() : mController.getTimeZone();
         if (isBeforeMin(calendar)) {
             if (mMinDate != null) return (Calendar) mMinDate.clone();
-            Calendar output = Calendar.getInstance();
+            Calendar output = Calendar.getInstance(timezone);
             output.set(Calendar.YEAR, mMinYear);
             output.set(Calendar.MONTH, Calendar.JANUARY);
             output.set(Calendar.DAY_OF_MONTH, 1);
@@ -251,7 +252,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
 
         if (isAfterMax(calendar)) {
             if (mMaxDate != null) return (Calendar) mMaxDate.clone();
-            Calendar output = Calendar.getInstance();
+            Calendar output = Calendar.getInstance(timezone);
             output.set(Calendar.YEAR, mMaxYear);
             output.set(Calendar.MONTH, Calendar.DECEMBER);
             output.set(Calendar.DAY_OF_MONTH, 31);
