@@ -96,6 +96,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         mController.registerOnDateChangedListener(this);
         mSelectedDay = new MonthAdapter.CalendarDay(mController.getTimeZone());
         mTempDay = new MonthAdapter.CalendarDay(mController.getTimeZone());
+        YEAR_FORMAT = new SimpleDateFormat("yyyy", controller.getLocale());
         refreshAdapter();
         onDateChanged();
     }
@@ -340,12 +341,12 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         event.setItemCount(-1);
     }
 
-    private static String getMonthAndYearString(MonthAdapter.CalendarDay day) {
+    private static String getMonthAndYearString(MonthAdapter.CalendarDay day, Locale locale) {
         Calendar cal = Calendar.getInstance();
         cal.set(day.year, day.month, day.day);
 
         String sbuf = "";
-        sbuf += cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+        sbuf += cal.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
         sbuf += " ";
         sbuf += YEAR_FORMAT.format(cal.getTime());
         return sbuf;
@@ -408,7 +409,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         }
 
         // Go to that month.
-        Utils.tryAccessibilityAnnounce(this, getMonthAndYearString(day));
+        Utils.tryAccessibilityAnnounce(this, getMonthAndYearString(day, mController.getLocale()));
         goTo(day, true, false, true);
         return true;
     }

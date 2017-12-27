@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -89,6 +90,11 @@ public class DefaultDateRangeLimiterPropertyTest {
         @Override
         public TimeZone getTimeZone() {
             return TimeZone.getDefault();
+        }
+
+        @Override
+        public Locale getLocale() {
+            return Locale.getDefault();
         }
 
         @Override

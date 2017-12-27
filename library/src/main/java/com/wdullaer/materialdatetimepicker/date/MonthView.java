@@ -154,8 +154,8 @@ public abstract class MonthView extends View {
         mController = controller;
         Resources res = context.getResources();
 
-        mDayLabelCalendar = Calendar.getInstance(mController.getTimeZone());
-        mCalendar = Calendar.getInstance(mController.getTimeZone());
+        mDayLabelCalendar = Calendar.getInstance(mController.getTimeZone(), mController.getLocale());
+        mCalendar = Calendar.getInstance(mController.getTimeZone(), mController.getLocale());
 
         mDayOfWeekTypeface = res.getString(R.string.mdtp_day_of_week_label_typeface);
         mMonthTitleTypeface = res.getString(R.string.mdtp_sans_serif);
@@ -318,7 +318,7 @@ public abstract class MonthView extends View {
         // Figure out what day today is
         //final Time today = new Time(Time.getCurrentTimezone());
         //today.setToNow();
-        final Calendar today = Calendar.getInstance(mController.getTimeZone());
+        final Calendar today = Calendar.getInstance(mController.getTimeZone(), mController.getLocale());
         mHasToday = false;
         mToday = -1;
 
@@ -394,7 +394,7 @@ public abstract class MonthView extends View {
 
     @NonNull
     private String getMonthAndYearString() {
-        Locale locale = Locale.getDefault();
+        Locale locale = mController.getLocale();
         String pattern = "MMMM yyyy";
 
         if (Build.VERSION.SDK_INT < 18) pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
@@ -557,7 +557,7 @@ public abstract class MonthView extends View {
      * @return The weekday label
      */
     private String getWeekDayLabel(Calendar day) {
-        Locale locale = Locale.getDefault();
+        Locale locale = mController.getLocale();
 
         // Localised short version of the string is not available on API < 18
         if (Build.VERSION.SDK_INT < 18) {

@@ -55,6 +55,6 @@ public class SimpleMonthView extends MonthView {
             mMonthNumPaint.setColor(isHighlighted(year, month, day) ? mHighlightedDayTextColor : mDayTextColor);
         }
 
-        canvas.drawText(String.valueOf(day), x, y, mMonthNumPaint);
+        canvas.drawText(String.format(mController.getLocale(), "%d", day), x, y, mMonthNumPaint);
     }
 }

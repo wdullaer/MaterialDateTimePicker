@@ -157,10 +157,11 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     /**
      * Initialize the Layout with starting values.
      * @param context A context needed to inflate resources
+     * @param locale A Locale to be used when generating strings
      * @param initialTime The initial selection of the Timepicker
      * @param is24HourMode Indicates whether we should render in 24hour mode or with AM/PM selectors
      */
-    public void initialize(Context context, TimePickerController timePickerController,
+    public void initialize(Context context, Locale locale, TimePickerController timePickerController,
             Timepoint initialTime, boolean is24HourMode) {
         if (mTimeInitialized) {
             Log.e(TAG, "Time has already been initialized.");
@@ -174,7 +175,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mCircleView.initialize(context, mController);
         mCircleView.invalidate();
         if (!mIs24HourMode && mController.getVersion() == TimePickerDialog.Version.VERSION_1) {
-            mAmPmCirclesView.initialize(context, mController, initialTime.isAM() ? AM : PM);
+            mAmPmCirclesView.initialize(context, locale, mController, initialTime.isAM() ? AM : PM);
             mAmPmCirclesView.invalidate();
         }
 
@@ -214,10 +215,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         String[] secondsTexts = new String[12];
         for (int i = 0; i < 12; i++) {
             hoursTexts[i] = is24HourMode?
-                    String.format(Locale.getDefault(), "%02d", hours_24[i]) : String.format(Locale.getDefault(), "%d", hours[i]);
-            innerHoursTexts[i] = String.format(Locale.getDefault(), "%d", hours[i]);
-            minutesTexts[i] = String.format(Locale.getDefault(), "%02d", minutes[i]);
-            secondsTexts[i] = String.format(Locale.getDefault(), "%02d", seconds[i]);
+                    String.format(locale, "%02d", hours_24[i]) : String.format(locale, "%d", hours[i]);
+            innerHoursTexts[i] = String.format(locale, "%d", hours[i]);
+            minutesTexts[i] = String.format(locale, "%02d", minutes[i]);
+            secondsTexts[i] = String.format(locale, "%02d", seconds[i]);
         }
         // The version 2 layout has the hours > 12 on the inner circle rather than the outer circle
         // Inner circle and outer circle should be swapped (see #411)

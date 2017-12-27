@@ -193,6 +193,9 @@ Set whether the dialogs should vibrate the device when a selection is made. This
 * `dismissOnPause(boolean dismissOnPause)`  
 Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
 
+* `setLocale(Locale locale)`  
+Allows the client to set a custom locale that will be used when generating various strings in the pickers. By default the current locale of the device will be used. Because the pickers will adapt to the Locale of the device by default you should only have to use this in very rare circumstances.
+
 * `DatePickerDialog` `autoDismiss(boolean autoDismiss)`
 If set to `true` will dismiss the picker when the user selects a date. This defaults to `false`.
 

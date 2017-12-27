@@ -7,6 +7,7 @@ import org.junit.Assert;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -85,6 +86,11 @@ public class DefaultDateRangeLimiterTest {
         @Override
         public TimeZone getTimeZone() {
             return TimeZone.getDefault();
+        }
+
+        @Override
+        public Locale getLocale() {
+            return Locale.getDefault();
         }
 
         @Override
@@ -499,6 +505,11 @@ public class DefaultDateRangeLimiterTest {
             @Override
             public TimeZone getTimeZone() {
                 return TimeZone.getTimeZone(timeZoneString);
+            }
+
+            @Override
+            public Locale getLocale() {
+                return Locale.getDefault();
             }
 
             @Override

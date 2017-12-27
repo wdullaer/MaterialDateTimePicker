@@ -132,7 +132,7 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
             }
             int year = mMinYear + position;
             boolean selected = mController.getSelectedDay().year == year;
-            v.setText(String.valueOf(year));
+            v.setText(String.format(mController.getLocale(),"%d", year));
             v.drawIndicator(selected);
             v.requestLayout();
             if (selected) {
