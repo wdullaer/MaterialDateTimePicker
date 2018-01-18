@@ -185,6 +185,7 @@ public class TimePickerDialog extends DialogFragment implements
         // Empty constructor required for dialog fragment.
     }
 
+    @SuppressWarnings("SameParameterValue")
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
             int hourOfDay, int minute, int second, boolean is24HourMode) {
         TimePickerDialog ret = new TimePickerDialog();
@@ -197,7 +198,7 @@ public class TimePickerDialog extends DialogFragment implements
         return TimePickerDialog.newInstance(callback, hourOfDay, minute, 0, is24HourMode);
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "SameParameterValue"})
     public static TimePickerDialog newInstance(OnTimeSetListener callback, boolean is24HourMode) {
         Calendar now = Calendar.getInstance();
         return TimePickerDialog.newInstance(callback, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), is24HourMode);
@@ -431,6 +432,7 @@ public class TimePickerDialog extends DialogFragment implements
      * @param hourInterval The interval between 2 selectable hours ([1,24])
      * @param minuteInterval The interval between 2 selectable minutes ([1,60])
      */
+    @SuppressWarnings("SameParameterValue")
     public void setTimeInterval(@IntRange(from=1, to=24) int hourInterval,
                                 @IntRange(from=1, to=60) int minuteInterval) {
         setTimeInterval(hourInterval, minuteInterval, 1);
@@ -597,6 +599,7 @@ public class TimePickerDialog extends DialogFragment implements
      * Set the Locale which will be used to generate various strings throughout the picker
      * @param locale Locale
      */
+    @SuppressWarnings("unused")
     public void setLocale(Locale locale) {
         mLocale = locale;
     }
@@ -960,7 +963,7 @@ public class TimePickerDialog extends DialogFragment implements
         mPlaceholderText = mDoublePlaceholderText.charAt(0);
         mAmKeyCode = mPmKeyCode = -1;
         generateLegalTimesTree();
-        if (mInKbMode) {
+        if (mInKbMode && savedInstanceState != null) {
             mTypedTimes = savedInstanceState.getIntegerArrayList(KEY_TYPED_TIMES);
             tryStartingKbMode(-1);
             mHourView.invalidate();
@@ -1311,7 +1314,7 @@ public class TimePickerDialog extends DialogFragment implements
                     } else if (deleted == getAmOrPmKeyCode(PM)) {
                         deletedKeyStr = mPmText;
                     } else {
-                        deletedKeyStr = String.format("%d", getValFromKeyCode(deleted));
+                        deletedKeyStr = String.format(mLocale, "%d", getValFromKeyCode(deleted));
                     }
                     Utils.tryAccessibilityAnnounce(mTimePicker,
                             String.format(mDeletedKeyFormat, deletedKeyStr));
@@ -1668,6 +1671,7 @@ public class TimePickerDialog extends DialogFragment implements
             firstDigit.addChild(secondDigit);
             return;
         }
+        //noinspection ConstantConditions
         if (!mEnableMinutes && !mIs24HourMode) {
             // We'll need to use the AM/PM node a lot.
             // Set up AM and PM to respond to "a" and "p".

@@ -49,7 +49,6 @@ import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 
-import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -975,7 +974,7 @@ public class DatePickerDialog extends DialogFragment implements
      * takes a Calendar object
      * @param timeZone The timezone to use
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public void setTimeZone(TimeZone timeZone) {
         mTimezone = timeZone;

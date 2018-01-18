@@ -207,10 +207,6 @@ public abstract class MonthView extends View {
         initView();
     }
 
-    public void setDatePickerController(DatePickerController controller) {
-        mController = controller;
-    }
-
     protected MonthViewTouchHelper getMonthViewTouchHelper() {
         return new MonthViewTouchHelper(this);
     }
@@ -231,10 +227,7 @@ public abstract class MonthView extends View {
     @Override
     public boolean dispatchHoverEvent(@NonNull MotionEvent event) {
         // First right-of-refusal goes the touch exploration helper.
-        if (mTouchHelper.dispatchHoverEvent(event)) {
-            return true;
-        }
-        return super.dispatchHoverEvent(event);
+        return mTouchHelper.dispatchHoverEvent(event) || super.dispatchHoverEvent(event);
     }
 
     @Override
@@ -445,8 +438,8 @@ public abstract class MonthView extends View {
 
             final int startX = (int) (x - dayWidthHalf);
             final int stopX = (int) (x + dayWidthHalf);
-            final int startY = (int) (y - yRelativeToDay);
-            final int stopY = (int) (startY + mRowHeight);
+            final int startY = y - yRelativeToDay;
+            final int stopY = startY + mRowHeight;
 
             drawMonthDay(canvas, mYear, mMonth, dayNumber, x, y, startX, stopX, startY, stopY);
 
@@ -541,9 +534,9 @@ public abstract class MonthView extends View {
     }
 
     /**
-     * @param year
-     * @param month
-     * @param day
+     * @param year as an int
+     * @param month as an int
+     * @param day as an int
      * @return true if the given date should be highlighted
      */
     protected boolean isHighlighted(int year, int month, int day) {
@@ -604,7 +597,7 @@ public abstract class MonthView extends View {
      * has focus
      */
     public CalendarDay getAccessibilityFocus() {
-        final int day = mTouchHelper.getFocusedVirtualView();
+        final int day = mTouchHelper.getAccessibilityFocusedVirtualViewId();
         if (day >= 0) {
             return new CalendarDay(mYear, mMonth, day, mController.getTimeZone());
         }
@@ -644,17 +637,17 @@ public abstract class MonthView extends View {
         private final Rect mTempRect = new Rect();
         private final Calendar mTempCalendar = Calendar.getInstance(mController.getTimeZone());
 
-        public MonthViewTouchHelper(View host) {
+        MonthViewTouchHelper(View host) {
             super(host);
         }
 
-        public void setFocusedVirtualView(int virtualViewId) {
+        void setFocusedVirtualView(int virtualViewId) {
             getAccessibilityNodeProvider(MonthView.this).performAction(
                     virtualViewId, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS, null);
         }
 
-        public void clearFocusedVirtualView() {
-            final int focusedVirtualView = getFocusedVirtualView();
+        void clearFocusedVirtualView() {
+            final int focusedVirtualView = getAccessibilityFocusedVirtualViewId();
             if (focusedVirtualView != ExploreByTouchHelper.INVALID_ID) {
                 getAccessibilityNodeProvider(MonthView.this).performAction(
                         focusedVirtualView,
@@ -680,13 +673,13 @@ public abstract class MonthView extends View {
         }
 
         @Override
-        protected void onPopulateEventForVirtualView(int virtualViewId, AccessibilityEvent event) {
+        protected void onPopulateEventForVirtualView(int virtualViewId, @NonNull AccessibilityEvent event) {
             event.setContentDescription(getItemDescription(virtualViewId));
         }
 
         @Override
         protected void onPopulateNodeForVirtualView(int virtualViewId,
-                                                    AccessibilityNodeInfoCompat node) {
+                                                    @NonNull AccessibilityNodeInfoCompat node) {
             getItemBounds(virtualViewId, mTempRect);
 
             node.setContentDescription(getItemDescription(virtualViewId));
@@ -717,7 +710,7 @@ public abstract class MonthView extends View {
          * @param day  The day to calculate bounds for
          * @param rect The rectangle in which to store the bounds
          */
-        protected void getItemBounds(int day, Rect rect) {
+        void getItemBounds(int day, Rect rect) {
             final int offsetX = mEdgePadding;
             final int offsetY = getMonthHeaderSize();
             final int cellHeight = mRowHeight;
@@ -739,7 +732,7 @@ public abstract class MonthView extends View {
          * @param day The day to generate a description for
          * @return A description of the time object
          */
-        protected CharSequence getItemDescription(int day) {
+        CharSequence getItemDescription(int day) {
             mTempCalendar.set(mYear, mMonth, day);
             final CharSequence date = DateFormat.format(DATE_FORMAT,
                     mTempCalendar.getTimeInMillis());
