@@ -132,7 +132,12 @@ public class DefaultDateRangeLimiterPropertyTest {
         Calendar[] selectables = datesToCalendars(dates);
 
         limiter.setSelectableDays(selectables);
-        if (selectables.length == 0) Assert.assertEquals(
+
+        // selectableDays are manipulated a bit by the limiter
+        selectables = limiter.getSelectableDays();
+
+        // selectables == null when the input is empty
+        if (selectables == null) Assert.assertEquals(
                 day.getTimeInMillis(),
                 limiter.setToNearestDate(day).getTimeInMillis()
         );

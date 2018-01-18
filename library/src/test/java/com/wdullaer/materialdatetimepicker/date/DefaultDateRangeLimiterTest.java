@@ -211,6 +211,10 @@ public class DefaultDateRangeLimiterTest {
 
         limiter.setSelectableDays(days);
 
+        // selectableDays are manipulated a bit by the limiter
+        days = limiter.getSelectableDays();
+
+        Assert.assertNotNull(days);
         Assert.assertEquals(limiter.getStartDate().getTimeInMillis(), days[0].getTimeInMillis());
     }
 
@@ -250,6 +254,10 @@ public class DefaultDateRangeLimiterTest {
         limiter.setSelectableDays(days);
         limiter.setMinDate(minDate);
 
+        // selectableDays are manipulated a bit by the limiter
+        days = limiter.getSelectableDays();
+
+        Assert.assertNotNull(days);
         Assert.assertEquals(limiter.getStartDate().getTimeInMillis(), days[0].getTimeInMillis());
     }
 
@@ -265,6 +273,10 @@ public class DefaultDateRangeLimiterTest {
 
         limiter.setSelectableDays(days);
 
+        // selectableDays are manipulated a bit by the limiter
+        days = limiter.getSelectableDays();
+
+        Assert.assertNotNull(days);
         Assert.assertEquals(limiter.getEndDate().getTimeInMillis(), days[days.length - 1].getTimeInMillis());
     }
 
@@ -304,6 +316,10 @@ public class DefaultDateRangeLimiterTest {
         limiter.setSelectableDays(days);
         limiter.setMinDate(maxDate);
 
+        // selectableDays are manipulated a bit by the limiter
+        days = limiter.getSelectableDays();
+
+        Assert.assertNotNull(days);
         Assert.assertEquals(limiter.getEndDate().getTimeInMillis(), days[days.length - 1].getTimeInMillis());
     }
 
@@ -610,6 +626,10 @@ public class DefaultDateRangeLimiterTest {
         limiter.setSelectableDays(days);
         Calendar day = Calendar.getInstance();
 
+        // selectableDays are manipulated a bit by the limiter
+        days = limiter.getSelectableDays();
+
+        Assert.assertNotNull(days);
         Assert.assertTrue(Arrays.asList(days).contains(limiter.setToNearestDate(day)));
     }
 
@@ -631,6 +651,10 @@ public class DefaultDateRangeLimiterTest {
         limiter.setSelectableDays(days);
         Calendar day = Calendar.getInstance();
 
+        // selectableDays are manipulated a bit by the limiter
+        days = limiter.getSelectableDays();
+
+        Assert.assertNotNull(days);
         Assert.assertTrue(Arrays.asList(days).contains(limiter.setToNearestDate(day)));
     }
 

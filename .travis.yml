@@ -9,6 +9,5 @@ android:
         - android-27
         - android-14
         - extra-android-m2repository
-        - extra-android-support
 
 script: ./gradlew check

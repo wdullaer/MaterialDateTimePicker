@@ -807,8 +807,9 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setHighlightedDays(Calendar[] highlightedDays) {
-        for (Calendar highlightedDay : highlightedDays) Utils.trimToMidnight((Calendar) highlightedDay.clone());
-        this.highlightedDays.addAll(Arrays.asList(highlightedDays));
+        for (Calendar highlightedDay : highlightedDays) {
+            this.highlightedDays.add(Utils.trimToMidnight((Calendar) highlightedDay.clone()));
+        }
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
 
