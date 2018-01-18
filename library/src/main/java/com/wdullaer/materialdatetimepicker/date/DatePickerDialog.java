@@ -207,7 +207,7 @@ public class DatePickerDialog extends DialogFragment implements
     @SuppressWarnings("unused")
     public static DatePickerDialog newInstance(OnDateSetListener callback) {
         Calendar now = Calendar.getInstance();
-        return DatePickerDialog.newInstance(callback, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+        return DatePickerDialog.newInstance(callback, now);
     }
 
     @SuppressWarnings("unused")
@@ -219,7 +219,7 @@ public class DatePickerDialog extends DialogFragment implements
 
     public void initialize(OnDateSetListener callBack, Calendar initialSelection) {
         mCallBack = callBack;
-        mCalendar = Utils.trimToMidnight(initialSelection);
+        mCalendar = Utils.trimToMidnight((Calendar) initialSelection.clone());
         mScrollOrientation = null;
         //noinspection deprecation
         setTimeZone(mCalendar.getTimeZone());
@@ -807,7 +807,7 @@ public class DatePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setHighlightedDays(Calendar[] highlightedDays) {
-        for (Calendar highlightedDay : highlightedDays) Utils.trimToMidnight(highlightedDay);
+        for (Calendar highlightedDay : highlightedDays) Utils.trimToMidnight((Calendar) highlightedDay.clone());
         this.highlightedDays.addAll(Arrays.asList(highlightedDays));
         if (mDayPickerView != null) mDayPickerView.onChange();
     }

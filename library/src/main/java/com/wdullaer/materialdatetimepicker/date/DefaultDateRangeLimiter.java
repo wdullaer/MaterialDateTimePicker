@@ -81,12 +81,12 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
     };
 
     void setSelectableDays(@NonNull Calendar[] days) {
-        for (Calendar selectableDay : days) Utils.trimToMidnight(selectableDay);
+        for (Calendar selectableDay : days) Utils.trimToMidnight((Calendar) selectableDay.clone());
         this.selectableDays.addAll(Arrays.asList(days));
     }
 
     void setDisabledDays(@NonNull Calendar[] days) {
-        for (Calendar disabledDay : days) Utils.trimToMidnight(disabledDay);
+        for (Calendar disabledDay : days) Utils.trimToMidnight((Calendar) disabledDay.clone());
         this.disabledDays.addAll(Arrays.asList(days));
     }
 
