@@ -46,7 +46,7 @@ a sus dependencias{
 }
 ```
 
-También puede agregar la biblioteca como una biblioteca de Android a su proyecto. Todos los archivos de la biblioteca están en ```library```
+También puede agregar la biblioteca como una biblioteca de Android a su proyecto. Todos los archivos de la biblioteca están en `library`
 
 
 ## Usar Material DateTime Picker <tt>selectores de fecha/hora</tt>
@@ -111,7 +111,7 @@ El orden exacto en que se seleccionan los colores es el siguiente:
 3. `R.attr.colorAccent` (p.ej. cuando se usa AppCompat)
 4. `R.color.mdtp_accent_color` y `R.color.mdtp_accent_color_dark` si ninguno de los otros está configurado en su proyecto
 
-Los selectores también tienen un tema oscuro. Esto se puede especificar de forma global utilizando el atributo `mdtp_theme_dark` <tt>tema oscuro</tt> en su tema o las funciones `setThemeDark (boolean themeDark)` <tt>establecer el tema oscuro</tt>. La función llama a sobrescribir la configuración XML.
+Los selectores también tienen un tema oscuro. Esto se puede especificar de forma global utilizando el atributo `mdtp_theme_dark` <tt>tema oscuro</tt> en su tema o las funciones `setThemeDark(boolean themeDark)` <tt>establecer el tema oscuro</tt>. La función llama a sobrescribir la configuración XML.
 ```xml
 <item name="mdtp_theme_dark">true</item>
 ```
