@@ -46,7 +46,7 @@ a sus dependencias{
 }
 ```
 
-También puede agregar la biblioteca como una biblioteca de Android a su proyecto. Todos los archivos de la biblioteca están en ```library``` <tt>biblioteca</tt>.
+También puede agregar la biblioteca como una biblioteca de Android a su proyecto. Todos los archivos de la biblioteca están en ```library```
 
 
 ## Usar Material DateTime Picker <tt>selectores de fecha/hora</tt>
