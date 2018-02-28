@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
@@ -57,6 +58,25 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         limitSelectableTimes = view.findViewById(R.id.limit_times);
         disableSpecificTimes = view.findViewById(R.id.disable_times);
         showVersion2 = view.findViewById(R.id.show_version_2);
+
+        view.findViewById(R.id.original_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+                new android.app.TimePickerDialog(
+                        getActivity(),
+                        new android.app.TimePickerDialog.OnTimeSetListener(){
+                            @Override
+                            public void onTimeSet(TimePicker view, int hour, int minute) {
+                                Log.d("Original", "Got clicked");
+                            }
+                        },
+                        now.get(Calendar.HOUR_OF_DAY),
+                        now.get(Calendar.MINUTE),
+                        mode24Hours.isChecked()
+                ).show();
+            }
+        });
 
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(new View.OnClickListener() {

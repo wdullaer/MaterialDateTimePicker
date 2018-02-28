@@ -24,7 +24,7 @@
             android:id="@+id/original_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Original Button"/>
+            android:text="@string/original_button"/>
 
         <CheckBox
             android:id="@+id/show_version_2"

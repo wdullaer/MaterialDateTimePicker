@@ -34,7 +34,7 @@
             android:layout_gravity="center" />
     </FrameLayout>
     <LinearLayout
-        android:layout_height="@dimen/mdtp_time_picker_height"
+        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:orientation="vertical"
         android:background="@android:color/transparent">

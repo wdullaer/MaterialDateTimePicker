@@ -8,6 +8,7 @@
     <string name="selected_datetime">The date and time you picked will be shown here.</string>
     <string name="pick_time">Pick Time</string>
     <string name="pick_date">Pick Date</string>
+    <string name="original_button">Framework Picker</string>
     <string name="pick_datetime">Pick Date+Time</string>
     <string name="mode_24_hours">Use 24 hour mode</string>
     <string name="mode_dark">Use dark theme</string>
