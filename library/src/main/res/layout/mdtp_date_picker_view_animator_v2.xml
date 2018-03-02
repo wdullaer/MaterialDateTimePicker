@@ -19,5 +19,4 @@
      android:layout_width="@dimen/mdtp_date_picker_component_width"
      android:layout_height="@dimen/mdtp_date_picker_view_animator_height_v2"
      android:gravity="center"
-     android:paddingLeft="8dp"
-     android:paddingRight="8dp" />
+     android:padding="@dimen/mdtp_date_picker_view_animator_padding_v2"/>

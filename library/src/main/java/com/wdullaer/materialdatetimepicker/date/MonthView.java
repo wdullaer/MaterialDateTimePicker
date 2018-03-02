@@ -70,6 +70,7 @@ public abstract class MonthView extends View {
     protected static int MONTH_LABEL_TEXT_SIZE;
     protected static int MONTH_DAY_LABEL_TEXT_SIZE;
     protected static int MONTH_HEADER_SIZE;
+    protected static int MONTH_HEADER_SIZE_V2;
     protected static int DAY_SELECTED_CIRCLE_SIZE;
     protected static int DAY_HIGHLIGHT_CIRCLE_SIZE;
     protected static int DAY_HIGHLIGHT_CIRCLE_MARGIN;
@@ -182,6 +183,7 @@ public abstract class MonthView extends View {
         MONTH_LABEL_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_month_label_size);
         MONTH_DAY_LABEL_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_month_day_label_text_size);
         MONTH_HEADER_SIZE = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height);
+        MONTH_HEADER_SIZE_V2 = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height_v2);
         DAY_SELECTED_CIRCLE_SIZE = res
                 .getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius);
         DAY_HIGHLIGHT_CIRCLE_SIZE = res
@@ -249,7 +251,8 @@ public abstract class MonthView extends View {
      */
     protected void initView() {
         mMonthTitlePaint = new Paint();
-        mMonthTitlePaint.setFakeBoldText(true);
+        if (mController.getVersion() == DatePickerDialog.Version.VERSION_1)
+            mMonthTitlePaint.setFakeBoldText(true);
         mMonthTitlePaint.setAntiAlias(true);
         mMonthTitlePaint.setTextSize(MONTH_LABEL_TEXT_SIZE);
         mMonthTitlePaint.setTypeface(Typeface.create(mMonthTitleTypeface, Typeface.BOLD));
@@ -382,7 +385,9 @@ public abstract class MonthView extends View {
      * A wrapper to the MonthHeaderSize to allow override it in children
      */
     protected int getMonthHeaderSize() {
-        return MONTH_HEADER_SIZE;
+        return mController.getVersion() == DatePickerDialog.Version.VERSION_1
+                ? MONTH_HEADER_SIZE
+                : MONTH_HEADER_SIZE_V2;
     }
 
     @NonNull
@@ -402,7 +407,9 @@ public abstract class MonthView extends View {
 
     protected void drawMonthTitle(Canvas canvas) {
         int x = (mWidth + 2 * mEdgePadding) / 2;
-        int y = (getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE) / 2;
+        int y = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+                ? (getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE) / 2
+                : getMonthHeaderSize() / 2 - MONTH_DAY_LABEL_TEXT_SIZE;
         canvas.drawText(getMonthAndYearString(), x, y, mMonthTitlePaint);
     }
 

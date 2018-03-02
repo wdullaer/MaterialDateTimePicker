@@ -17,27 +17,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/mdtp_date_picker_view_animator"
-    android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="horizontal"
+    android:background="@android:color/transparent">
+
+    <include layout="@layout/mdtp_date_picker_header_view_v2" />
+    <include layout="@layout/mdtp_date_picker_selected_date_v2" />
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="@android:color/transparent">
-
-        <include layout="@layout/mdtp_date_picker_header_view_v2" />
-        <include layout="@layout/mdtp_date_picker_selected_date_v2" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <include layout="@layout/mdtp_date_picker_view_animator_v2" />
+        <include layout="@layout/mdtp_done_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@android:color/transparent">
-            <include layout="@layout/mdtp_date_picker_view_animator_v2" />
-            <include layout="@layout/mdtp_done_button" />
-        </LinearLayout>
+            android:layout_marginTop="-32dp"/>
     </LinearLayout>
-
 </LinearLayout>
