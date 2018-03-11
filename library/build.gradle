@@ -24,19 +24,19 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:27.1.1'
-    compile 'com.android.support:appcompat-v7:27.1.1'
-    compile 'com.android.support:support-v13:27.1.1'
-    compile 'com.android.support:design:27.1.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v13:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'com.pholser:junit-quickcheck-core:0.7'
-    testCompile 'com.pholser:junit-quickcheck-generators:0.7'
+    testImplementaion 'junit:junit:4.12'
+    testImplementaion 'com.pholser:junit-quickcheck-core:0.7'
+    testImplementaion 'com.pholser:junit-quickcheck-generators:0.7'
 
-    androidTestCompile 'com.android.support:support-annotations:27.1.1'
-    androidTestCompile 'com.android.support.test:runner:1.0.2'
-    androidTestCompile 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
 }
 
 apply from: 'gradle-mvn-push.gradle'
