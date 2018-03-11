@@ -23,9 +23,13 @@ import java.util.Calendar;
 
 @SuppressWarnings("WeakerAccess")
 public interface DateRangeLimiter extends Parcelable {
-    int getMinYear();
+    default int getMinYear() {
+        return getStartDate().get(Calendar.YEAR);
+    }
 
-    int getMaxYear();
+    default int getMaxYear() {
+        return getEndDate().get(Calendar.YEAR);
+    }
 
     @NonNull Calendar getStartDate();
 
