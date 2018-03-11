@@ -19,7 +19,6 @@ package com.wdullaer.materialdatetimepicker;
 import android.animation.Keyframe;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -47,17 +46,12 @@ public class Utils {
     // Alpha level for fully opaque.
     public static final int FULL_ALPHA = 255;
 
-    public static boolean isJellybeanOrLater() {
-      return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-    }
-
     /**
      * Try to speak the specified text, for accessibility. Only available on JB or later.
      * @param text Text to announce.
      */
-    @SuppressLint("NewApi")
     public static void tryAccessibilityAnnounce(View view, CharSequence text) {
-        if (isJellybeanOrLater() && view != null && text != null) {
+        if (view != null && text != null) {
             view.announceForAccessibility(text);
         }
     }
