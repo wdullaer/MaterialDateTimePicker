@@ -184,8 +184,9 @@ public abstract class MonthView extends View {
         MONTH_DAY_LABEL_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_month_day_label_text_size);
         MONTH_HEADER_SIZE = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height);
         MONTH_HEADER_SIZE_V2 = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height_v2);
-        DAY_SELECTED_CIRCLE_SIZE = res
-                .getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius);
+        DAY_SELECTED_CIRCLE_SIZE = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+                ? res.getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius)
+                : res.getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius_v2);
         DAY_HIGHLIGHT_CIRCLE_SIZE = res
                 .getDimensionPixelSize(R.dimen.mdtp_day_highlight_circle_radius);
         DAY_HIGHLIGHT_CIRCLE_MARGIN = res

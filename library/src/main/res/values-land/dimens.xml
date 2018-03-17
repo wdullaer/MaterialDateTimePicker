@@ -30,6 +30,7 @@
     <dimen name="mdtp_date_picker_header_height">308dp</dimen>
     <dimen name="mdtp_date_picker_view_animator_height">220dp</dimen>
     <dimen name="mdtp_date_picker_view_animator_height_v2">285dp</dimen>
+    <dimen name="mdtp_day_number_select_circle_radius_v2">16dp</dimen>
 
     <dimen name="mdtp_picker_dimen">220dip</dimen>
 </resources>
