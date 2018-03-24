@@ -78,13 +78,13 @@ public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayO
 You will need to create a new instance of `TimePickerDialog` or `DatePickerDialog` using the static `newInstance()` method, supplying proper default values and a callback. Once the dialogs are configured, you can call `show()`.
 ```java
 Calendar now = Calendar.getInstance();
-DatePickerDialog dpd = DatePickerDialog.newInstance(
+DatePickerDialog dpd = DatePickerDialog(
   MainActivity.this,
+  listener,
   now.get(Calendar.YEAR),
   now.get(Calendar.MONTH),
   now.get(Calendar.DAY_OF_MONTH)
-);
-dpd.show(getFragmentManager(), "Datepickerdialog");
+).show();
 ```
 
 ### Theme the pickers
