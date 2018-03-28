@@ -182,7 +182,7 @@ public class DatePickerDialog extends DialogFragment implements
      * The callback used to notify other date picker components of a change in selected date.
      */
     @SuppressWarnings("WeakerAccess")
-    protected interface OnDateChangedListener {
+    public interface OnDateChangedListener {
 
         void onDateChanged();
     }
