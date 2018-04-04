@@ -86,6 +86,8 @@
     <!-- DO NOT TRANSLATE -->
     <string name="mdtp_day_of_week_label_typeface" translatable="false">sans-serif</string>
     <string name="mdtp_button_typeface" translatable="false">Roboto-Medium</string>
+    <string name="mdtp_previous_month_arrow" translatable="false"><![CDATA[\u276E]]></string>
+    <string name="mdtp_next_month_arrow" translatable="false"><![CDATA[\u276F]]></string>
 
     <string name="mdtp_am">am</string>
     <string name="mdtp_pm">pm</string>

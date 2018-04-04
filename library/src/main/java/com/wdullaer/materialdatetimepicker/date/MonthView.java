@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.widget.ExploreByTouchHelper;
@@ -199,6 +200,10 @@ public abstract class MonthView extends View {
             mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height_v2)
                     - getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE * 2) / MAX_NUM_ROWS;
         }
+
+        mEdgePadding = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+                ? 0
+                : context.getResources().getDimensionPixelSize(R.dimen.mdtp_date_picker_view_animator_padding_v2);
 
         // Set up accessibility components.
         mTouchHelper = getMonthViewTouchHelper();
@@ -407,7 +412,7 @@ public abstract class MonthView extends View {
     }
 
     protected void drawMonthTitle(Canvas canvas) {
-        int x = (mWidth + 2 * mEdgePadding) / 2;
+        int x = mWidth / 2;
         int y = mController.getVersion() == DatePickerDialog.Version.VERSION_1
                 ? (getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE) / 2
                 : getMonthHeaderSize() / 2 - MONTH_DAY_LABEL_TEXT_SIZE;

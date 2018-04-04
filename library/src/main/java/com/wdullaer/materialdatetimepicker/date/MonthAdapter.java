@@ -168,7 +168,6 @@ public abstract class MonthAdapter extends RecyclerView.Adapter<MonthViewHolder>
         int endMonth = endDate.get(Calendar.YEAR) * MONTHS_IN_YEAR + endDate.get(Calendar.MONTH);
         int startMonth = startDate.get(Calendar.YEAR) * MONTHS_IN_YEAR + startDate.get(Calendar.MONTH);
         return endMonth - startMonth + 1;
-        //return ((mController.getMaxYear() - mController.getMinYear()) + 1) * MONTHS_IN_YEAR;
     }
 
     public abstract MonthView createMonthView(Context context);

@@ -111,6 +111,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         setVerticalScrollBarEnabled(false);
         setHorizontalScrollBarEnabled(false);
+        setClipChildren(false);
 
         mContext = context;
         setUpRecyclerView();
@@ -257,7 +258,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     }
 
     public MonthView getMostVisibleMonth() {
-        boolean verticalScroll = ((LinearLayoutManager) getLayoutManager()).getOrientation() == LinearLayoutManager.VERTICAL;
+        boolean verticalScroll = mController.getScrollOrientation() == DatePickerDialog.ScrollOrientation.VERTICAL;
         final int maxSize = verticalScroll ? getHeight() : getWidth();
         int maxDisplayedSize = 0;
         int i = 0;
@@ -269,8 +270,9 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
             if (child == null) {
                 break;
             }
-            size = verticalScroll ? child.getBottom() : getRight();
-            int displayedSize = Math.min(size, maxSize) - Math.max(0, child.getTop());
+            size = verticalScroll ? child.getBottom() : child.getRight();
+            int endPosition = verticalScroll ? child.getTop() : child.getLeft();
+            int displayedSize = Math.min(size, maxSize) - Math.max(0, endPosition);
             if (displayedSize > maxDisplayedSize) {
                 mostVisibleMonth = (MonthView) child;
                 maxDisplayedSize = displayedSize;
@@ -278,6 +280,10 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
             i++;
         }
         return mostVisibleMonth;
+    }
+
+    public int getCount() {
+        return mAdapter.getItemCount();
     }
 
     @Override
