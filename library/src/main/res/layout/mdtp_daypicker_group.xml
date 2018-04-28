@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <ImageButton
+        android:id="@+id/mdtp_previous_month_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:src="@drawable/ic_chevron_left_black_24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:visibility="invisible"
+        android:nextFocusForward="@+id/mdtp_next_month_arrow"/>
+    <ImageButton
+        android:id="@+id/mdtp_next_month_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:src="@drawable/ic_chevron_right_black_24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:visibility="invisible"/>
+</FrameLayout>

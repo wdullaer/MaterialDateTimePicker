@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -46,15 +47,6 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
 
     private static final String TAG = "MonthFragment";
 
-    // Affects when the month selection will change while scrolling up
-    protected static final int SCROLL_HYST_WEEKS = 2;
-
-    // The number of days to display in each week
-    public static final int DAYS_PER_WEEK = 7;
-
-    protected int mNumWeeks = 6;
-    protected boolean mShowWeekNumber = false;
-    protected int mDaysPerWeek = 7;
     private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
 
     protected Context mContext;
@@ -66,19 +58,21 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
 
     protected MonthAdapter.CalendarDay mTempDay;
 
-    // When the week starts; numbered like Time.<WEEKDAY> (e.g. SUNDAY=0).
-    protected int mFirstDayOfWeek;
-    // The last name announced by accessibility
-    protected CharSequence mPrevMonthName;
     // which month should be displayed/highlighted [0-11]
     protected int mCurrentMonthDisplayed;
-    // used for tracking during a scroll
-    protected long mPreviousScrollPosition;
     // used for tracking what state listview is in
     protected int mPreviousScrollState = RecyclerView.SCROLL_STATE_IDLE;
 
+    private OnPageListener pageListener;
     private DatePickerController mController;
-    private LinearLayoutManager linearLayoutManager;
+
+    public interface OnPageListener {
+        /**
+         * Called when the visible page of the DayPickerView has changed
+         * @param position the new position visible in the DayPickerView
+         */
+        void onPageChanged(int position);
+    }
 
     public DayPickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -105,7 +99,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         int scrollOrientation = mController.getScrollOrientation() == DatePickerDialog.ScrollOrientation.VERTICAL
                 ? LinearLayoutManager.VERTICAL
                 : LinearLayoutManager.HORIZONTAL;
-        linearLayoutManager = new LinearLayoutManager(context, scrollOrientation, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, scrollOrientation, false);
         setLayoutManager(linearLayoutManager);
         mHandler = new Handler();
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -115,10 +109,6 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
 
         mContext = context;
         setUpRecyclerView();
-    }
-
-    public void setScrollOrientation(int orientation) {
-        linearLayoutManager.setOrientation(orientation);
     }
 
     /**
@@ -131,7 +121,14 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         int gravity = mController.getScrollOrientation() == DatePickerDialog.ScrollOrientation.VERTICAL
                 ? Gravity.TOP
                 : Gravity.START;
-        GravitySnapHelper helper = new GravitySnapHelper(gravity);
+        GravitySnapHelper helper = new GravitySnapHelper(gravity, new GravitySnapHelper.SnapListener() {
+            @Override
+            public void onSnap(int position) {
+                // Leverage the fact that the SnapHelper figures out which position is shown and
+                // pass this on to our PageListener after the snap has happened
+                if (pageListener != null) pageListener.onPageChanged(position);
+            }
+        });
         helper.attachToRecyclerView(this);
     }
 
@@ -155,12 +152,23 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
             mAdapter = createMonthAdapter(mController);
         } else {
             mAdapter.setSelectedDay(mSelectedDay);
+            if (pageListener != null) pageListener.onPageChanged(getMostVisiblePosition());
         }
         // refresh the view with the new parameters
         setAdapter(mAdapter);
     }
 
     public abstract MonthAdapter createMonthAdapter(DatePickerController controller);
+
+    public void setOnPageListener(@Nullable OnPageListener pageListener) {
+        this.pageListener = pageListener;
+    }
+
+    @Nullable
+    @SuppressWarnings("unused")
+    public OnPageListener getOnPageListener() {
+        return pageListener;
+    }
 
     /**
      * This moves to the specified time in the view. If the time is not already
@@ -221,6 +229,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
             mPreviousScrollState = RecyclerView.SCROLL_STATE_DRAGGING;
             if (animate) {
                 smoothScrollToPosition(position);
+                if (pageListener != null) pageListener.onPageChanged(position);
                 return true;
             } else {
                 postSetSelection(position);
@@ -238,6 +247,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
             @Override
             public void run() {
                 ((LinearLayoutManager) getLayoutManager()).scrollToPositionWithOffset(position, 0);
+                if (pageListener != null) pageListener.onPageChanged(position);
             }
         });
     }

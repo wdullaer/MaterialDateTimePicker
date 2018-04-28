@@ -15,8 +15,7 @@
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="wrap_content">
     <com.wdullaer.materialdatetimepicker.date.AccessibleDateAnimator
         android:id="@+id/mdtp_animator"
         android:layout_width="@dimen/mdtp_date_picker_component_width_v2"
@@ -26,30 +25,4 @@
         android:paddingBottom="@dimen/mdtp_date_picker_view_animator_padding_v2"
         android:clipChildren="false"
         android:clipToPadding="false"/>
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/mdtp_previous_month_arrow"
-        android:layout_gravity="top|left"
-        android:layout_marginTop="7dp"
-        android:layout_marginLeft="22dp"
-        android:minHeight="48dp"
-        android:maxHeight="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_chevron_left_black_24dp"
-        android:visibility="invisible"
-        />
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/mdtp_next_month_arrow"
-        android:layout_gravity="top|right"
-        android:layout_marginTop="7dp"
-        android:layout_marginRight="25dp"
-        android:minHeight="48dp"
-        android:maxHeight="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_chevron_right_black_24dp"
-        android:visibility="invisible"
-        />
 </FrameLayout>

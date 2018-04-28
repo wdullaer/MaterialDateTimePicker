@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -31,10 +30,8 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,7 +41,6 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -129,10 +125,8 @@ public class DatePickerDialog extends DialogFragment implements
     private TextView mSelectedMonthTextView;
     private TextView mSelectedDayTextView;
     private TextView mYearView;
-    private DayPickerView mDayPickerView;
+    private DayPickerGroup mDayPickerView;
     private YearPickerView mYearPickerView;
-    private ImageButton mNextArrow;
-    private ImageButton mPreviousArrow;
 
     private int mCurrentView = UNINITIALIZED;
 
@@ -373,7 +367,7 @@ public class DatePickerDialog extends DialogFragment implements
         mYearView.setOnClickListener(this);
 
         final Activity activity = getActivity();
-        mDayPickerView = new SimpleDayPickerView(activity, this);
+        mDayPickerView = new DayPickerGroup(activity, this);
         mYearPickerView = new YearPickerView(activity, this);
 
         // if theme mode has not been set by java code, check if it is specified in Style.xml
@@ -403,41 +397,6 @@ public class DatePickerDialog extends DialogFragment implements
         Animation animation2 = new AlphaAnimation(1.0f, 0.0f);
         animation2.setDuration(ANIMATION_DURATION);
         mAnimator.setOutAnimation(animation2);
-
-        // Add arrows if the datepicker scrolls horizontally
-        // TODO: transform daypickerview into a view group and move the arrows in there
-        // TODO: this allows them to be layed out in code more easily based on the params of the monthview
-        // See https://github.com/aosp-mirror/platform_frameworks_base/blob/master/core/java/android/widget/DayPickerView.java
-        int arrowVisibility = mScrollOrientation == ScrollOrientation.HORIZONTAL
-                ? View.VISIBLE
-                : View.INVISIBLE;
-        ColorStateList arrowTintList = mThemeDark
-                ? ColorStateList.valueOf(ContextCompat.getColor(activity, R.color.mdtp_done_text_color_dark))
-                : ColorStateList.valueOf(ContextCompat.getColor(activity, R.color.mdtp_done_text_color));
-        mNextArrow = view.findViewById(R.id.mdtp_next_month_arrow);
-        mNextArrow.setVisibility(arrowVisibility);
-        DrawableCompat.setTintList(DrawableCompat.wrap(mNextArrow.getDrawable()), arrowTintList);
-        mNextArrow.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("mNextArrow", "Trying to scroll forward");
-                int newPosition = mDayPickerView.getMostVisiblePosition() + 1;
-                mDayPickerView.smoothScrollToPosition(newPosition);
-                updateArrowVisibility(newPosition);
-            }
-        });
-        mPreviousArrow = view.findViewById(R.id.mdtp_previous_month_arrow);
-        mPreviousArrow.setVisibility(arrowVisibility);
-        DrawableCompat.setTintList(DrawableCompat.wrap(mPreviousArrow.getDrawable()), arrowTintList);
-        mPreviousArrow.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("mPreviousArrow", "Trying to scroll backward");
-                int newPosition = mDayPickerView.getMostVisiblePosition() - 1;
-                mDayPickerView.smoothScrollToPosition(newPosition);
-                updateArrowVisibility(newPosition);
-            }
-        });
 
         String buttonTypeface = activity.getResources().getString(R.string.mdtp_button_typeface);
         Button okButton = view.findViewById(R.id.mdtp_ok);
@@ -606,29 +565,6 @@ public class DatePickerDialog extends DialogFragment implements
                 Utils.tryAccessibilityAnnounce(mAnimator, mSelectYear);
                 break;
         }
-        updateArrowVisibility(mDayPickerView.getMostVisiblePosition());
-    }
-
-    private void updateArrowVisibility(int position) {
-        if (mCurrentView == YEAR_VIEW) {
-            mNextArrow.setVisibility(View.INVISIBLE);
-            mPreviousArrow.setVisibility(View.INVISIBLE);
-            return;
-        }
-        if (mScrollOrientation == ScrollOrientation.VERTICAL) {
-            mNextArrow.setVisibility(View.INVISIBLE);
-            mPreviousArrow.setVisibility(View.INVISIBLE);
-            return;
-        }
-        // The recyclerview can't call this often enough, but we're keeping the logic for further improvements
-        mNextArrow.setVisibility(position < mDayPickerView.getCount() - 1
-                ? View.VISIBLE
-                : View.INVISIBLE
-        );
-        mPreviousArrow.setVisibility(position > 0
-                ? View.VISIBLE
-                : View.INVISIBLE
-        );
     }
 
     private void updateDisplay(boolean announce) {

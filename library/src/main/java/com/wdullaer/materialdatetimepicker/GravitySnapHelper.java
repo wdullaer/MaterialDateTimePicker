@@ -48,7 +48,7 @@ public class GravitySnapHelper extends LinearSnapHelper {
             if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
                 snapping = false;
             }
-            if (newState == RecyclerView.SCROLL_STATE_IDLE && snapping && listener != null) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && listener != null) {
                 int position = getSnappedPosition(recyclerView);
                 if (position != RecyclerView.NO_POSITION) {
                     listener.onSnap(position);
@@ -58,6 +58,7 @@ public class GravitySnapHelper extends LinearSnapHelper {
         }
     };
 
+    @SuppressWarnings("unused")
     public GravitySnapHelper(int gravity) {
         this(gravity, null);
     }
