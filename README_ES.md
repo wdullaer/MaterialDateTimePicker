@@ -6,7 +6,7 @@
 
 
 Material DateTime Picker intenta ofrecerle los selectores de fecha y hora como se muestra en [Especificación de diseño de materiales](http://www.google.com/design/spec/components/pickers.html), con una API
- fácil de usar.
+fácil de usar.
 La biblioteca utiliza [el código de los marcos de Android](https://android.googlesource.com/platform/frameworks/opt/datetimepicker/) La biblioteca utiliza [el código de los marcos de Android] como base y lo ajusta para que esté lo más idéntico posible al ejemplo de los diseños de materiales.
 
 Soporte para Android 4.0 y superior.
@@ -27,22 +27,22 @@ Selector de fecha | Selector de tiempo
 
 
 ## Tabla de contenido
-1. [Ajustar](#setup)
-2. [Usar selectores de fecha/hora de material](#using-material-datetime-pickers)
-1. [Implementar oyentes](#implement-an-ontimesetlistenerondatesetlistener)
-2. [Crear selectores](#create-a-timepickerdialogdatepickerdialog-using-the-supplied-factory)
-3. [Elección de tema para los Pickers](#theme-the-pickers)
-3. [Opciones adicionales](#additional-options)
-4. [Preguntas más frecuentes](#faq)
-5. [Mejoras potenciales](#potential-improvements)
+    1. [Ajustar](#setup)
+    2. [Usar selectores de fecha/hora de material](#using-material-datetime-pickers)
+    1. [Implementar oyentes](#implement-an-ontimesetlistenerondatesetlistener)
+    2. [Crear selectores](#create-a-timepickerdialogdatepickerdialog-using-the-supplied-factory)
+    3. [Elección de tema para los Pickers](#theme-the-pickers)
+    3. [Opciones adicionales](#additional-options)
+    4. [Preguntas más frecuentes](#faq)
+    5. [Mejoras potenciales](#potential-improvements)
 6. [Licencia](#license)
 
 
 ## Ajustes
-La forma más fácil de agregar a la Biblioteca la _Material DateTime Picker_ a su proyecto es agregarla como una dependencia `build.gradle`
-```groovy
-a sus dependencias{
-  compile 'com.wdullaer:materialdatetimepicker:3.5.1'
+    La forma más fácil de agregar a la Biblioteca la _Material DateTime Picker_ a su proyecto es agregarla como una dependencia `build.gradle`
+    ```groovy
+    a sus dependencias{
+        compile 'com.wdullaer:materialdatetimepicker:3.6.0'
 }
 ```
 
@@ -227,7 +227,7 @@ Si realmente necesita el `SupportDialogFragment` <tt>fragmento de diálogo de so
 
 ```groovy
 dependencies {
-  compile 'co.infinum:materialdatetimepicker-support:3.5.1'
+  compile 'co.infinum:materialdatetimepicker-support:3.6.0'
 }
 ```
 
@@ -241,7 +241,7 @@ puede desactivar la carga de la biblioteca de soporte para MaterialDateTimePicke
 Usando el siguiente fragmento en el archivo `build.gradle` de su aplicación, puede excluir la posibilidad de que se instale la biblioteca de soporte transitivo de esta biblioteca.
 
 ```groovy
-compile ('com.wdullaer:materialdatetimepicker:3.5.1') {
+compile ('com.wdullaer:materialdatetimepicker:3.6.0') {
         exclude group: 'com.android.support'
 }
 ```
