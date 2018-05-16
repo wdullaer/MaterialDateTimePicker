@@ -27,22 +27,22 @@ Date Picker | Time Picker
 
 
 ## Table of Contents
-    1. [Setup](#setup)
-    2. [Using Material Date/Time Pickers](#using-material-datetime-pickers)
-    1. [Implement Listeners](#implement-an-ontimesetlistenerondatesetlistener)
-    2. [Create Pickers](#create-a-timepickerdialogdatepickerdialog-using-the-supplied-factory)
-    3. [Theme the Pickers](#theme-the-pickers)
-    3. [Additional Options](#additional-options)
-    4. [FAQ](#faq)
-    5. [Potential Improvements](#potential-improvements)
+1. [Setup](#setup)
+2. [Using Material Date/Time Pickers](#using-material-datetime-pickers)
+1. [Implement Listeners](#implement-an-ontimesetlistenerondatesetlistener)
+2. [Create Pickers](#create-a-timepickerdialogdatepickerdialog-using-the-supplied-factory)
+3. [Theme the Pickers](#theme-the-pickers)
+3. [Additional Options](#additional-options)
+4. [FAQ](#faq)
+5. [Potential Improvements](#potential-improvements)
 6. [License](#license)
 
 
 ## Setup
-    The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
-    ```groovy
-    dependencies {
-        compile 'com.wdullaer:materialdatetimepicker:3.6.0'
+ The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
+```groovy
+dependencies {
+    compile 'com.wdullaer:materialdatetimepicker:3.6.0'
 }
 ```
 
