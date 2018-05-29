@@ -34,6 +34,10 @@ public interface DatePickerController {
     @SuppressWarnings("unused")
     void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener);
 
+    void addOnMonthChangedListener(DatePickerDialog.OnMonthChangedListener listener);
+
+    void removeOnMonthChangedListener(DatePickerDialog.OnMonthChangedListener listener);
+
     MonthAdapter.CalendarDay getSelectedDay();
 
     boolean isThemeDark();
