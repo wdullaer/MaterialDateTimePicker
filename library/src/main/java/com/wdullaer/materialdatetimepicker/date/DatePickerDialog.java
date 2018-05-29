@@ -50,11 +50,9 @@ import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -119,7 +117,6 @@ public class DatePickerDialog extends DialogFragment implements
     private HashSet<OnDateChangedListener> mListeners = new HashSet<>();
     private DialogInterface.OnCancelListener mOnCancelListener;
     private DialogInterface.OnDismissListener mOnDismissListener;
-    private List<OnMonthChangedListener> monthChangedListeners = new ArrayList<>();
 
     private AccessibleDateAnimator mAnimator;
 
@@ -190,15 +187,6 @@ public class DatePickerDialog extends DialogFragment implements
         void onDateChanged();
     }
 
-    /**
-     * The callback used to notify a listener the month has changed.
-     */
-    public interface OnMonthChangedListener {
-
-        void onMonthIncremented();
-
-        void onMonthDecremented();
-    }
 
     public DatePickerDialog() {
         // Empty constructor required for dialog fragment.
@@ -380,21 +368,6 @@ public class DatePickerDialog extends DialogFragment implements
 
         final Activity activity = getActivity();
         mDayPickerView = new DayPickerGroup(activity, this);
-        mDayPickerView.setOnMonthChangedListener(new DayPickerGroup.OnMonthChangedListener() {
-            @Override
-            public void onMonthIncremented() {
-                for (OnMonthChangedListener l : monthChangedListeners) {
-                    l.onMonthIncremented();
-                }
-            }
-
-            @Override
-            public void onMonthDecremented() {
-                for (OnMonthChangedListener l : monthChangedListeners) {
-                    l.onMonthDecremented();
-                }
-            }
-        });
         mYearPickerView = new YearPickerView(activity, this);
 
         // if theme mode has not been set by java code, check if it is specified in Style.xml
@@ -1149,16 +1122,6 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void unregisterOnDateChangedListener(OnDateChangedListener listener) {
         mListeners.remove(listener);
-    }
-
-    @Override
-    public void addOnMonthChangedListener(OnMonthChangedListener listener) {
-        monthChangedListeners.add(listener);
-    }
-
-    @Override
-    public void removeOnMonthChangedListener(OnMonthChangedListener listener) {
-        monthChangedListeners.remove(listener);
     }
 
     @Override
