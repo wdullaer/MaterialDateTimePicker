@@ -19,6 +19,17 @@ public class DayPickerGroup extends ViewGroup
     private ImageButton nextButton;
     private DayPickerView dayPickerView;
     private DatePickerController controller;
+    private OnMonthChangedListener monthChangedListener;
+
+    /**
+     * The callback used to notify a listener the month has changed.
+     */
+    public interface OnMonthChangedListener {
+
+        void onMonthIncremented();
+
+        void onMonthDecremented();
+    }
 
     public DayPickerGroup(Context context) {
         super(context);
@@ -159,13 +170,27 @@ public class DayPickerGroup extends ViewGroup
         int offset;
         if (nextButton == v) {
             offset = 1;
+            notifyMonthIncremented();
         } else if (prevButton == v) {
             offset = -1;
+            notifyMonthDecremented();
         } else {
             return;
         }
         int position = dayPickerView.getMostVisiblePosition() + offset;
         dayPickerView.smoothScrollToPosition(position);
         updateButtonVisibility(position);
+    }
+
+    public void setOnMonthChangedListener(OnMonthChangedListener listener) {
+        monthChangedListener = listener;
+    }
+
+    private void notifyMonthIncremented() {
+        monthChangedListener.onMonthIncremented();
+    }
+
+    private void notifyMonthDecremented() {
+        monthChangedListener.onMonthDecremented();
     }
 }
