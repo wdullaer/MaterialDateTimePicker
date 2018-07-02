@@ -3,6 +3,7 @@ package com.wdullaer.materialdatetimepicker.date;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -64,6 +65,12 @@ public class DayPickerGroup extends ViewGroup
             prevButton.setMinimumWidth(size);
             nextButton.setMinimumHeight(size);
             nextButton.setMinimumWidth(size);
+        }
+
+        if (controller.isThemeDark()) {
+            int color = ContextCompat.getColor(getContext(), R.color.mdtp_date_picker_text_normal_dark_theme);
+            prevButton.setColorFilter(color);
+            nextButton.setColorFilter(color);
         }
 
         prevButton.setOnClickListener(this);

@@ -118,65 +118,59 @@ The pickers also have a dark theme. This can be specified globablly using the `m
 
 
 ## Additional Options
-* `TimePickerDialog` dark theme  
-The `TimePickerDialog` has a dark theme that can be set by calling
+### [All] `setThemeDark(boolean themeDark)`
+The dialogs have a dark theme that can be set by calling
 ```java
-tpd.setThemeDark(true);
+dialog.setThemeDark(true);
 ```
 
-* `DatePickerDialog` dark theme
-The `DatePickerDialog` has a dark theme that can be set by calling
-```java
-dpd.setThemeDark(true);
-```
-
-* `setAccentColor(String color)` and `setAccentColor(int color)`
+### [All] `setAccentColor(String color)` and `setAccentColor(int color)`
 Set the accentColor to be used by the Dialog. The String version parses the color out using `Color.parseColor()`. The int version requires a ColorInt bytestring. It will explicitly set the color to fully opaque.
 
-* `setOkColor()` and `setCancelColor()`
+### [All] `setOkColor()` and `setCancelColor()`
 Set the text color for the OK or Cancel button. Behaves similar to `setAccentColor()`
 
-* `TimePickerDialog` `setTitle(String title)`  
+### [TimePickerDialog] `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
 
-* `DatePickerDialog` `setTitle(String title)`
+### [DatePickerDialog] `setTitle(String title)`
 Shows a title at the top of the `DatePickerDialog` instead of the day of the week
 
-* `setOkText()` and `setCancelText()`  
+### [All] `setOkText()` and `setCancelText()`  
 Set a custom text for the dialog Ok and Cancel labels. Can take a resourceId of a String. Works in both the DatePickerDialog and TimePickerDialog
 
-* `setMinTime(Timepoint time)`  
+### [TimePickerDialog] `setMinTime(Timepoint time)`  
 Set the minimum valid time to be selected. Time values earlier in the day will be deactivated
 
-* `setMaxTime(Timepoint time)`  
+### [TimePickerDialog] `setMaxTime(Timepoint time)`  
 Set the maximum valid time to be selected. Time values later in the day will be deactivated
 
-* `setSelectableTimes(Timepoint[] times)`  
+### [TimePickerDialog] `setSelectableTimes(Timepoint[] times)`  
 You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. `setMinTime(Timepoint time)`, `setMaxTime(Timepoint time)` and `setDisabledTimes(Timepoint[] times)` will further trim this list down. Try to specify Timepoints only up to the resolution of your picker (i.e. do not add seconds if the resolution of the picker is minutes).
 
-* `setDisabledTimes(Timepoint[] times)`  
+### [TimePickerDialog] `setDisabledTimes(Timepoint[] times)`  
 You can pass in an array of `Timepoints`. These values will not be available for selection. These take precedence over `setSelectableTimes` and `setTimeInterval`. Be careful when using this without selectableTimes: rounding to a valid Timepoint is a very expensive operation if a lot of consecutive Timepoints are disabled. Try to specify Timepoints only up to the resolution of your picker (i.e. do not add seconds if the resolution of the picker is minutes).
 
-* `setTimeInterval(int hourInterval, int minuteInterval, int secondInterval)`  
+### [TimePickerDialog] `setTimeInterval(int hourInterval, int minuteInterval, int secondInterval)`  
 Set the interval for selectable times in the TimePickerDialog. This is a convenience wrapper around `setSelectableTimes`. The interval for all three time components can be set independently. If you are not using the seconds / minutes picker, set the respective item to 60 for better performance.
 
-* `setTimepointLimiter(TimepointLimiter limiter)`  
+### [TimePickerDialog] `setTimepointLimiter(TimepointLimiter limiter)`  
 Pass in a custom implementation of `TimeLimiter`
 Disables `setSelectableTimes`, `setDisabledTimes`, `setTimeInterval`, `setMinTime` and `setMaxTime`
 
-* `setSelectableDays(Calendar[] days)`  
+### [DatePickerDialog] `setSelectableDays(Calendar[] days)`  
 You can pass a `Calendar[]` to the `DatePickerDialog`. The values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
 
-* `setDisabledDays(Calendar[] days)`  
+### [DatePickerDialog] `setDisabledDays(Calendar[] days)`  
 The values in this `Calendar[]` are explicitly disabled (not selectable). This option can be used together with `setSelectableDays(Calendar[] days)`: in case there is a clash `setDisabledDays(Calendar[] days)` will take precedence over `setSelectableDays(Calendar[] days)`
 
-* `setHighlightedDays(Calendar[] days)`  
+### [DatePickerDialog] `setHighlightedDays(Calendar[] days)`  
 You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the color of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`
 
-* `showYearPickerFirst(boolean yearPicker)`  
+### [DatePickerDialog] `showYearPickerFirst(boolean yearPicker)`  
 Show the year picker first, rather than the month and day picker.
 
-* `OnDismissListener` and `OnCancelListener`  
+### [All] `OnDismissListener` and `OnCancelListener`  
 Both pickers can be passed a `DialogInterface.OnDismissLisener` or `DialogInterface.OnCancelListener` which allows you to run code when either of these events occur.
 ```java
 tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -187,30 +181,33 @@ tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
 });
 ```
 
-* `vibrate(boolean vibrate)`  
+### [All] `vibrate(boolean vibrate)`  
 Set whether the dialogs should vibrate the device when a selection is made. This defaults to `true`.
 
-* `dismissOnPause(boolean dismissOnPause)`  
+### [All] `dismissOnPause(boolean dismissOnPause)`  
 Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
 
-* `setLocale(Locale locale)`  
+### [All] `setLocale(Locale locale)`  
 Allows the client to set a custom locale that will be used when generating various strings in the pickers. By default the current locale of the device will be used. Because the pickers will adapt to the Locale of the device by default you should only have to use this in very rare circumstances.
 
-* `DatePickerDialog` `autoDismiss(boolean autoDismiss)`
+### [DatePickerDialog] `autoDismiss(boolean autoDismiss)`
 If set to `true` will dismiss the picker when the user selects a date. This defaults to `false`.
 
-* `TimepickerDialog` `enableSeconds(boolean enableSconds)` and `enableMinutes(boolean enableMinutes)`
+### [TimepickerDialog] `enableSeconds(boolean enableSconds)` and `enableMinutes(boolean enableMinutes)`
 Allows you to enable or disable a seconds and minutes picker on the `TimepickerDialog`. Enabling the seconds picker, implies enabling the minutes picker. Disabling the minute picker will disable the seconds picker. The last applied setting will be used. By default `enableSeconds = false` and `enableMinutes = true`.
 
-* `DatePickerDialog` `setTimeZone(Timezone timezone)` *deprecated*  
+### [DatePickerDialog] `setTimeZone(Timezone timezone)` *deprecated*  
 Sets the `Timezone` used to represent time internally in the picker. Defaults to the current default Timezone of the device.
 This method has been deprecated: you should use the `newInstance()` method which takes a Calendar set to the appropriate TimeZone.
 
-* `DatePickerDialog` `setDateRangeLimiter(DateRangeLimiter limiter)`
+### [DatePickerDialog] `setDateRangeLimiter(DateRangeLimiter limiter)`
 Provide a custom implementation of DateRangeLimiter, giving you full control over which days are available for selection. This disables all of the other options that limit date selection.
 
-* `getOnTimeSetListener()` and `getOnDateSetListener()`  
+### `getOnTimeSetListener()` and `getOnDateSetListener()`  
 Getters that allow the retrieval of a reference to the callbacks currently associated with the pickers
+
+### [DatePickerDialog] `setScrollOrientation(ScrollOrientation scrollOrientation)` and `getScrollOrientationi()`
+Determines whether months scroll `Horizontal` or `Vertical`. Defaults to `Horizontal` for the v2 layout and `Vertical` for the v1 layout
 
 ## FAQ
 
