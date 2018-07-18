@@ -458,7 +458,7 @@ public class TimePickerDialog extends DialogFragment implements
     @SuppressWarnings("SameParameterValue")
     public void setTimeInterval(@IntRange(from=1, to=24) int hourInterval,
                                 @IntRange(from=1, to=60) int minuteInterval) {
-        setTimeInterval(hourInterval, minuteInterval, 1);
+        setTimeInterval(hourInterval, minuteInterval, 60);
     }
 
     /**
@@ -471,7 +471,7 @@ public class TimePickerDialog extends DialogFragment implements
      */
     @SuppressWarnings("unused")
     public void setTimeInterval(@IntRange(from=1, to=24) int hourInterval) {
-        setTimeInterval(hourInterval, 1);
+        setTimeInterval(hourInterval, 60);
     }
 
     public void setOnTimeSetListener(OnTimeSetListener callback) {

@@ -98,7 +98,7 @@ class DefaultTimepointLimiter implements TimepointLimiter {
         return mDisabledTimes.toArray(new Timepoint[mDisabledTimes.size()]);
     }
 
-    private TreeSet<Timepoint> getExclusiveSelectableTimes(TreeSet<Timepoint> selectable, TreeSet<Timepoint> disabled) {
+    @NonNull private TreeSet<Timepoint> getExclusiveSelectableTimes(@NonNull TreeSet<Timepoint> selectable, @NonNull TreeSet<Timepoint> disabled) {
         TreeSet<Timepoint> output = new TreeSet<>(selectable);
         output.removeAll(disabled);
         return output;
