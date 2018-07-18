@@ -131,9 +131,12 @@ public class DayPickerGroup extends ViewGroup
             rightButton = nextButton;
         }
 
+        final int topMargin = controller.getVersion() == DatePickerDialog.Version.VERSION_1
+                ? 0
+                : getContext().getResources().getDimensionPixelSize(R.dimen.mdtp_date_picker_view_animator_padding_v2);
         final int width = right - left;
         final int height = bottom - top;
-        dayPickerView.layout(0, 0, width, height);
+        dayPickerView.layout(0, topMargin, width, height);
 
         final SimpleMonthView monthView = (SimpleMonthView) dayPickerView.getChildAt(0);
         final int monthHeight = monthView.getMonthHeight();
@@ -144,13 +147,13 @@ public class DayPickerGroup extends ViewGroup
         // header, horizontally center within the day cell.
         final int leftDW = leftButton.getMeasuredWidth();
         final int leftDH = leftButton.getMeasuredHeight();
-        final int leftIconTop = monthView.getPaddingTop() + (monthHeight - leftDH) / 2;
+        final int leftIconTop = topMargin + monthView.getPaddingTop() + (monthHeight - leftDH) / 2;
         final int leftIconLeft = edgePadding + (cellWidth - leftDW) / 2;
         leftButton.layout(leftIconLeft, leftIconTop, leftIconLeft + leftDW, leftIconTop + leftDH);
 
         final int rightDW = rightButton.getMeasuredWidth();
         final int rightDH = rightButton.getMeasuredHeight();
-        final int rightIconTop = monthView.getPaddingTop() + (monthHeight - rightDH) / 2;
+        final int rightIconTop = topMargin + monthView.getPaddingTop() + (monthHeight - rightDH) / 2;
         final int rightIconRight = width - edgePadding - (cellWidth - rightDW) / 2 - 2;
         rightButton.layout(rightIconRight - rightDW, rightIconTop,
                 rightIconRight, rightIconTop + rightDH);
