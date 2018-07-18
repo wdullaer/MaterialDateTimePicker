@@ -1,5 +1,6 @@
 package com.wdullaer.datetimepickerexample;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -139,6 +140,12 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                         dpd.setScrollOrientation(DatePickerDialog.ScrollOrientation.VERTICAL);
                     }
                 }
+                dpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        Log.d("DatePickerDialog", "Dialog was cancelled");
+                    }
+                });
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
