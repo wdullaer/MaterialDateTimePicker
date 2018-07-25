@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -33,8 +35,13 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     private CheckBox enableSeconds;
     private CheckBox limitSelectableTimes;
     private CheckBox disableSpecificTimes;
-    private CheckBox showVersion2;
+    private CheckBox spinnerTextColor;
+    private CheckBox spinnerBgColor;
+    //private CheckBox showVersion2;
+    private Spinner selectVersion;
     private TimePickerDialog tpd;
+
+    TimePickerDialog.Version mVersion;
 
     public TimePickerFragment() {
         // Required empty public constructor
@@ -57,7 +64,10 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         enableSeconds = view.findViewById(R.id.enable_seconds);
         limitSelectableTimes = view.findViewById(R.id.limit_times);
         disableSpecificTimes = view.findViewById(R.id.disable_times);
-        showVersion2 = view.findViewById(R.id.show_version_2);
+        spinnerTextColor = view.findViewById(R.id.spinner_text_color);
+        spinnerBgColor = view.findViewById(R.id.spinner_bg_color);
+        selectVersion = view.findViewById(R.id.selectversion);
+        mVersion = TimePickerDialog.Version.VERSION_1;
 
         view.findViewById(R.id.original_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +85,32 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                         now.get(Calendar.MINUTE),
                         mode24Hours.isChecked()
                 ).show();
+            }
+        });
+
+        selectVersion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+                switch (pos){
+                    case 1:
+                        mVersion = TimePickerDialog.Version.VERSION_2;
+                        break;
+                    case 2:
+                        mVersion = TimePickerDialog.Version.VERSION_3;
+                        break;
+                    case 3:
+                        mVersion = TimePickerDialog.Version.VERSION_4;
+                        break;
+                    case 0:
+                    default:
+                        mVersion = TimePickerDialog.Version.VERSION_1;
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -108,7 +144,17 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                 tpd.vibrate(vibrateTime.isChecked());
                 tpd.dismissOnPause(dismissTime.isChecked());
                 tpd.enableSeconds(enableSeconds.isChecked());
-                tpd.setVersion(showVersion2.isChecked() ? TimePickerDialog.Version.VERSION_2 : TimePickerDialog.Version.VERSION_1);
+
+                if(spinnerTextColor.isChecked()){
+                    tpd.setSpinnerTextColor(Color.parseColor("#B71C1C"),false);
+                }
+                if(spinnerBgColor.isChecked()){
+                    tpd.setSpinnerBackgroundColor(Color.parseColor("#5C6BC0"));
+                }
+
+
+                tpd.setVersion(mVersion);
+
                 if (modeCustomAccentTime.isChecked()) {
                     tpd.setAccentColor(Color.parseColor("#9C27B0"));
                 }

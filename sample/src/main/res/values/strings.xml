@@ -35,4 +35,15 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+
+    <string name="select_version">Select a Version</string>
+    <string-array name="version_array">
+        <item>Version 1: Default</item>
+        <item>Version 2: Marshmallow</item>
+        <item>Version 3: Spinner</item>
+        <item>Version 4: Marshmallow + Spinner</item>
+    </string-array>
+
+    <string name="spinner_text_color">Use custom spinner-text color</string>
+    <string name="spinner_bg_color">Use custom spinner-bg color</string>
 </resources>

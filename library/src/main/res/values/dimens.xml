@@ -85,4 +85,6 @@
     <dimen name="mdtp_material_button_textsize">14sp</dimen>
     <dimen name="mdtp_material_button_minwidth">64dp</dimen>
     <dimen name="mdtp_material_button_textpadding_horizontal">8dp</dimen>
+
+    <dimen name="mdtp_change_mode_icon">5dp</dimen>
 </resources>

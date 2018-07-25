@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
@@ -43,8 +44,13 @@ import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
@@ -52,6 +58,7 @@ import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
+import java.lang.reflect.Field;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -67,7 +74,9 @@ public class TimePickerDialog extends DialogFragment implements
 
     public enum Version {
         VERSION_1,
-        VERSION_2
+        VERSION_2,
+        VERSION_3, //Spinner only
+        VERSION_4 // V2 + Spinner
     }
 
     private static final String KEY_INITIAL_TIME = "initial_time";
@@ -120,6 +129,8 @@ public class TimePickerDialog extends DialogFragment implements
     private TextView mPmTextView;
     private View mAmPmLayout;
     private RadialPickerLayout mTimePicker;
+    ImageView iv_change_mode;
+    TimePicker tp_spinner;
 
     private int mSelectedColor;
     private int mUnselectedColor;
@@ -134,6 +145,9 @@ public class TimePickerDialog extends DialogFragment implements
     private boolean mThemeDarkChanged;
     private boolean mVibrate;
     private int mAccentColor = -1;
+    private int mSpinnerTextColor = -1;
+    private int mSpinnerBackgroundColor = -1;
+    private boolean mSpinnerDarkmode;
     private boolean mDismissOnPause;
     private boolean mEnableSeconds;
     private boolean mEnableMinutes;
@@ -147,6 +161,8 @@ public class TimePickerDialog extends DialogFragment implements
     private DefaultTimepointLimiter mDefaultLimiter = new DefaultTimepointLimiter();
     private TimepointLimiter mLimiter = mDefaultLimiter;
     private Locale mLocale = Locale.getDefault();
+
+    boolean spinnervisible;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -187,14 +203,14 @@ public class TimePickerDialog extends DialogFragment implements
 
     @SuppressWarnings("SameParameterValue")
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
-            int hourOfDay, int minute, int second, boolean is24HourMode) {
+                                               int hourOfDay, int minute, int second, boolean is24HourMode) {
         TimePickerDialog ret = new TimePickerDialog();
         ret.initialize(callback, hourOfDay, minute, second, is24HourMode);
         return ret;
     }
 
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
-            int hourOfDay, int minute, boolean is24HourMode) {
+                                               int hourOfDay, int minute, boolean is24HourMode) {
         return TimePickerDialog.newInstance(callback, hourOfDay, minute, 0, is24HourMode);
     }
 
@@ -205,7 +221,7 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     public void initialize(OnTimeSetListener callback,
-            int hourOfDay, int minute, int second, boolean is24HourMode) {
+                           int hourOfDay, int minute, int second, boolean is24HourMode) {
         mCallback = callback;
 
         mInitialTime = new Timepoint(hourOfDay, minute, second);
@@ -226,6 +242,10 @@ public class TimePickerDialog extends DialogFragment implements
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
         // Throw away the current TimePicker, which might contain old state if the dialog instance is reused
         mTimePicker = null;
+        spinnervisible = false;
+        mSpinnerTextColor = -1;
+        mSpinnerBackgroundColor = -1;
+        mSpinnerDarkmode = false;
     }
 
     /**
@@ -608,7 +628,7 @@ public class TimePickerDialog extends DialogFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_INITIAL_TIME)
-                    && savedInstanceState.containsKey(KEY_IS_24_HOUR_VIEW)) {
+                && savedInstanceState.containsKey(KEY_IS_24_HOUR_VIEW)) {
             mInitialTime = savedInstanceState.getParcelable(KEY_INITIAL_TIME);
             mIs24HourMode = savedInstanceState.getBoolean(KEY_IS_24_HOUR_VIEW);
             mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
@@ -646,9 +666,46 @@ public class TimePickerDialog extends DialogFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
 
-        int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_time_picker_dialog : R.layout.mdtp_time_picker_dialog_v2;
+        // int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_time_picker_dialog : R.layout.mdtp_time_picker_dialog_v2;
+
+        int viewRes;
+        switch (mVersion){
+            case VERSION_1:
+                viewRes = R.layout.mdtp_time_picker_dialog;
+                break;
+            case VERSION_3:
+                viewRes = R.layout.mdtp_time_spinner_dialog_v2;
+                if(mEnableSeconds){
+                    Log.e(TAG,"Seconds not implemented in spinner");
+                }
+                if(mDefaultLimiter.getDisabledTimes().length > 0){
+                    Log.e(TAG,"Disabled times not implemented in spinner");
+                }
+                if(mDefaultLimiter.getSelectableTimes().length > 0){
+                    Log.e(TAG,"Selected times not implemented in spinner");
+                }
+                break;
+            case VERSION_4:
+                viewRes = R.layout.mdtp_time_picker_spinner_dialog_v2;
+                if(mEnableSeconds){
+                    Log.e(TAG,"Seconds not implemented in spinner");
+                }
+                if(mDefaultLimiter.getDisabledTimes().length > 0){
+                    Log.e(TAG,"Disabled times not implemented in spinner");
+                }
+                if(mDefaultLimiter.getSelectableTimes().length > 0){
+                    Log.e(TAG,"Selected times not implemented in spinner");
+                }
+                break;
+            case VERSION_2:
+            default:
+                viewRes = R.layout.mdtp_time_picker_dialog_v2;
+                break;
+        }
+
+
         View view = inflater.inflate(viewRes, container,false);
         KeyboardListener keyboardListener = new KeyboardListener();
         view.findViewById(R.id.mdtp_time_picker_dialog).setOnKeyListener(keyboardListener);
@@ -693,45 +750,99 @@ public class TimePickerDialog extends DialogFragment implements
         mPmText = amPmTexts[1];
 
         mHapticFeedbackController = new HapticFeedbackController(getActivity());
-
-        if(mTimePicker != null) {
-            mInitialTime = new Timepoint(mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
-        }
-
         mInitialTime = roundToNearest(mInitialTime);
 
-        mTimePicker = view.findViewById(R.id.mdtp_time_picker);
-        mTimePicker.setOnValueSelectedListener(this);
-        mTimePicker.setOnKeyListener(keyboardListener);
-        mTimePicker.initialize(getActivity(), mLocale, this, mInitialTime, mIs24HourMode);
-
-        int currentItemShowing = HOUR_INDEX;
-        if (savedInstanceState != null &&
-                savedInstanceState.containsKey(KEY_CURRENT_ITEM_SHOWING)) {
-            currentItemShowing = savedInstanceState.getInt(KEY_CURRENT_ITEM_SHOWING);
+        if(mVersion == Version.VERSION_3){
+            mHourView.setTextColor(mSelectedColor);
+            mMinuteView.setTextColor(mSelectedColor);
         }
-        setCurrentItemShowing(currentItemShowing, false, true, true);
-        mTimePicker.invalidate();
+
+        if(mVersion != Version.VERSION_3) {
+
+            if (mTimePicker != null) {
+                mInitialTime = new Timepoint(mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
+            }
+            mTimePicker = view.findViewById(R.id.mdtp_time_picker);
+            mTimePicker.setOnValueSelectedListener(this);
+            mTimePicker.setOnKeyListener(keyboardListener);
+            mTimePicker.initialize(getActivity(), mLocale, this, mInitialTime, mIs24HourMode);
+
+            int currentItemShowing = HOUR_INDEX;
+            if (savedInstanceState != null &&
+                    savedInstanceState.containsKey(KEY_CURRENT_ITEM_SHOWING)) {
+                currentItemShowing = savedInstanceState.getInt(KEY_CURRENT_ITEM_SHOWING);
+            }
+            setCurrentItemShowing(currentItemShowing, false, true, true);
+            mTimePicker.invalidate();
+
+        }
+        if(mVersion == Version.VERSION_3 || mVersion == Version.VERSION_4) {
+
+            iv_change_mode = view.findViewById(R.id.iv_change_mode);
+            tp_spinner = view.findViewById(R.id.mdtp_time_spinner);
+            tp_spinner.setIs24HourView(mIs24HourMode);
+
+            tp_spinner.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                @Override
+                public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                    int amorpm = hourOfDay >= 12 ? PM : AM;
+                    updateAmPmDisplay(amorpm);
+
+                    if(mVersion != Version.VERSION_3) {
+                        mTimePicker.setTime(new Timepoint(hourOfDay, minute));
+                        updateDisplay(false);
+                    }
+                    setHour(hourOfDay, true);
+                    setMinute(minute);
+                }
+            });
+
+        }
+
+        if(mVersion == Version.VERSION_4) {
+            iv_change_mode.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (spinnervisible) {
+                        mTimePicker.setVisibility(View.VISIBLE);
+                        tp_spinner.setVisibility(View.GONE);
+                        iv_change_mode.setImageDrawable(getResources().getDrawable(R.drawable.ic_spinner));
+                    } else {
+                        mTimePicker.setVisibility(View.GONE);
+                        tp_spinner.setVisibility(View.VISIBLE);
+                        iv_change_mode.setImageDrawable(getResources().getDrawable(R.drawable.ic_clock));
+                    }
+
+                    spinnervisible = !spinnervisible;
+                }
+            });
+        }
 
         mHourView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCurrentItemShowing(HOUR_INDEX, true, false, true);
-                tryVibrate();
+                if(mVersion != Version.VERSION_3) {
+                    setCurrentItemShowing(HOUR_INDEX, true, false, true);
+                    tryVibrate();
+                }
             }
         });
         mMinuteView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCurrentItemShowing(MINUTE_INDEX, true, false, true);
-                tryVibrate();
+                if(mVersion != Version.VERSION_3) {
+                    setCurrentItemShowing(MINUTE_INDEX, true, false, true);
+                    tryVibrate();
+                }
             }
         });
         mSecondView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                setCurrentItemShowing(SECOND_INDEX, true, false, true);
-                tryVibrate();
+                if(mVersion != Version.VERSION_3) {
+                    setCurrentItemShowing(SECOND_INDEX, true, false, true);
+                    tryVibrate();
+                }
             }
         });
 
@@ -778,19 +889,39 @@ public class TimePickerDialog extends DialogFragment implements
                     if (isAmDisabled() || isPmDisabled()) return;
 
                     tryVibrate();
-                    int amOrPm = mTimePicker.getIsCurrentlyAmOrPm();
+                    int amOrPm;
+                    if(mVersion == Version.VERSION_3){
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                            amOrPm = tp_spinner.getHour() < 12 ? AM : PM;
+                        }else{
+                            amOrPm = tp_spinner.getCurrentHour() < 12 ? AM : PM;
+                        }
+                    }else {
+                        amOrPm = mTimePicker.getIsCurrentlyAmOrPm();
+                    }
                     if (amOrPm == AM) {
                         amOrPm = PM;
                     } else if (amOrPm == PM) {
                         amOrPm = AM;
                     }
-                    mTimePicker.setAmOrPm(amOrPm);
+                    if(mVersion == Version.VERSION_3) {
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                            if (amOrPm == PM) tp_spinner.setHour(tp_spinner.getHour() + 12);
+                            else tp_spinner.setHour(tp_spinner.getHour() - 12);
+                        }else{
+                            if (amOrPm == PM) tp_spinner.setCurrentHour(tp_spinner.getCurrentHour() + 12);
+                            else tp_spinner.setCurrentHour(tp_spinner.getCurrentHour() - 12);
+                        }
+                        updateAmPmDisplay(amOrPm);
+                    }else{
+                        mTimePicker.setAmOrPm(amOrPm);
+                    }
                 }
             };
             mAmTextView .setVisibility(View.GONE);
             mPmTextView.setVisibility(View.VISIBLE);
             mAmPmLayout.setOnClickListener(listener);
-            if (mVersion == Version.VERSION_2) {
+            if (mVersion == Version.VERSION_2 || mVersion == Version.VERSION_4) {
                 mAmTextView.setText(mAmText);
                 mPmTextView.setText(mPmText);
                 mAmTextView.setVisibility(View.VISIBLE);
@@ -919,7 +1050,7 @@ public class TimePickerDialog extends DialogFragment implements
 
             if (!mIs24HourMode) {
                 RelativeLayout.LayoutParams paramsAmPm = new RelativeLayout.LayoutParams(
-                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
                 );
                 paramsAmPm.addRule(RelativeLayout.RIGHT_OF, R.id.mdtp_hour_space);
                 paramsAmPm.addRule(RelativeLayout.ALIGN_BASELINE, R.id.mdtp_hour_space);
@@ -983,6 +1114,7 @@ public class TimePickerDialog extends DialogFragment implements
         view.findViewById(R.id.mdtp_time_display_background).setBackgroundColor(mAccentColor);
         view.findViewById(R.id.mdtp_time_display).setBackgroundColor(mAccentColor);
 
+
         // Button text can have a different color
         if (mOkColor != -1) mOkButton.setTextColor(mOkColor);
         else mOkButton.setTextColor(mAccentColor);
@@ -998,8 +1130,18 @@ public class TimePickerDialog extends DialogFragment implements
         int darkBackgroundColor = ContextCompat.getColor(context, R.color.mdtp_light_gray);
         int lightGray = ContextCompat.getColor(context, R.color.mdtp_light_gray);
 
-        mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
+        if(mVersion != Version.VERSION_3) {
+            mTimePicker.setBackgroundColor(mThemeDark ? lightGray : circleBackground);
+        }
+        if(mVersion == Version.VERSION_3 || mVersion == Version.VERSION_4) {
+            if (mSpinnerBackgroundColor != -1) tp_spinner.setBackgroundColor(mSpinnerBackgroundColor);
+            else tp_spinner.setBackgroundColor(mThemeDark ? lightGray : circleBackground);
+            //Set spinnertext color
+            if (mSpinnerTextColor != -1) setSpinnerTextColor(tp_spinner,mSpinnerTextColor,mSpinnerDarkmode);
+            else setSpinnerTextColor(tp_spinner, mThemeDark ? circleBackground : lightGray,mThemeDark);
+        }
         view.findViewById(R.id.mdtp_time_picker_dialog).setBackgroundColor(mThemeDark ? darkBackgroundColor : backgroundColor);
+
         return view;
     }
 
@@ -1052,7 +1194,7 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     private void updateAmPmDisplay(int amOrPm) {
-        if (mVersion == Version.VERSION_2) {
+        if (mVersion == Version.VERSION_2 || mVersion == Version.VERSION_4) {
             if (amOrPm == AM) {
                 mAmTextView.setTextColor(mSelectedColor);
                 mPmTextView.setTextColor(mUnselectedColor);
@@ -1119,6 +1261,16 @@ public class TimePickerDialog extends DialogFragment implements
         setSecond(newValue.getSecond());
         mTimePicker.setContentDescription(mSecondPickerDescription + ": " + newValue.getSecond());
         if(!mIs24HourMode) updateAmPmDisplay(newValue.isAM() ? AM : PM);
+
+        if(mVersion == Version.VERSION_4) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                tp_spinner.setHour(newValue.getHour());
+                tp_spinner.setMinute(newValue.getMinute());
+            } else {
+                tp_spinner.setCurrentHour(newValue.getHour());
+                tp_spinner.setCurrentMinute(newValue.getMinute());
+            }
+        }
     }
 
     @Override
@@ -1228,7 +1380,7 @@ public class TimePickerDialog extends DialogFragment implements
 
     // Show either Hours or Minutes.
     private void setCurrentItemShowing(int index, boolean animateCircle, boolean delayLabelAnimate,
-            boolean announce) {
+                                       boolean announce) {
         mTimePicker.setCurrentItemShowing(index, animateCircle);
 
         TextView labelToAnimate;
@@ -1261,12 +1413,14 @@ public class TimePickerDialog extends DialogFragment implements
                 labelToAnimate = mSecondView;
         }
 
-        int hourColor = (index == HOUR_INDEX) ? mSelectedColor : mUnselectedColor;
-        int minuteColor = (index == MINUTE_INDEX) ? mSelectedColor : mUnselectedColor;
-        int secondColor = (index == SECOND_INDEX) ? mSelectedColor : mUnselectedColor;
-        mHourView.setTextColor(hourColor);
-        mMinuteView.setTextColor(minuteColor);
-        mSecondView.setTextColor(secondColor);
+        if(mVersion != Version.VERSION_3) {
+            int hourColor = (index == HOUR_INDEX) ? mSelectedColor : mUnselectedColor;
+            int minuteColor = (index == MINUTE_INDEX) ? mSelectedColor : mUnselectedColor;
+            int secondColor = (index == SECOND_INDEX) ? mSelectedColor : mUnselectedColor;
+            mHourView.setTextColor(hourColor);
+            mMinuteView.setTextColor(minuteColor);
+            mSecondView.setTextColor(secondColor);
+        }
 
         ObjectAnimator pulseAnimator = Utils.getPulseAnimator(labelToAnimate, 0.85f, 1.1f);
         if (delayLabelAnimate) {
@@ -1327,7 +1481,7 @@ public class TimePickerDialog extends DialogFragment implements
                 || keyCode == KeyEvent.KEYCODE_6 || keyCode == KeyEvent.KEYCODE_7
                 || keyCode == KeyEvent.KEYCODE_8 || keyCode == KeyEvent.KEYCODE_9
                 || (!mIs24HourMode &&
-                        (keyCode == getAmOrPmKeyCode(AM) || keyCode == getAmOrPmKeyCode(PM)))) {
+                (keyCode == getAmOrPmKeyCode(AM) || keyCode == getAmOrPmKeyCode(PM)))) {
             if (!mInKbMode) {
                 if (mTimePicker == null) {
                     // Something's wrong, because time picker should definitely not be null.
@@ -1483,9 +1637,9 @@ public class TimePickerDialog extends DialogFragment implements
             String minuteFormat = (enteredZeros[1]) ? "%02d" : "%2d";
             String secondFormat = (enteredZeros[1]) ? "%02d" : "%2d";
             String hourStr = (values[0] == -1) ? mDoublePlaceholderText :
-                String.format(hourFormat, values[0]).replace(' ', mPlaceholderText);
+                    String.format(hourFormat, values[0]).replace(' ', mPlaceholderText);
             String minuteStr = (values[1] == -1) ? mDoublePlaceholderText :
-                String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
+                    String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
             String secondStr = (values[2] == -1) ? mDoublePlaceholderText :
                     String.format(secondFormat, values[1]).replace(' ', mPlaceholderText);
             mHourView.setText(hourStr);
@@ -1902,11 +2056,123 @@ public class TimePickerDialog extends DialogFragment implements
 
     public void notifyOnDateListener() {
         if (mCallback != null) {
-            mCallback.onTimeSet(this, mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
+            if(mVersion == Version.VERSION_3){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    mCallback.onTimeSet(this,tp_spinner.getHour(),tp_spinner.getMinute(),0);
+                }else {
+                    mCallback.onTimeSet(this, tp_spinner.getCurrentHour(), tp_spinner.getCurrentMinute(), 0);
+                }
+            }else {
+                mCallback.onTimeSet(this, mTimePicker.getHours(), mTimePicker.getMinutes(), mTimePicker.getSeconds());
+            }
         }
     }
 
     public Timepoint getSelectedTime() {
         return mTimePicker.getTime();
+    }
+
+
+    private void setSpinnerTextColor(TimePicker tp, int color, boolean darkmode){
+        LinearLayout ll_child = (LinearLayout) tp.getChildAt(0);
+        LinearLayout ll_child2 = (LinearLayout) ll_child.getChildAt(0);
+
+        Class<?> numberPickerClass = null;
+        Field selectionDivider = null;
+        try {
+            numberPickerClass = Class.forName("android.widget.NumberPicker");
+            selectionDivider = numberPickerClass.getDeclaredField("mSelectionDivider");
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }  catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        for(int i = 0; i < 3; i++) {
+            if(ll_child2.getChildAt(i) instanceof NumberPicker) {
+                NumberPicker numberPicker = (NumberPicker) ll_child2.getChildAt(i);
+                EditText et_child = (EditText) numberPicker.getChildAt(0);
+                Field selectorWheelPaintField = null;
+                try {
+                    selectorWheelPaintField = numberPicker.getClass().getDeclaredField("mSelectorWheelPaint");
+                    selectorWheelPaintField.setAccessible(true);
+                    et_child.setTextColor(color);
+                    ((Paint) selectorWheelPaintField.get(numberPicker)).setColor(color);
+                    numberPicker.invalidate();
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+                if(darkmode) {
+                    try {
+                        selectionDivider.setAccessible(true);
+                        selectionDivider.set(numberPicker, getResources().getDrawable(
+                                R.drawable.np_numberpicker_selection_divider_white));
+
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (Resources.NotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }else{ //TextView ":"
+                TextView textView = (TextView) ll_child2.getChildAt(i);
+                textView.setTextColor(color);
+            }
+        }
+
+        //For AM/PM Picker
+        NumberPicker numberPicker = (NumberPicker) ll_child.getChildAt(1);
+        EditText et_child = (EditText) numberPicker.getChildAt(0);
+        Field selectorWheelPaintField;
+        try {
+            selectorWheelPaintField = numberPicker.getClass().getDeclaredField("mSelectorWheelPaint");
+            selectorWheelPaintField.setAccessible(true);
+            et_child.setTextColor(color);
+            ((Paint) selectorWheelPaintField.get(numberPicker)).setColor(color);
+            numberPicker.invalidate();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        if(darkmode) {
+            try {
+                selectionDivider.setAccessible(true);
+                selectionDivider.set(numberPicker, getResources().getDrawable(
+                        R.drawable.np_numberpicker_selection_divider_white));
+
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Set the spinner text color of this dialog
+     * @param color the text color you want
+     * @param darkmode set the divider to white
+     */
+    public void setSpinnerTextColor(@ColorInt int color, boolean darkmode){
+        mSpinnerTextColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+        mSpinnerDarkmode = darkmode;
+    }
+
+    /**
+     * Set the spinner bg color of this dialog
+     * @param color the bg color you want
+     */
+    public void setSpinnerBackgroundColor(@ColorInt int color){
+        mSpinnerBackgroundColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 }
