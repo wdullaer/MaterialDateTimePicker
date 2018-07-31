@@ -255,6 +255,10 @@ Esto funcionará bien, siempre y cuando la versión de la biblioteca de soporte 
 
 ### ¿Cómo puedo convertir esto en un selector de año y mes?
 Este DatePickerDialog <tt>Selector de fecha</tt> se enfoca en seleccionar fechas, lo que significa que su elemento de diseño central es el selector de días. Como esta vista de calendario es el centro del diseño, no tiene sentido intentar deshabilitarlo. Como tal, la selección de solo años y meses, sin un día, no está dentro del alcance de esta biblioteca y no se agregará.
+
+### How do I select multiple days? (TODO: find a translator for this)
+The goal of this library is to implement the Material Design Date picker. This design is focused on picking exactly 1 date (with a large textual representation at the top). It would require quite a bit of redesigning to make it useful to select multiple days. As such this feature is currently out of scope for this library and will not be added. If you happen to make a library that implements this, based on this code or not, drop me a line and I'll happily link to it.
+
 ### ¿Cómo uso mi lógica personalizada para habilitar/deshabilitar las fechas?
 `DatePickerDialog` <tt>Limitador de rango de fechas</tt> expone algunos métodos de utilidad para habilitar/deshabilitar fechas para escenarios comunes. Si sus necesidades no están cubiertas por estas, puede suministrar una implementación personalizada de la interfaz `DateRangeLimiter` <tt>Limitador de rango de fechas</tt>.
 Debido a que `DateRangeLimiter`<tt>Limitador de rango de fechas</tt> se conserva cuando el `Dialog` <tt>Dialogo</tt> hace una pausa, su implementación también debe implementar `Parcelable`.

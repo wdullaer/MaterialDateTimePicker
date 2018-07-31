@@ -255,7 +255,10 @@ compile 'com.android.support:design:26.0.1'
 This will work fine as long as the support library version your app depends on is recent enough (supports `RecyclerView`) and google doesn't release a version in the future that contains breaking changes. (If/When this happens I will try hard to document this). See issue [#338](https://github.com/wdullaer/MaterialDateTimePicker/issues/338) for more information.
 
 ### How do I turn this into a year and month picker?
-This DatePickerDialog focusses on selecting dates, which means that it's central design element is the day picker. As this calendar like view is the center of the design it makes no sense to try and disable it. As such selecting just years and months, without a day, is not in scope for this library and will not be added.
+This DatePickerDialog focuses on selecting dates, which means that it's central design element is the day picker. As this calendar like view is the center of the design it makes no sense to try and disable it. As such selecting just years and months, without a day, is not in scope for this library and will not be added.
+
+### How do I select multiple days?
+The goal of this library is to implement the Material Design Date picker. This design is focused on picking exactly 1 date (with a large textual representation at the top). It would require quite a bit of redesigning to make it useful to select multiple days. As such this feature is currently out of scope for this library and will not be added. If you happen to make a library that implements this, based on this code or not, drop me a line and I'll happily link to it.
 
 ### How do I use my custom logic to enable/disable dates?
 `DatePickerDialog` exposes some utility methods to enable / disable dates for common scenario's. If your needs are not covered by these, you can supply a custom implementation of the `DateRangeLimiter` interface.
