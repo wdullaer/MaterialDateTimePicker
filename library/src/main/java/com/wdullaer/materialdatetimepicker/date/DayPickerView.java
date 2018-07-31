@@ -243,7 +243,6 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     public void postSetSelection(final int position) {
         clearFocus();
         post(new Runnable() {
-
             @Override
             public void run() {
                 ((LinearLayoutManager) getLayoutManager()).scrollToPositionWithOffset(position, 0);

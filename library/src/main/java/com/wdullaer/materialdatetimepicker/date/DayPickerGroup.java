@@ -175,7 +175,13 @@ public class DayPickerGroup extends ViewGroup
             return;
         }
         int position = dayPickerView.getMostVisiblePosition() + offset;
-        dayPickerView.smoothScrollToPosition(position);
-        updateButtonVisibility(position);
+
+        // updateButtonVisibility only triggers when a scroll is completed. So a user might
+        // click the button when the animation is still ongoing potentially pushing the target
+        // position outside of the bounds of the dayPickerView
+        if (position >= 0 || position < dayPickerView.getCount()) {
+            dayPickerView.smoothScrollToPosition(position);
+            updateButtonVisibility(position);
+        }
     }
 }
