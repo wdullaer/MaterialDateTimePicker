@@ -20,7 +20,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,7 +49,6 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
 
     protected Context mContext;
-    protected Handler mHandler;
 
     // highlighted time
     protected MonthAdapter.CalendarDay mSelectedDay;
@@ -76,13 +74,16 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
 
     public DayPickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        DatePickerDialog.ScrollOrientation scrollOrientation = Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                ? DatePickerDialog.ScrollOrientation.VERTICAL
+                : DatePickerDialog.ScrollOrientation.HORIZONTAL;
+        init(context, scrollOrientation);
     }
 
     public DayPickerView(Context context, DatePickerController controller) {
         super(context);
+        init(context, controller.getScrollOrientation());
         setController(controller);
-        init(context);
     }
 
     public void setController(DatePickerController controller) {
@@ -95,30 +96,29 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         onDateChanged();
     }
 
-    public void init(Context context) {
-        int scrollOrientation = mController.getScrollOrientation() == DatePickerDialog.ScrollOrientation.VERTICAL
+    public void init(Context context, DatePickerDialog.ScrollOrientation scrollOrientation) {
+        int layoutOrientation = scrollOrientation == DatePickerDialog.ScrollOrientation.VERTICAL
                 ? LinearLayoutManager.VERTICAL
                 : LinearLayoutManager.HORIZONTAL;
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, scrollOrientation, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, layoutOrientation, false);
         setLayoutManager(linearLayoutManager);
-        mHandler = new Handler();
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         setVerticalScrollBarEnabled(false);
         setHorizontalScrollBarEnabled(false);
         setClipChildren(false);
 
         mContext = context;
-        setUpRecyclerView();
+        setUpRecyclerView(scrollOrientation);
     }
 
     /**
      * Sets all the required fields for the list view. Override this method to
      * set a different list view behavior.
      */
-    protected void setUpRecyclerView() {
+    protected void setUpRecyclerView(DatePickerDialog.ScrollOrientation scrollOrientation) {
         setVerticalScrollBarEnabled(false);
         setFadingEdgeLength(0);
-        int gravity = mController.getScrollOrientation() == DatePickerDialog.ScrollOrientation.VERTICAL
+        int gravity = scrollOrientation == DatePickerDialog.ScrollOrientation.VERTICAL
                 ? Gravity.TOP
                 : Gravity.START;
         GravitySnapHelper helper = new GravitySnapHelper(gravity, new GravitySnapHelper.SnapListener() {
