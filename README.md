@@ -80,9 +80,9 @@ You will need to create a new instance of `TimePickerDialog` or `DatePickerDialo
 Calendar now = Calendar.getInstance();
 DatePickerDialog dpd = DatePickerDialog.newInstance(
   MainActivity.this,
-  now.get(Calendar.YEAR),
-  now.get(Calendar.MONTH),
-  now.get(Calendar.DAY_OF_MONTH)
+  now.get(Calendar.YEAR), // Initial year selection
+  now.get(Calendar.MONTH), // Initial month selection
+  now.get(Calendar.DAY_OF_MONTH) // Inital day selection
 );
 dpd.show(getFragmentManager(), "Datepickerdialog");
 ```

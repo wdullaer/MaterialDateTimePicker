@@ -193,10 +193,12 @@ public class DatePickerDialog extends DialogFragment implements
     }
 
     /**
+     * Create a new DatePickerDialog instance with a specific initial selection.
      * @param callBack    How the parent is notified that the date is set.
      * @param year        The initial year of the dialog.
      * @param monthOfYear The initial month of the dialog.
      * @param dayOfMonth  The initial day of the dialog.
+     * @return a new DatePickerDialog instance.
      */
     public static DatePickerDialog newInstance(OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
         DatePickerDialog ret = new DatePickerDialog();
@@ -204,12 +206,25 @@ public class DatePickerDialog extends DialogFragment implements
         return ret;
     }
 
+    /**
+     * Create a new DatePickerDialog instance initialised to the current system date.
+     * @param callback How the parent is notified that the date is set.
+     * @return a new DatePickerDialog instance
+     */
     @SuppressWarnings("unused")
     public static DatePickerDialog newInstance(OnDateSetListener callback) {
         Calendar now = Calendar.getInstance();
         return DatePickerDialog.newInstance(callback, now);
     }
 
+    /**
+     * Create a new DatePickerDialog instance with a specific initial selection.
+     * @param callback         How the parent is notified that the date is set.
+     * @param initialSelection A Calendar object containing the original selection of the picker.
+     *                         (Time is ignored by trimming the Calendar to midnight in the current
+     *                         TimeZone of the Calendar object)
+     * @return a new DatePickerDialog instance
+     */
     @SuppressWarnings("unused")
     public static DatePickerDialog newInstance(OnDateSetListener callback, Calendar initialSelection) {
         DatePickerDialog ret = new DatePickerDialog();
