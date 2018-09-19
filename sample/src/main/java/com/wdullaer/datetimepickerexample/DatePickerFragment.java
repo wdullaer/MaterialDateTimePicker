@@ -1,6 +1,6 @@
 package com.wdullaer.datetimepickerexample;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -150,12 +150,12 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     public void onResume() {
         super.onResume();
         DatePickerDialog dpd = (DatePickerDialog) getFragmentManager().findFragmentByTag("Datepickerdialog");
-        if(dpd != null) dpd.setOnDateSetListener(this);
+        if (dpd != null) dpd.setOnDateSetListener(this);
     }
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        String date = "You picked the following date: "+dayOfMonth+"/"+(++monthOfYear)+"/"+year;
+        String date = "You picked the following date: " + dayOfMonth + "/" + (++monthOfYear) + "/" + year;
         dateTextView.setText(date);
     }
 }
