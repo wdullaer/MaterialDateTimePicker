@@ -998,7 +998,7 @@ public class TimePickerDialog extends DialogFragment implements
         TextView timePickerHeader = view.findViewById(R.id.mdtp_time_picker_header);
         if (!mTitle.isEmpty()) {
             timePickerHeader.setVisibility(TextView.VISIBLE);
-            timePickerHeader.setText(mTitle.toUpperCase(mLocale));
+            timePickerHeader.setText(mTitle);
         }
 
         // Set the theme at the end so that the initialize()s above don't counteract the theme.

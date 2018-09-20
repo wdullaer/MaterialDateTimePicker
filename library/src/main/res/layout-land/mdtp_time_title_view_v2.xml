@@ -24,6 +24,7 @@
     android:gravity="bottom|center"
     android:includeFontPadding="false"
     android:textSize="@dimen/mdtp_time_picker_header_text_size"
+    android:textAllCaps="@bool/mdtp_title_all_caps"
     android:maxLines="1"
     android:textColor="@color/mdtp_white"
     android:background="@color/mdtp_accent_color_dark" />

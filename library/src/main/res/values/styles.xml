@@ -16,6 +16,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <attr name="mdtp_theme_dark" format="boolean">false</attr>
+    <bool name="mdtp_title_all_caps">true</bool>
 
     <style name="mdtp_time_label">
         <item name="android:textSize">@dimen/mdtp_time_label_size</item>
