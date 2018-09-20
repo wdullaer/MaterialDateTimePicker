@@ -139,6 +139,12 @@ Muestra un título en la parte superior del `DatePickerDialog` en lugar del día
 ### [All] `setOkText()` y `setCancelText()`  
 Ajuste el texto personalizado para el diálogo en Aceptar y cancelar etiquetas. Puede tomar recursos de una Cadena. Funciona tanto en DatePickerDialog como en TimePickerDialog
 
+### [DatePickerDialog] `setMinDate(Calendar day)`
+Set the minimum valid date to be selected. Date values before this date will be deactivated
+
+### [DatePickerDialog] `setMaxDate(Calendar day)`
+Set the maximum valid date to be selected. Date values after this date will be deactivated
+
 ### [TimePickerDialog] `setMinTime(Timepoint time)`  
 Ajuste el tiempo mínimo válido para ser seleccionados. Los valores de tiempo más temprano en el día serán desactivados
 

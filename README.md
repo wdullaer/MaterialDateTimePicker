@@ -139,6 +139,12 @@ Shows a title at the top of the `DatePickerDialog` instead of the day of the wee
 ### [All] `setOkText()` and `setCancelText()`  
 Set a custom text for the dialog Ok and Cancel labels. Can take a resourceId of a String. Works in both the DatePickerDialog and TimePickerDialog
 
+### [DatePickerDialog] `setMinDate(Calendar day)`
+Set the minimum valid date to be selected. Date values before this date will be deactivated
+
+### [DatePickerDialog] `setMaxDate(Calendar day)`
+Set the maximum valid date to be selected. Date values after this date will be deactivated
+
 ### [TimePickerDialog] `setMinTime(Timepoint time)`  
 Set the minimum valid time to be selected. Time values earlier in the day will be deactivated
 
