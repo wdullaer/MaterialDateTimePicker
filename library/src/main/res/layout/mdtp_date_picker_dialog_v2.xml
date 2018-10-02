@@ -33,6 +33,9 @@
         <include layout="@layout/mdtp_date_picker_view_animator_v2" />
     </LinearLayout>
 
-    <include layout="@layout/mdtp_done_button" />
+    <include
+        layout="@layout/mdtp_done_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
