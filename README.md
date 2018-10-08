@@ -231,48 +231,28 @@ Determines whether months scroll `Horizontal` or `Vertical`. Defaults to `Horizo
 
 ## FAQ
 
-### Why not use `SupportDialogFragment`?
-Not using the support library versions has been a well considered choice, based on the following considerations:
-
-* Less than 5% of the devices using the android market do not support native `Fragments`, a number which will decrease even further going forward.
-* Even if you use `SupportFragments` in your application, you can still use the normal `FragmentManager`. Both can exist side by side.
-
-This means that in the current setup everyone can use the library: people using the support library and people not using the support library.
-
-Finally changing to `SupportDialogFragment` now will break the API for all the people using this library.
-
-If you do really need `SupportDialogFragment`, you can fork the library (It involves changing all of 2 lines of code, so it should be easy enough to keep it up to date with the upstream) or use this fork: https://github.com/infinum/MaterialDateTimePicker
-
-```groovy
-dependencies {
-  compile 'co.infinum:materialdatetimepicker-support:3.6.4'
-}
-```
-
 ### Why does the `DatePickerDialog` return the selected month -1?
 In the java `Calendar` class months use 0 based indexing: January is month 0, December is month 11. This convention is widely used in the java world, for example the native Android DatePicker.
 
-### How do I use a different version of the support library in my app?
-This library depends on the android support library. Because the jvm allows only one version of a fully namespaced class to be loaded, you will run into issues if your app depends on a different version of the support library than the one used in this app. Gradle is generally quite good at resolving version conflicts (be default it will retain the latest version of a library), but should you run into problems (eg because you disabled conflict resolution), you can disable loading the support
-library for MaterialDateTimePicker.
+### How do I use a different version of a support library in my app?
+This library depends on some androidx support libraries. Because the jvm allows only one version of a fully namespaced class to be loaded, you will run into issues if your app depends on a different version of a library than the one used in this app. Gradle is generally quite good at resolving version conflicts (by default it will retain the latest version of a library), but should you run into problems (eg because you disabled conflict resolution), you can disable loading a specific library for MaterialDateTimePicker.
 
-Using the following snippet in your apps `build.gradle` file you can exclude this library's transitive support library dependency from being installed.
+Using the following snippet in your apps `build.gradle` file you can exclude this library's transitive appcompat library dependency from being installed.
 
 ```groovy
 compile ('com.wdullaer:materialdatetimepicker:3.6.4') {
-        exclude group: 'com.android.support'
+        exclude group: 'androidx.appcompat'
 }
 ```
 
-Your app will need to depend on at least the following pieces of the support library
+MaterialDateTimepicker uses the following androidx libraries:
 
 ```groovy
-compile 'com.android.support:support-v4:26.0.1'
-compile 'com.android.support:support-v13:26.0.1'
-compile 'com.android.support:design:26.0.1'
+compile 'androidx.appcompat:appcompat:1.0.0'
+compile 'androidx.recyclerview:recyclerview:1.0.0'
 ```
 
-This will work fine as long as the support library version your app depends on is recent enough (supports `RecyclerView`) and google doesn't release a version in the future that contains breaking changes. (If/When this happens I will try hard to document this). See issue [#338](https://github.com/wdullaer/MaterialDateTimePicker/issues/338) for more information.
+Excluding a dependency will work fine as long as the version your app depends on is recent enough and google doesn't release a version in the future that contains breaking changes. (If/When this happens I will try hard to document this). See issue [#338](https://github.com/wdullaer/MaterialDateTimePicker/issues/338) for more information.
 
 ### How do I turn this into a year and month picker?
 This DatePickerDialog focuses on selecting dates, which means that it's central design element is the day picker. As this calendar like view is the center of the design it makes no sense to try and disable it. As such selecting just years and months, without a day, is not in scope for this library and will not be added.

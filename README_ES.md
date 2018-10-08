@@ -216,24 +216,6 @@ Recibidores que permiten la recuperación de una referencia a las devoluciones d
 
 ## Preguntas más frecuentes
 
-### ¿Por qué no usar `SupportDialogFragment` <tt>fragmento de diálogo de soporte</tt>?
-No utilizar las versiones de la biblioteca de soporte ha sido una elección bien considerada, basada en las siguientes consideraciones:
-
-* Lmenos del 5% de los dispositivos que usan el mercado Android no admiten `Fragments` <tt>Fragmentos</tt> nativos, un número que disminuirá aún más en el futuro.
-* ESi usas `SupportFragments` en tu aplicación, puedes usar el `FragmentManager` normal. Ambos pueden existir uno al lado del otro.
-
-Esto significa que en la configuración actual, todos pueden usar la biblioteca: personas que usan la biblioteca de soporte y personas que no usan la biblioteca de soporte.
-
-Finalmente, cambiar el `SupportDialogFragment` <tt>fragmento de diálogo de soporte</tt> ahora romperá la API para todas las personas que usan esta biblioteca.
-
-Si realmente necesita el `SupportDialogFragment` <tt>fragmento de diálogo de soporte</tt, puede hacer un fork en la biblioteca (Implica cambiar las 2 líneas de código, por lo que debería ser lo suficientemente fácil para mantenerlo actualizado con el upstream) o use este fork: https://github.com/infinum/MaterialDateTimePicker
-
-```groovy
-dependencies {
-  compile 'co.infinum:materialdatetimepicker-support:3.6.4'
-}
-```
-
 ### ¿Por qué el `DatePickerDialog` <tt>diálogo de selección de fechas</tt> devuelve el mes -1 seleccionado?
 En la clase `Calendar` <tt>Calendario</tt> de Java, los meses usan indexación basada en 0: enero es el mes 0, diciembre es el mes 11. Esta convención es ampliamente utilizada en el mundo java, por ejemplo, el _native Android DatePicker_.
 
