@@ -2,9 +2,9 @@ package com.wdullaer.materialdatetimepicker.time;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static com.wdullaer.materialdatetimepicker.time.Timepoint.TYPE.HOUR;
 import static com.wdullaer.materialdatetimepicker.time.Timepoint.TYPE.MINUTE;

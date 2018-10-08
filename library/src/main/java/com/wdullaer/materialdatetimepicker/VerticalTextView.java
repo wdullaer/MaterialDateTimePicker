@@ -11,7 +11,7 @@ import android.view.Gravity;
  * happens before the View is rotated causing incorrect View boundaries)
  * Created by wdullaer on 28/03/16.
  */
-public class VerticalTextView extends android.support.v7.widget.AppCompatTextView {
+public class VerticalTextView extends androidx.appcompat.widget.AppCompatTextView {
     final boolean topDown;
 
     public VerticalTextView(Context context, AttributeSet attrs){

@@ -7,13 +7,13 @@
     android:background="@color/mdtp_date_picker_view_animator"
     android:gravity="center">
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/mdtp_tabs"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         app:layout_scrollFlags="scroll|enterAlways"/>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/mdtp_pager"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

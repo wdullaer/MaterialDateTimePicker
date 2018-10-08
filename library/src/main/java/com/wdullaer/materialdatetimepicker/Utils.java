@@ -24,8 +24,8 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.AttrRes;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.AttrRes;
+import androidx.core.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
 
