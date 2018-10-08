@@ -30,15 +30,15 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:support-v13:27.1.1'
-    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:support-v13:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'com.pholser:junit-quickcheck-core:0.7'
     testImplementation 'com.pholser:junit-quickcheck-generators:0.7'
 
-    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
+    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
 }
