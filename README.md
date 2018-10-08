@@ -336,6 +336,18 @@ class MyDateRangeLimiter implements DateRangeLimiter {
 
 When you provide a custom `DateRangeLimiter` the built-in methods for setting the enabled / disabled dates will no longer work. It will need to be completely handled by your implementation.
 
+### Why do the OK and Cancel buttons have the accent color as a background when combined with the Material Components library
+[Material Components](https://github.com/material-components/material-components-android) replaces all instances of `Button` with an instance of `MaterialButton` when using one of its regular themes: https://github.com/material-components/material-components-android/blob/master/docs/getting-started.md#material-components-themes  
+The default version of `MaterialButton` uses `colorPrimary` as the background color. Because Material Components replaces the View replacer with their own implementation there is not much I can do to fix this from this library.
+
+There are two workarounds:
+* Use one of the bridge themes, which do not replace the View Inflater
+* Overwrite the View inflater again in your application theme by adding the following statement in your application theme:
+    ```xml
+  <item name="viewInflaterClass">androidx.appcompat.app.AppCompatViewInflater</item>
+    ```
+  You will then need to explicitly use `MaterialButton` in your application rather than `Button`
+
 ### Why are my callbacks lost when the device changes orientation?
 The simple solution is to dismiss the pickers when your activity is paused.
 
