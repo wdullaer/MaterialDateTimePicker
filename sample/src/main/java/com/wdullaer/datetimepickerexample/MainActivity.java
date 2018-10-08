@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -23,7 +22,7 @@ public class MainActivity extends AppCompatActivity
         viewPager = findViewById(R.id.pager);
         viewPager.setAdapter(adapter);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         for(int i=0; i < adapter.getCount(); i++) //noinspection ConstantConditions

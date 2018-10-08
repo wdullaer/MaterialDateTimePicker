@@ -180,28 +180,19 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         }
 
         // Create the selection validators
-        RadialTextsView.SelectionValidator secondValidator = new RadialTextsView.SelectionValidator() {
-            @Override
-            public boolean isValidSelection(int selection) {
-                Timepoint newTime = new Timepoint(mCurrentTime.getHour(), mCurrentTime.getMinute(), selection);
-                return !mController.isOutOfRange(newTime, SECOND_INDEX);
-            }
+        RadialTextsView.SelectionValidator secondValidator = selection -> {
+            Timepoint newTime = new Timepoint(mCurrentTime.getHour(), mCurrentTime.getMinute(), selection);
+            return !mController.isOutOfRange(newTime, SECOND_INDEX);
         };
-        RadialTextsView.SelectionValidator minuteValidator = new RadialTextsView.SelectionValidator() {
-            @Override
-            public boolean isValidSelection(int selection) {
-                Timepoint newTime = new Timepoint(mCurrentTime.getHour(), selection, mCurrentTime.getSecond());
-                return !mController.isOutOfRange(newTime, MINUTE_INDEX);
-            }
+        RadialTextsView.SelectionValidator minuteValidator = selection -> {
+            Timepoint newTime = new Timepoint(mCurrentTime.getHour(), selection, mCurrentTime.getSecond());
+            return !mController.isOutOfRange(newTime, MINUTE_INDEX);
         };
-        RadialTextsView.SelectionValidator hourValidator = new RadialTextsView.SelectionValidator() {
-            @Override
-            public boolean isValidSelection(int selection) {
-                Timepoint newTime = new Timepoint(selection, mCurrentTime.getMinute(), mCurrentTime.getSecond());
-                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) newTime.setPM();
-                if(!mIs24HourMode && getIsCurrentlyAmOrPm() == AM) newTime.setAM();
-                return !mController.isOutOfRange(newTime, HOUR_INDEX);
-            }
+        RadialTextsView.SelectionValidator hourValidator = selection -> {
+            Timepoint newTime = new Timepoint(selection, mCurrentTime.getMinute(), mCurrentTime.getSecond());
+            if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) newTime.setPM();
+            if(!mIs24HourMode && getIsCurrentlyAmOrPm() == AM) newTime.setAM();
+            return !mController.isOutOfRange(newTime, HOUR_INDEX);
         };
 
         // Initialize the hours and minutes numbers.
@@ -748,12 +739,9 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                     // in case the user moves their finger quickly.
                     mController.tryVibrate();
                     mDownDegrees = -1;
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAmPmCirclesView.setAmOrPmPressed(mIsTouchingAmOrPm);
-                            mAmPmCirclesView.invalidate();
-                        }
+                    mHandler.postDelayed(() -> {
+                        mAmPmCirclesView.setAmOrPmPressed(mIsTouchingAmOrPm);
+                        mAmPmCirclesView.invalidate();
                     }, TAP_TIMEOUT);
                 } else {
                     // If we're in accessibility mode, force the touch to be legal. Otherwise,
@@ -767,17 +755,14 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                         // If it's a legal touch, set that number as "selected" after the
                         // TAP_TIMEOUT in case the user moves their finger quickly.
                         mController.tryVibrate();
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mDoingMove = true;
-                                mLastValueSelected = getTimeFromDegrees(mDownDegrees, isInnerCircle[0],
-                                        false);
-                                mLastValueSelected = roundToValidTime(mLastValueSelected, getCurrentItemShowing());
-                                // Redraw
-                                reselectSelector(mLastValueSelected, true, getCurrentItemShowing());
-                                mListener.onValueSelected(mLastValueSelected);
-                            }
+                        mHandler.postDelayed(() -> {
+                            mDoingMove = true;
+                            mLastValueSelected = getTimeFromDegrees(mDownDegrees, isInnerCircle[0],
+                                    false);
+                            mLastValueSelected = roundToValidTime(mLastValueSelected, getCurrentItemShowing());
+                            // Redraw
+                            reselectSelector(mLastValueSelected, true, getCurrentItemShowing());
+                            mListener.onValueSelected(mLastValueSelected);
                         }, TAP_TIMEOUT);
                     }
                 }

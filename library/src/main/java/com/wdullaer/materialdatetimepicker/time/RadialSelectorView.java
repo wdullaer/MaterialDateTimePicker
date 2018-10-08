@@ -176,6 +176,7 @@ public class RadialSelectorView extends View {
     /**
      * Set the multiplier for the radius. Will be used during animations to move in/out.
      */
+    @SuppressWarnings("unused")
     public void setAnimationRadiusMultiplier(float animationRadiusMultiplier) {
         mAnimationRadiusMultiplier = animationRadiusMultiplier;
     }

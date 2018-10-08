@@ -253,7 +253,7 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Activity activity = getActivity();
+        final Activity activity = requireActivity();
         activity.getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mCurrentView = UNINITIALIZED;
@@ -381,7 +381,7 @@ public class DatePickerDialog extends DialogFragment implements
         mYearView = view.findViewById(R.id.mdtp_date_picker_year);
         mYearView.setOnClickListener(this);
 
-        final Activity activity = getActivity();
+        final Activity activity = requireActivity();
         mDayPickerView = new DayPickerGroup(activity, this);
         mYearPickerView = new YearPickerView(activity, this);
 
@@ -414,25 +414,19 @@ public class DatePickerDialog extends DialogFragment implements
         mAnimator.setOutAnimation(animation2);
 
         Button okButton = view.findViewById(R.id.mdtp_ok);
-        okButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tryVibrate();
-                notifyOnDateListener();
-                dismiss();
-            }
+        okButton.setOnClickListener(v -> {
+            tryVibrate();
+            notifyOnDateListener();
+            dismiss();
         });
         okButton.setTypeface(ResourcesCompat.getFont(activity, R.font.robotomedium));
         if (mOkString != null) okButton.setText(mOkString);
         else okButton.setText(mOkResid);
 
         Button cancelButton = view.findViewById(R.id.mdtp_cancel);
-        cancelButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tryVibrate();
-                if (getDialog() != null) getDialog().cancel();
-            }
+        cancelButton.setOnClickListener(v -> {
+            tryVibrate();
+            if (getDialog() != null) getDialog().cancel();
         });
         cancelButton.setTypeface(ResourcesCompat.getFont(activity, R.font.robotomedium));
         if (mCancelString != null) cancelButton.setText(mCancelString);
@@ -477,7 +471,7 @@ public class DatePickerDialog extends DialogFragment implements
         ViewGroup viewGroup = (ViewGroup) getView();
         if (viewGroup != null) {
             viewGroup.removeAllViewsInLayout();
-            View view = onCreateView(getActivity().getLayoutInflater(), viewGroup, null);
+            View view = onCreateView(requireActivity().getLayoutInflater(), viewGroup, null);
             viewGroup.addView(view);
         }
     }

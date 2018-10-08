@@ -23,7 +23,6 @@ import android.support.annotation.Nullable;
 
 import com.wdullaer.materialdatetimepicker.Utils;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.TimeZone;
