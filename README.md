@@ -9,7 +9,7 @@ Material DateTime Picker tries to offer you the date and time pickers as shown i
 easy themable API.
 The library uses [the code from the Android frameworks](https://android.googlesource.com/platform/frameworks/opt/datetimepicker/) as a base and tweaked it to be as close as possible to Material Design example.
 
-Support for Android 4.0 and up.
+Support for Android 4.1 and up. (Android 4.0 was supported until 3.6.4)
 
 Feel free to fork or issue pull requests on github. Issues can be reported on the github issue tracker.
 
@@ -42,7 +42,7 @@ Date Picker | Time Picker
  The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```groovy
 dependencies {
-    compile 'com.wdullaer:materialdatetimepicker:3.6.4'
+    compile 'com.wdullaer:materialdatetimepicker:4.0.0'
 }
 ```
 
@@ -98,7 +98,10 @@ DatePickerDialog dpd = DatePickerDialog.newInstance(
   now.get(Calendar.MONTH), // Initial month selection
   now.get(Calendar.DAY_OF_MONTH) // Inital day selection
 );
+// If you're calling this from a support Fragment
 dpd.show(getFragmentManager(), "Datepickerdialog");
+// If you're calling this from an AppCompatActivity
+// dpd.show(getSupportFragmentManager(), "Datepickerdialog");
 ```
 
 ### Theme the pickers
@@ -240,7 +243,7 @@ This library depends on some androidx support libraries. Because the jvm allows 
 Using the following snippet in your apps `build.gradle` file you can exclude this library's transitive appcompat library dependency from being installed.
 
 ```groovy
-compile ('com.wdullaer:materialdatetimepicker:3.6.4') {
+compile ('com.wdullaer:materialdatetimepicker:4.0.0') {
         exclude group: 'androidx.appcompat'
 }
 ```
@@ -362,7 +365,6 @@ public void onResume() {
 
 ## Potential Improvements
 * Landscape timepicker can use some improvement
-* Implement the new style of pickers
 * Code cleanup: there is a bit too much spit and ductape in the tweaks I've done.
 * Document all options on both pickers
 
