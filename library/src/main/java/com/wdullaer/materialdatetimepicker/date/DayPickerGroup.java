@@ -179,7 +179,7 @@ public class DayPickerGroup extends ViewGroup
         // updateButtonVisibility only triggers when a scroll is completed. So a user might
         // click the button when the animation is still ongoing potentially pushing the target
         // position outside of the bounds of the dayPickerView
-        if (position >= 0 || position < dayPickerView.getCount()) {
+        if (position >= 0 && position < dayPickerView.getCount()) {
             dayPickerView.smoothScrollToPosition(position);
             updateButtonVisibility(position);
         }
