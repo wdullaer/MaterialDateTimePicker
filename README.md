@@ -42,7 +42,7 @@ Date Picker | Time Picker
  The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```groovy
 dependencies {
-    compile 'com.wdullaer:materialdatetimepicker:4.0.1'
+    implementation 'com.wdullaer:materialdatetimepicker:4.0.1'
 }
 ```
 
@@ -251,8 +251,8 @@ compile ('com.wdullaer:materialdatetimepicker:4.0.1') {
 MaterialDateTimepicker uses the following androidx libraries:
 
 ```groovy
-compile 'androidx.appcompat:appcompat:1.0.0'
-compile 'androidx.recyclerview:recyclerview:1.0.0'
+implementation 'androidx.appcompat:appcompat:1.0.0'
+implementation 'androidx.recyclerview:recyclerview:1.0.0'
 ```
 
 Excluding a dependency will work fine as long as the version your app depends on is recent enough and google doesn't release a version in the future that contains breaking changes. (If/When this happens I will try hard to document this). See issue [#338](https://github.com/wdullaer/MaterialDateTimePicker/issues/338) for more information.
