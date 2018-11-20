@@ -705,6 +705,9 @@ public abstract class MonthView extends View {
             node.setBoundsInParent(mTempRect);
             node.addAction(AccessibilityNodeInfo.ACTION_CLICK);
 
+            // Flag non-selectable dates as disabled
+            node.setEnabled(!mController.isOutOfRange(mYear, mMonth, virtualViewId));
+
             if (virtualViewId == mSelectedDay) {
                 node.setSelected(true);
             }

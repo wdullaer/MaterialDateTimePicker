@@ -417,6 +417,11 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
             }
         }
 
+        // Only attempt to scroll to another month if it is in range
+        if (!canGoTo(day)) {
+            return super.performAccessibilityAction(action, arguments);
+        }
+
         // Go to that month.
         Utils.tryAccessibilityAnnounce(this, getMonthAndYearString(day, mController.getLocale()));
         goTo(day, true, false, true);
@@ -427,4 +432,12 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         return getChildAdapterPosition(getChildAt(0));
     }
 
+    // Check date validity for month scrolling, taking only min/max date into account
+    private boolean canGoTo(MonthAdapter.CalendarDay day) {
+        Calendar target = Calendar.getInstance();
+        target.set(day.year, day.month, day.day);
+        Calendar min = mController.getStartDate();
+        Calendar max = mController.getEndDate();
+        return (min == null || min.before(target)) && (max == null || max.after(target));
+    }
 }
