@@ -237,6 +237,10 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         clearFocus();
         post(() -> {
             ((LinearLayoutManager) getLayoutManager()).scrollToPositionWithOffset(position, 0);
+
+            // Set initial accessibility focus to selected day
+            restoreAccessibilityFocus(mSelectedDay);
+
             if (pageListener != null) pageListener.onPageChanged(position);
         });
     }
