@@ -25,9 +25,12 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.wdullaer.materialdatetimepicker.GravitySnapHelper;
+import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -341,5 +344,18 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     public void onInitializeAccessibilityEvent(@NonNull AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
         event.setItemCount(-1);
+    }
+
+    void accessibilityAnnouncePageChanged() {
+        MonthView mv = getMostVisibleMonth();
+        String monthYear = getMonthAndYearString(mv.mMonth, mv.mYear, mController.getLocale());
+        Utils.tryAccessibilityAnnounce(this, monthYear);
+    }
+
+    private static String getMonthAndYearString(int month, int year, Locale locale) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
+        return new SimpleDateFormat("MMMM yyyy", locale).format(calendar.getTime());
     }
 }
