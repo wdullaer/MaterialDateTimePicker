@@ -756,14 +756,7 @@ public abstract class MonthView extends View {
          */
         CharSequence getItemDescription(int day) {
             mTempCalendar.set(mYear, mMonth, day);
-            final CharSequence date = DateFormat.format(DATE_FORMAT,
-                    mTempCalendar.getTimeInMillis());
-
-            if (day == mSelectedDay) {
-                return getContext().getString(R.string.mdtp_item_is_selected, date);
-            }
-
-            return date;
+            return DateFormat.format(DATE_FORMAT, mTempCalendar.getTimeInMillis());
         }
     }
 
