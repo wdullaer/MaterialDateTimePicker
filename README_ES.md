@@ -42,7 +42,7 @@ Selector de fecha | Selector de tiempo
     La forma más fácil de agregar a la Biblioteca la _Material DateTime Picker_ a su proyecto es agregarla como una dependencia `build.gradle`
     ```groovy
     a sus dependencias{
-        compile 'com.wdullaer:materialdatetimepicker:4.1.0'
+        implementation 'com.wdullaer:materialdatetimepicker:4.1.0'
 }
 ```
 
