@@ -162,6 +162,7 @@ public class DayPickerGroup extends ViewGroup
     @Override
     public void onPageChanged(int position) {
         updateButtonVisibility(position);
+        dayPickerView.accessibilityAnnouncePageChanged();
     }
 
     @Override
