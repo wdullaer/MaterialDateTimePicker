@@ -520,22 +520,22 @@ public class DatePickerDialog extends DialogFragment implements
                         pulseAnimator.setStartDelay(ANIMATION_DELAY);
                         mDelayAnimation = false;
                     }
-                    mDayPickerView.onDateChanged();
                     if (mCurrentView != viewIndex) {
                         mMonthAndDayView.setSelected(true);
                         mYearView.setSelected(false);
                         mAnimator.setDisplayedChild(MONTH_AND_DAY_VIEW);
                         mCurrentView = viewIndex;
                     }
+                    mDayPickerView.onDateChanged();
                     pulseAnimator.start();
                 } else {
-                    mDayPickerView.onDateChanged();
                     if (mCurrentView != viewIndex) {
                         mMonthAndDayView.setSelected(true);
                         mYearView.setSelected(false);
                         mAnimator.setDisplayedChild(MONTH_AND_DAY_VIEW);
                         mCurrentView = viewIndex;
                     }
+                    mDayPickerView.onDateChanged();
                 }
 
                 int flags = DateUtils.FORMAT_SHOW_DATE;

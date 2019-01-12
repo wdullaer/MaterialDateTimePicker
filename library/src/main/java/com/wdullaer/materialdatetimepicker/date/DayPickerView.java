@@ -82,13 +82,12 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         setController(controller);
     }
 
-    public void setController(DatePickerController controller) {
+    protected void setController(DatePickerController controller) {
         mController = controller;
         mController.registerOnDateChangedListener(this);
         mSelectedDay = new MonthAdapter.CalendarDay(mController.getTimeZone());
         mTempDay = new MonthAdapter.CalendarDay(mController.getTimeZone());
         refreshAdapter();
-        onDateChanged();
     }
 
     public void init(Context context, DatePickerDialog.ScrollOrientation scrollOrientation) {
@@ -289,6 +288,10 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         return mAdapter.getItemCount();
     }
 
+    /**
+     * This should only be called when the DayPickerView is visible, or when it has already been
+     * requested to be visible
+     */
     @Override
     public void onDateChanged() {
         goTo(mController.getSelectedDay(), false, true, true);
