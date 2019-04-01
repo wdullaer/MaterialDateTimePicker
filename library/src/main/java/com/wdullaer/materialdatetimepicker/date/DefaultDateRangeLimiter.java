@@ -42,7 +42,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
     private Calendar mMaxDate;
     private TreeSet<Calendar> selectableDays = new TreeSet<>();
     private HashSet<Calendar> disabledDays = new HashSet<>();
-    private List<Integer> holidayDays = new ArrayList<>();
+    private List<Integer> weekendDays = new ArrayList<>();
 
     DefaultDateRangeLimiter() {
     }
@@ -55,7 +55,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         mMaxDate = (Calendar) in.readSerializable();
         selectableDays = (TreeSet<Calendar>) in.readSerializable();
         disabledDays = (HashSet<Calendar>) in.readSerializable();
-        in.readList(holidayDays, null);
+        in.readList(weekendDays, null);
     }
 
     @Override
@@ -66,7 +66,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         out.writeSerializable(mMaxDate);
         out.writeSerializable(selectableDays);
         out.writeSerializable(disabledDays);
-        out.writeList(holidayDays);
+        out.writeList(weekendDays);
     }
 
     @Override
@@ -98,8 +98,8 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         }
     }
 
-    void setHolidayDays(@NonNull List<Integer> holidayDays) {
-        this.holidayDays = holidayDays;
+    void setWeekendDays(@NonNull List<Integer> weekendDays) {
+        this.weekendDays = weekendDays;
     }
 
     void setMinDate(@NonNull Calendar calendar) {
@@ -144,8 +144,8 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
     }
 
     @Nullable
-    List<Integer> getHolidayDays() {
-        return holidayDays;
+    List<Integer> getWeekendDays() {
+        return weekendDays;
     }
 
     @Override
@@ -211,7 +211,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
 
     private boolean isHoliday(@NonNull Calendar calendar) {
         int dayId = calendar.get(Calendar.DAY_OF_WEEK);
-        return holidayDays.contains(dayId);
+        return weekendDays.contains(dayId);
     }
 
     private boolean isDisabled(@NonNull Calendar c) {

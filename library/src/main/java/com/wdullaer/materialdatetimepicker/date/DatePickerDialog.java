@@ -869,7 +869,7 @@ public class DatePickerDialog extends DialogFragment implements
      * @param disabledDays an Array of Calendar Objects containing the disabled dates
      */
     @SuppressWarnings("unused")
-    public void setDisabledDays(Calendar[] disabledDays) {
+    public void setlDays(Calendar[] disabledDays) {
         mDefaultLimiter.setDisabledDays(disabledDays);
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
@@ -878,10 +878,10 @@ public class DatePickerDialog extends DialogFragment implements
      * like Calendar.SATURDAY =  7
      * Setting this value will take precedence over using setMinDate() and setMaxDate(), but stacks with setSelectableDays()
      *
-     * @param holidayDays an Array of Calendar Objects containing the disabled dates
+     * @param weekendDays an Array of Calendar Objects containing the disabled dates
      */
-    public void setHolidayDays(@NonNull List<Integer> holidayDays) {
-        mDefaultLimiter.setHolidayDays(holidayDays);
+    public void setWeekendDays(@NonNull List<Integer> weekendDays) {
+        mDefaultLimiter.setWeekendDays(weekendDays);
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
     /**

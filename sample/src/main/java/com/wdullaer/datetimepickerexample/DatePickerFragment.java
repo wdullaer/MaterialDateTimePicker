@@ -35,7 +35,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox switchOrientation;
     private CheckBox limitSelectableDays;
     private CheckBox highlightDays;
-    private CheckBox holidayDays;
+    private CheckBox weekendDays;
     private DatePickerDialog dpd;
 
     public DatePickerFragment() {
@@ -61,7 +61,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         switchOrientation = view.findViewById(R.id.switch_orientation);
         limitSelectableDays = view.findViewById(R.id.limit_dates);
         highlightDays = view.findViewById(R.id.highlight_dates);
-        holidayDays = view.findViewById(R.id.holiday_dates);
+        weekendDays = view.findViewById(R.id.weekend_dates);
         view.findViewById(R.id.original_button).setOnClickListener(v -> {
             Calendar now = Calendar.getInstance();
             new android.app.DatePickerDialog(
@@ -133,11 +133,11 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                 }
             }
 
-            if (holidayDays.isChecked()) {
+            if (weekendDays.isChecked()) {
                 List<Integer> integers = new ArrayList<>();
                 integers.add(Calendar.SUNDAY);
                 integers.add(Calendar.SATURDAY);
-                dpd.setHolidayDays(integers);
+                dpd.setWeekendDays(integers);
             }
             dpd.setOnCancelListener(dialog -> Log.d("DatePickerDialog", "Dialog was cancelled"));
             dpd.show(requireFragmentManager(), "Datepickerdialog");

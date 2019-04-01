@@ -93,10 +93,10 @@
             android:checked="false"/>
 
         <CheckBox
-            android:id="@+id/holiday_dates"
+            android:id="@+id/weekend_dates"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/holiday_dates"
+            android:text="@string/weekend_dates"
             android:checked="false"/>
 
     </LinearLayout>
