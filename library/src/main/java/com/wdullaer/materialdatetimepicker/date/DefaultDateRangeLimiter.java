@@ -18,15 +18,18 @@ package com.wdullaer.materialdatetimepicker.date;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.wdullaer.materialdatetimepicker.Utils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.TreeSet;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 class DefaultDateRangeLimiter implements DateRangeLimiter {
     private static final int DEFAULT_START_YEAR = 1900;
@@ -39,8 +42,10 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
     private Calendar mMaxDate;
     private TreeSet<Calendar> selectableDays = new TreeSet<>();
     private HashSet<Calendar> disabledDays = new HashSet<>();
+    private List<Integer> holidayDays = new ArrayList<>();
 
-    DefaultDateRangeLimiter() {}
+    DefaultDateRangeLimiter() {
+    }
 
     @SuppressWarnings({"unchecked", "WeakerAccess"})
     public DefaultDateRangeLimiter(Parcel in) {
@@ -50,6 +55,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         mMaxDate = (Calendar) in.readSerializable();
         selectableDays = (TreeSet<Calendar>) in.readSerializable();
         disabledDays = (HashSet<Calendar>) in.readSerializable();
+        in.readList(holidayDays, null);
     }
 
     @Override
@@ -60,6 +66,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         out.writeSerializable(mMaxDate);
         out.writeSerializable(selectableDays);
         out.writeSerializable(disabledDays);
+        out.writeList(holidayDays);
     }
 
     @Override
@@ -91,6 +98,10 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         }
     }
 
+    void setHolidayDays(@NonNull List<Integer> holidayDays) {
+        this.holidayDays = holidayDays;
+    }
+
     void setMinDate(@NonNull Calendar calendar) {
         mMinDate = Utils.trimToMidnight((Calendar) calendar.clone());
     }
@@ -112,20 +123,29 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         mMaxYear = endYear;
     }
 
-    @Nullable Calendar getMinDate() {
+    @Nullable
+    Calendar getMinDate() {
         return mMinDate;
     }
 
-    @Nullable Calendar getMaxDate() {
+    @Nullable
+    Calendar getMaxDate() {
         return mMaxDate;
     }
 
-    @Nullable Calendar[] getSelectableDays() {
-         return selectableDays.isEmpty() ? null : selectableDays.toArray(new Calendar[0]);
+    @Nullable
+    Calendar[] getSelectableDays() {
+        return selectableDays.isEmpty() ? null : selectableDays.toArray(new Calendar[0]);
     }
 
-    @Nullable Calendar[] getDisabledDays() {
+    @Nullable
+    Calendar[] getDisabledDays() {
         return disabledDays.isEmpty() ? null : disabledDays.toArray(new Calendar[0]);
+    }
+
+    @Nullable
+    List<Integer> getHolidayDays() {
+        return holidayDays;
     }
 
     @Override
@@ -143,7 +163,8 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
     }
 
     @Override
-    public @NonNull Calendar getStartDate() {
+    public @NonNull
+    Calendar getStartDate() {
         if (!selectableDays.isEmpty()) return (Calendar) selectableDays.first().clone();
         if (mMinDate != null) return (Calendar) mMinDate.clone();
         TimeZone timeZone = mController == null ? TimeZone.getDefault() : mController.getTimeZone();
@@ -155,7 +176,8 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
     }
 
     @Override
-    public @NonNull Calendar getEndDate() {
+    public @NonNull
+    Calendar getEndDate() {
         if (!selectableDays.isEmpty()) return (Calendar) selectableDays.last().clone();
         if (mMaxDate != null) return (Calendar) mMaxDate.clone();
         TimeZone timeZone = mController == null ? TimeZone.getDefault() : mController.getTimeZone();
@@ -183,7 +205,13 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
 
     private boolean isOutOfRange(@NonNull Calendar calendar) {
         Utils.trimToMidnight(calendar);
-        return isDisabled(calendar) || !isSelectable(calendar);
+        return isDisabled(calendar) || !isSelectable(calendar) || isHoliday(calendar);
+    }
+
+
+    private boolean isHoliday(@NonNull Calendar calendar) {
+        int dayId = calendar.get(Calendar.DAY_OF_WEEK);
+        return holidayDays.contains(dayId);
     }
 
     private boolean isDisabled(@NonNull Calendar c) {
@@ -203,7 +231,8 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
     }
 
     @Override
-    public @NonNull Calendar setToNearestDate(@NonNull Calendar calendar) {
+    public @NonNull
+    Calendar setToNearestDate(@NonNull Calendar calendar) {
         if (!selectableDays.isEmpty()) {
             Calendar newCalendar = null;
             Calendar higher = selectableDays.ceiling(calendar);
