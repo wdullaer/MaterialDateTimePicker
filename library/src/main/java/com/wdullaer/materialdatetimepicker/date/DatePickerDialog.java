@@ -869,7 +869,7 @@ public class DatePickerDialog extends DialogFragment implements
      * @param disabledDays an Array of Calendar Objects containing the disabled dates
      */
     @SuppressWarnings("unused")
-    public void setlDays(Calendar[] disabledDays) {
+    public void setDisabledDays(Calendar[] disabledDays) {
         mDefaultLimiter.setDisabledDays(disabledDays);
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
@@ -881,8 +881,10 @@ public class DatePickerDialog extends DialogFragment implements
      * @param weekendDays an Array of Calendar Objects containing the disabled dates
      */
     public void setWeekendDays(@NonNull List<Integer> weekendDays) {
+
         mDefaultLimiter.setWeekendDays(weekendDays);
         if (mDayPickerView != null) mDayPickerView.onChange();
+
     }
     /**
      * @return an Array of Calendar objects containing the list of days that are not selectable. null if no restriction is set

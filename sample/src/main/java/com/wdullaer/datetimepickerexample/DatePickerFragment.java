@@ -136,7 +136,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
             if (weekendDays.isChecked()) {
                 List<Integer> integers = new ArrayList<>();
                 integers.add(Calendar.SUNDAY);
-                integers.add(Calendar.SATURDAY);
+                integers.add(Calendar.MONDAY);
                 dpd.setWeekendDays(integers);
             }
             dpd.setOnCancelListener(dialog -> Log.d("DatePickerDialog", "Dialog was cancelled"));

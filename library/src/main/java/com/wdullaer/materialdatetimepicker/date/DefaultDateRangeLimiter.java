@@ -99,6 +99,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
     }
 
     void setWeekendDays(@NonNull List<Integer> weekendDays) {
+        
         this.weekendDays = weekendDays;
     }
 
@@ -205,11 +206,11 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
 
     private boolean isOutOfRange(@NonNull Calendar calendar) {
         Utils.trimToMidnight(calendar);
-        return isDisabled(calendar) || !isSelectable(calendar) || isHoliday(calendar);
+        return isDisabled(calendar) || !isSelectable(calendar) || isWeekend(calendar);
     }
 
 
-    private boolean isHoliday(@NonNull Calendar calendar) {
+    private boolean isWeekend(@NonNull Calendar calendar) {
         int dayId = calendar.get(Calendar.DAY_OF_WEEK);
         return weekendDays.contains(dayId);
     }
