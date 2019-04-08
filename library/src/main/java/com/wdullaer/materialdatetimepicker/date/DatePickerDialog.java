@@ -25,12 +25,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.fragment.app.DialogFragment;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -53,8 +47,16 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Dialog allowing users to select a date.
@@ -871,7 +873,19 @@ public class DatePickerDialog extends DialogFragment implements
         mDefaultLimiter.setDisabledDays(disabledDays);
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
+    /**
+     * Sets a list of days id that are not selectable in the picker
+     * like Calendar.SATURDAY =  7
+     * Setting this value will take precedence over using setMinDate() and setMaxDate(), but stacks with setSelectableDays()
+     *
+     * @param weekendDays an Array of Calendar Objects containing the disabled dates
+     */
+    public void setWeekendDays(@NonNull List<Integer> weekendDays) {
 
+        mDefaultLimiter.setWeekendDays(weekendDays);
+        if (mDayPickerView != null) mDayPickerView.onChange();
+
+    }
     /**
      * @return an Array of Calendar objects containing the list of days that are not selectable. null if no restriction is set
      */

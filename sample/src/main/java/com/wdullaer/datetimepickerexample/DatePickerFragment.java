@@ -2,8 +2,6 @@ package com.wdullaer.datetimepickerexample;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +12,12 @@ import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +35,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox switchOrientation;
     private CheckBox limitSelectableDays;
     private CheckBox highlightDays;
+    private CheckBox weekendDays;
     private DatePickerDialog dpd;
 
     public DatePickerFragment() {
@@ -57,7 +61,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         switchOrientation = view.findViewById(R.id.switch_orientation);
         limitSelectableDays = view.findViewById(R.id.limit_dates);
         highlightDays = view.findViewById(R.id.highlight_dates);
-
+        weekendDays = view.findViewById(R.id.weekend_dates);
         view.findViewById(R.id.original_button).setOnClickListener(v -> {
             Calendar now = Calendar.getInstance();
             new android.app.DatePickerDialog(
@@ -128,6 +132,13 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                     dpd.setScrollOrientation(DatePickerDialog.ScrollOrientation.VERTICAL);
                 }
             }
+
+            if (weekendDays.isChecked()) {
+                List<Integer> integers = new ArrayList<>();
+                integers.add(Calendar.SUNDAY);
+                integers.add(Calendar.MONDAY);
+                dpd.setWeekendDays(integers);
+            }
             dpd.setOnCancelListener(dialog -> Log.d("DatePickerDialog", "Dialog was cancelled"));
             dpd.show(requireFragmentManager(), "Datepickerdialog");
         });
@@ -139,12 +150,12 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     public void onResume() {
         super.onResume();
         DatePickerDialog dpd = (DatePickerDialog) requireFragmentManager().findFragmentByTag("Datepickerdialog");
-        if(dpd != null) dpd.setOnDateSetListener(this);
+        if (dpd != null) dpd.setOnDateSetListener(this);
     }
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        String date = "You picked the following date: "+dayOfMonth+"/"+(++monthOfYear)+"/"+year;
+        String date = "You picked the following date: " + dayOfMonth + "/" + (++monthOfYear) + "/" + year;
         dateTextView.setText(date);
     }
 }

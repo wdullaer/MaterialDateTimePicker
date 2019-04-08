@@ -28,6 +28,8 @@
     <string name="switch_orientation">Switch scroll orientation</string>
     <string name="action_settings">Settings</string>
 
+    <string name="weekend_dates">Weekend Days</string>
+
     <string name="tab_title_time">Time</string>
     <string name="tab_title_date">Date</string>
     <string name="tab_title_datetime">Date+Time</string>
