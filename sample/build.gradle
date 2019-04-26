@@ -34,4 +34,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-1'
 }
