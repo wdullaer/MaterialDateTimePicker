@@ -31,7 +31,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import android.util.Log;
@@ -61,7 +61,7 @@ import java.util.Locale;
 /**
  * Dialog to set a time.
  */
-public class TimePickerDialog extends DialogFragment implements
+public class TimePickerDialog extends AppCompatDialogFragment implements
         OnValueSelectedListener, TimePickerController {
     private static final String TAG = "TimePickerDialog";
 
@@ -258,6 +258,7 @@ public class TimePickerDialog extends DialogFragment implements
         mTitle = title;
     }
 
+    @SuppressWarnings("unused")
     public String getTitle() {
         return mTitle;
     }

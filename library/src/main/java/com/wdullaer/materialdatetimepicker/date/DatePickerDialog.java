@@ -28,7 +28,7 @@ import android.os.Bundle;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
-import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import android.text.format.DateFormat;
@@ -59,7 +59,7 @@ import java.util.TimeZone;
 /**
  * Dialog allowing users to select a date.
  */
-public class DatePickerDialog extends DialogFragment implements
+public class DatePickerDialog extends AppCompatDialogFragment implements
         OnClickListener, DatePickerController {
 
     public enum Version {
