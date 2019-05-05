@@ -128,11 +128,20 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                     dpd.setScrollOrientation(DatePickerDialog.ScrollOrientation.VERTICAL);
                 }
             }
-            dpd.setOnCancelListener(dialog -> Log.d("DatePickerDialog", "Dialog was cancelled"));
+            dpd.setOnCancelListener(dialog -> {
+                Log.d("DatePickerDialog", "Dialog was cancelled");
+                dpd = null;
+            });
             dpd.show(requireFragmentManager(), "Datepickerdialog");
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dpd = null;
     }
 
     @Override
@@ -146,5 +155,6 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         String date = "You picked the following date: "+dayOfMonth+"/"+(++monthOfYear)+"/"+year;
         dateTextView.setText(date);
+        dpd = null;
     }
 }

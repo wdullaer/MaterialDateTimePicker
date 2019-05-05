@@ -120,11 +120,20 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                 };
                 tpd.setDisabledTimes(disabledTimes);
             }
-            tpd.setOnCancelListener(dialogInterface -> Log.d("TimePicker", "Dialog was cancelled"));
+            tpd.setOnCancelListener(dialogInterface -> {
+                Log.d("TimePicker", "Dialog was cancelled");
+                tpd = null;
+            });
             tpd.show(requireFragmentManager(), "Timepickerdialog");
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        tpd = null;
     }
 
     @Override
@@ -141,5 +150,6 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         String secondString = second < 10 ? "0"+second : ""+second;
         String time = "You picked the following time: "+hourString+"h"+minuteString+"m"+secondString+"s";
         timeTextView.setText(time);
+        tpd = null;
     }
 }
