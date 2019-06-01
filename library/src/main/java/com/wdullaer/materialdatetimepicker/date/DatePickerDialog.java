@@ -256,6 +256,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         final Activity activity = requireActivity();
         activity.getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        setStyle(AppCompatDialogFragment.STYLE_NO_TITLE, 0);
         mCurrentView = UNINITIALIZED;
         if (savedInstanceState != null) {
             mCalendar.set(Calendar.YEAR, savedInstanceState.getInt(KEY_SELECTED_YEAR));
