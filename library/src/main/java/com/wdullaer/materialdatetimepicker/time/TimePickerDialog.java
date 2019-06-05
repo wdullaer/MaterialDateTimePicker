@@ -631,6 +631,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(AppCompatDialogFragment.STYLE_NO_TITLE, 0);
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_INITIAL_TIME)
                     && savedInstanceState.containsKey(KEY_IS_24_HOUR_VIEW)) {
             mInitialTime = savedInstanceState.getParcelable(KEY_INITIAL_TIME);
@@ -671,7 +672,6 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-
         int viewRes = mVersion == Version.VERSION_1 ? R.layout.mdtp_time_picker_dialog : R.layout.mdtp_time_picker_dialog_v2;
         View view = inflater.inflate(viewRes, container,false);
         KeyboardListener keyboardListener = new KeyboardListener();
