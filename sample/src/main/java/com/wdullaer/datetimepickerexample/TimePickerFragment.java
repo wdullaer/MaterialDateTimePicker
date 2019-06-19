@@ -1,6 +1,6 @@
 package com.wdullaer.datetimepickerexample;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -137,7 +137,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                         Log.d("TimePicker", "Dialog was cancelled");
                     }
                 });
-                tpd.show(getFragmentManager(), "Timepickerdialog");
+                tpd.show(getActivity().getSupportFragmentManager(), "Timepickerdialog");
             }
         });
 
@@ -147,7 +147,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     @Override
     public void onResume() {
         super.onResume();
-        TimePickerDialog tpd = (TimePickerDialog) getFragmentManager().findFragmentByTag("Timepickerdialog");
+        TimePickerDialog tpd = (TimePickerDialog) getActivity().getSupportFragmentManager().findFragmentByTag("Timepickerdialog");
         if(tpd != null) tpd.setOnTimeSetListener(this);
     }
 

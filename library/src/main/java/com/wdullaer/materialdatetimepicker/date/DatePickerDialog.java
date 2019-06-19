@@ -19,7 +19,7 @@ package com.wdullaer.materialdatetimepicker.date;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
