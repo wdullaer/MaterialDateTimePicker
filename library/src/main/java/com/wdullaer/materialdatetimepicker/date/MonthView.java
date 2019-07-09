@@ -26,17 +26,18 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
-import androidx.customview.widget.ExploreByTouchHelper;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.customview.widget.ExploreByTouchHelper;
 
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter.CalendarDay;
@@ -46,6 +47,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import static com.wdullaer.materialdatetimepicker.date.DatePickerDialog.BUDDHIST_OFFSET;
 
 /**
  * A calendar-like view displaying a specified month and the appropriate selectable day numbers
@@ -404,16 +407,19 @@ public abstract class MonthView extends View {
     @NonNull
     private String getMonthAndYearString() {
         Locale locale = mController.getLocale();
-        String pattern = "MMMM yyyy";
+        String pattern = "MMMM";
 
-        if (Build.VERSION.SDK_INT < 18) pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
+        if (Build.VERSION.SDK_INT < 18)
+            pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
         else pattern = DateFormat.getBestDateTimePattern(locale, pattern);
 
         SimpleDateFormat formatter = new SimpleDateFormat(pattern, locale);
         formatter.setTimeZone(mController.getTimeZone());
         formatter.applyLocalizedPattern(pattern);
         mStringBuilder.setLength(0);
-        return formatter.format(mCalendar.getTime());
+        return formatter.format(mCalendar.getTime()) + " "
+                + getContext().getString(R.string.mdtp_buddhist) + " "
+                + (mCalendar.get(Calendar.YEAR) + BUDDHIST_OFFSET);
     }
 
     protected void drawMonthTitle(Canvas canvas) {
@@ -553,9 +559,9 @@ public abstract class MonthView extends View {
     }
 
     /**
-     * @param year as an int
+     * @param year  as an int
      * @param month as an int
-     * @param day as an int
+     * @param day   as an int
      * @return true if the given date should be highlighted
      */
     protected boolean isHighlighted(int year, int month, int day) {
@@ -574,34 +580,14 @@ public abstract class MonthView extends View {
         // Localised short version of the string is not available on API < 18
         if (Build.VERSION.SDK_INT < 18) {
             String dayName = new SimpleDateFormat("E", locale).format(day.getTime());
-            String dayLabel = dayName.toUpperCase(locale).substring(0, 1);
+            String dayLabel = dayName.substring(0, 1);
 
-            // Chinese labels should be fetched right to left
-            if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE) || locale.equals(Locale.SIMPLIFIED_CHINESE) || locale.equals(Locale.TRADITIONAL_CHINESE)) {
-                int len = dayName.length();
-                dayLabel = dayName.substring(len - 1, len);
+            // Thai labels should select 1 or 2 letter
+            if (mDayLabelCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.THURSDAY || mDayLabelCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                dayLabel = dayName.substring(0, 1);
+            } else {
+                dayName.substring(0, 2);
             }
-
-            // Most hebrew labels should select the second to last character
-            if (locale.getLanguage().equals("he") || locale.getLanguage().equals("iw")) {
-                if (mDayLabelCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
-                    int len = dayName.length();
-                    dayLabel = dayName.substring(len - 2, len - 1);
-                } else {
-                    // I know this is duplication, but it makes the code easier to grok by
-                    // having all hebrew code in the same block
-                    dayLabel = dayName.toUpperCase(locale).substring(0, 1);
-                }
-            }
-
-            // Catalan labels should be two digits in lowercase
-            if (locale.getLanguage().equals("ca"))
-                dayLabel = dayName.toLowerCase().substring(0, 2);
-
-            // Correct single character label in Spanish is X
-            if (locale.getLanguage().equals("es") && day.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)
-                dayLabel = "X";
-
             return dayLabel;
         }
         // Getting the short label is a one liner on API >= 18

@@ -104,6 +104,8 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     private static final String KEY_SCROLL_ORIENTATION = "scrollorientation";
     private static final String KEY_LOCALE = "locale";
 
+    static final int BUDDHIST_OFFSET = 543;
+
     private static final int ANIMATION_DURATION = 300;
     private static final int ANIMATION_DELAY = 500;
 
@@ -570,7 +572,8 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     }
 
     private void updateDisplay(boolean announce) {
-        mYearView.setText(YEAR_FORMAT.format(mCalendar.getTime()));
+        int Year = mCalendar.get(Calendar.YEAR) + BUDDHIST_OFFSET;
+        mYearView.setText(String.valueOf(Year));
 
         if (mVersion == Version.VERSION_1) {
             if (mDatePickerHeaderView != null) {

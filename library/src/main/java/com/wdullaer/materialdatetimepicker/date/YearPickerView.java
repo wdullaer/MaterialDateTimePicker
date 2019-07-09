@@ -32,6 +32,8 @@ import android.widget.TextView;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
 
+import static com.wdullaer.materialdatetimepicker.date.DatePickerDialog.BUDDHIST_OFFSET;
+
 /**
  * Displays a selectable list of years.
  */
@@ -88,7 +90,7 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
     }
 
     private static int getYearFromTextView(TextView view) {
-        return Integer.valueOf(view.getText().toString());
+        return Integer.valueOf(view.getText().toString())-BUDDHIST_OFFSET;
     }
 
     private final class YearAdapter extends BaseAdapter {
@@ -128,7 +130,7 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
                   .inflate(R.layout.mdtp_year_label_text_view, parent, false);
                 v.setAccentColor(mController.getAccentColor(), mController.isThemeDark());
             }
-            int year = mMinYear + position;
+            int year = mMinYear + position + BUDDHIST_OFFSET;
             boolean selected = mController.getSelectedDay().year == year;
             v.setText(String.format(mController.getLocale(),"%d", year));
             v.drawIndicator(selected);
