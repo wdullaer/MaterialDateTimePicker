@@ -18,33 +18,30 @@ package com.wdullaer.materialdatetimepicker.date;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
@@ -142,10 +139,10 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     private int mDefaultView = MONTH_AND_DAY_VIEW;
     private int mOkResid = R.string.mdtp_ok;
     private String mOkString;
-    private int mOkColor = -1;
+    private Integer mOkColor = null;
     private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
-    private int mCancelColor = -1;
+    private Integer mCancelColor = null;
     private Version mVersion;
     private ScrollOrientation mScrollOrientation;
     private TimeZone mTimezone;
@@ -442,10 +439,17 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         view.findViewById(R.id.mdtp_day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
 
         // Buttons can have a different color
-        if (mOkColor != -1) okButton.setTextColor(mOkColor);
-        else okButton.setTextColor(mAccentColor);
-        if (mCancelColor != -1) cancelButton.setTextColor(mCancelColor);
-        else cancelButton.setTextColor(mAccentColor);
+        if (mOkColor != null) {
+            okButton.setTextColor(mOkColor);
+        } else {
+            okButton.setTextColor(mAccentColor);
+        }
+
+        if (mCancelColor != null) {
+            cancelButton.setTextColor(mCancelColor);
+        } else {
+            cancelButton.setTextColor(mAccentColor);
+        }
 
         if (getDialog() == null) {
             view.findViewById(R.id.mdtp_done_background).setVisibility(View.GONE);
