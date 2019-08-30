@@ -42,7 +42,7 @@ Selector de fecha | Selector de tiempo
     La forma más fácil de agregar a la Biblioteca la _Material DateTime Picker_ a su proyecto es agregarla como una dependencia `build.gradle`
     ```groovy
     a sus dependencias{
-        implementation 'com.wdullaer:materialdatetimepicker:4.2.2'
+        implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 }
 ```
 
@@ -244,7 +244,7 @@ puede desactivar la carga de la biblioteca de soporte para MaterialDateTimePicke
 Usando el siguiente fragmento en el archivo `build.gradle` de su aplicación, puede excluir la posibilidad de que se instale la biblioteca de soporte transitivo de esta biblioteca.
 
 ```groovy
-implementation ('com.wdullaer:materialdatetimepicker:4.2.2') {
+implementation ('com.wdullaer:materialdatetimepicker:4.2.3') {
         exclude group: 'androidx.appcompat'
         exclude group: 'androidx.recyclerview'
 }
