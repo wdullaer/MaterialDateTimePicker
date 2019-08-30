@@ -132,7 +132,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     private HashSet<Calendar> highlightedDays = new HashSet<>();
     private boolean mThemeDark = false;
     private boolean mThemeDarkChanged = false;
-    private int mAccentColor = -1;
+    private Integer mAccentColor = null;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
     private boolean mAutoDismiss = false;
@@ -288,7 +288,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         outState.putSerializable(KEY_HIGHLIGHTED_DAYS, highlightedDays);
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
         outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
-        outState.putInt(KEY_ACCENT, mAccentColor);
+        if (mAccentColor != null) outState.putInt(KEY_ACCENT, mAccentColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
         outState.putBoolean(KEY_AUTO_DISMISS, mAutoDismiss);
@@ -296,10 +296,10 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         outState.putString(KEY_TITLE, mTitle);
         outState.putInt(KEY_OK_RESID, mOkResid);
         outState.putString(KEY_OK_STRING, mOkString);
-        outState.putInt(KEY_OK_COLOR, mOkColor);
+        if (mOkColor != null) outState.putInt(KEY_OK_COLOR, mOkColor);
         outState.putInt(KEY_CANCEL_RESID, mCancelResid);
         outState.putString(KEY_CANCEL_STRING, mCancelString);
-        outState.putInt(KEY_CANCEL_COLOR, mCancelColor);
+        if (mCancelColor != null) outState.putInt(KEY_CANCEL_COLOR, mCancelColor);
         outState.putSerializable(KEY_VERSION, mVersion);
         outState.putSerializable(KEY_SCROLL_ORIENTATION, mScrollOrientation);
         outState.putSerializable(KEY_TIMEZONE, mTimezone);
@@ -327,17 +327,20 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
             highlightedDays = (HashSet<Calendar>) savedInstanceState.getSerializable(KEY_HIGHLIGHTED_DAYS);
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
             mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
-            mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
+            mAccentColor = savedInstanceState.getInt(KEY_ACCENT, Integer.MAX_VALUE);
+            if (mAccentColor == Integer.MAX_VALUE) mAccentColor = null;
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
             mAutoDismiss = savedInstanceState.getBoolean(KEY_AUTO_DISMISS);
             mTitle = savedInstanceState.getString(KEY_TITLE);
             mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
-            mOkColor = savedInstanceState.getInt(KEY_OK_COLOR);
+            mOkColor = savedInstanceState.getInt(KEY_OK_COLOR, Integer.MAX_VALUE);
+            if (mOkColor == Integer.MAX_VALUE) mOkColor = null;
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
-            mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR);
+            mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR, Integer.MAX_VALUE);
+            if (mCancelColor == Integer.MAX_VALUE) mCancelColor = null;
             mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
             mScrollOrientation = (ScrollOrientation) savedInstanceState.getSerializable(KEY_SCROLL_ORIENTATION);
             mTimezone = (TimeZone) savedInstanceState.getSerializable(KEY_TIMEZONE);
@@ -432,24 +435,22 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // If an accent color has not been set manually, get it from the context
-        if (mAccentColor == -1) {
+        if (mAccentColor == null) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
         if (mDatePickerHeaderView != null) mDatePickerHeaderView.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.mdtp_day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
 
         // Buttons can have a different color
-        if (mOkColor != null) {
-            okButton.setTextColor(mOkColor);
-        } else {
-            okButton.setTextColor(mAccentColor);
+        if (mOkColor == null) {
+            mOkColor = mAccentColor;
         }
+        okButton.setTextColor(mOkColor);
 
-        if (mCancelColor != null) {
-            cancelButton.setTextColor(mCancelColor);
-        } else {
-            cancelButton.setTextColor(mAccentColor);
+        if (mCancelColor == null) {
+            mCancelColor = mAccentColor;
         }
+        cancelButton.setTextColor(mCancelColor);
 
         if (getDialog() == null) {
             view.findViewById(R.id.mdtp_done_background).setVisibility(View.GONE);
