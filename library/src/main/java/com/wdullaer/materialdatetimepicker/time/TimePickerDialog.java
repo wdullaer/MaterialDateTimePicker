@@ -18,7 +18,6 @@ package com.wdullaer.materialdatetimepicker.time;
 
 import android.animation.ObjectAnimator;
 import android.app.ActionBar.LayoutParams;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
@@ -42,7 +41,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -194,7 +192,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      * @param is24HourMode True to render 24 hour mode, false to render AM / PM selectors.
      * @return a new TimePickerDialog instance.
      */
-    @SuppressWarnings("SameParameterValue")
+    @SuppressWarnings({"SameParameterValue", "WeakerAccess"})
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
             int hourOfDay, int minute, int second, boolean is24HourMode) {
         TimePickerDialog ret = new TimePickerDialog();
@@ -221,7 +219,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      * @param is24HourMode True to render 24 hour mode, false to render AM / PM selectors.
      * @return a new TimePickerDialog instance.
      */
-    @SuppressWarnings({"unused", "SameParameterValue"})
+    @SuppressWarnings({"unused", "SameParameterValue", "WeakerAccess"})
     public static TimePickerDialog newInstance(OnTimeSetListener callback, boolean is24HourMode) {
         Calendar now = Calendar.getInstance();
         return TimePickerDialog.newInstance(callback, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), is24HourMode);
@@ -367,7 +365,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      * Will disable seconds if minutes are disbled
      * @param enableMinutes true if minutes picker should be shown
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void enableMinutes(boolean enableMinutes) {
         if (!enableMinutes) mEnableSeconds = false;
         mEnableMinutes = enableMinutes;
@@ -377,6 +375,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         setMinTime(new Timepoint(hour, minute, second));
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void setMinTime(Timepoint minTime) {
         mDefaultLimiter.setMinTime(minTime);
     }
@@ -386,6 +385,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         setMaxTime(new Timepoint(hour, minute, second));
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void setMaxTime(Timepoint maxTime) {
         mDefaultLimiter.setMaxTime(maxTime);
     }
@@ -396,6 +396,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      * if the resolution of the picker is minutes)
      * @param selectableTimes Array of Timepoints which are the only valid selections in the picker
      */
+    @SuppressWarnings("WeakerAccess")
     public void setSelectableTimes(Timepoint[] selectableTimes) {
         mDefaultLimiter.setSelectableTimes(selectableTimes);
     }
@@ -453,7 +454,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      * @param hourInterval The interval between 2 selectable hours ([1,24])
      * @param minuteInterval The interval between 2 selectable minutes ([1,60])
      */
-    @SuppressWarnings("SameParameterValue")
+    @SuppressWarnings({"SameParameterValue", "WeakerAccess"})
     public void setTimeInterval(@IntRange(from=1, to=24) int hourInterval,
                                 @IntRange(from=1, to=60) int minuteInterval) {
         setTimeInterval(hourInterval, minuteInterval, 60);
@@ -521,6 +522,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      * @param minute the minute of the hour
      * @param second the second of the minute
      */
+    @SuppressWarnings("WeakerAccess")
     public void setInitialSelection(int hourOfDay, int minute, int second) {
         setInitialSelection(new Timepoint(hourOfDay, minute, second));
     }
@@ -531,7 +533,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      * @param hourOfDay the hour of the day
      * @param minute the minute of the hour
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public void setInitialSelection(int hourOfDay, int minute) {
         setInitialSelection(hourOfDay, minute, 0);
     }
@@ -541,6 +543,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      * Overrides the value given in newInstance()
      * @param time the Timepoint selected when the Dialog opens
      */
+    @SuppressWarnings("WeakerAccess")
     public void setInitialSelection(Timepoint time) {
         mInitialTime = roundToNearest(time);
         mInKbMode = false;
@@ -1438,7 +1441,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         mInKbMode = false;
         if (!mTypedTimes.isEmpty()) {
             Boolean[] enteredZeros = {false, false, false};
-            int values[] = getEnteredTime(enteredZeros);
+            int[] values = getEnteredTime(enteredZeros);
             mTimePicker.setTime(new Timepoint(values[0], values[1], values[2]));
             if (!mIs24HourMode) {
                 mTimePicker.setAmOrPm(values[3]);
@@ -1557,9 +1560,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
                     second = val;
                 } else if (i == startIndex + 1) {
                     second += 10*val;
-                    if (enteredZeros != null && val == 0) {
-                        enteredZeros[2] = true;
-                    }
+                    if (val == 0) enteredZeros[2] = true;
                 }
             }
             if (mEnableMinutes) {
@@ -1567,25 +1568,19 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
                     minute = val;
                 } else if (i == startIndex + shift + 1) {
                     minute += 10 * val;
-                    if (enteredZeros != null && val == 0) {
-                        enteredZeros[1] = true;
-                    }
+                    if (val == 0) enteredZeros[1] = true;
                 } else if (i == startIndex + shift + 2) {
                     hour = val;
                 } else if (i == startIndex + shift + 3) {
                     hour += 10 * val;
-                    if (enteredZeros != null && val == 0) {
-                        enteredZeros[0] = true;
-                    }
+                    if (val == 0) enteredZeros[0] = true;
                 }
             } else {
                 if (i == startIndex + shift) {
                     hour = val;
                 } else if (i == startIndex + shift + 1) {
                     hour += 10 * val;
-                    if (enteredZeros != null && val == 0) {
-                        enteredZeros[0] = true;
-                    }
+                    if (val == 0) enteredZeros[0] = true;
                 }
             }
         }

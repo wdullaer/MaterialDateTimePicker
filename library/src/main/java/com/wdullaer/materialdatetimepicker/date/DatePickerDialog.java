@@ -178,9 +178,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     /**
      * The callback used to notify other date picker components of a change in selected date.
      */
-    @SuppressWarnings("WeakerAccess")
     protected interface OnDateChangedListener {
-
         void onDateChanged();
     }
 
@@ -208,7 +206,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
      * @param callback How the parent is notified that the date is set.
      * @return a new DatePickerDialog instance
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public static DatePickerDialog newInstance(OnDateSetListener callback) {
         Calendar now = Calendar.getInstance();
         return DatePickerDialog.newInstance(callback, now);
@@ -222,7 +220,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
      *                         TimeZone of the Calendar object)
      * @return a new DatePickerDialog instance
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public static DatePickerDialog newInstance(OnDateSetListener callback, Calendar initialSelection) {
         DatePickerDialog ret = new DatePickerDialog();
         ret.initialize(callback, initialSelection);
@@ -994,6 +992,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
      * Set a custom locale to be used when generating various strings in the picker
      * @param locale Locale
      */
+    @SuppressWarnings("WeakerAccess")
     public void setLocale(Locale locale) {
         mLocale = locale;
         mWeekStart = Calendar.getInstance(mTimezone, mLocale).getFirstDayOfWeek();
