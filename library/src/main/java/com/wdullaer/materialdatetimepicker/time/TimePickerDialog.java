@@ -133,16 +133,16 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
     private boolean mThemeDark;
     private boolean mThemeDarkChanged;
     private boolean mVibrate;
-    private int mAccentColor = -1;
+    private Integer mAccentColor = null;
     private boolean mDismissOnPause;
     private boolean mEnableSeconds;
     private boolean mEnableMinutes;
     private int mOkResid;
     private String mOkString;
-    private int mOkColor;
+    private Integer mOkColor = null;
     private int mCancelResid;
     private String mCancelString;
-    private int mCancelColor;
+    private Integer mCancelColor = null;
     private Version mVersion;
     private DefaultTimepointLimiter mDefaultLimiter = new DefaultTimepointLimiter();
     private TimepointLimiter mLimiter = mDefaultLimiter;
@@ -237,15 +237,12 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         mTitle = "";
         mThemeDark = false;
         mThemeDarkChanged = false;
-        mAccentColor = -1;
         mVibrate = true;
         mDismissOnPause = false;
         mEnableSeconds = false;
         mEnableMinutes = true;
         mOkResid = R.string.mdtp_ok;
-        mOkColor = -1;
         mCancelResid = R.string.mdtp_cancel;
-        mCancelColor = -1;
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
         // Throw away the current TimePicker, which might contain old state if the dialog instance is reused
         mTimePicker = null;
@@ -640,17 +637,20 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
             mTitle = savedInstanceState.getString(KEY_TITLE);
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
             mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
-            mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
+            mAccentColor = savedInstanceState.getInt(KEY_ACCENT, Integer.MAX_VALUE);
+            if (mAccentColor == Integer.MAX_VALUE) mAccentColor = null;
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
             mEnableSeconds = savedInstanceState.getBoolean(KEY_ENABLE_SECONDS);
             mEnableMinutes = savedInstanceState.getBoolean(KEY_ENABLE_MINUTES);
             mOkResid = savedInstanceState.getInt(KEY_OK_RESID);
             mOkString = savedInstanceState.getString(KEY_OK_STRING);
-            mOkColor = savedInstanceState.getInt(KEY_OK_COLOR);
+            mOkColor = savedInstanceState.getInt(KEY_OK_COLOR, Integer.MAX_VALUE);
+            if (mOkColor == Integer.MAX_VALUE) mOkColor = null;
             mCancelResid = savedInstanceState.getInt(KEY_CANCEL_RESID);
             mCancelString = savedInstanceState.getString(KEY_CANCEL_STRING);
-            mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR);
+            mCancelColor = savedInstanceState.getInt(KEY_CANCEL_COLOR, Integer.MAX_VALUE);
+            if (mCancelColor == Integer.MAX_VALUE) mCancelColor = null;
             mVersion = (Version) savedInstanceState.getSerializable(KEY_VERSION);
             mLimiter = savedInstanceState.getParcelable(KEY_TIMEPOINTLIMITER);
             mLocale = (Locale) savedInstanceState.getSerializable(KEY_LOCALE);
@@ -678,7 +678,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         view.findViewById(R.id.mdtp_time_picker_dialog).setOnKeyListener(keyboardListener);
 
         // If an accent color has not been set manually, get it from the context
-        if (mAccentColor == -1) {
+        if (mAccentColor == null) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
 
@@ -989,10 +989,10 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         view.findViewById(R.id.mdtp_time_display).setBackgroundColor(mAccentColor);
 
         // Button text can have a different color
-        if (mOkColor != -1) mOkButton.setTextColor(mOkColor);
-        else mOkButton.setTextColor(mAccentColor);
-        if (mCancelColor != -1) mCancelButton.setTextColor(mCancelColor);
-        else mCancelButton.setTextColor(mAccentColor);
+        if (mOkColor == null) mOkColor = mAccentColor;
+        mOkButton.setTextColor(mOkColor);
+        if (mCancelColor == null) mCancelColor = mAccentColor;
+        mCancelButton.setTextColor(mCancelColor);
 
         if(getDialog() == null) {
             view.findViewById(R.id.mdtp_done_background).setVisibility(View.GONE);
@@ -1088,17 +1088,17 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
             outState.putString(KEY_TITLE, mTitle);
             outState.putBoolean(KEY_THEME_DARK, mThemeDark);
             outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
-            outState.putInt(KEY_ACCENT, mAccentColor);
+            if (mAccentColor != null) outState.putInt(KEY_ACCENT, mAccentColor);
             outState.putBoolean(KEY_VIBRATE, mVibrate);
             outState.putBoolean(KEY_DISMISS, mDismissOnPause);
             outState.putBoolean(KEY_ENABLE_SECONDS, mEnableSeconds);
             outState.putBoolean(KEY_ENABLE_MINUTES, mEnableMinutes);
             outState.putInt(KEY_OK_RESID, mOkResid);
             outState.putString(KEY_OK_STRING, mOkString);
-            outState.putInt(KEY_OK_COLOR, mOkColor);
+            if (mOkColor != null) outState.putInt(KEY_OK_COLOR, mOkColor);
             outState.putInt(KEY_CANCEL_RESID, mCancelResid);
             outState.putString(KEY_CANCEL_STRING, mCancelString);
-            outState.putInt(KEY_CANCEL_COLOR, mCancelColor);
+            if (mCancelColor != null) outState.putInt(KEY_CANCEL_COLOR, mCancelColor);
             outState.putSerializable(KEY_VERSION, mVersion);
             outState.putParcelable(KEY_TIMEPOINTLIMITER, mLimiter);
             outState.putSerializable(KEY_LOCALE, mLocale);
