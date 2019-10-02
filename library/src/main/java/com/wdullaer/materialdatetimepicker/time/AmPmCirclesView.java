@@ -28,6 +28,7 @@ import android.view.View;
 
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 
 import java.text.DateFormatSymbols;
 import java.util.Locale;
@@ -74,7 +75,7 @@ public class AmPmCirclesView extends View {
         mIsInitialized = false;
     }
 
-    public void initialize(Context context, Locale locale, TimePickerController controller, int amOrPm) {
+    public void initialize(CalendarType type, Context context, Locale locale, TimePickerController controller, int amOrPm) {
         if (mIsInitialized) {
             Log.e(TAG, "AmPmCirclesView may only be initialized once.");
             return;
@@ -109,8 +110,16 @@ public class AmPmCirclesView extends View {
         mAmPmCircleRadiusMultiplier =
                 Float.parseFloat(res.getString(R.string.mdtp_ampm_circle_radius_multiplier));
         String[] amPmTexts = new DateFormatSymbols(locale).getAmPmStrings();
-        mAmText = amPmTexts[0];
-        mPmText = amPmTexts[1];
+        switch (type) {
+            case JALALI:
+                mAmText = "ق.ظ";
+                mPmText = "ب.ظ";
+                break;
+            default:
+                mAmText = amPmTexts[0];
+                mPmText = amPmTexts[1];
+                break;
+        }
 
         mAmDisabled = controller.isAmDisabled();
         mPmDisabled = controller.isPmDisabled();

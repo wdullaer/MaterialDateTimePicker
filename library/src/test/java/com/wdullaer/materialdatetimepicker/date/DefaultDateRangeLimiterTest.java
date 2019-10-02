@@ -1,5 +1,6 @@
 package com.wdullaer.materialdatetimepicker.date;
 
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
 import com.wdullaer.materialdatetimepicker.enums.Version;
@@ -103,6 +104,11 @@ public class DefaultDateRangeLimiterTest {
         @Override
         public ScrollOrientation getScrollOrientation() {
             return ScrollOrientation.HORIZONTAL;
+        }
+
+        @Override
+        public CalendarType getCalendarType() {
+            return CalendarType.GREGORIAN;
         }
     };
 
@@ -538,6 +544,11 @@ public class DefaultDateRangeLimiterTest {
             @Override
             public ScrollOrientation getScrollOrientation() {
                 return null;
+            }
+
+            @Override
+            public CalendarType getCalendarType() {
+                return CalendarType.GREGORIAN;
             }
         };
 

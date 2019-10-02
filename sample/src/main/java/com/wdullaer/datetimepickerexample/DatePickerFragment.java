@@ -8,10 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.wdullaer.materialdatetimepicker.JalaliCalendar;
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
 import com.wdullaer.materialdatetimepicker.enums.Version;
@@ -35,6 +39,8 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox limitSelectableDays;
     private CheckBox highlightDays;
     private DatePickerDialog dpd;
+
+    private CalendarType calendarType;
 
     public DatePickerFragment() {
         // Required empty public constructor
@@ -60,6 +66,15 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         limitSelectableDays = view.findViewById(R.id.limit_dates);
         highlightDays = view.findViewById(R.id.highlight_dates);
 
+        final Spinner spinner = view.findViewById(R.id.calendar_type);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),
+                R.array.calendar_types_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
         view.findViewById(R.id.original_button).setOnClickListener(v -> {
             Calendar now = Calendar.getInstance();
             new android.app.DatePickerDialog(
@@ -73,15 +88,25 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
 
         // Show a datepicker when the dateButton is clicked
         dateButton.setOnClickListener(v -> {
-            Calendar now = Calendar.getInstance();
+            Calendar now;
             /*
             It is recommended to always create a new instance whenever you need to show a Dialog.
             The sample app is reusing them because it is useful when looking for regressions
             during testing
              */
+
+            if (spinner.getSelectedItemPosition() == 0) {
+                calendarType = CalendarType.JALALI;
+                now = JalaliCalendar.getInstance();
+            } else {
+                calendarType = CalendarType.GREGORIAN;
+                now = Calendar.getInstance();
+            }
+
             if (dpd == null) {
                 dpd = DatePickerDialog.newInstance(
                         DatePickerFragment.this,
+                        calendarType,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
@@ -89,6 +114,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
             } else {
                 dpd.initialize(
                         DatePickerFragment.this,
+                        calendarType,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
@@ -103,7 +129,15 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                 dpd.setAccentColor(Color.parseColor("#9C27B0"));
             }
             if (titleDate.isChecked()) {
-                dpd.setTitle("DatePicker Title");
+                switch (calendarType) {
+                    case JALALI:
+                        dpd.setTitle("عنوان انتخابگر تاریخ");
+                        break;
+                    case GREGORIAN:
+                    default:
+                        dpd.setTitle("DatePicker Title");
+                        break;
+                }
             }
             if (highlightDays.isChecked()) {
                 Calendar date1 = Calendar.getInstance();
@@ -117,7 +151,16 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
             if (limitSelectableDays.isChecked()) {
                 Calendar[] days = new Calendar[13];
                 for (int i = -6; i < 7; i++) {
-                    Calendar day = Calendar.getInstance();
+                    Calendar day;
+                    switch (calendarType) {
+                        case JALALI:
+                            day = JalaliCalendar.getInstance();
+                            break;
+                        case GREGORIAN:
+                        default:
+                            day = Calendar.getInstance();
+                            break;
+                    }
                     day.add(Calendar.DAY_OF_MONTH, i * 2);
                     days[i + 6] = day;
                 }

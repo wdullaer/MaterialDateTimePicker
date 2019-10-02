@@ -8,8 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
+
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.enums.Version;
@@ -36,6 +40,8 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     private CheckBox showVersion2;
     private TimePickerDialog tpd;
 
+    private CalendarType calendarType;
+
     public TimePickerFragment() {
         // Required empty public constructor
     }
@@ -59,6 +65,15 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         disableSpecificTimes = view.findViewById(R.id.disable_times);
         showVersion2 = view.findViewById(R.id.show_version_2);
 
+        final Spinner spinner = view.findViewById(R.id.calendar_type);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireActivity(),
+                R.array.calendar_types_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
         view.findViewById(R.id.original_button).setOnClickListener(view1 -> {
             Calendar now = Calendar.getInstance();
             new android.app.TimePickerDialog(
@@ -73,6 +88,13 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         // Show a timepicker when the timeButton is clicked
         timeButton.setOnClickListener(v -> {
             Calendar now = Calendar.getInstance();
+
+            if (spinner.getSelectedItemPosition() == 0) {
+                calendarType = CalendarType.JALALI;
+            } else {
+                calendarType = CalendarType.GREGORIAN;
+            }
+
             /*
             It is recommended to always create a new instance whenever you need to show a Dialog.
             The sample app is reusing them because it is useful when looking for regressions
@@ -81,6 +103,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
             if (tpd == null) {
                 tpd = TimePickerDialog.newInstance(
                         TimePickerFragment.this,
+                        calendarType,
                         now.get(Calendar.HOUR_OF_DAY),
                         now.get(Calendar.MINUTE),
                         mode24Hours.isChecked()
@@ -88,6 +111,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
             } else {
                 tpd.initialize(
                         TimePickerFragment.this,
+                        calendarType,
                         now.get(Calendar.HOUR_OF_DAY),
                         now.get(Calendar.MINUTE),
                         now.get(Calendar.SECOND),
@@ -103,7 +127,15 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                 tpd.setAccentColor(Color.parseColor("#9C27B0"));
             }
             if (titleTime.isChecked()) {
-                tpd.setTitle("TimePicker Title");
+                switch (calendarType) {
+                    case JALALI:
+                        tpd.setTitle("عنوان انتخابگر زمان");
+                        break;
+                    case GREGORIAN:
+                    default:
+                        tpd.setTitle("TimePicker Title");
+                        break;
+                }
             }
             if (limitSelectableTimes.isChecked()) {
                 if (enableSeconds.isChecked()) {

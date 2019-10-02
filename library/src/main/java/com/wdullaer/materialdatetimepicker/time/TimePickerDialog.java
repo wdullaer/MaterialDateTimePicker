@@ -48,6 +48,7 @@ import android.widget.TextView;
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.enums.Version;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
@@ -86,6 +87,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
     private static final String KEY_VERSION = "version";
     private static final String KEY_TIMEPOINTLIMITER = "timepoint_limiter";
     private static final String KEY_LOCALE = "locale";
+    private static final String KEY_CALENDAR_TYPE = "mCalendarType";
 
     public static final int HOUR_INDEX = 0;
     public static final int MINUTE_INDEX = 1;
@@ -160,6 +162,8 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
     private String mSecondPickerDescription;
     private String mSelectSeconds;
 
+    private CalendarType mCalendarType;
+
     /**
      * The callback interface used to indicate the user is done filling in
      * the time (they clicked on the 'Set' button).
@@ -181,7 +185,9 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
 
     /**
      * Create a new TimePickerDialog instance with a given intial selection
+     *
      * @param callback     How the parent is notified that the time is set.
+     * @param calendarType mCalendarType of calendar
      * @param hourOfDay    The initial hour of the dialog.
      * @param minute       The initial minute of the dialog.
      * @param second       The initial second of the dialog.
@@ -189,40 +195,79 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      * @return a new TimePickerDialog instance.
      */
     @SuppressWarnings({"SameParameterValue", "WeakerAccess"})
-    public static TimePickerDialog newInstance(OnTimeSetListener callback,
-            int hourOfDay, int minute, int second, boolean is24HourMode) {
+    public static TimePickerDialog newInstance(
+            OnTimeSetListener callback,
+            CalendarType calendarType,
+            int hourOfDay,
+            int minute,
+            int second,
+            boolean is24HourMode
+    ) {
         TimePickerDialog ret = new TimePickerDialog();
-        ret.initialize(callback, hourOfDay, minute, second, is24HourMode);
+        ret.initialize(callback, calendarType, hourOfDay, minute, second, is24HourMode);
         return ret;
     }
 
     /**
      * Create a new TimePickerDialog instance with a given initial selection
+     *
      * @param callback     How the parent is notified that the time is set.
+     * @param calendarType mCalendarType of calendar
      * @param hourOfDay    The initial hour of the dialog.
      * @param minute       The initial minute of the dialog.
      * @param is24HourMode True to render 24 hour mode, false to render AM / PM selectors.
      * @return a new TimePickerDialog instance.
      */
-    public static TimePickerDialog newInstance(OnTimeSetListener callback,
-            int hourOfDay, int minute, boolean is24HourMode) {
-        return TimePickerDialog.newInstance(callback, hourOfDay, minute, 0, is24HourMode);
+    public static TimePickerDialog newInstance(
+            OnTimeSetListener callback,
+            CalendarType calendarType,
+            int hourOfDay,
+            int minute,
+            boolean is24HourMode
+    ) {
+        return TimePickerDialog.newInstance(
+                callback,
+                calendarType,
+                hourOfDay,
+                minute,
+                0,
+                is24HourMode
+        );
     }
 
     /**
      * Create a new TimePickerDialog instance initialized to the current system time
+     *
      * @param callback     How the parent is notified that the time is set.
+     * @param calendarType mCalendarType of calendar
      * @param is24HourMode True to render 24 hour mode, false to render AM / PM selectors.
      * @return a new TimePickerDialog instance.
      */
     @SuppressWarnings({"unused", "SameParameterValue", "WeakerAccess"})
-    public static TimePickerDialog newInstance(OnTimeSetListener callback, boolean is24HourMode) {
+    public static TimePickerDialog newInstance(
+            OnTimeSetListener callback,
+            CalendarType calendarType,
+            boolean is24HourMode
+    ) {
         Calendar now = Calendar.getInstance();
-        return TimePickerDialog.newInstance(callback, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), is24HourMode);
+        return TimePickerDialog.newInstance(
+                callback,
+                calendarType,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                is24HourMode
+        );
     }
 
-    public void initialize(OnTimeSetListener callback,
-            int hourOfDay, int minute, int second, boolean is24HourMode) {
+    public void initialize(
+            OnTimeSetListener callback,
+            CalendarType calendarType,
+            int hourOfDay,
+            int minute,
+            int second,
+            boolean is24HourMode
+    ) {
+        this.setCalendarType(calendarType);
         mCallback = callback;
 
         mInitialTime = new Timepoint(hourOfDay, minute, second);
@@ -240,6 +285,10 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         mVersion = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? Version.VERSION_1 : Version.VERSION_2;
         // Throw away the current TimePicker, which might contain old state if the dialog instance is reused
         mTimePicker = null;
+    }
+
+    private void setCalendarType(CalendarType calendarType) {
+        this.mCalendarType = calendarType;
     }
 
     /**
@@ -629,7 +678,8 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         super.onCreate(savedInstanceState);
         setStyle(AppCompatDialogFragment.STYLE_NO_TITLE, 0);
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_INITIAL_TIME)
-                    && savedInstanceState.containsKey(KEY_IS_24_HOUR_VIEW)) {
+                && savedInstanceState.containsKey(KEY_IS_24_HOUR_VIEW)) {
+            this.setCalendarType((CalendarType) savedInstanceState.get(KEY_CALENDAR_TYPE));
             mInitialTime = savedInstanceState.getParcelable(KEY_INITIAL_TIME);
             mIs24HourMode = savedInstanceState.getBoolean(KEY_IS_24_HOUR_VIEW);
             mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
@@ -709,7 +759,17 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         mPmTextView = view.findViewById(R.id.mdtp_pm_label);
         mPmTextView.setOnKeyListener(keyboardListener);
         mAmPmLayout = view.findViewById(R.id.mdtp_ampm_layout);
-        String[] amPmTexts = new DateFormatSymbols(mLocale).getAmPmStrings();
+        String[] amPmTexts;
+        switch (mCalendarType) {
+            case JALALI:
+                amPmTexts = new String[]{"ق.ظ", "ب.ظ"};
+                break;
+            case GREGORIAN:
+            default:
+                amPmTexts = new DateFormatSymbols(mLocale).getAmPmStrings();
+                break;
+        }
+
         mAmText = amPmTexts[0];
         mPmText = amPmTexts[1];
 
@@ -724,7 +784,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         mTimePicker = view.findViewById(R.id.mdtp_time_picker);
         mTimePicker.setOnValueSelectedListener(this);
         mTimePicker.setOnKeyListener(keyboardListener);
-        mTimePicker.initialize(getActivity(), mLocale, this, mInitialTime, mIs24HourMode);
+        mTimePicker.initialize(mCalendarType, getActivity(), mLocale, this, mInitialTime, mIs24HourMode);
 
         int currentItemShowing = HOUR_INDEX;
         if (savedInstanceState != null &&
@@ -1075,6 +1135,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         if (mTimePicker != null) {
+            outState.putSerializable(KEY_CALENDAR_TYPE, mCalendarType);
             outState.putParcelable(KEY_INITIAL_TIME, mTimePicker.getTime());
             outState.putBoolean(KEY_IS_24_HOUR_VIEW, mIs24HourMode);
             outState.putInt(KEY_CURRENT_ITEM_SHOWING, mTimePicker.getCurrentItemShowing());

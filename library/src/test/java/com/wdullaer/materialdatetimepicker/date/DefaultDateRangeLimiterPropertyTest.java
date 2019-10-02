@@ -3,6 +3,7 @@ package com.wdullaer.materialdatetimepicker.date;
 import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.generator.InRange;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
 import com.wdullaer.materialdatetimepicker.enums.Version;
@@ -107,6 +108,11 @@ public class DefaultDateRangeLimiterPropertyTest {
         @Override
         public ScrollOrientation getScrollOrientation() {
             return ScrollOrientation.HORIZONTAL;
+        }
+
+        @Override
+        public CalendarType getCalendarType() {
+            return CalendarType.GREGORIAN;
         }
     };
 

@@ -16,6 +16,7 @@
 
 package com.wdullaer.materialdatetimepicker.date;
 
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
 import com.wdullaer.materialdatetimepicker.enums.Version;
 
@@ -66,4 +67,6 @@ public interface DatePickerController {
     Version getVersion();
 
     ScrollOrientation getScrollOrientation();
+
+    CalendarType getCalendarType();
 }

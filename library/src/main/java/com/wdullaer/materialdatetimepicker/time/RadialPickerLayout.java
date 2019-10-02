@@ -19,12 +19,10 @@ package com.wdullaer.materialdatetimepicker.time;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -38,7 +36,12 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.enums.Version;
 
 import java.util.Calendar;
@@ -96,10 +99,13 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
     private AnimatorSet mTransition;
     private Handler mHandler = new Handler();
+    private Typeface font;
 
     public interface OnValueSelectedListener {
         void onValueSelected(Timepoint newTime);
+
         void enablePicker();
+
         void advancePicker(int index);
     }
 
@@ -157,13 +163,21 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
     /**
      * Initialize the Layout with starting values.
-     * @param context A context needed to inflate resources
-     * @param locale A Locale to be used when generating strings
-     * @param initialTime The initial selection of the Timepicker
+     *
+     * @param calendarType Type of calendar
+     * @param context      A context needed to inflate resources
+     * @param locale       A Locale to be used when generating strings
+     * @param initialTime  The initial selection of the Timepicker
      * @param is24HourMode Indicates whether we should render in 24hour mode or with AM/PM selectors
      */
-    public void initialize(Context context, Locale locale, TimePickerController timePickerController,
-            Timepoint initialTime, boolean is24HourMode) {
+    public void initialize(
+            CalendarType calendarType,
+            Context context,
+            Locale locale,
+            TimePickerController timePickerController,
+            Timepoint initialTime,
+            boolean is24HourMode
+    ) {
         if (mTimeInitialized) {
             Log.e(TAG, "Time has already been initialized.");
             return;
@@ -176,7 +190,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mCircleView.initialize(context, mController);
         mCircleView.invalidate();
         if (!mIs24HourMode && mController.getVersion() == Version.VERSION_1) {
-            mAmPmCirclesView.initialize(context, locale, mController, initialTime.isAM() ? AM : PM);
+            mAmPmCirclesView.initialize(calendarType, context, locale, mController, initialTime.isAM() ? AM : PM);
             mAmPmCirclesView.invalidate();
         }
 
@@ -191,8 +205,8 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         };
         RadialTextsView.SelectionValidator hourValidator = selection -> {
             Timepoint newTime = new Timepoint(selection, mCurrentTime.getMinute(), mCurrentTime.getSecond());
-            if(!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) newTime.setPM();
-            if(!mIs24HourMode && getIsCurrentlyAmOrPm() == AM) newTime.setAM();
+            if (!mIs24HourMode && getIsCurrentlyAmOrPm() == PM) newTime.setPM();
+            if (!mIs24HourMode && getIsCurrentlyAmOrPm() == AM) newTime.setAM();
             return !mController.isOutOfRange(newTime, HOUR_INDEX);
         };
 
@@ -206,7 +220,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         String[] minutesTexts = new String[12];
         String[] secondsTexts = new String[12];
         for (int i = 0; i < 12; i++) {
-            hoursTexts[i] = is24HourMode?
+            hoursTexts[i] = is24HourMode ?
                     String.format(locale, "%02d", hours_24[i]) : String.format(locale, "%d", hours[i]);
             innerHoursTexts[i] = String.format(locale, "%d", hours[i]);
             minutesTexts[i] = String.format(locale, "%02d", minutes[i]);
