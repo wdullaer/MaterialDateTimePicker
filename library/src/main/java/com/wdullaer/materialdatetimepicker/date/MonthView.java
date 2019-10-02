@@ -234,13 +234,11 @@ public abstract class MonthView extends View {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                final int day = getDayFromLocation(event.getX(), event.getY());
-                if (day >= 0) {
-                    onDayClick(day);
-                }
-                break;
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            final int day = getDayFromLocation(event.getX(), event.getY());
+            if (day >= 0) {
+                onDayClick(day);
+            }
         }
         return true;
     }
