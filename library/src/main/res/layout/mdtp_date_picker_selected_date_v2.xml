@@ -46,6 +46,7 @@
         android:layout_gravity="center"
         android:gravity="start"
         android:clickable="true"
+        android:focusable="true"
         android:orientation="horizontal"
         android:background="@android:color/transparent"
         android:textColor="@color/mdtp_date_picker_selector" >
