@@ -101,7 +101,12 @@ public class AmPmCirclesView extends View {
 
         String typefaceFamily = res.getString(R.string.mdtp_sans_serif);
         Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);
-        mPaint.setTypeface(tf);
+        final Typeface font = Utils.getCustomFont();
+        if (font != null) {
+            mPaint.setTypeface(font);
+        } else {
+            mPaint.setTypeface(tf);
+        }
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Align.CENTER);
 

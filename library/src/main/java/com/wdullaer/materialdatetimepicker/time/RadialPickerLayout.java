@@ -99,7 +99,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
     private AnimatorSet mTransition;
     private Handler mHandler = new Handler();
-    private Typeface font;
 
     public interface OnValueSelectedListener {
         void onValueSelected(Timepoint newTime);

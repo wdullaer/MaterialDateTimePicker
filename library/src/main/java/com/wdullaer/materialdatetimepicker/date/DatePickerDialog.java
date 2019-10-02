@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -114,6 +115,8 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
 
     private AccessibleDateAnimator mAnimator;
 
+    private Button mOkButton;
+    private Button mCancelButton;
     private TextView mDatePickerHeaderView;
     private LinearLayout mMonthAndDayView;
     private TextView mSelectedMonthTextView;
@@ -496,25 +499,23 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         animation2.setDuration(ANIMATION_DURATION);
         mAnimator.setOutAnimation(animation2);
 
-        Button okButton = view.findViewById(R.id.mdtp_ok);
-        okButton.setOnClickListener(v -> {
+        mOkButton = view.findViewById(R.id.mdtp_ok);
+        mOkButton.setOnClickListener(v -> {
             tryVibrate();
             notifyOnDateListener();
             dismiss();
         });
-        okButton.setTypeface(ResourcesCompat.getFont(activity, R.font.robotomedium));
-        if (mOkString != null) okButton.setText(mOkString);
-        else okButton.setText(mOkResid);
+        if (mOkString != null) mOkButton.setText(mOkString);
+        else mOkButton.setText(mOkResid);
 
-        Button cancelButton = view.findViewById(R.id.mdtp_cancel);
-        cancelButton.setOnClickListener(v -> {
+        mCancelButton = view.findViewById(R.id.mdtp_cancel);
+        mCancelButton.setOnClickListener(v -> {
             tryVibrate();
             if (getDialog() != null) getDialog().cancel();
         });
-        cancelButton.setTypeface(ResourcesCompat.getFont(activity, R.font.robotomedium));
-        if (mCancelString != null) cancelButton.setText(mCancelString);
-        else cancelButton.setText(mCancelResid);
-        cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
+        if (mCancelString != null) mCancelButton.setText(mCancelString);
+        else mCancelButton.setText(mCancelResid);
+        mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // If an accent color has not been set manually, get it from the context
         if (mAccentColor == null) {
@@ -527,12 +528,12 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         if (mOkColor == null) {
             mOkColor = mAccentColor;
         }
-        okButton.setTextColor(mOkColor);
+        mOkButton.setTextColor(mOkColor);
 
         if (mCancelColor == null) {
             mCancelColor = mAccentColor;
         }
-        cancelButton.setTextColor(mCancelColor);
+        mCancelButton.setTextColor(mCancelColor);
 
         if (getDialog() == null) {
             view.findViewById(R.id.mdtp_done_background).setVisibility(View.GONE);
@@ -550,7 +551,27 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         }
 
         mHapticFeedbackController = new HapticFeedbackController(activity);
+
+        setUiFont();
+
         return view;
+    }
+
+    private void setUiFont() {
+        final Typeface font = Utils.getCustomFont();
+
+        if (font == null) {
+            final Activity activity = requireActivity();
+            mOkButton.setTypeface(ResourcesCompat.getFont(activity, R.font.robotomedium));
+            mCancelButton.setTypeface(ResourcesCompat.getFont(activity, R.font.robotomedium));
+        } else {
+            if (mOkButton != null) mOkButton.setTypeface(font);
+            if (mCancelButton != null) mCancelButton.setTypeface(font);
+            if (mDatePickerHeaderView != null) mDatePickerHeaderView.setTypeface(font);
+            if (mSelectedMonthTextView != null) mSelectedMonthTextView.setTypeface(font);
+            if (mSelectedDayTextView != null) mSelectedDayTextView.setTypeface(font);
+            if (mYearView != null) mYearView.setTypeface(font);
+        }
     }
 
     @Override
@@ -1104,6 +1125,11 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     @Override
     public CalendarType getCalendarType() {
         return mCalendarType;
+    }
+
+    @Override
+    public void setFont(Typeface customFont) {
+        Utils.setCustomFont(customFont);
     }
 
     /**

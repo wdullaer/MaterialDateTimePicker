@@ -18,6 +18,7 @@ package com.wdullaer.materialdatetimepicker.date;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
 import com.wdullaer.materialdatetimepicker.enums.Version;
 
@@ -128,6 +130,10 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
                 v = (TextViewWithCircularIndicator) LayoutInflater.from(parent.getContext())
                   .inflate(R.layout.mdtp_year_label_text_view, parent, false);
                 v.setAccentColor(mController.getAccentColor(), mController.isThemeDark());
+            }
+            final Typeface font = Utils.getCustomFont();
+            if (font != null) {
+                v.setTypeface(font);
             }
             int year = mMinYear + position;
             boolean selected = mController.getSelectedDay().year == year;

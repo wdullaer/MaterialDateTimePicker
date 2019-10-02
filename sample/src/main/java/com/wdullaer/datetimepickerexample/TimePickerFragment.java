@@ -1,6 +1,7 @@
 package com.wdullaer.datetimepickerexample;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -38,6 +39,8 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     private CheckBox limitSelectableTimes;
     private CheckBox disableSpecificTimes;
     private CheckBox showVersion2;
+
+    private static Typeface font;
     private TimePickerDialog tpd;
 
     private CalendarType calendarType;
@@ -73,6 +76,8 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+
+        font = Typeface.createFromAsset(requireActivity().getAssets(), "IRANSansMobile(FaNum).ttf");
 
         view.findViewById(R.id.original_button).setOnClickListener(view1 -> {
             Calendar now = Calendar.getInstance();
@@ -117,6 +122,16 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
                         now.get(Calendar.SECOND),
                         mode24Hours.isChecked()
                 );
+            }
+
+            switch (calendarType) {
+                case JALALI:
+                    tpd.setFont(font);
+                    break;
+                case GREGORIAN:
+                default:
+                    tpd.setFont(null);
+                    break;
             }
             tpd.setThemeDark(modeDarkTime.isChecked());
             tpd.vibrate(vibrateTime.isChecked());

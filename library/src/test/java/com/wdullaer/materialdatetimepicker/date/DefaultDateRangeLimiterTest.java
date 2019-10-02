@@ -1,5 +1,7 @@
 package com.wdullaer.materialdatetimepicker.date;
 
+import android.graphics.Typeface;
+
 import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
@@ -109,6 +111,10 @@ public class DefaultDateRangeLimiterTest {
         @Override
         public CalendarType getCalendarType() {
             return CalendarType.GREGORIAN;
+        }
+
+        @Override
+        public void setFont(Typeface customFont) {
         }
     };
 
@@ -549,6 +555,10 @@ public class DefaultDateRangeLimiterTest {
             @Override
             public CalendarType getCalendarType() {
                 return CalendarType.GREGORIAN;
+            }
+
+            @Override
+            public void setFont(Typeface customFont) {
             }
         };
 

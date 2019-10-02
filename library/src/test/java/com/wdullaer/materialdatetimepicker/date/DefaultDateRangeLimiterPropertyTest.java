@@ -1,5 +1,7 @@
 package com.wdullaer.materialdatetimepicker.date;
 
+import android.graphics.Typeface;
+
 import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.generator.InRange;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
@@ -113,6 +115,10 @@ public class DefaultDateRangeLimiterPropertyTest {
         @Override
         public CalendarType getCalendarType() {
             return CalendarType.GREGORIAN;
+        }
+
+        @Override
+        public void setFont(Typeface customFont) {
         }
     };
 

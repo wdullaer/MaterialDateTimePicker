@@ -1,5 +1,7 @@
 package com.wdullaer.materialdatetimepicker.time;
 
+import android.graphics.Typeface;
+
 import com.wdullaer.materialdatetimepicker.enums.Version;
 
 /**
@@ -60,4 +62,6 @@ interface TimePickerController {
      * @return timepoint - the nearest valid timepoint
      */
     Timepoint roundToNearest(Timepoint time, Timepoint.TYPE type);
+
+    void setFont(Typeface customFont);
 }

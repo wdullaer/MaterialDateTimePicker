@@ -16,6 +16,8 @@
 
 package com.wdullaer.materialdatetimepicker.date;
 
+import android.graphics.Typeface;
+
 import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
 import com.wdullaer.materialdatetimepicker.enums.Version;
@@ -69,4 +71,6 @@ public interface DatePickerController {
     ScrollOrientation getScrollOrientation();
 
     CalendarType getCalendarType();
+
+    void setFont(Typeface customFont);
 }

@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.ColorInt;
@@ -818,8 +819,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
             dismiss();
         });
         mOkButton.setOnKeyListener(keyboardListener);
-        mOkButton.setTypeface(ResourcesCompat.getFont(context, R.font.robotomedium));
-        if(mOkString != null) mOkButton.setText(mOkString);
+        if (mOkString != null) mOkButton.setText(mOkString);
         else mOkButton.setText(mOkResid);
 
         mCancelButton = view.findViewById(R.id.mdtp_cancel);
@@ -827,8 +827,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
             tryVibrate();
             if (getDialog() != null) getDialog().cancel();
         });
-        mCancelButton.setTypeface(ResourcesCompat.getFont(context, R.font.robotomedium));
-        if(mCancelString != null) mCancelButton.setText(mCancelString);
+        if (mCancelString != null) mCancelButton.setText(mCancelString);
         else mCancelButton.setText(mCancelResid);
         mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
@@ -1062,7 +1061,30 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
 
         mTimePicker.setBackgroundColor(mThemeDark? lightGray : circleBackground);
         view.findViewById(R.id.mdtp_time_picker_dialog).setBackgroundColor(mThemeDark ? darkBackgroundColor : backgroundColor);
+
+        setUiFont(view);
+
         return view;
+    }
+
+    private void setUiFont(View view) {
+        final Typeface font = Utils.getCustomFont();
+        if (font == null) {
+            final Activity activity = requireActivity();
+            mOkButton.setTypeface(ResourcesCompat.getFont(activity, R.font.robotomedium));
+            mCancelButton.setTypeface(ResourcesCompat.getFont(activity, R.font.robotomedium));
+        } else {
+            if (mOkButton != null) mOkButton.setTypeface(font);
+            if (mCancelButton != null) mCancelButton.setTypeface(font);
+            if (mAmTextView != null) mAmTextView.setTypeface(font);
+            if (mPmTextView != null) mPmTextView.setTypeface(font);
+            if (mHourView != null) mHourView.setTypeface(font);
+            if (mMinuteView != null) mMinuteView.setTypeface(font);
+            if (mSecondView != null) mSecondView.setTypeface(font);
+            ((TextView) view.findViewById(R.id.mdtp_separator)).setTypeface(font);
+            ((TextView) view.findViewById(R.id.mdtp_separator_seconds)).setTypeface(font);
+            ((TextView) view.findViewById(R.id.mdtp_time_picker_header)).setTypeface(font);
+        }
     }
 
     @Override
@@ -1230,6 +1252,11 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
     @Override
     public Timepoint roundToNearest(@NonNull Timepoint time, @Nullable Timepoint.TYPE type) {
         return mLimiter.roundToNearest(time, type, getPickerResolution());
+    }
+
+    @Override
+    public void setFont(Typeface customFont) {
+        Utils.setCustomFont(customFont);
     }
 
     /**

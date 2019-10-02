@@ -1,6 +1,7 @@
 package com.wdullaer.datetimepickerexample;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -38,6 +39,8 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox switchOrientation;
     private CheckBox limitSelectableDays;
     private CheckBox highlightDays;
+
+    private static Typeface font;
     private DatePickerDialog dpd;
 
     private CalendarType calendarType;
@@ -74,6 +77,8 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+
+        font = Typeface.createFromAsset(requireActivity().getAssets(), "IRANSansMobile(FaNum).ttf");
 
         view.findViewById(R.id.original_button).setOnClickListener(v -> {
             Calendar now = Calendar.getInstance();
@@ -119,6 +124,16 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
                 );
+            }
+
+            switch (calendarType) {
+                case JALALI:
+                    dpd.setFont(font);
+                    break;
+                case GREGORIAN:
+                default:
+                    dpd.setFont(null);
+                    break;
             }
             dpd.setThemeDark(modeDarkDate.isChecked());
             dpd.vibrate(vibrateDate.isChecked());

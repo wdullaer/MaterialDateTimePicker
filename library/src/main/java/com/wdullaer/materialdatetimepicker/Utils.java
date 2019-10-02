@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import androidx.annotation.AttrRes;
 import androidx.core.content.ContextCompat;
@@ -45,6 +46,11 @@ public class Utils {
     public static final int SELECTED_ALPHA_THEME_DARK = 255;
     // Alpha level for fully opaque.
     public static final int FULL_ALPHA = 255;
+
+    /**
+     * user custom font used shared among all classes
+     */
+    private static Typeface customFont;
 
     /**
      * Try to speak the specified text, for accessibility. Only available on JB or later.
@@ -153,5 +159,13 @@ public class Utils {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
+    }
+
+    synchronized public static void setCustomFont(Typeface customFont) {
+        Utils.customFont = customFont;
+    }
+
+    synchronized public static Typeface getCustomFont() {
+        return customFont;
     }
 }
