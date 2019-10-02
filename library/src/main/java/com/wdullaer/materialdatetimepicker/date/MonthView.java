@@ -428,8 +428,11 @@ public abstract class MonthView extends View {
         Locale locale = mController.getLocale();
         String pattern = "MMMM yyyy";
 
-        if (Build.VERSION.SDK_INT < 18) pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
-        else pattern = DateFormat.getBestDateTimePattern(locale, pattern);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
+        } else {
+            pattern = DateFormat.getBestDateTimePattern(locale, pattern);
+        }
 
         SimpleDateFormat formatter = new SimpleDateFormat(pattern, locale);
         formatter.setTimeZone(mController.getTimeZone());
