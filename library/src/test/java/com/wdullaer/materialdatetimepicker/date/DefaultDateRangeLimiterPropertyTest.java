@@ -4,6 +4,8 @@ import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.generator.InRange;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -98,13 +100,13 @@ public class DefaultDateRangeLimiterPropertyTest {
         }
 
         @Override
-        public DatePickerDialog.Version getVersion() {
-            return DatePickerDialog.Version.VERSION_2;
+        public Version getVersion() {
+            return Version.VERSION_2;
         }
 
         @Override
-        public DatePickerDialog.ScrollOrientation getScrollOrientation() {
-            return DatePickerDialog.ScrollOrientation.HORIZONTAL;
+        public ScrollOrientation getScrollOrientation() {
+            return ScrollOrientation.HORIZONTAL;
         }
     };
 

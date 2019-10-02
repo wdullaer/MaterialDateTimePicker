@@ -45,6 +45,8 @@ import androidx.core.content.res.ResourcesCompat;
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -58,16 +60,6 @@ import java.util.TimeZone;
  */
 public class DatePickerDialog extends AppCompatDialogFragment implements
         OnClickListener, DatePickerController {
-
-    public enum Version {
-        VERSION_1,
-        VERSION_2
-    }
-
-    public enum ScrollOrientation {
-        HORIZONTAL,
-        VERTICAL
-    }
 
     private static final int UNINITIALIZED = -1;
     private static final int MONTH_AND_DAY_VIEW = 0;

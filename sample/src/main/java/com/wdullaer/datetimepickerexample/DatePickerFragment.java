@@ -13,6 +13,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 import java.util.Calendar;
 
@@ -96,7 +98,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
             dpd.vibrate(vibrateDate.isChecked());
             dpd.dismissOnPause(dismissDate.isChecked());
             dpd.showYearPickerFirst(showYearFirst.isChecked());
-            dpd.setVersion(showVersion2.isChecked() ? DatePickerDialog.Version.VERSION_2 : DatePickerDialog.Version.VERSION_1);
+            dpd.setVersion(showVersion2.isChecked() ? Version.VERSION_2 : Version.VERSION_1);
             if (modeCustomAccentDate.isChecked()) {
                 dpd.setAccentColor(Color.parseColor("#9C27B0"));
             }
@@ -122,10 +124,10 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                 dpd.setSelectableDays(days);
             }
             if (switchOrientation.isChecked()) {
-                if (dpd.getVersion() == DatePickerDialog.Version.VERSION_1) {
-                    dpd.setScrollOrientation(DatePickerDialog.ScrollOrientation.HORIZONTAL);
+                if (dpd.getVersion() == Version.VERSION_1) {
+                    dpd.setScrollOrientation(ScrollOrientation.HORIZONTAL);
                 } else {
-                    dpd.setScrollOrientation(DatePickerDialog.ScrollOrientation.VERTICAL);
+                    dpd.setScrollOrientation(ScrollOrientation.VERTICAL);
                 }
             }
             dpd.setOnCancelListener(dialog -> {

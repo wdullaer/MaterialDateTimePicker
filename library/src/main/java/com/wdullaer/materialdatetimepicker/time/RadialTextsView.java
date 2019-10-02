@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 /**
  * A view to show a series of numbers in a circular pattern.
@@ -123,7 +124,7 @@ public class RadialTextsView extends View {
         mHasInnerCircle = (innerTexts != null);
 
         // Calculate the radius for the main circle.
-        if (mIs24HourMode || controller.getVersion() != TimePickerDialog.Version.VERSION_1) {
+        if (mIs24HourMode || controller.getVersion() != Version.VERSION_1) {
             mCircleRadiusMultiplier = Float.parseFloat(
                     res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {
@@ -143,7 +144,7 @@ public class RadialTextsView extends View {
                     res.getString(R.string.mdtp_numbers_radius_multiplier_inner));
 
             // Version 2 layout draws outer circle bigger than inner
-            if (controller.getVersion() == TimePickerDialog.Version.VERSION_1) {
+            if (controller.getVersion() == Version.VERSION_1) {
                 mTextSizeMultiplier = Float.parseFloat(
                         res.getString(R.string.mdtp_text_size_multiplier_outer));
                 mInnerTextSizeMultiplier = Float.parseFloat(

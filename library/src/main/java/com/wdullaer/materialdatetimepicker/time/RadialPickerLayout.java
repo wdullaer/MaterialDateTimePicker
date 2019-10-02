@@ -39,6 +39,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -174,7 +175,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         // Initialize the circle and AM/PM circles if applicable.
         mCircleView.initialize(context, mController);
         mCircleView.invalidate();
-        if (!mIs24HourMode && mController.getVersion() == TimePickerDialog.Version.VERSION_1) {
+        if (!mIs24HourMode && mController.getVersion() == Version.VERSION_1) {
             mAmPmCirclesView.initialize(context, locale, mController, initialTime.isAM() ? AM : PM);
             mAmPmCirclesView.invalidate();
         }
@@ -213,7 +214,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         }
         // The version 2 layout has the hours > 12 on the inner circle rather than the outer circle
         // Inner circle and outer circle should be swapped (see #411)
-        if (mController.getVersion() == TimePickerDialog.Version.VERSION_2) {
+        if (mController.getVersion() == Version.VERSION_2) {
             String[] temp = hoursTexts;
             hoursTexts = innerHoursTexts;
             innerHoursTexts = temp;
@@ -266,7 +267,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         // We'll have the 00 hours on the outside circle.
         boolean isMorning = hourOfDay <= 12 && hourOfDay != 0;
         // In the version 2 layout the circles are swapped
-        if (mController.getVersion() != TimePickerDialog.Version.VERSION_1) isMorning = !isMorning;
+        if (mController.getVersion() != Version.VERSION_1) isMorning = !isMorning;
         return mIs24HourMode && isMorning;
     }
 
@@ -565,7 +566,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         }
 
         if (currentShowing == HOUR_INDEX
-                && mController.getVersion() != TimePickerDialog.Version.VERSION_1
+                && mController.getVersion() != Version.VERSION_1
                 && mIs24HourMode) {
             value = (value + 12) % 24;
         }
@@ -729,7 +730,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 mDoingMove = false;
                 mDoingTouch = true;
                 // If we're showing the AM/PM, check to see if the user is touching it.
-                if (!mIs24HourMode && mController.getVersion() == TimePickerDialog.Version.VERSION_1) {
+                if (!mIs24HourMode && mController.getVersion() == Version.VERSION_1) {
                     mIsTouchingAmOrPm = mAmPmCirclesView.getIsTouchingAmOrPm(eventX, eventY);
                 } else {
                     mIsTouchingAmOrPm = -1;

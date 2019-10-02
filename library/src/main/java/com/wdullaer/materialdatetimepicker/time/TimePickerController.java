@@ -1,5 +1,7 @@
 package com.wdullaer.materialdatetimepicker.time;
 
+import com.wdullaer.materialdatetimepicker.enums.Version;
+
 /**
  * A collection of methods which need to be shared with all components of the TimePicker
  *
@@ -24,7 +26,7 @@ interface TimePickerController {
     /**
      * @return Version - The current version to render
      */
-    TimePickerDialog.Version getVersion();
+    Version getVersion();
 
     /**
      * Request the device to vibrate

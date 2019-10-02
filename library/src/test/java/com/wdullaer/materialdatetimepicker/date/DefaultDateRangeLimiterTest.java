@@ -1,6 +1,8 @@
 package com.wdullaer.materialdatetimepicker.date;
 
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 import org.junit.Test;
 import org.junit.Assert;
@@ -94,13 +96,13 @@ public class DefaultDateRangeLimiterTest {
         }
 
         @Override
-        public DatePickerDialog.Version getVersion() {
-            return DatePickerDialog.Version.VERSION_2;
+        public Version getVersion() {
+            return Version.VERSION_2;
         }
 
         @Override
-        public DatePickerDialog.ScrollOrientation getScrollOrientation() {
-            return DatePickerDialog.ScrollOrientation.HORIZONTAL;
+        public ScrollOrientation getScrollOrientation() {
+            return ScrollOrientation.HORIZONTAL;
         }
     };
 
@@ -529,12 +531,12 @@ public class DefaultDateRangeLimiterTest {
             }
 
             @Override
-            public DatePickerDialog.Version getVersion() {
+            public Version getVersion() {
                 return null;
             }
 
             @Override
-            public DatePickerDialog.ScrollOrientation getScrollOrientation() {
+            public ScrollOrientation getScrollOrientation() {
                 return null;
             }
         };

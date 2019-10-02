@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.wdullaer.materialdatetimepicker.enums.Version;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
 
@@ -97,7 +98,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
             tpd.vibrate(vibrateTime.isChecked());
             tpd.dismissOnPause(dismissTime.isChecked());
             tpd.enableSeconds(enableSeconds.isChecked());
-            tpd.setVersion(showVersion2.isChecked() ? TimePickerDialog.Version.VERSION_2 : TimePickerDialog.Version.VERSION_1);
+            tpd.setVersion(showVersion2.isChecked() ? Version.VERSION_2 : Version.VERSION_1);
             if (modeCustomAccentTime.isChecked()) {
                 tpd.setAccentColor(Color.parseColor("#9C27B0"));
             }

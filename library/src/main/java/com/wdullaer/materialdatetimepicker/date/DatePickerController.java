@@ -16,6 +16,9 @@
 
 package com.wdullaer.materialdatetimepicker.date;
 
+import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
+import com.wdullaer.materialdatetimepicker.enums.Version;
+
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -60,7 +63,7 @@ public interface DatePickerController {
 
     Locale getLocale();
 
-    DatePickerDialog.Version getVersion();
+    Version getVersion();
 
-    DatePickerDialog.ScrollOrientation getScrollOrientation();
+    ScrollOrientation getScrollOrientation();
 }

@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 /**
  * Draws a simple white circle on which the numbers will be drawn.
@@ -65,7 +66,7 @@ public class CircleView extends View {
         mPaint.setAntiAlias(true);
 
         mIs24HourMode = controller.is24HourMode();
-        if (mIs24HourMode || controller.getVersion() != TimePickerDialog.Version.VERSION_1) {
+        if (mIs24HourMode || controller.getVersion() != Version.VERSION_1) {
             mCircleRadiusMultiplier = Float.parseFloat(
                     res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {

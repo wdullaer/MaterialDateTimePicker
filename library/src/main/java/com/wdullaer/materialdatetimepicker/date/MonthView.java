@@ -40,6 +40,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter.CalendarDay;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
@@ -167,7 +168,7 @@ public abstract class MonthView extends View {
         MONTH_DAY_LABEL_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_month_day_label_text_size);
         MONTH_HEADER_SIZE = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height);
         MONTH_HEADER_SIZE_V2 = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height_v2);
-        DAY_SELECTED_CIRCLE_SIZE = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+        DAY_SELECTED_CIRCLE_SIZE = mController.getVersion() == Version.VERSION_1
                 ? res.getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius)
                 : res.getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius_v2);
         DAY_HIGHLIGHT_CIRCLE_SIZE = res
@@ -175,7 +176,7 @@ public abstract class MonthView extends View {
         DAY_HIGHLIGHT_CIRCLE_MARGIN = res
                 .getDimensionPixelSize(R.dimen.mdtp_day_highlight_circle_margin);
 
-        if (mController.getVersion() == DatePickerDialog.Version.VERSION_1) {
+        if (mController.getVersion() == Version.VERSION_1) {
             mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
                     - getMonthHeaderSize()) / MAX_NUM_ROWS;
         } else {
@@ -183,7 +184,7 @@ public abstract class MonthView extends View {
                     - getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE * 2) / MAX_NUM_ROWS;
         }
 
-        mEdgePadding = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+        mEdgePadding = mController.getVersion() == Version.VERSION_1
                 ? 0
                 : context.getResources().getDimensionPixelSize(R.dimen.mdtp_date_picker_view_animator_padding_v2);
 
@@ -239,7 +240,7 @@ public abstract class MonthView extends View {
      */
     protected void initView() {
         mMonthTitlePaint = new Paint();
-        if (mController.getVersion() == DatePickerDialog.Version.VERSION_1)
+        if (mController.getVersion() == Version.VERSION_1)
             mMonthTitlePaint.setFakeBoldText(true);
         mMonthTitlePaint.setAntiAlias(true);
         mMonthTitlePaint.setTextSize(MONTH_LABEL_TEXT_SIZE);
@@ -374,7 +375,7 @@ public abstract class MonthView extends View {
      * @return The height in pixels of a row of day labels
      */
     public int getMonthHeight() {
-        int scaleFactor = mController.getVersion() == DatePickerDialog.Version.VERSION_1 ? 2 : 3;
+        int scaleFactor = mController.getVersion() == Version.VERSION_1 ? 2 : 3;
         return getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE * scaleFactor;
     }
 
@@ -396,7 +397,7 @@ public abstract class MonthView extends View {
      * A wrapper to the MonthHeaderSize to allow override it in children
      */
     protected int getMonthHeaderSize() {
-        return mController.getVersion() == DatePickerDialog.Version.VERSION_1
+        return mController.getVersion() == Version.VERSION_1
                 ? MONTH_HEADER_SIZE
                 : MONTH_HEADER_SIZE_V2;
     }
@@ -418,7 +419,7 @@ public abstract class MonthView extends View {
 
     protected void drawMonthTitle(Canvas canvas) {
         int x = mWidth / 2;
-        int y = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+        int y = mController.getVersion() == Version.VERSION_1
                 ? (getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE) / 2
                 : getMonthHeaderSize() / 2 - MONTH_DAY_LABEL_TEXT_SIZE;
         canvas.drawText(getMonthAndYearString(), x, y, mMonthTitlePaint);
