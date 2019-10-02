@@ -101,8 +101,6 @@ public class GravitySnapHelper extends LinearSnapHelper {
             } else { // END
                 out[0] = distanceToEnd(targetView, getHorizontalHelper(layoutManager), false);
             }
-        } else {
-            out[0] = 0;
         }
 
         if (layoutManager.canScrollVertically()) {
@@ -111,8 +109,6 @@ public class GravitySnapHelper extends LinearSnapHelper {
             } else { // BOTTOM
                 out[1] = distanceToEnd(targetView, getVerticalHelper(layoutManager), false);
             }
-        } else {
-            out[1] = 0;
         }
 
         return out;
