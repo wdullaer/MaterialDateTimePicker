@@ -59,7 +59,7 @@ public class TimepointTest {
     public void compareToShouldReturnZeroIfArgumentIsEqual() {
         Timepoint orig = new Timepoint(12, 11, 10);
         Timepoint arg = new Timepoint(12, 11, 10);
-        Assert.assertTrue(orig.compareTo(arg) == 0);
+        Assert.assertEquals(0, orig.compareTo(arg));
     }
 
     @Test
