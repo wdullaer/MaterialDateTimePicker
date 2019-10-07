@@ -78,6 +78,15 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        final Spinner localeSpinner = view.findViewById(R.id.calendar_locale);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> localeAdapter = ArrayAdapter.createFromResource(requireActivity(),
+                R.array.calendar_Locales_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        localeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        localeSpinner.setAdapter(localeAdapter);
+
         font = Typeface.createFromAsset(requireActivity().getAssets(), "IRANYekanMobileRegular.ttf");
 
         view.findViewById(R.id.original_button).setOnClickListener(v -> {
@@ -135,6 +144,13 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                     dpd.setFont(null);
                     break;
             }
+
+            if (localeSpinner.getSelectedItemPosition() == 0) {
+                dpd.setLocale(new Locale("fa"));
+            } else {
+                dpd.setLocale(Locale.ENGLISH);
+            }
+
             dpd.setThemeDark(modeDarkDate.isChecked());
             dpd.vibrate(vibrateDate.isChecked());
             dpd.dismissOnPause(dismissDate.isChecked());

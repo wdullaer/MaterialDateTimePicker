@@ -40,4 +40,9 @@
         <item>Gregorian</item>
     </string-array>
 
+    <string-array name="calendar_Locales_array">
+        <item>Persian</item>
+        <item>English</item>
+    </string-array>
+
 </resources>
