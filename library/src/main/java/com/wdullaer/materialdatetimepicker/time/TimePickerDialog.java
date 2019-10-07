@@ -792,6 +792,11 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
                     amOrPm = AM;
                 }
                 mTimePicker.setAmOrPm(amOrPm);
+                if (amOrPm == AM) {
+                    Utils.tryAccessibilityAnnounce(mTimePicker, mAmText);
+                } else if (amOrPm == PM) {
+                    Utils.tryAccessibilityAnnounce(mTimePicker, mPmText);
+                }
             };
             mAmTextView .setVisibility(View.GONE);
             mPmTextView.setVisibility(View.VISIBLE);
@@ -1055,20 +1060,16 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
             if (amOrPm == AM) {
                 mAmTextView.setTextColor(mSelectedColor);
                 mPmTextView.setTextColor(mUnselectedColor);
-                Utils.tryAccessibilityAnnounce(mTimePicker, mAmText);
             } else {
                 mAmTextView.setTextColor(mUnselectedColor);
                 mPmTextView.setTextColor(mSelectedColor);
-                Utils.tryAccessibilityAnnounce(mTimePicker, mPmText);
             }
         } else {
             if (amOrPm == AM) {
                 mPmTextView.setText(mAmText);
-                Utils.tryAccessibilityAnnounce(mTimePicker, mAmText);
                 mPmTextView.setContentDescription(mAmText);
             } else if (amOrPm == PM){
                 mPmTextView.setText(mPmText);
-                Utils.tryAccessibilityAnnounce(mTimePicker, mPmText);
                 mPmTextView.setContentDescription(mPmText);
             } else {
                 mPmTextView.setText(mDoublePlaceholderText);
@@ -1111,7 +1112,7 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
      */
     @Override
     public void onValueSelected(Timepoint newValue) {
-        setHour(newValue.getHour(), false);
+        setHour(newValue.getHour(), true);
         mTimePicker.setContentDescription(mHourPickerDescription + ": " + newValue.getHour());
         setMinute(newValue.getMinute());
         mTimePicker.setContentDescription(mMinutePickerDescription + ": " + newValue.getMinute());
@@ -1126,12 +1127,12 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         if(index == HOUR_INDEX && mEnableMinutes) {
             setCurrentItemShowing(MINUTE_INDEX, true, true, false);
 
-            String announcement = mSelectHours + ". " + mTimePicker.getMinutes();
+            String announcement = mSelectMinutes + ". " + mTimePicker.getMinutes();
             Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
         } else if(index == MINUTE_INDEX && mEnableSeconds) {
             setCurrentItemShowing(SECOND_INDEX, true, true, false);
 
-            String announcement = mSelectMinutes+". " + mTimePicker.getSeconds();
+            String announcement = mSelectSeconds +". " + mTimePicker.getSeconds();
             Utils.tryAccessibilityAnnounce(mTimePicker, announcement);
         }
     }
@@ -1198,9 +1199,10 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         }
 
         CharSequence text = String.format(mLocale, format, value);
+        int oldValue = Utils.stringToInt(mHourView.getText().toString());
         mHourView.setText(text);
         mHourSpaceView.setText(text);
-        if (announce) {
+        if (announce && oldValue != value && oldValue != -1) {
             Utils.tryAccessibilityAnnounce(mTimePicker, text);
         }
     }
@@ -1209,20 +1211,26 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
         if (value == 60) {
             value = 0;
         }
+        int oldValue = Utils.stringToInt(mMinuteView.getText().toString());
         CharSequence text = String.format(mLocale, "%02d", value);
-        Utils.tryAccessibilityAnnounce(mTimePicker, text);
         mMinuteView.setText(text);
         mMinuteSpaceView.setText(text);
+        if (oldValue != value && oldValue != -1) {
+            Utils.tryAccessibilityAnnounce(mTimePicker, text);
+        }
     }
 
     private void setSecond(int value) {
         if(value == 60) {
             value = 0;
         }
+        int oldValue = Utils.stringToInt(mSecondView.getText().toString());
         CharSequence text = String.format(mLocale, "%02d", value);
-        Utils.tryAccessibilityAnnounce(mTimePicker, text);
         mSecondView.setText(text);
         mSecondSpaceView.setText(text);
+        if (oldValue != value && oldValue != -1) {
+            Utils.tryAccessibilityAnnounce(mTimePicker, text);
+        }
     }
 
     // Show either Hours or Minutes.
