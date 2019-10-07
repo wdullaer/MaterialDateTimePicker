@@ -1156,7 +1156,16 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     @SuppressWarnings("WeakerAccess")
     public void setLocale(Locale locale) {
         mLocale = locale;
-        mWeekStart = Calendar.getInstance(mTimezone, mLocale).getFirstDayOfWeek();
+        switch (mCalendarType) {
+            case JALALI:
+                JalaliCalendar.setLocale(locale);
+                mWeekStart = JalaliCalendar.getInstance(mTimezone, mLocale).getFirstDayOfWeek();
+                break;
+            case GREGORIAN:
+            default:
+                mWeekStart = Calendar.getInstance(mTimezone, mLocale).getFirstDayOfWeek();
+                break;
+        }
         YEAR_FORMAT = new SimpleDateFormat("yyyy", locale);
         MONTH_FORMAT = new SimpleDateFormat("MMM", locale);
         DAY_FORMAT = new SimpleDateFormat("dd", locale);
