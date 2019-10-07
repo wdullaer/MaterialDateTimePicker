@@ -62,7 +62,7 @@ public class Utils {
      * @return The animator object. Use .start() to begin.
      */
     public static ObjectAnimator getPulseAnimator(View labelToAnimate, float decreaseRatio,
-                                                  float increaseRatio) {
+            float increaseRatio) {
         Keyframe k0 = Keyframe.ofFloat(0f, 1f);
         Keyframe k1 = Keyframe.ofFloat(0.275f, decreaseRatio);
         Keyframe k2 = Keyframe.ofFloat(0.69f, increaseRatio);
