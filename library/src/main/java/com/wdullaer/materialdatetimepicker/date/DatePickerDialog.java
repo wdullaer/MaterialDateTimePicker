@@ -38,12 +38,14 @@ import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
 import com.wdullaer.materialdatetimepicker.JalaliCalendar;
 import com.wdullaer.materialdatetimepicker.R;
@@ -182,7 +184,6 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         void onDateChanged();
     }
 
-
     public DatePickerDialog() {
         // Empty constructor required for dialog fragment.
     }
@@ -292,7 +293,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         Calendar cal;
         switch (calendarType) {
             case JALALI:
-                cal = JalaliCalendar.getInstance(getTimeZone());
+                cal = JalaliCalendar.getInstance(getTimeZone(), getLocale());
                 break;
             case GREGORIAN:
             default:
@@ -376,7 +377,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
             this.setCalendarType((CalendarType) savedInstanceState.get(KEY_CALENDAR_TYPE));
             switch (mCalendarType) {
                 case JALALI:
-                    mCalendar = JalaliCalendar.getInstance(getTimeZone());
+                    mCalendar = JalaliCalendar.getInstance(getTimeZone(), getLocale());
                     break;
                 case GREGORIAN:
                 default:
@@ -521,7 +522,9 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         if (mAccentColor == null) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
-        if (mDatePickerHeaderView != null) mDatePickerHeaderView.setBackgroundColor(Utils.darkenColor(mAccentColor));
+        if (mDatePickerHeaderView != null) {
+            mDatePickerHeaderView.setBackgroundColor(Utils.darkenColor(mAccentColor));
+        }
         view.findViewById(R.id.mdtp_day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
 
         // Buttons can have a different color
@@ -575,7 +578,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     }
 
     @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         ViewGroup viewGroup = (ViewGroup) getView();
         if (viewGroup != null) {
@@ -585,7 +588,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         }
     }
 
-    public void setCalendarType(CalendarType calendarType) {
+    private void setCalendarType(CalendarType calendarType) {
         this.mCalendarType = calendarType;
     }
 
@@ -603,13 +606,13 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     }
 
     @Override
-    public void onCancel(DialogInterface dialog) {
+    public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
         if (mOnCancelListener != null) mOnCancelListener.onCancel(dialog);
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (mOnDismissListener != null) mOnDismissListener.onDismiss(dialog);
     }
@@ -684,7 +687,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     private void updateDisplay(boolean announce) {
         switch (mCalendarType) {
             case JALALI:
-                mYearView.setText(String.format("%d", mCalendar.get(Calendar.YEAR)));
+                mYearView.setText(String.format(getLocale(), "%d", mCalendar.get(Calendar.YEAR)));
                 break;
             case GREGORIAN:
             default:
@@ -711,9 +714,9 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
             }
             switch (mCalendarType) {
                 case JALALI:
-                    mYearView.setText(String.format("%d", mCalendar.get(Calendar.YEAR)));
+                    mYearView.setText(String.format(getLocale(), "%d", mCalendar.get(Calendar.YEAR)));
                     mSelectedMonthTextView.setText(((JalaliCalendar) mCalendar).getMonthName());
-                    mSelectedDayTextView.setText(String.format("%02d", mCalendar.get(Calendar.DAY_OF_MONTH)));
+                    mSelectedDayTextView.setText(String.format(getLocale(), "%02d", mCalendar.get(Calendar.DAY_OF_MONTH)));
                     break;
                 case GREGORIAN:
                 default:
@@ -728,7 +731,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
             switch (mCalendarType) {
                 case JALALI:
                     JalaliCalendar cal = ((JalaliCalendar) mCalendar);
-                    String dayMonthText = String.format("%s %d %s",
+                    String dayMonthText = String.format(getLocale(), "%s %d %s",
                             cal.getWeekDayName(), cal.get(Calendar.DAY_OF_MONTH), cal.getMonthName());
                     mSelectedDayTextView.setText(dayMonthText);
                     if (mTitle != null)
@@ -1030,6 +1033,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
 
     /**
      * Provide a DateRangeLimiter for full control over which dates are enabled and disabled in the picker
+     *
      * @param dateRangeLimiter An implementation of the DateRangeLimiter interface
      */
     @SuppressWarnings("unused")
@@ -1108,6 +1112,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
 
     /**
      * Set which way the user needs to swipe to switch months in the MonthView
+     *
      * @param orientation The orientation to use
      */
     public void setScrollOrientation(ScrollOrientation orientation) {
@@ -1116,6 +1121,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
 
     /**
      * Get which way the user needs to swipe to switch months in the MonthView
+     *
      * @return SwipeOrientation
      */
     public ScrollOrientation getScrollOrientation() {
@@ -1134,9 +1140,10 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
 
     /**
      * Set which timezone the picker should use
-     *
+     * <p>
      * This has been deprecated in favor of setting the TimeZone using the constructor that
      * takes a Calendar object
+     *
      * @param timeZone The timezone to use
      */
     @SuppressWarnings("DeprecatedIsStillUsed")
@@ -1151,6 +1158,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
 
     /**
      * Set a custom locale to be used when generating various strings in the picker
+     *
      * @param locale Locale
      */
     @SuppressWarnings("WeakerAccess")
@@ -1173,6 +1181,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
 
     /**
      * Return the current locale (default or other)
+     *
      * @return Locale
      */
     @Override
@@ -1197,6 +1206,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
 
     /**
      * Get a reference to the callback
+     *
      * @return OnDateSetListener the callback
      */
     @SuppressWarnings("unused")
@@ -1305,11 +1315,12 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         if (mVibrate) mHapticFeedbackController.tryVibrate();
     }
 
-    @Override public TimeZone getTimeZone() {
+    @Override
+    public TimeZone getTimeZone() {
         return mTimezone == null ? TimeZone.getDefault() : mTimezone;
     }
 
-    public void notifyOnDateListener() {
+    private void notifyOnDateListener() {
         if (mCallBack != null) {
             mCallBack.onDateSet(DatePickerDialog.this, mCalendar.get(Calendar.YEAR),
                     mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));

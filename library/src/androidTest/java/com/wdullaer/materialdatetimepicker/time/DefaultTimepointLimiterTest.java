@@ -1,12 +1,14 @@
 package com.wdullaer.materialdatetimepicker.time;
 
 import android.os.Parcel;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for DefaultTimepointLimiter which need to run on an android device

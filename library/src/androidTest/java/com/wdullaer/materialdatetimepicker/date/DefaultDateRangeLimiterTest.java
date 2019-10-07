@@ -1,6 +1,7 @@
 package com.wdullaer.materialdatetimepicker.date;
 
 import android.os.Parcel;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
@@ -8,7 +9,8 @@ import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for DefaultDateRangeLimiter which need to run on an android device

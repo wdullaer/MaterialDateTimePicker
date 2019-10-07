@@ -2,13 +2,13 @@ package com.wdullaer.materialdatetimepicker.date;
 
 import android.graphics.Typeface;
 
-import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
 import com.wdullaer.materialdatetimepicker.enums.Version;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -18,22 +18,26 @@ import java.util.TimeZone;
 /**
  * Unit tests for the default DateRangeLimiter implementation
  * Primarily used to assert that the rounding logic functions properly
- * 
+ * <p>
  * Created by wdullaer on 14/04/17.
  */
 public class DefaultDateRangeLimiterTest {
     final private DatePickerController controller = new DatePickerController() {
         @Override
-        public void onYearSelected(int year) {}
+        public void onYearSelected(int year) {
+        }
 
         @Override
-        public void onDayOfMonthSelected(int year, int month, int day) {}
+        public void onDayOfMonthSelected(int year, int month, int day) {
+        }
 
         @Override
-        public void registerOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {}
+        public void registerOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {
+        }
 
         @Override
-        public void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {}
+        public void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {
+        }
 
         @Override
         public MonthAdapter.CalendarDay getSelectedDay() {
@@ -86,7 +90,8 @@ public class DefaultDateRangeLimiterTest {
         }
 
         @Override
-        public void tryVibrate() {}
+        public void tryVibrate() {
+        }
 
         @Override
         public TimeZone getTimeZone() {
@@ -123,7 +128,7 @@ public class DefaultDateRangeLimiterTest {
     public void getSelectableDaysShouldHaveDatesTrimmedToMidnight() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
-        for (int i = 0;i < days.length; i++) {
+        for (int i = 0; i < days.length; i++) {
             Calendar day = Calendar.getInstance();
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);
@@ -150,7 +155,7 @@ public class DefaultDateRangeLimiterTest {
     public void getDisabledDaysShouldHaveDatesTrimmedToMidnight() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
-        for (int i = 0;i < days.length; i++) {
+        for (int i = 0; i < days.length; i++) {
             Calendar day = Calendar.getInstance();
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);
@@ -466,16 +471,20 @@ public class DefaultDateRangeLimiterTest {
         days[0] = disabledDay;
         DatePickerController controller = new DatePickerController() {
             @Override
-            public void onYearSelected(int year) {}
+            public void onYearSelected(int year) {
+            }
 
             @Override
-            public void onDayOfMonthSelected(int year, int month, int day) {}
+            public void onDayOfMonthSelected(int year, int month, int day) {
+            }
 
             @Override
-            public void registerOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {}
+            public void registerOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {
+            }
 
             @Override
-            public void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {}
+            public void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {
+            }
 
             @Override
             public MonthAdapter.CalendarDay getSelectedDay() {
@@ -582,7 +591,7 @@ public class DefaultDateRangeLimiterTest {
     public void setToNearestShouldRoundDisabledDates() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
-        for (int i = 0;i < days.length; i++) {
+        for (int i = 0; i < days.length; i++) {
             Calendar day = Calendar.getInstance();
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);
@@ -636,7 +645,7 @@ public class DefaultDateRangeLimiterTest {
     public void setToNearestShouldRoundToASelectableDay() {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         Calendar[] days = new Calendar[3];
-        for (int i = 0;i < days.length; i++) {
+        for (int i = 0; i < days.length; i++) {
             Calendar day = Calendar.getInstance();
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);
@@ -661,7 +670,7 @@ public class DefaultDateRangeLimiterTest {
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
         limiter.setController(controller);
         Calendar[] days = new Calendar[3];
-        for (int i = 0;i < days.length; i++) {
+        for (int i = 0; i < days.length; i++) {
             Calendar day = Calendar.getInstance();
             day.set(Calendar.YEAR, 1999 + i);
             day.set(Calendar.HOUR_OF_DAY, 2);

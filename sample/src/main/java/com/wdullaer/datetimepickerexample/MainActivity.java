@@ -1,15 +1,17 @@
 package com.wdullaer.datetimepickerexample;
 
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class MainActivity extends AppCompatActivity
-{
+import com.google.android.material.tabs.TabLayout;
+
+public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     PickerAdapter adapter;
 
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(findViewById(R.id.toolbar));
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        for(int i=0; i < adapter.getCount(); i++) //noinspection ConstantConditions
+        for (int i = 0; i < adapter.getCount(); i++) //noinspection ConstantConditions
             tabLayout.getTabAt(i).setText(adapter.getTitle(i));
     }
 
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity
         Fragment datePickerFragment;
 
         PickerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             timePickerFragment = new TimePickerFragment();
             datePickerFragment = new DatePickerFragment();
         }
@@ -45,9 +47,10 @@ public class MainActivity extends AppCompatActivity
             return NUM_PAGES;
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
-            switch(position) {
+            switch (position) {
                 case 0:
                     return timePickerFragment;
                 case 1:
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         int getTitle(int position) {
-            switch(position) {
+            switch (position) {
                 case 0:
                     return R.string.tab_title_time;
                 case 1:

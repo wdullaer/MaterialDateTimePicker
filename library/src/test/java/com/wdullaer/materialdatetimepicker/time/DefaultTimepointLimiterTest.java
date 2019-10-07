@@ -1,15 +1,15 @@
 package com.wdullaer.materialdatetimepicker.time;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import static com.wdullaer.materialdatetimepicker.time.TimePickerDialog.HOUR_INDEX;
 import static com.wdullaer.materialdatetimepicker.time.TimePickerDialog.MINUTE_INDEX;
-
-import org.junit.Test;
-import org.junit.Assert;
 
 /**
  * Unit tests for the default implementation of TimepointLimiter
  * Mostly used to assert that the rounding logic works
- *
+ * <p>
  * Created by wdullaer on 22/06/17.
  */
 public class DefaultTimepointLimiterTest {
@@ -257,7 +257,7 @@ public class DefaultTimepointLimiterTest {
                 new Timepoint(13),
                 new Timepoint(14)
         };
-        DefaultTimepointLimiter limiter  = new DefaultTimepointLimiter();
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
 
         limiter.setSelectableTimes(selectableDays);
 

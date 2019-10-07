@@ -24,6 +24,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.wdullaer.materialdatetimepicker.GravitySnapHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
@@ -32,11 +37,6 @@ import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * This displays a list of months in a calendar format with selectable days.
@@ -64,6 +64,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     public interface OnPageListener {
         /**
          * Called when the visible page of the DayPickerView has changed
+         *
          * @param position the new position visible in the DayPickerView
          */
         void onPageChanged(int position);
