@@ -25,9 +25,12 @@ public class JalaliCalendar extends Calendar {
     private final static int ESFAND = 11;
 
     private final static String[] monthNames = {"فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"};
+    private final static String[] monthENLocaleNames = {"Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar", "Mehr", "Aban", "Azar", "Dey", "Bahman", "Esfand"};
     private final static String[] weekDayNames = {"یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"};
+    private final static String[] weekDayENLocaleNames = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
     private static TimeZone timeZone = TimeZone.getDefault();
+    private static Locale locale = Locale.getDefault();
     private static boolean isTimeSeted = false;
 
     private static final int ONE_SECOND = 1000;
@@ -115,6 +118,7 @@ public class JalaliCalendar extends Calendar {
 
         super(zone, aLocale);
         timeZone = zone;
+        locale = aLocale;
         Calendar calendar = Calendar.getInstance(zone, aLocale);
 
         YearMonthDate yearMonthDate = new YearMonthDate(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DATE));
@@ -138,8 +142,8 @@ public class JalaliCalendar extends Calendar {
         this(year, month, dayOfMonth, hourOfDay, minute, second, 0);
     }
 
-    JalaliCalendar(int year, int month, int dayOfMonth,
-                   int hourOfDay, int minute, int second, int millis) {
+    public JalaliCalendar(int year, int month, int dayOfMonth,
+                           int hourOfDay, int minute, int second, int millis) {
         super();
 
         this.set(YEAR, year);
@@ -182,15 +186,15 @@ public class JalaliCalendar extends Calendar {
     }
 
     public String getMonthName() {
-        return monthNames[get(MONTH)];
+        return locale.getLanguage().equals("fa") ? monthNames[get(MONTH)] : monthENLocaleNames[get(MONTH)];
     }
 
     public String getWeekDayName() {
-        return weekDayNames[get(DAY_OF_WEEK) - 1];
+        return locale.getLanguage().equals("fa") ? weekDayNames[get(DAY_OF_WEEK) - 1] : weekDayENLocaleNames[get(DAY_OF_WEEK) - 1];
     }
 
     public static String getWeekDayName(int dayNum) {
-        return weekDayNames[dayNum - 1];
+        return locale.getLanguage().equals("fa") ? weekDayNames[dayNum - 1] : weekDayENLocaleNames[dayNum - 1];
     }
 
     public static YearMonthDate gregorianToJalali(YearMonthDate gregorian) {
@@ -244,7 +248,6 @@ public class JalaliCalendar extends Calendar {
 
         return new YearMonthDate(jalaliYear, jalaliMonth, jalaliDay);
     }
-
 
     public static YearMonthDate jalaliToGregorian(YearMonthDate jalali) {
         if (jalali.getMonth() > 11 || jalali.getMonth() < -11) {
@@ -344,15 +347,12 @@ public class JalaliCalendar extends Calendar {
 
     public static boolean isLeepYear(int year) {
         //Algorithm from www.wikipedia.com
-        if ((year % 33 == 1 || year % 33 == 5 || year % 33 == 9 || year % 33 == 13 ||
-                year % 33 == 17 || year % 33 == 22 || year % 33 == 26 || year % 33 == 30)) {
-            return true;
-        } else return false;
+        return (year % 33 == 1 || year % 33 == 5 || year % 33 == 9 || year % 33 == 13 ||
+                year % 33 == 17 || year % 33 == 22 || year % 33 == 26 || year % 33 == 30);
     }
 
     @Override
     protected void computeTime() {
-
         if (!isTimeSet && !isTimeSeted) {
             Calendar cal = GregorianCalendar.getInstance(timeZone);
             if (!isSet(HOUR_OF_DAY)) {
@@ -841,6 +841,14 @@ public class JalaliCalendar extends Calendar {
             return jalaliDaysInMonth[get(MONTH)];
         }
         return super.getActualMaximum(field);
+    }
+
+    public static void setLocale(Locale locale) {
+        JalaliCalendar.locale = locale;
+    }
+
+    public static Locale getLocale() {
+        return locale;
     }
 }
 
