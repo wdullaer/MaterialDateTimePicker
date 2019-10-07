@@ -77,7 +77,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        font = Typeface.createFromAsset(requireActivity().getAssets(), "IRANSansMobile(FaNum).ttf");
+        font = Typeface.createFromAsset(requireActivity().getAssets(), "IRANYekanMobileRegular.ttf");
 
         view.findViewById(R.id.original_button).setOnClickListener(view1 -> {
             Calendar now = Calendar.getInstance();

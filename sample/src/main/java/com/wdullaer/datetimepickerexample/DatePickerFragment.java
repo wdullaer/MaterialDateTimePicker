@@ -78,7 +78,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        font = Typeface.createFromAsset(requireActivity().getAssets(), "IRANSansMobile(FaNum).ttf");
+        font = Typeface.createFromAsset(requireActivity().getAssets(), "IRANYekanMobileRegular.ttf");
 
         view.findViewById(R.id.original_button).setOnClickListener(v -> {
             Calendar now = Calendar.getInstance();
