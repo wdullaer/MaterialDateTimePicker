@@ -121,6 +121,7 @@ public class AmPmCirclesView extends View {
                 mAmText = "ق.ظ";
                 mPmText = "ب.ظ";
                 break;
+            case GREGORIAN:
             default:
                 mAmText = amPmTexts[0];
                 mPmText = amPmTexts[1];
