@@ -32,6 +32,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox switchOrientation;
     private CheckBox limitSelectableDays;
     private CheckBox highlightDays;
+    private CheckBox defaultSelection;
     private DatePickerDialog dpd;
 
     public DatePickerFragment() {
@@ -57,6 +58,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         switchOrientation = view.findViewById(R.id.switch_orientation);
         limitSelectableDays = view.findViewById(R.id.limit_dates);
         highlightDays = view.findViewById(R.id.highlight_dates);
+        defaultSelection = view.findViewById(R.id.default_selection);
 
         view.findViewById(R.id.original_button).setOnClickListener(v -> {
             Calendar now = Calendar.getInstance();
@@ -72,6 +74,9 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         // Show a datepicker when the dateButton is clicked
         dateButton.setOnClickListener(v -> {
             Calendar now = Calendar.getInstance();
+            if (defaultSelection.isChecked()) {
+                now.add(Calendar.DATE, 7);
+            }
             /*
             It is recommended to always create a new instance whenever you need to show a Dialog.
             The sample app is reusing them because it is useful when looking for regressions

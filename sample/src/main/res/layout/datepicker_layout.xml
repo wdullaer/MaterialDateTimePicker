@@ -92,5 +92,12 @@
             android:text="@string/highlight_dates"
             android:checked="false"/>
 
+        <CheckBox
+            android:id="@+id/default_selection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_selection"
+            android:checked="false"/>
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
