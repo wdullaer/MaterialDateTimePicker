@@ -41,8 +41,10 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private CheckBox switchOrientation;
     private CheckBox limitSelectableDays;
     private CheckBox highlightDays;
+    private CheckBox defaultSelection;
 
     private static Typeface font;
+
     private DatePickerDialog dpd;
 
     private CalendarType calendarType;
@@ -69,6 +71,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         switchOrientation = view.findViewById(R.id.switch_orientation);
         limitSelectableDays = view.findViewById(R.id.limit_dates);
         highlightDays = view.findViewById(R.id.highlight_dates);
+        defaultSelection = view.findViewById(R.id.default_selection);
 
         final Spinner spinner = view.findViewById(R.id.calendar_type);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -118,6 +121,10 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
                 now = Calendar.getInstance();
             }
 
+            if (defaultSelection.isChecked()) {
+                now.add(Calendar.DATE, 7);
+            }
+          
             if (dpd == null) {
                 dpd = DatePickerDialog.newInstance(
                         DatePickerFragment.this,
