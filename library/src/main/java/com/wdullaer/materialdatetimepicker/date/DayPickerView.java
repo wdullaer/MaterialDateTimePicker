@@ -24,18 +24,19 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.wdullaer.materialdatetimepicker.GravitySnapHelper;
-import com.wdullaer.materialdatetimepicker.Utils;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.wdullaer.materialdatetimepicker.GravitySnapHelper;
+import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
+import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * This displays a list of months in a calendar format with selectable days.
@@ -63,6 +64,7 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
     public interface OnPageListener {
         /**
          * Called when the visible page of the DayPickerView has changed
+         *
          * @param position the new position visible in the DayPickerView
          */
         void onPageChanged(int position);
@@ -70,9 +72,9 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
 
     public DayPickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        DatePickerDialog.ScrollOrientation scrollOrientation = Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                ? DatePickerDialog.ScrollOrientation.VERTICAL
-                : DatePickerDialog.ScrollOrientation.HORIZONTAL;
+        ScrollOrientation scrollOrientation = Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                ? ScrollOrientation.VERTICAL
+                : ScrollOrientation.HORIZONTAL;
         init(context, scrollOrientation);
     }
 
@@ -90,9 +92,9 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         refreshAdapter();
     }
 
-    public void init(Context context, DatePickerDialog.ScrollOrientation scrollOrientation) {
+    public void init(Context context, ScrollOrientation scrollOrientation) {
         @RecyclerView.Orientation
-        int layoutOrientation = scrollOrientation == DatePickerDialog.ScrollOrientation.VERTICAL
+        int layoutOrientation = scrollOrientation == ScrollOrientation.VERTICAL
                 ? RecyclerView.VERTICAL
                 : RecyclerView.HORIZONTAL;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, layoutOrientation, false);
@@ -110,10 +112,10 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
      * Sets all the required fields for the list view. Override this method to
      * set a different list view behavior.
      */
-    protected void setUpRecyclerView(DatePickerDialog.ScrollOrientation scrollOrientation) {
+    protected void setUpRecyclerView(ScrollOrientation scrollOrientation) {
         setVerticalScrollBarEnabled(false);
         setFadingEdgeLength(0);
-        int gravity = scrollOrientation == DatePickerDialog.ScrollOrientation.VERTICAL
+        int gravity = scrollOrientation == ScrollOrientation.VERTICAL
                 ? Gravity.TOP
                 : Gravity.START;
         GravitySnapHelper helper = new GravitySnapHelper(gravity, position -> {
@@ -259,8 +261,9 @@ public abstract class DayPickerView extends RecyclerView implements OnDateChange
         return getChildAdapterPosition(getMostVisibleMonth());
     }
 
-    public @Nullable MonthView getMostVisibleMonth() {
-        boolean verticalScroll = mController.getScrollOrientation() == DatePickerDialog.ScrollOrientation.VERTICAL;
+    public @Nullable
+    MonthView getMostVisibleMonth() {
+        boolean verticalScroll = mController.getScrollOrientation() == ScrollOrientation.VERTICAL;
         final int maxSize = verticalScroll ? getHeight() : getWidth();
         int maxDisplayedSize = 0;
         int i = 0;

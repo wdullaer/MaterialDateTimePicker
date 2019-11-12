@@ -1,9 +1,14 @@
 package com.wdullaer.materialdatetimepicker.date;
 
+import android.graphics.Typeface;
+
 import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.generator.InRange;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
+import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -23,16 +28,20 @@ import java.util.TimeZone;
 public class DefaultDateRangeLimiterPropertyTest {
     final private DatePickerController controller = new DatePickerController() {
         @Override
-        public void onYearSelected(int year) {}
+        public void onYearSelected(int year) {
+        }
 
         @Override
-        public void onDayOfMonthSelected(int year, int month, int day) {}
+        public void onDayOfMonthSelected(int year, int month, int day) {
+        }
 
         @Override
-        public void registerOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {}
+        public void registerOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {
+        }
 
         @Override
-        public void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {}
+        public void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener) {
+        }
 
         @Override
         public MonthAdapter.CalendarDay getSelectedDay() {
@@ -85,7 +94,8 @@ public class DefaultDateRangeLimiterPropertyTest {
         }
 
         @Override
-        public void tryVibrate() {}
+        public void tryVibrate() {
+        }
 
         @Override
         public TimeZone getTimeZone() {
@@ -98,13 +108,22 @@ public class DefaultDateRangeLimiterPropertyTest {
         }
 
         @Override
-        public DatePickerDialog.Version getVersion() {
-            return DatePickerDialog.Version.VERSION_2;
+        public Version getVersion() {
+            return Version.VERSION_2;
         }
 
         @Override
-        public DatePickerDialog.ScrollOrientation getScrollOrientation() {
-            return DatePickerDialog.ScrollOrientation.HORIZONTAL;
+        public ScrollOrientation getScrollOrientation() {
+            return ScrollOrientation.HORIZONTAL;
+        }
+
+        @Override
+        public CalendarType getCalendarType() {
+            return CalendarType.GREGORIAN;
+        }
+
+        @Override
+        public void setFont(Typeface customFont) {
         }
     };
 

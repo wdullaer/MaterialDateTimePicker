@@ -1,11 +1,13 @@
 package com.wdullaer.materialdatetimepicker.time;
 
 import android.os.Parcel;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test for Timepoint which need to run on an actual device

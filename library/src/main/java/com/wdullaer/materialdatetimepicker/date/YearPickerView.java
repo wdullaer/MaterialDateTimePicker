@@ -18,6 +18,7 @@ package com.wdullaer.materialdatetimepicker.date;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 /**
  * Displays a selectable list of years.
@@ -50,9 +53,9 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
                 LayoutParams.WRAP_CONTENT);
         setLayoutParams(frame);
         Resources res = context.getResources();
-        mViewSize = mController.getVersion() == DatePickerDialog.Version.VERSION_1
-            ? res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
-            : res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height_v2);
+        mViewSize = mController.getVersion() == Version.VERSION_1
+                ? res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
+                : res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height_v2);
         mChildSize = res.getDimensionPixelOffset(R.dimen.mdtp_year_label_height);
         setVerticalFadingEdgeEnabled(true);
         setFadingEdgeLength(mChildSize / 3);
@@ -125,12 +128,16 @@ public class YearPickerView extends ListView implements OnItemClickListener, OnD
                 v = (TextViewWithCircularIndicator) convertView;
             } else {
                 v = (TextViewWithCircularIndicator) LayoutInflater.from(parent.getContext())
-                  .inflate(R.layout.mdtp_year_label_text_view, parent, false);
+                        .inflate(R.layout.mdtp_year_label_text_view, parent, false);
                 v.setAccentColor(mController.getAccentColor(), mController.isThemeDark());
+            }
+            final Typeface font = Utils.getCustomFont();
+            if (font != null) {
+                v.setTypeface(font);
             }
             int year = mMinYear + position;
             boolean selected = mController.getSelectedDay().year == year;
-            v.setText(String.format(mController.getLocale(),"%d", year));
+            v.setText(String.format(mController.getLocale(), "%d", year));
             v.drawIndicator(selected);
             v.requestLayout();
             if (selected) {

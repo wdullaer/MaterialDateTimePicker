@@ -54,8 +54,9 @@ public class HapticFeedbackController {
 
     /**
      * Method to verify that vibrate permission has been granted.
-     *
+     * <p>
      * Allows users of the library to disabled vibrate support if desired.
+     *
      * @return true if Vibrate permission has been granted
      */
     private boolean hasVibratePermission(Context context) {

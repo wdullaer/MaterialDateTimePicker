@@ -20,14 +20,16 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.Paint.Align;
-import androidx.core.content.ContextCompat;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
+
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
 
 import java.text.DateFormatSymbols;
 import java.util.Locale;
@@ -74,7 +76,7 @@ public class AmPmCirclesView extends View {
         mIsInitialized = false;
     }
 
-    public void initialize(Context context, Locale locale, TimePickerController controller, int amOrPm) {
+    public void initialize(CalendarType type, Context context, Locale locale, TimePickerController controller, int amOrPm) {
         if (mIsInitialized) {
             Log.e(TAG, "AmPmCirclesView may only be initialized once.");
             return;
@@ -100,7 +102,12 @@ public class AmPmCirclesView extends View {
 
         String typefaceFamily = res.getString(R.string.mdtp_sans_serif);
         Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);
-        mPaint.setTypeface(tf);
+        final Typeface font = Utils.getCustomFont();
+        if (font != null) {
+            mPaint.setTypeface(font);
+        } else {
+            mPaint.setTypeface(tf);
+        }
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Align.CENTER);
 
@@ -109,8 +116,17 @@ public class AmPmCirclesView extends View {
         mAmPmCircleRadiusMultiplier =
                 Float.parseFloat(res.getString(R.string.mdtp_ampm_circle_radius_multiplier));
         String[] amPmTexts = new DateFormatSymbols(locale).getAmPmStrings();
-        mAmText = amPmTexts[0];
-        mPmText = amPmTexts[1];
+        switch (type) {
+            case JALALI:
+                mAmText = "ق.ظ";
+                mPmText = "ب.ظ";
+                break;
+            case GREGORIAN:
+            default:
+                mAmText = amPmTexts[0];
+                mPmText = amPmTexts[1];
+                break;
+        }
 
         mAmDisabled = controller.isAmDisabled();
         mPmDisabled = controller.isPmDisabled();
@@ -137,16 +153,16 @@ public class AmPmCirclesView extends View {
             return -1;
         }
 
-        int squaredYDistance = (int) ((yCoord - mAmPmYCenter)*(yCoord - mAmPmYCenter));
+        int squaredYDistance = (int) ((yCoord - mAmPmYCenter) * (yCoord - mAmPmYCenter));
 
         int distanceToAmCenter =
-                (int) Math.sqrt((xCoord - mAmXCenter)*(xCoord - mAmXCenter) + squaredYDistance);
+                (int) Math.sqrt((xCoord - mAmXCenter) * (xCoord - mAmXCenter) + squaredYDistance);
         if (distanceToAmCenter <= mAmPmCircleRadius && !mAmDisabled) {
             return AM;
         }
 
         int distanceToPmCenter =
-                (int) Math.sqrt((xCoord - mPmXCenter)*(xCoord - mPmXCenter) + squaredYDistance);
+                (int) Math.sqrt((xCoord - mPmXCenter) * (xCoord - mPmXCenter) + squaredYDistance);
         if (distanceToPmCenter <= mAmPmCircleRadius && !mPmDisabled) {
             return PM;
         }
@@ -168,7 +184,7 @@ public class AmPmCirclesView extends View {
             int circleRadius =
                     (int) (Math.min(layoutXCenter, layoutYCenter) * mCircleRadiusMultiplier);
             mAmPmCircleRadius = (int) (circleRadius * mAmPmCircleRadiusMultiplier);
-            layoutYCenter += mAmPmCircleRadius*0.75;
+            layoutYCenter += mAmPmCircleRadius * 0.75;
             int textSize = mAmPmCircleRadius * 3 / 4;
             mPaint.setTextSize(textSize);
 

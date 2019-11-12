@@ -1,8 +1,12 @@
 package com.wdullaer.materialdatetimepicker.time;
 
+import android.graphics.Typeface;
+
+import com.wdullaer.materialdatetimepicker.enums.Version;
+
 /**
  * A collection of methods which need to be shared with all components of the TimePicker
- *
+ * <p>
  * Created by wdullaer on 6/10/15.
  */
 interface TimePickerController {
@@ -24,7 +28,7 @@ interface TimePickerController {
     /**
      * @return Version - The current version to render
      */
-    TimePickerDialog.Version getVersion();
+    Version getVersion();
 
     /**
      * Request the device to vibrate
@@ -32,7 +36,7 @@ interface TimePickerController {
     void tryVibrate();
 
     /**
-     * @param time Timepoint - the selected point in time
+     * @param time  Timepoint - the selected point in time
      * @param index int - The current view to consider when calculating the range
      * @return boolean - true if this is not a selectable value
      */
@@ -50,12 +54,15 @@ interface TimePickerController {
 
     /**
      * Will round the given Timepoint to the nearest valid Timepoint given the following restrictions:
-     *   - TYPE.HOUR, it will just round to the next valid point, possible adjusting minutes and seconds
-     *   - TYPE.MINUTE, it will round to the next valid point, without adjusting the hour, but possibly adjusting the seconds
-     *   - TYPE.SECOND, it will round to the next valid point, only adjusting the seconds
+     * - TYPE.HOUR, it will just round to the next valid point, possible adjusting minutes and seconds
+     * - TYPE.MINUTE, it will round to the next valid point, without adjusting the hour, but possibly adjusting the seconds
+     * - TYPE.SECOND, it will round to the next valid point, only adjusting the seconds
+     *
      * @param time Timepoint - the timepoint to validate
      * @param type Timepoint.TYPE - whether we should round the hours, minutes or seconds
      * @return timepoint - the nearest valid timepoint
      */
     Timepoint roundToNearest(Timepoint time, Timepoint.TYPE type);
+
+    void setFont(Typeface customFont);
 }

@@ -20,11 +20,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
+
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 /**
  * Draws a simple white circle on which the numbers will be drawn.
@@ -65,7 +67,7 @@ public class CircleView extends View {
         mPaint.setAntiAlias(true);
 
         mIs24HourMode = controller.is24HourMode();
-        if (mIs24HourMode || controller.getVersion() != TimePickerDialog.Version.VERSION_1) {
+        if (mIs24HourMode || controller.getVersion() != Version.VERSION_1) {
             mCircleRadiusMultiplier = Float.parseFloat(
                     res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {
@@ -95,7 +97,7 @@ public class CircleView extends View {
                 // a slightly higher center. To keep the entire view centered vertically, we'll
                 // have to push it up by half the radius of the AM/PM circles.
                 int amPmCircleRadius = (int) (mCircleRadius * mAmPmCircleRadiusMultiplier);
-                mYCenter -= amPmCircleRadius*0.75;
+                mYCenter -= amPmCircleRadius * 0.75;
             }
 
             mDrawValuesReady = true;

@@ -25,6 +25,16 @@
             android:layout_height="wrap_content"
             android:text="@string/original_button"/>
 
+        <Spinner
+            android:background="#ececec"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:padding="10dp"
+            android:id="@+id/calendar_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
+
         <CheckBox
             android:id="@+id/show_version_2"
             android:layout_width="wrap_content"

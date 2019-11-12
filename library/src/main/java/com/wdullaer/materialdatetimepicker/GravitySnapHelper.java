@@ -18,15 +18,15 @@
 package com.wdullaer.materialdatetimepicker;
 
 import android.os.Build;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
+import android.view.Gravity;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.Gravity;
-import android.view.View;
 
 /**
  * Enables snapping better snapping in a RecyclerView
@@ -101,8 +101,6 @@ public class GravitySnapHelper extends LinearSnapHelper {
             } else { // END
                 out[0] = distanceToEnd(targetView, getHorizontalHelper(layoutManager), false);
             }
-        } else {
-            out[0] = 0;
         }
 
         if (layoutManager.canScrollVertically()) {
@@ -111,8 +109,6 @@ public class GravitySnapHelper extends LinearSnapHelper {
             } else { // BOTTOM
                 out[1] = distanceToEnd(targetView, getVerticalHelper(layoutManager), false);
             }
-        } else {
-            out[1] = 0;
         }
 
         return out;

@@ -1,5 +1,7 @@
 package com.wdullaer.materialdatetimepicker.date;
 
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,17 +12,21 @@ public class DatePickerDialogTest {
     // isHighlighted
     @Test
     public void isHighlightedShouldReturnFalseIfNoHighlightedDaysAreSet() {
-        DatePickerDialog dpd = DatePickerDialog.newInstance((view, year, monthOfYear, dayOfMonth) -> {
-
-        });
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                (view, year, monthOfYear, dayOfMonth) -> {
+                },
+                CalendarType.GREGORIAN
+        );
         Assert.assertFalse(dpd.isHighlighted(1990, 1, 1));
     }
 
     @Test
     public void isHighlightedShouldReturnFalseIfHighlightedDoesNotContainSelection() {
-        DatePickerDialog dpd = DatePickerDialog.newInstance((view, year, monthOfYear, dayOfMonth) -> {
-
-        });
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                (view, year, monthOfYear, dayOfMonth) -> {
+                },
+                CalendarType.GREGORIAN
+        );
         Calendar highlighted = Calendar.getInstance();
         highlighted.set(Calendar.YEAR, 1990);
         highlighted.set(Calendar.MONTH, 1);
@@ -35,9 +41,11 @@ public class DatePickerDialogTest {
 
     @Test
     public void isHighlightedShouldReturnTrueIfHighlightedDoesContainSelection() {
-        DatePickerDialog dpd = DatePickerDialog.newInstance((view, year, monthOfYear, dayOfMonth) -> {
-
-        });
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                (view, year, monthOfYear, dayOfMonth) -> {
+                },
+                CalendarType.GREGORIAN
+        );
         int year = 1990;
         int month = 1;
         int day = 1;
@@ -58,9 +66,12 @@ public class DatePickerDialogTest {
     public void isHighlightedShouldBehaveCorrectlyInCustomTimezones() {
         String timeZoneString = "Americas/Los_Angeles";
         Calendar initial = Calendar.getInstance(TimeZone.getTimeZone(timeZoneString));
-        DatePickerDialog dpd = DatePickerDialog.newInstance((view, year, monthOfYear, dayOfMonth) -> {
-
-        }, initial);
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                (view, year, monthOfYear, dayOfMonth) -> {
+                },
+                CalendarType.GREGORIAN,
+                initial
+        );
         int year = 1990;
         int month = 1;
         int day = 1;

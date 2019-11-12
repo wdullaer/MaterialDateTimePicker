@@ -16,6 +16,12 @@
 
 package com.wdullaer.materialdatetimepicker.date;
 
+import android.graphics.Typeface;
+
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
+import com.wdullaer.materialdatetimepicker.enums.ScrollOrientation;
+import com.wdullaer.materialdatetimepicker.enums.Version;
+
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -39,7 +45,7 @@ public interface DatePickerController {
     boolean isThemeDark();
 
     int getAccentColor();
-    
+
     boolean isHighlighted(int year, int month, int day);
 
     int getFirstDayOfWeek();
@@ -60,7 +66,11 @@ public interface DatePickerController {
 
     Locale getLocale();
 
-    DatePickerDialog.Version getVersion();
+    Version getVersion();
 
-    DatePickerDialog.ScrollOrientation getScrollOrientation();
+    ScrollOrientation getScrollOrientation();
+
+    CalendarType getCalendarType();
+
+    void setFont(Typeface customFont);
 }

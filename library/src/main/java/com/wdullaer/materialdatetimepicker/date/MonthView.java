@@ -26,11 +26,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
-import androidx.customview.widget.ExploreByTouchHelper;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -38,8 +33,17 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.customview.widget.ExploreByTouchHelper;
+
+import com.wdullaer.materialdatetimepicker.JalaliCalendar;
 import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter.CalendarDay;
+import com.wdullaer.materialdatetimepicker.enums.CalendarType;
+import com.wdullaer.materialdatetimepicker.enums.Version;
 
 import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
@@ -138,8 +142,17 @@ public abstract class MonthView extends View {
         mController = controller;
         Resources res = context.getResources();
 
-        mDayLabelCalendar = Calendar.getInstance(mController.getTimeZone(), mController.getLocale());
-        mCalendar = Calendar.getInstance(mController.getTimeZone(), mController.getLocale());
+        switch (controller.getCalendarType()) {
+            case JALALI:
+                mDayLabelCalendar = JalaliCalendar.getInstance(mController.getTimeZone(), mController.getLocale());
+                mCalendar = JalaliCalendar.getInstance(mController.getTimeZone(), mController.getLocale());
+                break;
+            case GREGORIAN:
+            default:
+                mDayLabelCalendar = Calendar.getInstance(mController.getTimeZone(), mController.getLocale());
+                mCalendar = Calendar.getInstance(mController.getTimeZone(), mController.getLocale());
+                break;
+        }
 
         mDayOfWeekTypeface = res.getString(R.string.mdtp_day_of_week_label_typeface);
         mMonthTitleTypeface = res.getString(R.string.mdtp_sans_serif);
@@ -167,7 +180,7 @@ public abstract class MonthView extends View {
         MONTH_DAY_LABEL_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_month_day_label_text_size);
         MONTH_HEADER_SIZE = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height);
         MONTH_HEADER_SIZE_V2 = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height_v2);
-        DAY_SELECTED_CIRCLE_SIZE = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+        DAY_SELECTED_CIRCLE_SIZE = mController.getVersion() == Version.VERSION_1
                 ? res.getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius)
                 : res.getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius_v2);
         DAY_HIGHLIGHT_CIRCLE_SIZE = res
@@ -175,7 +188,7 @@ public abstract class MonthView extends View {
         DAY_HIGHLIGHT_CIRCLE_MARGIN = res
                 .getDimensionPixelSize(R.dimen.mdtp_day_highlight_circle_margin);
 
-        if (mController.getVersion() == DatePickerDialog.Version.VERSION_1) {
+        if (mController.getVersion() == Version.VERSION_1) {
             mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
                     - getMonthHeaderSize()) / MAX_NUM_ROWS;
         } else {
@@ -183,7 +196,7 @@ public abstract class MonthView extends View {
                     - getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE * 2) / MAX_NUM_ROWS;
         }
 
-        mEdgePadding = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+        mEdgePadding = mController.getVersion() == Version.VERSION_1
                 ? 0
                 : context.getResources().getDimensionPixelSize(R.dimen.mdtp_date_picker_view_animator_padding_v2);
 
@@ -222,13 +235,11 @@ public abstract class MonthView extends View {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                final int day = getDayFromLocation(event.getX(), event.getY());
-                if (day >= 0) {
-                    onDayClick(day);
-                }
-                break;
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            final int day = getDayFromLocation(event.getX(), event.getY());
+            if (day >= 0) {
+                onDayClick(day);
+            }
         }
         return true;
     }
@@ -239,7 +250,7 @@ public abstract class MonthView extends View {
      */
     protected void initView() {
         mMonthTitlePaint = new Paint();
-        if (mController.getVersion() == DatePickerDialog.Version.VERSION_1)
+        if (mController.getVersion() == Version.VERSION_1)
             mMonthTitlePaint.setFakeBoldText(true);
         mMonthTitlePaint.setAntiAlias(true);
         mMonthTitlePaint.setTextSize(MONTH_LABEL_TEXT_SIZE);
@@ -302,7 +313,16 @@ public abstract class MonthView extends View {
         // Figure out what day today is
         //final Time today = new Time(Time.getCurrentTimezone());
         //today.setToNow();
-        final Calendar today = Calendar.getInstance(mController.getTimeZone(), mController.getLocale());
+        Calendar today;
+        switch (mController.getCalendarType()) {
+            case JALALI:
+                today = JalaliCalendar.getInstance(mController.getTimeZone(), mController.getLocale());
+                break;
+            case GREGORIAN:
+            default:
+                today = Calendar.getInstance(mController.getTimeZone(), mController.getLocale());
+                break;
+        }
         mHasToday = false;
         mToday = -1;
 
@@ -374,7 +394,7 @@ public abstract class MonthView extends View {
      * @return The height in pixels of a row of day labels
      */
     public int getMonthHeight() {
-        int scaleFactor = mController.getVersion() == DatePickerDialog.Version.VERSION_1 ? 2 : 3;
+        int scaleFactor = mController.getVersion() == Version.VERSION_1 ? 2 : 3;
         return getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE * scaleFactor;
     }
 
@@ -396,18 +416,24 @@ public abstract class MonthView extends View {
      * A wrapper to the MonthHeaderSize to allow override it in children
      */
     protected int getMonthHeaderSize() {
-        return mController.getVersion() == DatePickerDialog.Version.VERSION_1
+        return mController.getVersion() == Version.VERSION_1
                 ? MONTH_HEADER_SIZE
                 : MONTH_HEADER_SIZE_V2;
     }
 
     @NonNull
     private String getMonthAndYearString() {
+        if (mController.getCalendarType() == CalendarType.JALALI) {
+            return ((JalaliCalendar) mCalendar).getMonthName() + " " + ((JalaliCalendar) mCalendar).get(Calendar.YEAR);
+        }
         Locale locale = mController.getLocale();
         String pattern = "MMMM yyyy";
 
-        if (Build.VERSION.SDK_INT < 18) pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
-        else pattern = DateFormat.getBestDateTimePattern(locale, pattern);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
+        } else {
+            pattern = DateFormat.getBestDateTimePattern(locale, pattern);
+        }
 
         SimpleDateFormat formatter = new SimpleDateFormat(pattern, locale);
         formatter.setTimeZone(mController.getTimeZone());
@@ -418,7 +444,7 @@ public abstract class MonthView extends View {
 
     protected void drawMonthTitle(Canvas canvas) {
         int x = mWidth / 2;
-        int y = mController.getVersion() == DatePickerDialog.Version.VERSION_1
+        int y = mController.getVersion() == Version.VERSION_1
                 ? (getMonthHeaderSize() - MONTH_DAY_LABEL_TEXT_SIZE) / 2
                 : getMonthHeaderSize() / 2 - MONTH_DAY_LABEL_TEXT_SIZE;
         canvas.drawText(getMonthAndYearString(), x, y, mMonthTitlePaint);
@@ -433,7 +459,15 @@ public abstract class MonthView extends View {
 
             int calendarDay = (i + mWeekStart) % mNumDays;
             mDayLabelCalendar.set(Calendar.DAY_OF_WEEK, calendarDay);
-            String weekString = getWeekDayLabel(mDayLabelCalendar);
+            String weekString = "";
+            switch (mController.getCalendarType()) {
+                case GREGORIAN:
+                    weekString = getWeekDayLabel(mDayLabelCalendar);
+                    break;
+                case JALALI:
+                    weekString = JalaliCalendar.getWeekDayName((mDayLabelCalendar).get(Calendar.DAY_OF_WEEK)).substring(0, 1);
+                    break;
+            }
             canvas.drawText(weekString, x, y, mMonthDayLabelPaint);
         }
     }
@@ -553,9 +587,9 @@ public abstract class MonthView extends View {
     }
 
     /**
-     * @param year as an int
+     * @param year  as an int
      * @param month as an int
-     * @param day as an int
+     * @param day   as an int
      * @return true if the given date should be highlighted
      */
     protected boolean isHighlighted(int year, int month, int day) {

@@ -33,4 +33,14 @@
     <string name="tab_title_date">Date</string>
     <string name="tab_title_datetime">Date+Time</string>
 
+    <string-array name="calendar_types_array">
+        <item>Jalali</item>
+        <item>Gregorian</item>
+    </string-array>
+
+    <string-array name="calendar_Locales_array">
+        <item>Persian</item>
+        <item>English</item>
+    </string-array>
+  
 </resources>

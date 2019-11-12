@@ -23,11 +23,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
-import androidx.annotation.AttrRes;
-import androidx.core.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.View;
+
+import androidx.annotation.AttrRes;
+import androidx.core.content.ContextCompat;
 
 import java.util.Calendar;
 
@@ -47,7 +49,13 @@ public class Utils {
     public static final int FULL_ALPHA = 255;
 
     /**
+     * user custom font used shared among all classes
+     */
+    private static Typeface customFont;
+
+    /**
      * Try to speak the specified text, for accessibility. Only available on JB or later.
+     *
      * @param text Text to announce.
      */
     public static void tryAccessibilityAnnounce(View view, CharSequence text) {
@@ -58,11 +66,12 @@ public class Utils {
 
     /**
      * Render an animator to pulsate a view in place.
+     *
      * @param labelToAnimate the view to pulsate.
      * @return The animator object. Use .start() to begin.
      */
     public static ObjectAnimator getPulseAnimator(View labelToAnimate, float decreaseRatio,
-            float increaseRatio) {
+                                                  float increaseRatio) {
         Keyframe k0 = Keyframe.ofFloat(0f, 1f);
         Keyframe k1 = Keyframe.ofFloat(0.275f, decreaseRatio);
         Keyframe k2 = Keyframe.ofFloat(0.69f, increaseRatio);
@@ -81,7 +90,7 @@ public class Utils {
      * Convert Dp to Pixel
      */
     @SuppressWarnings("unused")
-    public static int dpToPx(float dp, Resources resources){
+    public static int dpToPx(float dp, Resources resources) {
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
         return (int) px;
     }
@@ -95,6 +104,7 @@ public class Utils {
 
     /**
      * Gets the colorAccent from the current context, if possible/available
+     *
      * @param context The context to use as reference for the color
      * @return the accent color of the current context
      */
@@ -116,6 +126,7 @@ public class Utils {
 
     /**
      * Gets dialog type (Light/Dark) from current theme
+     *
      * @param context The context to use as reference for the boolean
      * @param current Default value to return if cannot resolve the attribute
      * @return true if dark mode, false if light.
@@ -126,8 +137,9 @@ public class Utils {
 
     /**
      * Gets the required boolean value from the current context, if possible/available
-     * @param context The context to use as reference for the boolean
-     * @param attr Attribute id to resolve
+     *
+     * @param context  The context to use as reference for the boolean
+     * @param attr     Attribute id to resolve
      * @param fallback Default value to return if no value is specified in theme
      * @return the boolean value from current theme
      */
@@ -153,5 +165,13 @@ public class Utils {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
+    }
+
+    synchronized public static void setCustomFont(Typeface customFont) {
+        Utils.customFont = customFont;
+    }
+
+    synchronized public static Typeface getCustomFont() {
+        return customFont;
     }
 }
