@@ -832,4 +832,22 @@ public class DefaultTimepointLimiterTest {
 
         Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.HOUR), expected);
     }
+
+    @Test
+    public void roundToNearestIfInputDisablesAtLowerAndUpperTime() {
+        Timepoint[] disabledTimes = new Timepoint[180];
+        for(int l=0; l<=59; l++){ disabledTimes[l] = new Timepoint(0, l); }
+        for(int l=0; l<=59; l++){ disabledTimes[60+l] = new Timepoint(1, l); }
+        for(int l=0; l<=59; l++){ disabledTimes[120+l] = new Timepoint(23, l); }
+
+        Timepoint input = new Timepoint(0, 29, 0);
+        DefaultTimepointLimiter limiter = new DefaultTimepointLimiter();
+        Timepoint expected = new Timepoint(2, 0, 0);
+        Timepoint expected2 = new Timepoint(2, 29, 0);
+
+        limiter.setDisabledTimes(disabledTimes);
+
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.MINUTE), expected);
+        Assert.assertEquals(limiter.roundToNearest(input, null, Timepoint.TYPE.HOUR), expected2);
+    }
 }
