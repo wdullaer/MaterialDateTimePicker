@@ -34,7 +34,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     testImplementation 'junit:junit:4.13'
-    testImplementation 'com.pholser:junit-quickcheck-core:0.9.1'
+    testImplementation 'com.pholser:junit-quickcheck-core:0.9.2'
     testImplementation 'com.pholser:junit-quickcheck-generators:0.9.1'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
