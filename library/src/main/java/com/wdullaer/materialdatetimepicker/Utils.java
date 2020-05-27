@@ -154,4 +154,18 @@ public class Utils {
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
     }
+
+    /**
+     * Cast string to int
+     *
+     * @param text The text to convert to an int
+     * @return the parsed value or -1
+     */
+    public static int stringToInt(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException exception) {
+            return -1;
+        }
+    }
 }
