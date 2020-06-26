@@ -856,13 +856,43 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
 
     /**
      * Sets a list of days that are not selectable in the picker
+     * Setting this value will add the new disabled days to the existing disabled days
+     * Setting this value will take precedence over using setMinDate() and setMaxDate(), but stacks with setSelectableDays()
+     *
+     * @param disabledDays an Array of Calendar Objects containing the disabled dates
+     *
+     * @deprecated Because the method name could lead the user to interpret that the new disabled days replace the old ones
+     * <br/>Use {@link #addDisabledDays(Calendar[])} instead
+     */
+    @SuppressWarnings("unused")
+    @Deprecated
+    public void setDisabledDays(Calendar[] disabledDays) {
+        addDisabledDays(disabledDays);
+    }
+
+    /**
+     * Sets a list of days that are not selectable in the picker
+     * Setting this value will add the new disabled days to the existing disabled days
      * Setting this value will take precedence over using setMinDate() and setMaxDate(), but stacks with setSelectableDays()
      *
      * @param disabledDays an Array of Calendar Objects containing the disabled dates
      */
     @SuppressWarnings("unused")
-    public void setDisabledDays(Calendar[] disabledDays) {
-        mDefaultLimiter.setDisabledDays(disabledDays);
+    public void addDisabledDays(Calendar[] disabledDays) {
+        mDefaultLimiter.addDisabledDays(disabledDays);
+        if (mDayPickerView != null) mDayPickerView.onChange();
+    }
+
+    /**
+     * Sets a list of days that are not selectable in the picker
+     * Setting this value will replace the existing disabled days
+     * Setting this value will take precedence over using setMinDate() and setMaxDate(), but stacks with setSelectableDays()
+     *
+     * @param disabledDays an Array of Calendar Objects containing the disabled dates
+     */
+    @SuppressWarnings("unused")
+    public void replaceDisabledDays(Calendar[] disabledDays) {
+        mDefaultLimiter.replaceDisabledDays(disabledDays);
         if (mDayPickerView != null) mDayPickerView.onChange();
     }
 

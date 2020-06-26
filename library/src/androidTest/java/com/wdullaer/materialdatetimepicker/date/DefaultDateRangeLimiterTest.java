@@ -97,7 +97,7 @@ public class DefaultDateRangeLimiterTest {
         };
 
         DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
-        limiter.setDisabledDays(disabledDays);
+        limiter.addDisabledDays(disabledDays);
 
         Parcel parcel = Parcel.obtain();
         limiter.writeToParcel(parcel, 0);
@@ -134,7 +134,7 @@ public class DefaultDateRangeLimiterTest {
         limiter.setYearRange(minYear, maxYear);
         limiter.setMinDate(minDate);
         limiter.setMaxDate(maxDate);
-        limiter.setDisabledDays(disabledDays);
+        limiter.addDisabledDays(disabledDays);
         limiter.setSelectableDays(selectableDays);
 
         Parcel parcel = Parcel.obtain();
