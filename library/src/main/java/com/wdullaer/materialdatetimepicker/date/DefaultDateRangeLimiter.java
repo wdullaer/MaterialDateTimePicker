@@ -25,6 +25,7 @@ import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
@@ -38,7 +39,7 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
     private Calendar mMinDate;
     private Calendar mMaxDate;
     private TreeSet<Calendar> selectableDays = new TreeSet<>();
-    private HashSet<Calendar> disabledDays = new HashSet<>();
+    private HashSet<Calendar> disabledDays = new LinkedHashSet<>();
 
     DefaultDateRangeLimiter() {}
 
@@ -85,10 +86,15 @@ class DefaultDateRangeLimiter implements DateRangeLimiter {
         }
     }
 
-    void setDisabledDays(@NonNull Calendar[] days) {
+    void addDisabledDays(@NonNull Calendar[] days) {
         for (Calendar disabledDay : days) {
             this.disabledDays.add(Utils.trimToMidnight((Calendar) disabledDay.clone()));
         }
+    }
+
+    void replaceDisabledDays(@NonNull Calendar[] days) {
+        this.disabledDays.clear();
+        addDisabledDays(days);
     }
 
     void setMinDate(@NonNull Calendar calendar) {

@@ -156,7 +156,7 @@ public class DefaultDateRangeLimiterPropertyTest {
 
         Calendar[] disableds = datesToCalendars(dates);
 
-        limiter.setDisabledDays(disableds);
+        limiter.addDisabledDays(disableds);
         Assert.assertFalse(Arrays.asList(disableds).contains(limiter.setToNearestDate(day)));
     }
 

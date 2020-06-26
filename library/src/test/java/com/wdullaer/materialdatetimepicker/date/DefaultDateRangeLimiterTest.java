@@ -146,7 +146,7 @@ public class DefaultDateRangeLimiterTest {
             days[i] = day;
         }
 
-        limiter.setDisabledDays(days);
+        limiter.addDisabledDays(days);
         Calendar[] disabledDays = limiter.getDisabledDays();
 
         Assert.assertNotNull(disabledDays);
@@ -332,7 +332,7 @@ public class DefaultDateRangeLimiterTest {
         day.set(Calendar.YEAR, 1999);
         days[0] = day;
 
-        limiter.setDisabledDays(days);
+        limiter.addDisabledDays(days);
         int year = day.get(Calendar.YEAR);
         int month = day.get(Calendar.MONTH);
         int dayNumber = day.get(Calendar.DAY_OF_MONTH);
@@ -427,7 +427,7 @@ public class DefaultDateRangeLimiterTest {
         days[0] = day;
 
         limiter.setSelectableDays(days);
-        limiter.setDisabledDays(days);
+        limiter.addDisabledDays(days);
         int year = day.get(Calendar.YEAR);
         int month = day.get(Calendar.MONTH);
         int dayNumber = day.get(Calendar.DAY_OF_MONTH);
@@ -539,7 +539,7 @@ public class DefaultDateRangeLimiterTest {
             }
         };
 
-        limiter.setDisabledDays(days);
+        limiter.addDisabledDays(days);
         limiter.setController(controller);
 
         Assert.assertTrue(limiter.isOutOfRange(year, month, day));
@@ -569,7 +569,7 @@ public class DefaultDateRangeLimiterTest {
             days[i] = day;
         }
 
-        limiter.setDisabledDays(days);
+        limiter.addDisabledDays(days);
         Calendar day = (Calendar) days[0].clone();
 
         Assert.assertNotSame(limiter.setToNearestDate(day).getTimeInMillis(), days[0].getTimeInMillis());
@@ -696,5 +696,75 @@ public class DefaultDateRangeLimiterTest {
                 Utils.trimToMidnight(expectedDay).getTimeInMillis(),
                 limiter.setToNearestDate(day).getTimeInMillis()
         );
+    }
+
+    @Test
+    public void addDisabledDaysShouldAddToExistingDates() {
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+        Calendar[] daysArrayOne = new Calendar[3];
+        for (int i = 0;i < daysArrayOne.length; i++) {
+            Calendar day = Calendar.getInstance();
+            day.set(Calendar.YEAR, 1999 + i);
+            day.set(Calendar.HOUR_OF_DAY, 2);
+            day.set(Calendar.MINUTE, 10);
+            day.set(Calendar.SECOND, 30);
+            day.set(Calendar.MILLISECOND, 25);
+            daysArrayOne[i] = day;
+        }
+        Calendar[] daysArrayTwo = new Calendar[3];
+        for (int i = 0;i < daysArrayTwo.length; i++) {
+            Calendar day = Calendar.getInstance();
+            day.set(Calendar.YEAR, 2005 + i);
+            day.set(Calendar.HOUR_OF_DAY, 4);
+            day.set(Calendar.MINUTE, 20);
+            day.set(Calendar.SECOND, 40);
+            day.set(Calendar.MILLISECOND, 50);
+            daysArrayTwo[i] = day;
+        }
+
+        limiter.addDisabledDays(daysArrayOne);
+        int previousDisabledDatesLength = limiter.getDisabledDays() != null ? limiter.getDisabledDays().length : 0;
+        Assert.assertEquals(daysArrayOne.length, previousDisabledDatesLength);
+
+        limiter.addDisabledDays(daysArrayTwo);
+
+        int newDisabledDatesLength = limiter.getDisabledDays() != null ? limiter.getDisabledDays().length : 0;
+        Assert.assertEquals(daysArrayTwo.length + daysArrayOne.length, newDisabledDatesLength);
+        Assert.assertTrue(previousDisabledDatesLength < newDisabledDatesLength);
+    }
+
+    @Test
+    public void replaceDisabledDaysShouldOverwriteExistingDates() {
+        DefaultDateRangeLimiter limiter = new DefaultDateRangeLimiter();
+        Calendar[] daysArrayOne = new Calendar[3];
+        for (int i = 0;i < daysArrayOne.length; i++) {
+            Calendar day = Calendar.getInstance();
+            day.set(Calendar.YEAR, 1999 + i);
+            day.set(Calendar.HOUR_OF_DAY, 2);
+            day.set(Calendar.MINUTE, 10);
+            day.set(Calendar.SECOND, 30);
+            day.set(Calendar.MILLISECOND, 25);
+            daysArrayOne[i] = day;
+        }
+        Calendar[] daysArrayTwo = new Calendar[3];
+        for (int i = 0;i < daysArrayTwo.length; i++) {
+            Calendar day = Calendar.getInstance();
+            day.set(Calendar.YEAR, 2005 + i);
+            day.set(Calendar.HOUR_OF_DAY, 4);
+            day.set(Calendar.MINUTE, 20);
+            day.set(Calendar.SECOND, 40);
+            day.set(Calendar.MILLISECOND, 50);
+            daysArrayTwo[i] = day;
+        }
+
+        limiter.replaceDisabledDays(daysArrayOne);
+        int previousDisabledDatesLength = limiter.getDisabledDays() != null ? limiter.getDisabledDays().length : 0;
+        Assert.assertEquals(daysArrayOne.length, previousDisabledDatesLength);
+
+        limiter.replaceDisabledDays(daysArrayTwo);
+
+        int newDisabledDatesLength = limiter.getDisabledDays() != null ? limiter.getDisabledDays().length : 0;
+        Assert.assertEquals(daysArrayTwo.length, newDisabledDatesLength);
+        Assert.assertEquals(previousDisabledDatesLength, newDisabledDatesLength);
     }
 }
