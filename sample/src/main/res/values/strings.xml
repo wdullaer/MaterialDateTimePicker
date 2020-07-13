@@ -32,5 +32,6 @@
     <string name="tab_title_time">Time</string>
     <string name="tab_title_date">Date</string>
     <string name="tab_title_datetime">Date+Time</string>
+    <string name="mode_custom_select_date_color">Use Custom Color Date Select</string>
 
 </resources>

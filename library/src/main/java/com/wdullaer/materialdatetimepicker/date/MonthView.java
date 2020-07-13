@@ -157,8 +157,8 @@ public abstract class MonthView extends View {
             mHighlightedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_highlighted);
         }
         mSelectedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_white);
-        mTodayNumberColor = mController.getAccentColor();
         mMonthTitleColor = ContextCompat.getColor(context, R.color.mdtp_white);
+        mTodayNumberColor = mController.getSelectDateColor();
 
         mStringBuilder = new StringBuilder(50);
 
