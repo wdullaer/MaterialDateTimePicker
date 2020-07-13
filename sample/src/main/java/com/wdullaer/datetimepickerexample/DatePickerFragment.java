@@ -24,6 +24,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
     private TextView dateTextView;
     private CheckBox modeDarkDate;
     private CheckBox modeCustomAccentDate;
+    private CheckBox modeCustomSelectDateColor;
     private CheckBox vibrateDate;
     private CheckBox dismissDate;
     private CheckBox titleDate;
@@ -50,6 +51,7 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
         Button dateButton = view.findViewById(R.id.date_button);
         modeDarkDate = view.findViewById(R.id.mode_dark_date);
         modeCustomAccentDate = view.findViewById(R.id.mode_custom_accent_date);
+        modeCustomSelectDateColor = view.findViewById(R.id.mode_custom_select_date_color);
         vibrateDate = view.findViewById(R.id.vibrate_date);
         dismissDate = view.findViewById(R.id.dismiss_date);
         titleDate = view.findViewById(R.id.title_date);
@@ -103,7 +105,10 @@ public class DatePickerFragment extends Fragment implements DatePickerDialog.OnD
             dpd.showYearPickerFirst(showYearFirst.isChecked());
             dpd.setVersion(showVersion2.isChecked() ? DatePickerDialog.Version.VERSION_2 : DatePickerDialog.Version.VERSION_1);
             if (modeCustomAccentDate.isChecked()) {
-                dpd.setAccentColor(Color.parseColor("#9C27B0"));
+                dpd.setAccentColor(Color.parseColor("#0028FF"));
+            }
+            if (modeCustomSelectDateColor.isChecked()) {
+                dpd.setSelectDateColor(Color.parseColor("#FF726E"));
             }
             if (titleDate.isChecked()) {
                 dpd.setTitle("DatePicker Title");

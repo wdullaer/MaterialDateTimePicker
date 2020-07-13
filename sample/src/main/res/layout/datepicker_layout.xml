@@ -99,5 +99,12 @@
             android:text="@string/default_selection"
             android:checked="false"/>
 
+        <CheckBox
+            android:id="@+id/mode_custom_select_date_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_custom_select_date_color"
+            android:checked="false"/>
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

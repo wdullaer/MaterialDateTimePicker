@@ -84,6 +84,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     private static final String KEY_THEME_DARK = "theme_dark";
     private static final String KEY_THEME_DARK_CHANGED = "theme_dark_changed";
     private static final String KEY_ACCENT = "accent";
+    private static final String KEY_SELECT_DATE_COLOR = "accent";
     private static final String KEY_VIBRATE = "vibrate";
     private static final String KEY_DISMISS = "dismiss";
     private static final String KEY_AUTO_DISMISS = "auto_dismiss";
@@ -133,6 +134,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     private boolean mThemeDark = false;
     private boolean mThemeDarkChanged = false;
     private Integer mAccentColor = null;
+    private Integer mSelectDateColor = null;
     private boolean mVibrate = true;
     private boolean mDismissOnPause = false;
     private boolean mAutoDismiss = false;
@@ -287,6 +289,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
         outState.putBoolean(KEY_THEME_DARK_CHANGED, mThemeDarkChanged);
         if (mAccentColor != null) outState.putInt(KEY_ACCENT, mAccentColor);
+        if (mSelectDateColor != null) outState.putInt(KEY_SELECT_DATE_COLOR, mSelectDateColor);
         outState.putBoolean(KEY_VIBRATE, mVibrate);
         outState.putBoolean(KEY_DISMISS, mDismissOnPause);
         outState.putBoolean(KEY_AUTO_DISMISS, mAutoDismiss);
@@ -326,6 +329,7 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
             mThemeDark = savedInstanceState.getBoolean(KEY_THEME_DARK);
             mThemeDarkChanged = savedInstanceState.getBoolean(KEY_THEME_DARK_CHANGED);
             if (savedInstanceState.containsKey(KEY_ACCENT)) mAccentColor = savedInstanceState.getInt(KEY_ACCENT);
+            if (savedInstanceState.containsKey(KEY_SELECT_DATE_COLOR)) mSelectDateColor = savedInstanceState.getInt(KEY_SELECT_DATE_COLOR);
             mVibrate = savedInstanceState.getBoolean(KEY_VIBRATE);
             mDismissOnPause = savedInstanceState.getBoolean(KEY_DISMISS);
             mAutoDismiss = savedInstanceState.getBoolean(KEY_AUTO_DISMISS);
@@ -432,6 +436,9 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
         // If an accent color has not been set manually, get it from the context
         if (mAccentColor == null) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
+        }
+        if(mSelectDateColor == null){
+            mSelectDateColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
         if (mDatePickerHeaderView != null) mDatePickerHeaderView.setBackgroundColor(Utils.darkenColor(mAccentColor));
         view.findViewById(R.id.mdtp_day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
@@ -666,12 +673,26 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     }
 
     /**
+     * Set color select date
+     *
+     * @param color select date color you want
+     */
+    @SuppressWarnings("unused")
+    public void setSelectDateColor(String color) {
+        mSelectDateColor = Color.parseColor(color);
+    }
+
+    /**
      * Set the accent color of this dialog
      *
      * @param color the accent color you want
      */
     public void setAccentColor(@ColorInt int color) {
         mAccentColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    public void setSelectDateColor(@ColorInt int color){
+        mSelectDateColor = Color.argb(255, Color.red(color), Color.green(color), Color.blue(color));
     }
 
     /**
@@ -722,6 +743,11 @@ public class DatePickerDialog extends AppCompatDialogFragment implements
     @Override
     public int getAccentColor() {
         return mAccentColor;
+    }
+
+    @Override
+    public int getSelectDateColor() {
+        return mSelectDateColor != null ? mSelectDateColor : mAccentColor;
     }
 
     /**
