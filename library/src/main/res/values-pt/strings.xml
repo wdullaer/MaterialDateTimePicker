@@ -30,4 +30,6 @@
     <string name="mdtp_deleted_key" msgid="6908431551612331381">"<xliff:g id="KEY">%1$s</xliff:g> excluído"</string>
     <string name="mdtp_date_v1_monthyear">MMMM \'de\' yyyy</string>
     <string name="mdtp_date_v2_daymonthyear">EEE, dd \'de\' MMM</string>
+    <string name="mdtp_next_month_arrow_description">Próximo Mês</string>
+    <string name="mdtp_previous_month_arrow_description">Mês Anterior</string>
 </resources>

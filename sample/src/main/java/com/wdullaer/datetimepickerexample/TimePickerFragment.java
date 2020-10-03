@@ -1,9 +1,9 @@
 package com.wdullaer.datetimepickerexample;
 
-import android.app.Fragment;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
@@ -48,7 +47,7 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.timepicker_layout, container, false);
 
@@ -69,42 +68,34 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         selectVersion = view.findViewById(R.id.selectversion);
         mVersion = TimePickerDialog.Version.VERSION_1;
 
-        view.findViewById(R.id.original_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar now = Calendar.getInstance();
-                new android.app.TimePickerDialog(
-                        getActivity(),
-                        new android.app.TimePickerDialog.OnTimeSetListener(){
-                            @Override
-                            public void onTimeSet(TimePicker view, int hour, int minute) {
-                                Log.d("Original", "Got clicked");
-                            }
-                        },
-                        now.get(Calendar.HOUR_OF_DAY),
-                        now.get(Calendar.MINUTE),
-                        mode24Hours.isChecked()
-                ).show();
-            }
+        view.findViewById(R.id.original_button).setOnClickListener(view1 -> {
+            Calendar now = Calendar.getInstance();
+            new android.app.TimePickerDialog(
+                    getActivity(),
+                    (view11, hour, minute) -> Log.d("Original", "Got clicked"),
+                    now.get(Calendar.HOUR_OF_DAY),
+                    now.get(Calendar.MINUTE),
+                    mode24Hours.isChecked()
+            ).show();
         });
 
         selectVersion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-                switch (pos){
-                    case 1:
-                        mVersion = TimePickerDialog.Version.VERSION_2;
-                        break;
-                    case 2:
-                        mVersion = TimePickerDialog.Version.VERSION_3;
-                        break;
-                    case 3:
-                        mVersion = TimePickerDialog.Version.VERSION_4;
-                        break;
-                    case 0:
-                    default:
-                        mVersion = TimePickerDialog.Version.VERSION_1;
-                        break;
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+          switch (pos){
+              case 1:
+                  mVersion = TimePickerDialog.Version.VERSION_2;
+                  break;
+              case 2:
+                  mVersion = TimePickerDialog.Version.VERSION_3;
+                  break;
+              case 3:
+                  mVersion = TimePickerDialog.Version.VERSION_4;
+                  break;
+              case 0:
+              default:
+                  mVersion = TimePickerDialog.Version.VERSION_1;
+                  break;
                 }
             }
 
@@ -113,87 +104,89 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
 
             }
         });
-
+      
         // Show a timepicker when the timeButton is clicked
-        timeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar now = Calendar.getInstance();
-                /*
-                It is recommended to always create a new instance whenever you need to show a Dialog.
-                The sample app is reusing them because it is useful when looking for regressions
-                during testing
-                 */
-                if (tpd == null) {
-                    tpd = TimePickerDialog.newInstance(
-                            TimePickerFragment.this,
-                            now.get(Calendar.HOUR_OF_DAY),
-                            now.get(Calendar.MINUTE),
-                            mode24Hours.isChecked()
-                    );
-                } else {
-                    tpd.initialize(
-                            TimePickerFragment.this,
-                            now.get(Calendar.HOUR_OF_DAY),
-                            now.get(Calendar.MINUTE),
-                            now.get(Calendar.SECOND),
-                            mode24Hours.isChecked()
-                    );
-                }
-                tpd.setThemeDark(modeDarkTime.isChecked());
-                tpd.vibrate(vibrateTime.isChecked());
-                tpd.dismissOnPause(dismissTime.isChecked());
-                tpd.enableSeconds(enableSeconds.isChecked());
-
-                if(spinnerTextColor.isChecked()){
-                    tpd.setSpinnerTextColor(Color.parseColor("#B71C1C"),false);
-                }
-                if(spinnerBgColor.isChecked()){
-                    tpd.setSpinnerBackgroundColor(Color.parseColor("#5C6BC0"));
-                }
-
-
-                tpd.setVersion(mVersion);
-
-                if (modeCustomAccentTime.isChecked()) {
-                    tpd.setAccentColor(Color.parseColor("#9C27B0"));
-                }
-                if (titleTime.isChecked()) {
-                    tpd.setTitle("TimePicker Title");
-                }
-                if (limitSelectableTimes.isChecked()) {
-                    if (enableSeconds.isChecked()) {
-                        tpd.setTimeInterval(3, 5, 10);
-                    } else {
-                        tpd.setTimeInterval(3, 5, 60);
-                    }
-                }
-                if (disableSpecificTimes.isChecked()) {
-                    Timepoint[] disabledTimes = {
-                            new Timepoint(10),
-                            new Timepoint(10, 30),
-                            new Timepoint(11),
-                            new Timepoint(12, 30)
-                    };
-                    tpd.setDisabledTimes(disabledTimes);
-                }
-                tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        Log.d("TimePicker", "Dialog was cancelled");
-                    }
-                });
-                tpd.show(getFragmentManager(), "Timepickerdialog");
+        timeButton.setOnClickListener(v -> {
+            Calendar now = Calendar.getInstance();
+            /*
+            It is recommended to always create a new instance whenever you need to show a Dialog.
+            The sample app is reusing them because it is useful when looking for regressions
+            during testing
+             */
+            if (tpd == null) {
+                tpd = TimePickerDialog.newInstance(
+                        TimePickerFragment.this,
+                        now.get(Calendar.HOUR_OF_DAY),
+                        now.get(Calendar.MINUTE),
+                        mode24Hours.isChecked()
+                );
+            } else {
+                tpd.initialize(
+                        TimePickerFragment.this,
+                        now.get(Calendar.HOUR_OF_DAY),
+                        now.get(Calendar.MINUTE),
+                        now.get(Calendar.SECOND),
+                        mode24Hours.isChecked()
+                );
             }
+                
+            tpd.setThemeDark(modeDarkTime.isChecked());
+            tpd.vibrate(vibrateTime.isChecked());
+            tpd.dismissOnPause(dismissTime.isChecked());
+            tpd.enableSeconds(enableSeconds.isChecked());
+            tpd.setVersion(mVersion);
+
+            if(spinnerTextColor.isChecked()){
+                tpd.setSpinnerTextColor(Color.parseColor("#B71C1C"),false);
+            }
+            if(spinnerBgColor.isChecked()){
+                tpd.setSpinnerBackgroundColor(Color.parseColor("#5C6BC0"));
+            }
+          
+            tpd.setVersion(mVersion);
+              
+            if (modeCustomAccentTime.isChecked()) {
+                tpd.setAccentColor(Color.parseColor("#9C27B0"));
+            }
+            if (titleTime.isChecked()) {
+                tpd.setTitle("TimePicker Title");
+            }
+            if (limitSelectableTimes.isChecked()) {
+                if (enableSeconds.isChecked()) {
+                    tpd.setTimeInterval(3, 5, 10);
+                } else {
+                    tpd.setTimeInterval(3, 5, 60);
+                }
+            }
+            if (disableSpecificTimes.isChecked()) {
+                Timepoint[] disabledTimes = {
+                        new Timepoint(10),
+                        new Timepoint(10, 30),
+                        new Timepoint(11),
+                        new Timepoint(12, 30)
+                };
+                tpd.setDisabledTimes(disabledTimes);
+            }
+            tpd.setOnCancelListener(dialogInterface -> {
+                Log.d("TimePicker", "Dialog was cancelled");
+                tpd = null;
+            });
+            tpd.show(requireFragmentManager(), "Timepickerdialog");
         });
 
         return view;
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        tpd = null;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        TimePickerDialog tpd = (TimePickerDialog) getFragmentManager().findFragmentByTag("Timepickerdialog");
+        TimePickerDialog tpd = (TimePickerDialog) requireFragmentManager().findFragmentByTag("Timepickerdialog");
         if(tpd != null) tpd.setOnTimeSetListener(this);
     }
 
@@ -204,5 +197,6 @@ public class TimePickerFragment extends Fragment implements TimePickerDialog.OnT
         String secondString = second < 10 ? "0"+second : ""+second;
         String time = "You picked the following time: "+hourString+"h"+minuteString+"m"+secondString+"s";
         timeTextView.setText(time);
+        tpd = null;
     }
 }

@@ -30,4 +30,6 @@
     <string name="mdtp_deleted_key" msgid="6908431551612331381">"<xliff:g id="KEY">%1$s</xliff:g> poistettiin"</string>
     <string name="mdtp_date_v1_monthyear">LLLL yyyy</string>
     <string name="mdtp_date_v2_daymonthyear">ccc dd. MMM</string>
+    <string name="mdtp_next_month_arrow_description">Seuraava kuukausi</string>
+    <string name="mdtp_previous_month_arrow_description">Edellinen kuukausi</string>
 </resources>

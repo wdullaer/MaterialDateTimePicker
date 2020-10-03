@@ -30,4 +30,6 @@
     <string name="mdtp_deleted_key" msgid="6908431551612331381">"<xliff:g id="KEY">%1$s</xliff:g> verwijderd"</string>
     <string name="mdtp_date_v1_monthyear">MMMM yyyy</string>
     <string name="mdtp_date_v2_daymonthyear">EEE dd MMM</string>
+    <string name="mdtp_next_month_arrow_description">Volgende Maand</string>
+    <string name="mdtp_previous_month_arrow_description">Vorige Maand</string>
 </resources>
