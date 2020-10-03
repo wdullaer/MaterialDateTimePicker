@@ -25,17 +25,21 @@
             android:layout_height="wrap_content"
             android:text="@string/original_button"/>
 
-        <CheckBox
-            android:id="@+id/show_version_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/show_version_2"/>
+
 
         <CheckBox
             android:id="@+id/mode_24_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mode_24_hours" />
+
+        <Spinner
+            android:id="@+id/selectversion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/version_array"
+            android:padding="5dp"
+            android:prompt="@string/select_version" />
 
         <CheckBox
             android:id="@+id/mode_dark_time"
@@ -89,6 +93,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/disable_times"
+            android:checked="false"/>
+
+        <CheckBox
+            android:id="@+id/spinner_text_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/spinner_text_color"
+            android:checked="false"/>
+
+        <CheckBox
+            android:id="@+id/spinner_bg_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/spinner_bg_color"
             android:checked="false"/>
 
     </LinearLayout>

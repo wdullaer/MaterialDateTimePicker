@@ -91,4 +91,5 @@
 
     <string name="mdtp_am">am</string>
     <string name="mdtp_pm">pm</string>
+    <string name="change_mode">Change the TimePicker mode</string>
 </resources>
