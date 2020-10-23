@@ -1010,17 +1010,6 @@ public class TimePickerDialog extends AppCompatDialogFragment implements
     }
 
     @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        ViewGroup viewGroup = (ViewGroup) getView();
-        if (viewGroup != null) {
-            viewGroup.removeAllViewsInLayout();
-            View view = onCreateView(requireActivity().getLayoutInflater(), viewGroup, null);
-            viewGroup.addView(view);
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         mHapticFeedbackController.start();
