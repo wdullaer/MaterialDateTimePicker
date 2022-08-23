@@ -21,8 +21,6 @@
         android:layout_width="@dimen/mdtp_date_picker_component_width_v2"
         android:layout_height="@dimen/mdtp_date_picker_view_animator_height_v2"
         android:gravity="center"
-        android:paddingTop="@dimen/mdtp_date_picker_view_animator_padding_v2"
-        android:paddingBottom="@dimen/mdtp_date_picker_view_animator_padding_v2"
         android:clipChildren="false"
         android:clipToPadding="false"/>
 </FrameLayout>

@@ -23,4 +23,5 @@
     android:includeFontPadding="false"
     android:textColor="@color/mdtp_white"
     android:textSize="@dimen/mdtp_date_picker_header_text_size"
+    android:textAllCaps="@bool/mdtp_title_all_caps"
     android:importantForAccessibility="no" />

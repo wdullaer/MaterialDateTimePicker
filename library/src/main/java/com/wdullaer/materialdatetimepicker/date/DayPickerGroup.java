@@ -1,9 +1,10 @@
 package com.wdullaer.materialdatetimepicker.date;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,6 +78,12 @@ public class DayPickerGroup extends ViewGroup
             nextButton.setMinimumWidth(size);
         }
 
+        if (controller.isThemeDark()) {
+            int color = ContextCompat.getColor(getContext(), R.color.mdtp_date_picker_text_normal_dark_theme);
+            prevButton.setColorFilter(color);
+            nextButton.setColorFilter(color);
+        }
+
         prevButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
 
@@ -135,9 +142,12 @@ public class DayPickerGroup extends ViewGroup
             rightButton = nextButton;
         }
 
+        final int topMargin = controller.getVersion() == DatePickerDialog.Version.VERSION_1
+                ? 0
+                : getContext().getResources().getDimensionPixelSize(R.dimen.mdtp_date_picker_view_animator_padding_v2);
         final int width = right - left;
         final int height = bottom - top;
-        dayPickerView.layout(0, 0, width, height);
+        dayPickerView.layout(0, topMargin, width, height);
 
         final SimpleMonthView monthView = (SimpleMonthView) dayPickerView.getChildAt(0);
         final int monthHeight = monthView.getMonthHeight();
@@ -148,13 +158,13 @@ public class DayPickerGroup extends ViewGroup
         // header, horizontally center within the day cell.
         final int leftDW = leftButton.getMeasuredWidth();
         final int leftDH = leftButton.getMeasuredHeight();
-        final int leftIconTop = monthView.getPaddingTop() + (monthHeight - leftDH) / 2;
+        final int leftIconTop = topMargin + monthView.getPaddingTop() + (monthHeight - leftDH) / 2;
         final int leftIconLeft = edgePadding + (cellWidth - leftDW) / 2;
         leftButton.layout(leftIconLeft, leftIconTop, leftIconLeft + leftDW, leftIconTop + leftDH);
 
         final int rightDW = rightButton.getMeasuredWidth();
         final int rightDH = rightButton.getMeasuredHeight();
-        final int rightIconTop = monthView.getPaddingTop() + (monthHeight - rightDH) / 2;
+        final int rightIconTop = topMargin + monthView.getPaddingTop() + (monthHeight - rightDH) / 2;
         final int rightIconRight = width - edgePadding - (cellWidth - rightDW) / 2 - 2;
         rightButton.layout(rightIconRight - rightDW, rightIconTop,
                 rightIconRight, rightIconTop + rightDH);
@@ -163,6 +173,7 @@ public class DayPickerGroup extends ViewGroup
     @Override
     public void onPageChanged(int position) {
         updateButtonVisibility(position);
+        dayPickerView.accessibilityAnnouncePageChanged();
     }
 
     @Override
@@ -178,8 +189,14 @@ public class DayPickerGroup extends ViewGroup
             return;
         }
         int position = dayPickerView.getMostVisiblePosition() + offset;
-        dayPickerView.smoothScrollToPosition(position);
-        updateButtonVisibility(position);
+
+        // updateButtonVisibility only triggers when a scroll is completed. So a user might
+        // click the button when the animation is still ongoing potentially pushing the target
+        // position outside of the bounds of the dayPickerView
+        if (position >= 0 && position < dayPickerView.getCount()) {
+            dayPickerView.smoothScrollToPosition(position);
+            updateButtonVisibility(position);
+        }
     }
 
     public void setOnMonthChangedListener(OnMonthChangedListener listener) {

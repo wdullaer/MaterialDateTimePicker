@@ -72,6 +72,9 @@
     <string name="mdtp_item_is_selected"><xliff:g id="item" example="2013">%1$s</xliff:g> selected</string>
     <!-- Accessibility announcement when a number that had been typed in is deleted [CHAR_LIMIT=NONE] -->
     <string name="mdtp_deleted_key"><xliff:g id="key" example="4">%1$s</xliff:g> deleted</string>
+    <!-- Accessibility announcement for the month arrows in the day picker -->
+    <string name="mdtp_next_month_arrow_description">Next Month</string>
+    <string name="mdtp_previous_month_arrow_description">Previous Month</string>
 
     <!-- DO NOT TRANSLATE -->
     <string name="mdtp_time_placeholder" translatable="false">00</string>
@@ -85,9 +88,6 @@
 
     <!-- DO NOT TRANSLATE -->
     <string name="mdtp_day_of_week_label_typeface" translatable="false">sans-serif</string>
-    <string name="mdtp_button_typeface" translatable="false">Roboto-Medium</string>
-    <string name="mdtp_previous_month_arrow" translatable="false"><![CDATA[\u276E]]></string>
-    <string name="mdtp_next_month_arrow" translatable="false"><![CDATA[\u276F]]></string>
 
     <string name="mdtp_am">am</string>
     <string name="mdtp_pm">pm</string>

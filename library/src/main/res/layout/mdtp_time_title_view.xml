@@ -23,6 +23,7 @@
     android:gravity="center"
     android:includeFontPadding="false"
     android:textSize="@dimen/mdtp_time_picker_header_text_size"
+    android:textAllCaps="@bool/mdtp_title_all_caps"
     android:singleLine="true"
     android:padding="8dp"
     android:textColor="@color/mdtp_white"

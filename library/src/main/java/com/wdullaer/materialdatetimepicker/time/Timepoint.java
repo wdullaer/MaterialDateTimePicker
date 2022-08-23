@@ -2,9 +2,9 @@ package com.wdullaer.materialdatetimepicker.time;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static com.wdullaer.materialdatetimepicker.time.Timepoint.TYPE.HOUR;
 import static com.wdullaer.materialdatetimepicker.time.Timepoint.TYPE.MINUTE;
@@ -94,11 +94,28 @@ public class Timepoint implements Parcelable, Comparable<Timepoint> {
 
         switch (type) {
             case SECOND:
-                second = (value % 3600) % 60;
+                int secondVal = (value % 3600) % 60;
+                if(secondVal<0){
+                    second = 60+secondVal;
+                    add(MINUTE, -1);
+                }else {
+                    second = secondVal;
+                }
             case MINUTE:
-                minute = (value % 3600) / 60;
+                int minuteVal = (value % 3600) / 60;
+                if(minuteVal<0){
+                    minute = 60+minuteVal;
+                    add(HOUR, -1);
+                }else {
+                    minute = minuteVal;
+                }
             case HOUR:
-                hour = (value / 3600) % 24;
+                int hourVal = (value / 3600) % 24;
+                if(hourVal<0){
+                    hour = 24+hourVal;
+                }else{
+                    hour=hourVal;
+                }
         }
     }
 

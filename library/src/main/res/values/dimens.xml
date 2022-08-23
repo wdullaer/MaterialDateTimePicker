@@ -56,6 +56,7 @@
     <dimen name="mdtp_date_picker_view_animator_height_v2">320dp</dimen>
     <dimen name="mdtp_date_picker_view_animator_padding">8dp</dimen>
     <dimen name="mdtp_date_picker_view_animator_padding_v2">16dp</dimen>
+    <dimen name="mdtp_date_picker_view_animator_padding_bottom_v2">6dp</dimen>
     <dimen name="mdtp_date_picker_view_animator_month_header_margin_v2">8dp</dimen>
     <dimen name="mdtp_done_button_height">42dp</dimen>
 

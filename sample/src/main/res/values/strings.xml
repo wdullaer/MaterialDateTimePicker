@@ -26,13 +26,11 @@
     <string name="disable_times">Disable specific times</string>
     <string name="highlight_dates">Highlight certain dates</string>
     <string name="switch_orientation">Switch scroll orientation</string>
+    <string name="default_selection">Use alternative default selection</string>
     <string name="action_settings">Settings</string>
 
     <string name="tab_title_time">Time</string>
     <string name="tab_title_date">Date</string>
     <string name="tab_title_datetime">Date+Time</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

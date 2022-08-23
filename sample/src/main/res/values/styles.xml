@@ -8,6 +8,7 @@
         <item name="colorAccent">#ff4081</item>
         <!-- Customize picker mode here. -->
         <item name="mdtp_theme_dark">true</item>
+        <item name="dialogCornerRadius">10dp</item>
     </style>
 
 </resources>

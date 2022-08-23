@@ -9,7 +9,7 @@ Material DateTime Picker tries to offer you the date and time pickers as shown i
 easy themable API.
 The library uses [the code from the Android frameworks](https://android.googlesource.com/platform/frameworks/opt/datetimepicker/) as a base and tweaked it to be as close as possible to Material Design example.
 
-Support for Android 4.0 and up.
+Support for Android 4.1 and up. (Android 4.0 was supported until 3.6.4)
 
 Feel free to fork or issue pull requests on github. Issues can be reported on the github issue tracker.
 
@@ -42,12 +42,26 @@ Date Picker | Time Picker
  The easiest way to add the Material DateTime Picker library to your project is by adding it as a dependency to your `build.gradle`
 ```groovy
 dependencies {
-    compile 'com.wdullaer:materialdatetimepicker:3.6.0'
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 }
 ```
 
 You may also add the library as an Android Library to your project. All the library files live in ```library```.
 
+The library also uses some Java 8 features, which Android Studio will need to transpile. This requires the following stanza in your app's `build.gradle`.
+See https://developer.android.com/studio/write/java8-support.html for more information on Java 8 support in Android.
+```groovy
+android {
+  ...
+  // Configure only for each module that uses Java 8
+  // language features (either in its source code or
+  // through dependencies).
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+```
 
 ## Using Material Date/Time Pickers
 The library follows the same API as other pickers in the Android framework.
@@ -80,11 +94,14 @@ You will need to create a new instance of `TimePickerDialog` or `DatePickerDialo
 Calendar now = Calendar.getInstance();
 DatePickerDialog dpd = DatePickerDialog.newInstance(
   MainActivity.this,
-  now.get(Calendar.YEAR),
-  now.get(Calendar.MONTH),
-  now.get(Calendar.DAY_OF_MONTH)
+  now.get(Calendar.YEAR), // Initial year selection
+  now.get(Calendar.MONTH), // Initial month selection
+  now.get(Calendar.DAY_OF_MONTH) // Inital day selection
 );
+// If you're calling this from a support Fragment
 dpd.show(getFragmentManager(), "Datepickerdialog");
+// If you're calling this from an AppCompatActivity
+// dpd.show(getSupportFragmentManager(), "Datepickerdialog");
 ```
 
 ### Theme the pickers
@@ -118,65 +135,65 @@ The pickers also have a dark theme. This can be specified globablly using the `m
 
 
 ## Additional Options
-* `TimePickerDialog` dark theme  
-The `TimePickerDialog` has a dark theme that can be set by calling
+### [All] `setThemeDark(boolean themeDark)`
+The dialogs have a dark theme that can be set by calling
 ```java
-tpd.setThemeDark(true);
+dialog.setThemeDark(true);
 ```
 
-* `DatePickerDialog` dark theme
-The `DatePickerDialog` has a dark theme that can be set by calling
-```java
-dpd.setThemeDark(true);
-```
-
-* `setAccentColor(String color)` and `setAccentColor(int color)`
+### [All] `setAccentColor(String color)` and `setAccentColor(int color)`
 Set the accentColor to be used by the Dialog. The String version parses the color out using `Color.parseColor()`. The int version requires a ColorInt bytestring. It will explicitly set the color to fully opaque.
 
-* `setOkColor()` and `setCancelColor()`
+### [All] `setOkColor()` and `setCancelColor()`
 Set the text color for the OK or Cancel button. Behaves similar to `setAccentColor()`
 
-* `TimePickerDialog` `setTitle(String title)`  
+### [TimePickerDialog] `setTitle(String title)`  
 Shows a title at the top of the `TimePickerDialog`
 
-* `DatePickerDialog` `setTitle(String title)`
+### [DatePickerDialog] `setTitle(String title)`
 Shows a title at the top of the `DatePickerDialog` instead of the day of the week
 
-* `setOkText()` and `setCancelText()`  
+### [All] `setOkText()` and `setCancelText()`  
 Set a custom text for the dialog Ok and Cancel labels. Can take a resourceId of a String. Works in both the DatePickerDialog and TimePickerDialog
 
-* `setMinTime(Timepoint time)`  
+### [DatePickerDialog] `setMinDate(Calendar day)`
+Set the minimum valid date to be selected. Date values before this date will be deactivated
+
+### [DatePickerDialog] `setMaxDate(Calendar day)`
+Set the maximum valid date to be selected. Date values after this date will be deactivated
+
+### [TimePickerDialog] `setMinTime(Timepoint time)`  
 Set the minimum valid time to be selected. Time values earlier in the day will be deactivated
 
-* `setMaxTime(Timepoint time)`  
+### [TimePickerDialog] `setMaxTime(Timepoint time)`  
 Set the maximum valid time to be selected. Time values later in the day will be deactivated
 
-* `setSelectableTimes(Timepoint[] times)`  
+### [TimePickerDialog] `setSelectableTimes(Timepoint[] times)`  
 You can pass in an array of `Timepoints`. These values are the only valid selections in the picker. `setMinTime(Timepoint time)`, `setMaxTime(Timepoint time)` and `setDisabledTimes(Timepoint[] times)` will further trim this list down. Try to specify Timepoints only up to the resolution of your picker (i.e. do not add seconds if the resolution of the picker is minutes).
 
-* `setDisabledTimes(Timepoint[] times)`  
+### [TimePickerDialog] `setDisabledTimes(Timepoint[] times)`  
 You can pass in an array of `Timepoints`. These values will not be available for selection. These take precedence over `setSelectableTimes` and `setTimeInterval`. Be careful when using this without selectableTimes: rounding to a valid Timepoint is a very expensive operation if a lot of consecutive Timepoints are disabled. Try to specify Timepoints only up to the resolution of your picker (i.e. do not add seconds if the resolution of the picker is minutes).
 
-* `setTimeInterval(int hourInterval, int minuteInterval, int secondInterval)`  
+### [TimePickerDialog] `setTimeInterval(int hourInterval, int minuteInterval, int secondInterval)`  
 Set the interval for selectable times in the TimePickerDialog. This is a convenience wrapper around `setSelectableTimes`. The interval for all three time components can be set independently. If you are not using the seconds / minutes picker, set the respective item to 60 for better performance.
 
-* `setTimepointLimiter(TimepointLimiter limiter)`  
+### [TimePickerDialog] `setTimepointLimiter(TimepointLimiter limiter)`  
 Pass in a custom implementation of `TimeLimiter`
 Disables `setSelectableTimes`, `setDisabledTimes`, `setTimeInterval`, `setMinTime` and `setMaxTime`
 
-* `setSelectableDays(Calendar[] days)`  
+### [DatePickerDialog] `setSelectableDays(Calendar[] days)`  
 You can pass a `Calendar[]` to the `DatePickerDialog`. The values in this list are the only acceptable dates for the picker. It takes precedence over `setMinDate(Calendar day)` and `setMaxDate(Calendar day)`
 
-* `setDisabledDays(Calendar[] days)`  
+### [DatePickerDialog] `setDisabledDays(Calendar[] days)`  
 The values in this `Calendar[]` are explicitly disabled (not selectable). This option can be used together with `setSelectableDays(Calendar[] days)`: in case there is a clash `setDisabledDays(Calendar[] days)` will take precedence over `setSelectableDays(Calendar[] days)`
 
-* `setHighlightedDays(Calendar[] days)`  
+### [DatePickerDialog] `setHighlightedDays(Calendar[] days)`  
 You can pass a `Calendar[]` of days to highlight. They will be rendered in bold. You can tweak the color of the highlighted days by overwriting `mdtp_date_picker_text_highlighted`
 
-* `showYearPickerFirst(boolean yearPicker)`  
+### [DatePickerDialog] `showYearPickerFirst(boolean yearPicker)`  
 Show the year picker first, rather than the month and day picker.
 
-* `OnDismissListener` and `OnCancelListener`  
+### [All] `OnDismissListener` and `OnCancelListener`  
 Both pickers can be passed a `DialogInterface.OnDismissLisener` or `DialogInterface.OnCancelListener` which allows you to run code when either of these events occur.
 ```java
 tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -187,78 +204,65 @@ tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
 });
 ```
 
-* `vibrate(boolean vibrate)`  
+### [All] `vibrate(boolean vibrate)`  
 Set whether the dialogs should vibrate the device when a selection is made. This defaults to `true`.
 
-* `dismissOnPause(boolean dismissOnPause)`  
+### [All] `dismissOnPause(boolean dismissOnPause)`  
 Set whether the picker dismisses itself when the parent Activity is paused or whether it recreates itself when the Activity is resumed.
 
-* `setLocale(Locale locale)`  
+### [All] `setLocale(Locale locale)`  
 Allows the client to set a custom locale that will be used when generating various strings in the pickers. By default the current locale of the device will be used. Because the pickers will adapt to the Locale of the device by default you should only have to use this in very rare circumstances.
 
-* `DatePickerDialog` `autoDismiss(boolean autoDismiss)`
+### [DatePickerDialog] `autoDismiss(boolean autoDismiss)`
 If set to `true` will dismiss the picker when the user selects a date. This defaults to `false`.
 
-* `TimepickerDialog` `enableSeconds(boolean enableSconds)` and `enableMinutes(boolean enableMinutes)`
+### [TimepickerDialog] `enableSeconds(boolean enableSconds)` and `enableMinutes(boolean enableMinutes)`
 Allows you to enable or disable a seconds and minutes picker on the `TimepickerDialog`. Enabling the seconds picker, implies enabling the minutes picker. Disabling the minute picker will disable the seconds picker. The last applied setting will be used. By default `enableSeconds = false` and `enableMinutes = true`.
 
-* `DatePickerDialog` `setTimeZone(Timezone timezone)` *deprecated*  
+### [DatePickerDialog] `setTimeZone(Timezone timezone)` *deprecated*  
 Sets the `Timezone` used to represent time internally in the picker. Defaults to the current default Timezone of the device.
 This method has been deprecated: you should use the `newInstance()` method which takes a Calendar set to the appropriate TimeZone.
 
-* `DatePickerDialog` `setDateRangeLimiter(DateRangeLimiter limiter)`
+### [DatePickerDialog] `setDateRangeLimiter(DateRangeLimiter limiter)`
 Provide a custom implementation of DateRangeLimiter, giving you full control over which days are available for selection. This disables all of the other options that limit date selection.
 
-* `getOnTimeSetListener()` and `getOnDateSetListener()`  
+### `getOnTimeSetListener()` and `getOnDateSetListener()`  
 Getters that allow the retrieval of a reference to the callbacks currently associated with the pickers
 
+### [DatePickerDialog] `setScrollOrientation(ScrollOrientation scrollOrientation)` and `getScrollOrientationi()`
+Determines whether months scroll `Horizontal` or `Vertical`. Defaults to `Horizontal` for the v2 layout and `Vertical` for the v1 layout
+
 ## FAQ
-
-### Why not use `SupportDialogFragment`?
-Not using the support library versions has been a well considered choice, based on the following considerations:
-
-* Less than 5% of the devices using the android market do not support native `Fragments`, a number which will decrease even further going forward.
-* Even if you use `SupportFragments` in your application, you can still use the normal `FragmentManager`. Both can exist side by side.
-
-This means that in the current setup everyone can use the library: people using the support library and people not using the support library.
-
-Finally changing to `SupportDialogFragment` now will break the API for all the people using this library.
-
-If you do really need `SupportDialogFragment`, you can fork the library (It involves changing all of 2 lines of code, so it should be easy enough to keep it up to date with the upstream) or use this fork: https://github.com/infinum/MaterialDateTimePicker
-
-```groovy
-dependencies {
-  compile 'co.infinum:materialdatetimepicker-support:3.6.0'
-}
-```
 
 ### Why does the `DatePickerDialog` return the selected month -1?
 In the java `Calendar` class months use 0 based indexing: January is month 0, December is month 11. This convention is widely used in the java world, for example the native Android DatePicker.
 
-### How do I use a different version of the support library in my app?
-This library depends on the android support library. Because the jvm allows only one version of a fully namespaced class to be loaded, you will run into issues if your app depends on a different version of the support library than the one used in this app. Gradle is generally quite good at resolving version conflicts (be default it will retain the latest version of a library), but should you run into problems (eg because you disabled conflict resolution), you can disable loading the support
-library for MaterialDateTimePicker.
+### How do I use a different version of a support library in my app?
+This library depends on some androidx support libraries. Because the jvm allows only one version of a fully namespaced class to be loaded, you will run into issues if your app depends on a different version of a library than the one used in this app. Gradle is generally quite good at resolving version conflicts (by default it will retain the latest version of a library), but should you run into problems (eg because you disabled conflict resolution), you can disable loading a specific library for MaterialDateTimePicker.
 
-Using the following snippet in your apps `build.gradle` file you can exclude this library's transitive support library dependency from being installed.
+Using the following snippet in your apps `build.gradle` file you can exclude this library's transitive appcompat library dependency from being installed.
 
 ```groovy
-compile ('com.wdullaer:materialdatetimepicker:3.6.0') {
-        exclude group: 'com.android.support'
+implementation ('com.wdullaer:materialdatetimepicker:4.2.3') {
+        exclude group: 'androidx.appcompat'
+        exclude group: 'androidx.recyclerview'
 }
 ```
 
-Your app will need to depend on at least the following pieces of the support library
+MaterialDateTimepicker uses the following androidx libraries:
 
 ```groovy
-compile 'com.android.support:support-v4:26.0.1'
-compile 'com.android.support:support-v13:26.0.1'
-compile 'com.android.support:design:26.0.1'
+implementation 'androidx.appcompat:appcompat:1.0.2'
+implementation 'androidx.recyclerview:recyclerview:1.0.0'
 ```
 
-This will work fine as long as the support library version your app depends on is recent enough (supports `RecyclerView`) and google doesn't release a version in the future that contains breaking changes. (If/When this happens I will try hard to document this). See issue [#338](https://github.com/wdullaer/MaterialDateTimePicker/issues/338) for more information.
+Excluding a dependency will work fine as long as the version your app depends on is recent enough and google doesn't release a version in the future that contains breaking changes. (If/When this happens I will try hard to document this). See issue [#338](https://github.com/wdullaer/MaterialDateTimePicker/issues/338) for more information.
 
 ### How do I turn this into a year and month picker?
-This DatePickerDialog focusses on selecting dates, which means that it's central design element is the day picker. As this calendar like view is the center of the design it makes no sense to try and disable it. As such selecting just years and months, without a day, is not in scope for this library and will not be added.
+This DatePickerDialog focuses on selecting dates, which means that it's central design element is the day picker. As this calendar like view is the center of the design it makes no sense to try and disable it. As such selecting just years and months, without a day, is not in scope for this library and will not be added.
+
+### How do I select multiple days?
+The goal of this library is to implement the Material Design Date picker. This design is focused on picking exactly 1 date (with a large textual representation at the top). It would require quite a bit of redesigning to make it useful to select multiple days. As such this feature is currently out of scope for this library and will not be added. If you happen to make a library that implements this, based on this code or not, drop me a line and I'll happily link to it.
 
 ### How do I use my custom logic to enable/disable dates?
 `DatePickerDialog` exposes some utility methods to enable / disable dates for common scenario's. If your needs are not covered by these, you can supply a custom implementation of the `DateRangeLimiter` interface.
@@ -333,6 +337,22 @@ class MyDateRangeLimiter implements DateRangeLimiter {
 
 When you provide a custom `DateRangeLimiter` the built-in methods for setting the enabled / disabled dates will no longer work. It will need to be completely handled by your implementation.
 
+### Why do the OK and Cancel buttons have the accent color as a background when combined with the Material Components library
+[Material Components](https://github.com/material-components/material-components-android) replaces all instances of `Button` with an instance of `MaterialButton` when using one of its regular themes: https://github.com/material-components/material-components-android/blob/master/docs/getting-started.md#material-components-themes  
+The default version of `MaterialButton` uses `colorPrimary` as the background color. Because Material Components replaces the View replacer with their own implementation there is not much I can do to fix this from this library.
+
+There are a few workarounds:
+* Use one of the bridge themes, which do not replace the View Inflater
+* Overwrite the style of the mdtp buttons with one that inherits from Material Components text buttons, as described [here](https://github.com/wdullaer/MaterialDateTimePicker/issues/523#issuecomment-477349333):
+    ```xml
+    <style name="mdtp_ActionButton.Text" parent="Widget.MaterialComponents.Button.TextButton.Dialog"/>
+    ```
+* Overwrite the View inflater again in your application theme by adding the following statement in your application theme:
+    ```xml
+  <item name="viewInflaterClass">androidx.appcompat.app.AppCompatViewInflater</item>
+    ```
+  You will then need to explicitly use `MaterialButton` in your application rather than `Button`
+
 ### Why are my callbacks lost when the device changes orientation?
 The simple solution is to dismiss the pickers when your activity is paused.
 
@@ -362,7 +382,6 @@ public void onResume() {
 
 ## Potential Improvements
 * Landscape timepicker can use some improvement
-* Implement the new style of pickers
 * Code cleanup: there is a bit too much spit and ductape in the tweaks I've done.
 * Document all options on both pickers
 
